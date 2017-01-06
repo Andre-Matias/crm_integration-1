@@ -56,7 +56,7 @@ ui <- fluidPage(
   #Title of the page
   titlePanel("Sorting Analysis"),
   helpText("Analysis of the amount of use of the sorting 
-           function per Mileage and Power Engine in relation to total sortings"),
+           function per Mileage (KM) and Power Engine (PE) in relation to total sortings"),
   sidebarPanel(
   
   
