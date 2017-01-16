@@ -25,12 +25,24 @@ load("tokenGA.RData")
 # Perform query and assign the results to a "data frame" called gaDataTotalSortingAutovit
 gaDataTotalSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                  end.date = "yesterday", metrics = c("ga:pageViews"), 
-                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float",
+                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=",
                  segment = NULL, samplingLevel = NULL, start.index = NULL,
                  max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
 
 # Change the Columns name
 colnames(gaDataTotalSortingAutovit) <- c("Date","Total Sorting")
+
+
+# Perform query and assign the results to a "data frame" called gaDataKmSortingAutovit
+gaDataCreatedAtSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
+                                               end.date = "yesterday", metrics = c("ga:pageViews"), 
+                                               dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=created_at",
+                                               segment = NULL, samplingLevel = NULL, start.index = NULL,
+                                               max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
+
+
+# Change the Columns name
+colnames(gaDataCreatedAtSortingAutovit) <- c("Date","Created at Sorting")
 
 
 # Perform query and assign the results to a "data frame" called gaDataKmSortingAutovit
@@ -67,7 +79,9 @@ gaDataEPSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-
 colnames(gaDataEPSortingAutovit) <- c("Date","PE Sorting")
 
 # merge two data frames by Date
-TotalAutovit <- merge(gaDataTotalSortingAutovit,gaDataPriceSortingAutovit,by="Date")
+TotalAutovit <- merge(gaDataTotalSortingAutovit,gaDataCreatedAtSortingAutovit,by="Date")
+# merge two data frames by Date
+TotalAutovit <- merge(TotalAutovit,gaDataPriceSortingAutovit,by="Date")
 # merge two data frames by Date
 TotalAutovit <- merge(TotalAutovit,gaDataKmSortingAutovit,by="Date")
 # merge two data frames by Date
@@ -85,6 +99,9 @@ TotalAutovit <- merge(TotalAutovit,gaDataEPSortingAutovit,by="Date")
 # TotalAutovit[,4] <- as.integer(TotalAutovit[,4])
 
 # Calculate the percentage of sorting usage
+TotalAutovit$"Created at Sorting %" <- percent(round(TotalAutovit$"Created at Sorting"/TotalAutovit$"Total Sorting",4))
+
+# Calculate the percentage of sorting usage
 TotalAutovit$"Price Sorting %" <- percent(round(TotalAutovit$"Price Sorting"/TotalAutovit$"Total Sorting",4))
 
 # Calculate the percentage of sorting usage
@@ -97,6 +114,8 @@ TotalAutovit$"PE Sorting %" <- percent(round(TotalAutovit$"PE Sorting"/TotalAuto
 ExibitionAutovit <- TotalAutovit[,c("Date",
                                     "Price Sorting",
                                     "Price Sorting %",
+                                    "Created at Sorting",
+                                    "Created at Sorting %",
                                     "KM Sorting",
                                     "KM Sorting %",
                                     "PE Sorting",

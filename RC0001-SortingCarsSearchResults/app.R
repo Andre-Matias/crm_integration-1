@@ -66,7 +66,8 @@ ui <- fluidPage(
               timeFormat = "%Y-%m-%d", ticks = F, animate = F,width = '98%'),
   hr(),
   helpText("Source: Google Analytics"),
-  h6("Author: Rodrigo de Caro")),
+  h6("Author: Rodrigo de Caro"),
+  width = 2),
   
   mainPanel(
   tabsetPanel(id = "tabSelected",
@@ -80,7 +81,7 @@ ui <- fluidPage(
                        dataTableOutput("OtomotoTable"),  
                        dataTableOutput("OtomotoTotal")
               )
-  )
+  ),width = 10
   ))
 
 

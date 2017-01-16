@@ -24,12 +24,22 @@ load("tokenGA.RData")
 # Perform query and assign the results to a "data frame" called gaDataTotalSortingOtomoto
 gaDataTotalSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                  end.date = "yesterday", metrics = c("ga:pageViews"), 
-                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float",
+                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=",
                  segment = NULL, samplingLevel = NULL, start.index = NULL,
                  max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
 
 # Change the Columns name
 colnames(gaDataTotalSortingOtomoto) <- c("Date","Total Sorting")
+
+# Perform query and assign the results to a "data frame" called gaDataKmSortingOtomoto
+gaDataCreatedAtSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
+                                               end.date = "yesterday", metrics = c("ga:pageViews"), 
+                                               dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=created_at",
+                                               segment = NULL, samplingLevel = NULL, start.index = NULL,
+                                               max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
+
+# Change the Columns name
+colnames(gaDataCreatedAtSortingOtomoto) <- c("Date","Created at Sorting")
 
 # Perform query and assign the results to a "data frame" called gaDataKmSortingOtomoto
 gaDataPriceSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
@@ -64,7 +74,9 @@ gaDataEPSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-
 colnames(gaDataEPSortingOtomoto) <- c("Date","PE Sorting")
 
 # merge two data frames by Date
-TotalOtomoto <- merge(gaDataTotalSortingOtomoto,gaDataPriceSortingOtomoto,by="Date")
+TotalOtomoto <- merge(gaDataTotalSortingOtomoto,gaDataCreatedAtSortingOtomoto,by="Date")
+# merge two data frames by Date
+TotalOtomoto <- merge(TotalOtomoto,gaDataPriceSortingOtomoto,by="Date")
 # merge two data frames by Date
 TotalOtomoto <- merge(TotalOtomoto,gaDataKmSortingOtomoto,by="Date")
 # merge two data frames by Date
@@ -82,6 +94,9 @@ TotalOtomoto <- merge(TotalOtomoto,gaDataEPSortingOtomoto,by="Date")
 # TotalOtomoto[,4] <- as.integer(TotalOtomoto[,4])
 
 # Calculate the percentage of sorting usage
+TotalOtomoto$"Created at Sorting %" <- percent(round(TotalOtomoto$"Created at Sorting"/TotalOtomoto$"Total Sorting",4))
+
+# Calculate the percentage of sorting usage
 TotalOtomoto$"Price Sorting %" <- percent(round(TotalOtomoto$"Price Sorting"/TotalOtomoto$"Total Sorting",4))
 
 # Calculate the percentage of sorting usage
@@ -94,6 +109,8 @@ TotalOtomoto$"PE Sorting %" <- percent(round(TotalOtomoto$"PE Sorting"/TotalOtom
 ExibitionOtomoto <- TotalOtomoto[,c("Date",
                                     "Price Sorting",
                                     "Price Sorting %",
+                                    "Created at Sorting",
+                                    "Created at Sorting %",
                                     "KM Sorting",
                                     "KM Sorting %",
                                     "PE Sorting",
