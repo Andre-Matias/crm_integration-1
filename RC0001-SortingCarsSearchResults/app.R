@@ -22,7 +22,7 @@ server <- function(input, output) {
                     order = list(list(0, 'desc'))
   )
   )
-  
+   
   output$OtomotoTotal <- renderDataTable({
     TotalExibitionOtomoto(input)
   }, options = list(ordering=F,paging = FALSE,

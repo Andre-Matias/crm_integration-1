@@ -97,7 +97,7 @@ TotalAutovit <- merge(TotalAutovit,gaDataEPSortingAutovit,by="Date")
 # TotalAutovit[,2] <- as.integer(TotalAutovit[,2])
 # TotalAutovit[,3] <- as.integer(TotalAutovit[,3])
 # TotalAutovit[,4] <- as.integer(TotalAutovit[,4])
-
+ 
 # Calculate the percentage of sorting usage
 TotalAutovit$"Created at Sorting %" <- percent(round(TotalAutovit$"Created at Sorting"/TotalAutovit$"Total Sorting",4))
 

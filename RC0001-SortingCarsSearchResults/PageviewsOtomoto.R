@@ -9,7 +9,7 @@ ids <- "ga:5485250"
 library(RGA)
 # Load up the Scales package.
 library('scales')
-
+ 
 # Authorize the Google Analytics account
 # ga_token <- authorize(username = Clientusername,
 #           client.id = ClientId,
