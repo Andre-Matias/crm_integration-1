@@ -4,20 +4,24 @@ load("ExibitionAutovit.RData")
 load("ExibitionOtomoto.RData")
 
 TotalExibitionAutovit <- function(input){
-  KMSorting <-  sum (TotalAutovit[
+  PriceSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
     3])
-  PESorting <-  sum (TotalAutovit[
+  KMSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
     4])
+  PESorting <-  sum (TotalAutovit[
+    TotalAutovit$Date >= input$date_range[1] & 
+      TotalAutovit$Date <= input$date_range[2],
+    5])
   TotalSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
     2])
   
-  KMSortingPer <- percent(round(sum (TotalAutovit[
+  PriceSortingPer <- percent(round(sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
     3])/
@@ -26,16 +30,27 @@ TotalExibitionAutovit <- function(input){
           TotalAutovit$Date <= input$date_range[2],
         2]),4))
   
+  KMSortingPer <- percent(round(sum (TotalAutovit[
+    TotalAutovit$Date >= input$date_range[1] & 
+      TotalAutovit$Date <= input$date_range[2],
+    4])/
+      sum (TotalAutovit[
+        TotalAutovit$Date >= input$date_range[1] & 
+          TotalAutovit$Date <= input$date_range[2],
+        2]),4))
+  
   PESortingPer <- percent(round(sum(TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2]
-    ,4])/
+    ,5])/
       sum(TotalAutovit[
         TotalAutovit$Date >= input$date_range[1] & 
           TotalAutovit$Date <= input$date_range[2],2]
         ,2),4))
   
   TotalexibAuto <- data.frame(Total = "Total          .", 
+                              "Price Sorting"    = PriceSorting,
+                              "Price Sorting %" = PriceSortingPer,
                               "KM Sorting"    = KMSorting,
                               "KM Sorting %" = KMSortingPer,
                               "PE Sorting"    = PESorting,
@@ -46,20 +61,24 @@ TotalExibitionAutovit <- function(input){
 
 
 TotalExibitionOtomoto <- function(input){
-  KMSorting <-  sum (TotalOtomoto[
+  PriceSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
     3])
-  PESorting <-  sum (TotalOtomoto[
+  KMSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
     4])
+  PESorting <-  sum (TotalOtomoto[
+    TotalOtomoto$Date >= input$date_range[1] & 
+      TotalOtomoto$Date <= input$date_range[2],
+    5])
   TotalSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
     2])
   
-  KMSortingPer <- percent(round(sum (TotalOtomoto[
+  PriceSortingPer <- percent(round(sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
     3])/
@@ -68,20 +87,32 @@ TotalExibitionOtomoto <- function(input){
           TotalOtomoto$Date <= input$date_range[2],
         2]),4))
   
+  KMSortingPer <- percent(round(sum (TotalOtomoto[
+    TotalOtomoto$Date >= input$date_range[1] & 
+      TotalOtomoto$Date <= input$date_range[2],
+    4])/
+      sum (TotalOtomoto[
+        TotalOtomoto$Date >= input$date_range[1] & 
+          TotalOtomoto$Date <= input$date_range[2],
+        2]),4))
+  
   PESortingPer <- percent(round(sum(TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2]
-    ,4])/
+    ,5])/
       sum(TotalOtomoto[
         TotalOtomoto$Date >= input$date_range[1] & 
           TotalOtomoto$Date <= input$date_range[2],2]
         ,2),4))
   
   TotalexibOto <- data.frame(Total = "Total          .", 
+                             "Price Sorting"    = PriceSorting,
+                             "Price Sorting %" = PriceSortingPer,
                              "KM Sorting"    = KMSorting,
-                             "KM Sorting %a" = KMSortingPer,
+                             "KM Sorting %" = KMSortingPer,
                              "PE Sorting"    = PESorting,
                              "PE Sorting %" = PESortingPer,
                              "Total Sorting" = TotalSorting
   )
 }
+

@@ -25,17 +25,29 @@ load("tokenGA.RData")
 # Perform query and assign the results to a "data frame" called gaDataTotalSortingAutovit
 gaDataTotalSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                  end.date = "yesterday", metrics = c("ga:pageViews"), 
-                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@[order]=filter_float",
+                 dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float",
                  segment = NULL, samplingLevel = NULL, start.index = NULL,
                  max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
 
 # Change the Columns name
 colnames(gaDataTotalSortingAutovit) <- c("Date","Total Sorting")
 
+
+# Perform query and assign the results to a "data frame" called gaDataKmSortingAutovit
+gaDataPriceSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
+                                            end.date = "yesterday", metrics = c("ga:pageViews"), 
+                                            dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float_price",
+                                            segment = NULL, samplingLevel = NULL, start.index = NULL,
+                                            max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
+
+
+# Change the Columns name
+colnames(gaDataPriceSortingAutovit) <- c("Date","Price Sorting")
+
 # Perform query and assign the results to a "data frame" called gaDataKmSortingAutovit
 gaDataKmSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                              end.date = "yesterday", metrics = c("ga:pageViews"), 
-                             dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@[order]=filter_float_mileage",
+                             dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float_mileage",
                              segment = NULL, samplingLevel = NULL, start.index = NULL,
                              max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
 
@@ -46,7 +58,7 @@ colnames(gaDataKmSortingAutovit) <- c("Date","KM Sorting")
 # Perform query and assign the results to a "data frame" called gaDataEPSortingAutovit
 gaDataEPSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                           end.date = "yesterday", metrics = c("ga:pageViews"), 
-                          dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@[order]=filter_float_engine_power",
+                          dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float_engine_power",
                           segment = NULL, samplingLevel = NULL, start.index = NULL,
                           max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
 
@@ -55,7 +67,9 @@ gaDataEPSortingAutovit <- data.frame(get_ga(profileId = ids, start.date = "2016-
 colnames(gaDataEPSortingAutovit) <- c("Date","PE Sorting")
 
 # merge two data frames by Date
-TotalAutovit <- merge(gaDataTotalSortingAutovit,gaDataKmSortingAutovit,by="Date")
+TotalAutovit <- merge(gaDataTotalSortingAutovit,gaDataPriceSortingAutovit,by="Date")
+# merge two data frames by Date
+TotalAutovit <- merge(TotalAutovit,gaDataKmSortingAutovit,by="Date")
 # merge two data frames by Date
 TotalAutovit <- merge(TotalAutovit,gaDataEPSortingAutovit,by="Date")
 #TotalAutovit[,1] <- as.Date(TotalAutovit[,1])
@@ -71,6 +85,9 @@ TotalAutovit <- merge(TotalAutovit,gaDataEPSortingAutovit,by="Date")
 # TotalAutovit[,4] <- as.integer(TotalAutovit[,4])
 
 # Calculate the percentage of sorting usage
+TotalAutovit$"Price Sorting %" <- percent(round(TotalAutovit$"Price Sorting"/TotalAutovit$"Total Sorting",4))
+
+# Calculate the percentage of sorting usage
 TotalAutovit$"KM Sorting %" <- percent(round(TotalAutovit$"KM Sorting"/TotalAutovit$"Total Sorting",4))
 
 # Calculate the percentage of sorting usage
@@ -78,11 +95,13 @@ TotalAutovit$"PE Sorting %" <- percent(round(TotalAutovit$"PE Sorting"/TotalAuto
 
 # Change the ordem of exebition
 ExibitionAutovit <- TotalAutovit[,c("Date",
-                     "KM Sorting",
-                     "KM Sorting %",
-                     "PE Sorting",
-                     "PE Sorting %",
-                     "Total Sorting")]
+                                    "Price Sorting",
+                                    "Price Sorting %",
+                                    "KM Sorting",
+                                    "KM Sorting %",
+                                    "PE Sorting",
+                                    "PE Sorting %",
+                                    "Total Sorting")]
 
 #Save the Dataframe ExibitionAutovit in a file to have Cache
 save(ExibitionAutovit,AutovitExecutedDate,TotalAutovit, file = "ExibitionAutovit.RData")

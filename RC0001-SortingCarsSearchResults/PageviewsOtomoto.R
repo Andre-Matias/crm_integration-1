@@ -32,6 +32,16 @@ gaDataTotalSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "20
 colnames(gaDataTotalSortingOtomoto) <- c("Date","Total Sorting")
 
 # Perform query and assign the results to a "data frame" called gaDataKmSortingOtomoto
+gaDataPriceSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
+                                            end.date = "yesterday", metrics = c("ga:pageViews"), 
+                                            dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float_price",
+                                            segment = NULL, samplingLevel = NULL, start.index = NULL,
+                                            max.results = NULL, include.empty.rows = NULL, fetch.by = NULL, ga_token))
+
+# Change the Columns name
+colnames(gaDataPriceSortingOtomoto) <- c("Date","Price Sorting")
+
+# Perform query and assign the results to a "data frame" called gaDataKmSortingOtomoto
 gaDataKmSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-12-12",
                              end.date = "yesterday", metrics = c("ga:pageViews"), 
                              dimensions = c("ga:date"), sort = NULL, filters = "ga:pagePath=@.order.=filter_float_mileage",
@@ -54,7 +64,9 @@ gaDataEPSortingOtomoto <- data.frame(get_ga(profileId = ids, start.date = "2016-
 colnames(gaDataEPSortingOtomoto) <- c("Date","PE Sorting")
 
 # merge two data frames by Date
-TotalOtomoto <- merge(gaDataTotalSortingOtomoto,gaDataKmSortingOtomoto,by="Date")
+TotalOtomoto <- merge(gaDataTotalSortingOtomoto,gaDataPriceSortingOtomoto,by="Date")
+# merge two data frames by Date
+TotalOtomoto <- merge(TotalOtomoto,gaDataKmSortingOtomoto,by="Date")
 # merge two data frames by Date
 TotalOtomoto <- merge(TotalOtomoto,gaDataEPSortingOtomoto,by="Date")
 
@@ -70,6 +82,9 @@ TotalOtomoto <- merge(TotalOtomoto,gaDataEPSortingOtomoto,by="Date")
 # TotalOtomoto[,4] <- as.integer(TotalOtomoto[,4])
 
 # Calculate the percentage of sorting usage
+TotalOtomoto$"Price Sorting %" <- percent(round(TotalOtomoto$"Price Sorting"/TotalOtomoto$"Total Sorting",4))
+
+# Calculate the percentage of sorting usage
 TotalOtomoto$"KM Sorting %" <- percent(round(TotalOtomoto$"KM Sorting"/TotalOtomoto$"Total Sorting",4))
 
 # Calculate the percentage of sorting usage
@@ -77,11 +92,13 @@ TotalOtomoto$"PE Sorting %" <- percent(round(TotalOtomoto$"PE Sorting"/TotalOtom
 
 # Change the ordem of exebition
 ExibitionOtomoto <- TotalOtomoto[,c("Date",
-                     "KM Sorting",
-                     "KM Sorting %",
-                     "PE Sorting",
-                     "PE Sorting %",
-                     "Total Sorting")]
+                                    "Price Sorting",
+                                    "Price Sorting %",
+                                    "KM Sorting",
+                                    "KM Sorting %",
+                                    "PE Sorting",
+                                    "PE Sorting %",
+                                    "Total Sorting")]
 
 #Save the Dataframe ExibitionOtomoto in a file to have Cache
 save(ExibitionOtomoto,OtomotoExecutedDate,TotalOtomoto, file = "ExibitionOtomoto.RData")
