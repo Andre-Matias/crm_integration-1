@@ -102,18 +102,12 @@ TotalOtomoto$"PE Sorting %" <- percent(round(TotalOtomoto$"PE Sorting"/TotalOtom
 #######################
 # Change the ordem of exebition
 ExibitionOtomoto <- TotalOtomoto[,c("Date",
-                                    "Price Asc Sorting",
-                                    "Price Desc Sorting",
                                     "Price Sorting",
                                     "Price Sorting %",
                                     "Created at Sorting",
                                     "Created at Sorting %",
-                                    "KM Asc Sorting",
-                                    "KM Desc Sorting",
                                     "KM Sorting",
                                     "KM Sorting %",
-                                    "PE Asc Sorting",
-                                    "PE Desc Sorting",
                                     "PE Sorting",
                                     "PE Sorting %",
                                     "Total Sorting")]

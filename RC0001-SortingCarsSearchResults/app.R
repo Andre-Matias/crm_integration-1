@@ -55,8 +55,8 @@ server <- function(input, output) {
 ui <- fluidPage(
   #Title of the page
   titlePanel("Sorting Analysis"),
-  helpText("Analysis of the amount of use of the sorting 
-           function per Mileage (KM) and Power Engine (PE) in relation to total sortings"),
+  helpText("Analysis of the amount of use of the sorting function per Price, Created At, Mileage (KM) and Power Engine (PE) in relation to total sortings."),
+  h6("Page loads are considered only if the user actively change the sorting view"),
   sidebarPanel(
   
   

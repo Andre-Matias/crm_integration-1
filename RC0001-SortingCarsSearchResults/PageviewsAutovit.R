@@ -102,18 +102,12 @@ TotalAutovit$"PE Sorting %" <- percent(round(TotalAutovit$"PE Sorting"/TotalAuto
 #######################
 # Change the ordem of exebition
 ExibitionAutovit <- TotalAutovit[,c("Date",
-                                    "Price Asc Sorting",
-                                    "Price Desc Sorting",
                                     "Price Sorting",
                                     "Price Sorting %",
                                     "Created at Sorting",
                                     "Created at Sorting %",
-                                    "KM Asc Sorting",
-                                    "KM Desc Sorting",
                                     "KM Sorting",
                                     "KM Sorting %",
-                                    "PE Asc Sorting",
-                                    "PE Desc Sorting",
                                     "PE Sorting",
                                     "PE Sorting %",
                                     "Total Sorting")]
