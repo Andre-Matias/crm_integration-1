@@ -7,7 +7,7 @@ TotalExibitionAutovit <- function(input){
   PriceSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
-    4])
+    10])
   CreateAtSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
@@ -15,11 +15,11 @@ TotalExibitionAutovit <- function(input){
   KMSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
-    5])
+    11])
   PESorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
-    6])
+    12])
   TotalSorting <-  sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
@@ -28,7 +28,7 @@ TotalExibitionAutovit <- function(input){
   PriceSortingPer <- percent(round(sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
-    4])/
+    10])/
       sum (TotalAutovit[
         TotalAutovit$Date >= input$date_range[1] & 
           TotalAutovit$Date <= input$date_range[2],
@@ -46,7 +46,7 @@ TotalExibitionAutovit <- function(input){
   KMSortingPer <- percent(round(sum (TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2],
-    5])/
+    11])/
       sum (TotalAutovit[
         TotalAutovit$Date >= input$date_range[1] & 
           TotalAutovit$Date <= input$date_range[2],
@@ -55,7 +55,7 @@ TotalExibitionAutovit <- function(input){
   PESortingPer <- percent(round(sum(TotalAutovit[
     TotalAutovit$Date >= input$date_range[1] & 
       TotalAutovit$Date <= input$date_range[2]
-    ,6])/
+    ,12])/
       sum(TotalAutovit[
         TotalAutovit$Date >= input$date_range[1] & 
           TotalAutovit$Date <= input$date_range[2],2]
@@ -79,7 +79,7 @@ TotalExibitionOtomoto <- function(input){
   PriceSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
-    4])
+    10])
   CreatedAtSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
@@ -87,11 +87,11 @@ TotalExibitionOtomoto <- function(input){
   KMSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
-    5])
+    11])
   PESorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
-    6])
+    12])
   TotalSorting <-  sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
@@ -100,7 +100,7 @@ TotalExibitionOtomoto <- function(input){
   PriceSortingPer <- percent(round(sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
-    4])/
+    10])/
       sum (TotalOtomoto[
         TotalOtomoto$Date >= input$date_range[1] & 
           TotalOtomoto$Date <= input$date_range[2],
@@ -118,7 +118,7 @@ TotalExibitionOtomoto <- function(input){
   KMSortingPer <- percent(round(sum (TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2],
-    5])/
+    11])/
       sum (TotalOtomoto[
         TotalOtomoto$Date >= input$date_range[1] & 
           TotalOtomoto$Date <= input$date_range[2],
@@ -127,7 +127,7 @@ TotalExibitionOtomoto <- function(input){
   PESortingPer <- percent(round(sum(TotalOtomoto[
     TotalOtomoto$Date >= input$date_range[1] & 
       TotalOtomoto$Date <= input$date_range[2]
-    ,6])/
+    ,12])/
       sum(TotalOtomoto[
         TotalOtomoto$Date >= input$date_range[1] & 
           TotalOtomoto$Date <= input$date_range[2],2]
