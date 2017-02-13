@@ -335,7 +335,7 @@
       <name>SQL</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY public.base_deals FROM &#x27;s3&#x3a;&#x2f;&#x2f;olx-livesync&#x2f;verticals&#x2f;otomotopl&#x2f;ads&#x2f;2017&#x2f;02&#x2f;12&#x2f;&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJMRY2VXYEKWUJCGQ&#x3b;aws_secret_access_key&#x3d;MShuoS3Y0KmxWEKB7h&#x2f;PF84uYPqcQRnUv4CqbjGQ&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;format as json &#x27;auto&#x27;&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#x3b;</sql>
+      <sql>COPY globalverticals.sync_otomotopl_ads FROM &#x27;s3&#x3a;&#x2f;&#x2f;olx-livesync&#x2f;verticals&#x2f;otomotopl&#x2f;ads&#x2f;2017&#x2f;02&#x2f;12&#x2f;&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJMRY2VXYEKWUJCGQ&#x3b;aws_secret_access_key&#x3d;MShuoS3Y0KmxWEKB7h&#x2f;PF84uYPqcQRnUv4CqbjGQ&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;format as json &#x27;auto&#x27;&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#x3b;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
