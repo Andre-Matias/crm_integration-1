@@ -410,13 +410,13 @@ server <- function(input, output, session) {
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
-               FilteredDataSetRaw$'Nº Packages bought',
+               FilteredDataSetRaw$'Number of Packages bought',
                group=FilteredDataSetRaw$Segment,
                colour=FilteredDataSetRaw$Segment,
-               label=FilteredDataSetRaw$'Nº Packages bought'))+
+               label=FilteredDataSetRaw$'Number of Packages bought'))+
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
-      labs(x="Date",y="Nº Packages Bought")+ 
+      labs(x="Date",y="Number of Packages bought")+ 
       scale_colour_discrete(name  ="Device")
     
   }
