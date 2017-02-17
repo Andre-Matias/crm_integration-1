@@ -41,7 +41,8 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14),plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Sessions")+ 
       scale_y_continuous(labels = scales::comma)+
-      scale_colour_discrete(name  ="Device") 
+      scale_colour_discrete(name  ="Device")  +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
     
     
@@ -66,7 +67,8 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14),plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Page View")+ 
       scale_y_continuous(labels = scales::comma)+
-      scale_colour_discrete(name  ="Device") 
+      scale_colour_discrete(name  ="Device")  +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -88,7 +90,8 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14),plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Unique Users")+ 
       scale_y_continuous(labels = scales::comma)+
-      scale_colour_discrete(name  ="Device") 
+      scale_colour_discrete(name  ="Device")  +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -109,7 +112,8 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Bounce Rate")+ 
       scale_y_continuous(labels = scales::comma)+
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -129,7 +133,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Showing Phone")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -149,7 +154,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Replies - Messages")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -169,7 +175,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Replies - Messages Cars")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -189,7 +196,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Repliers")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -208,7 +216,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Listings Privates")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -227,7 +236,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Listings Dealers")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )  
@@ -246,7 +256,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. VAS Private")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )  
@@ -265,7 +276,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. VAS Dealers")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   ) 
@@ -284,7 +296,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Export to OLX")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   ) 
@@ -303,7 +316,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Privates - General")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   ) 
@@ -322,7 +336,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Dealers - General")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   ) 
@@ -341,7 +356,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Dealers - Cars")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   ) 
@@ -360,7 +376,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Privates - General")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -379,7 +396,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Dealers - General")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -398,7 +416,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Dealers - Car")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
@@ -417,7 +436,8 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Number of Packages bought")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device") +
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
     
   }
   )
