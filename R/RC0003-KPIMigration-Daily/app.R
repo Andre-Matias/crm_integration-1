@@ -489,7 +489,7 @@ server <- function(input, output, session) {
 #Define the UI Shiny Informations
 ui <- fluidPage(
   #Title of the page
-  titlePanel("Migration KPI"),
+  titlePanel("StandVirtual Migration KPI - Daily"),
   helpText("Dashboard to compare the KPI before and after the migration."),
   sidebarPanel(
     sliderInput("date_range", "Choose Date Range:", min = min(DataStandVirtual$Date[DataStandVirtual$Source == "ATI"]),
