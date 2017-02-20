@@ -311,6 +311,7 @@ dataFiltroPerDevice <- Sys.Date()
                         ON ad.user_id = user.id
                         where  date_format(created_at_first, '%Y-%m-%d') between '",dataFiltro,"' and '",ExecutedDateStv,"'
                         and user.is_business = 1
+                       and ad.category_id <> 661
                         group by 1");
   
   rawDataFromStandVirtualAux <- dbGetQuery(conn_standVirtualNewDB,sqlCommand)
