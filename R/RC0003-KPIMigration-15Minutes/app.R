@@ -11,16 +11,25 @@ library(data.table)
 
 #Load the file containing the Data from GoogleAnalytics
 load("ExibitionStandVirtual.RData")
+load("ExibitionStandVirtualHourly.RData")
 #Load the file containing the Data from GoogleAnalytics
 load("rawDataFromStandVirtual.RData")
+load("rawDataFromStandVirtualHourly.RData")
 #Load the file containing the Data from GoogleAnalytics
 load("rawDataFromStandVirtualperDevice.RData")
+load("rawDataFromStandVirtualperDeviceHourly.RData")
 
 DataStandVirtual$Date <- as.Date(DataStandVirtual$Date)
 rawDataFromStandVirtual$Date <- as.Date(rawDataFromStandVirtual$Date)
 rawDataFromStandVirtualperDevice$Date <- as.Date(rawDataFromStandVirtualperDevice$Date)
 DataStandVirtual$`Showing Phone` <- as.integer(DataStandVirtual$`Showing Phone`)
 
+
+Actualhour <- as.integer(format(Sys.time(), "%H"))
+
+DataStandVirtualHourly[DataStandVirtualHourly$Hour == hour,]
+
+str(DataStandVirtualHourly)
 
 #Define the Shiny Server informations
 server <- function(input, output, session) {
