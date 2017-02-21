@@ -47,7 +47,9 @@ server <- function(input, output, session) {
       labs(x="Date",y="Sessions")+ 
       scale_y_continuous(labels = scales::comma)+
       scale_colour_discrete(name  ="Device") +
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSet$Sessions), color="blue")
     
     
     
@@ -72,7 +74,9 @@ server <- function(input, output, session) {
       labs(x="Date",y="Page View")+ 
       scale_y_continuous(labels = scales::comma)+
       scale_colour_discrete(name  ="Device") +
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSet$'Page View'), color="blue")
     
   }
   )
@@ -94,7 +98,9 @@ server <- function(input, output, session) {
       labs(x="Date",y="Unique Users")+ 
       scale_y_continuous(labels = scales::comma)+
       scale_colour_discrete(name  ="Device") +
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSet$Users), color="blue")
     
   }
   )
@@ -104,7 +110,7 @@ server <- function(input, output, session) {
                                           DataStandVirtual$Date <= input$date_range[2]&
                                           DataStandVirtual$Segment == input$SegmentTraffic,]
     
-    
+   
     ggplot(FilteredDataSet, 
            aes(FilteredDataSet$Date, 
                FilteredDataSet$'Bounce Rate',
@@ -116,7 +122,9 @@ server <- function(input, output, session) {
       labs(x="Date",y="Bounce Rate")+ 
       scale_y_continuous(labels = scales::comma)+
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSet$'Bounce Rate'), color="blue")
     
   }
   )
@@ -137,7 +145,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Showing Phone")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetPerDevice$'Showing Phone'), color="blue")
     
   }
   )
@@ -158,7 +168,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Replies - Messages")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetPerDevice$'Replies - Messages'), color="blue")
     
   }
   )
@@ -179,7 +191,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Replies - Messages Cars")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetPerDevice$'Replies - Messages Cars'), color="blue")
     
   }
   )
@@ -200,7 +214,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Repliers")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetPerDevice$'Repliers'), color="blue")
     
   }
   )
@@ -220,7 +236,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Listings Privates")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Rev. Listings Privates'), color="blue")
     
   }
   )
@@ -240,7 +258,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Listings Dealers")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Rev. Listings Dealers'), color="blue")
     
   }
   )  
@@ -260,7 +280,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. VAS Private")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Rev. VAS Private'), color="blue")
     
   }
   )  
@@ -280,7 +302,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. VAS Dealers")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Rev. VAS Dealers'), color="blue")
     
   }
   ) 
@@ -299,7 +323,10 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Rev. Export to OLX")+ 
-      scale_colour_discrete(name  ="Device")
+      scale_colour_discrete(name  ="Device")+
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Rev. Export to OLX'), color="blue")
     
   }
   ) 
@@ -319,7 +346,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Privates - General")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'NNLs Privates - General'), color="blue")
     
   }
   ) 
@@ -339,7 +368,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Dealers - General")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'NNLs Dealers - General'), color="blue")
     
   }
   ) 
@@ -359,7 +390,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="NNLs Dealers - Cars")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'NNLs Dealers - Cars'), color="blue")
     
   }
   ) 
@@ -379,7 +412,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Privates - General")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Renewals Privates - General'), color="blue")
     
   }
   )
@@ -399,7 +434,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Dealers - General")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Renewals Dealers - General'), color="blue")
     
   }
   )
@@ -419,7 +456,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Renewals Dealers - Car")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Renewals Dealers - Car'), color="blue")
     
   }
   )
@@ -439,7 +478,9 @@ server <- function(input, output, session) {
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Number of Packages bought")+ 
       scale_colour_discrete(name  ="Device")+
-      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))
+      geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSetRaw$'Number of Packages bought'), color="blue")
     
   }
   )
