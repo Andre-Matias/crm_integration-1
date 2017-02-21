@@ -27,8 +27,6 @@ DataStandVirtual$`Showing Phone` <- as.integer(DataStandVirtual$`Showing Phone`)
 
 Actualhour <- as.integer(format(Sys.time(), "%H"))
 
-DataStandVirtualHourly[DataStandVirtualHourly$Hour == hour,]
-
 str(DataStandVirtualHourly)
 
 #Define the Shiny Server informations
