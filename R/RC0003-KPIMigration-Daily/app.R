@@ -110,6 +110,9 @@ server <- function(input, output, session) {
                                           DataStandVirtual$Date <= input$date_range[2]&
                                           DataStandVirtual$Segment == input$SegmentTraffic,]
     
+    
+    FilteredDataSet$'Bounce Rate' <- as.numeric(FilteredDataSet$'Bounce Rate')
+    FilteredDataSet$'Bounce Rate' <- format(round(FilteredDataSet$'Bounce Rate', 2), nsmall = 2)
    
     ggplot(FilteredDataSet, 
            aes(FilteredDataSet$Date, 
@@ -120,7 +123,7 @@ server <- function(input, output, session) {
       geom_line(stat = "identity")+
       theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
       labs(x="Date",y="Bounce Rate")+ 
-      scale_y_continuous(labels = scales::comma)+
+      #scale_y_continuous(labels = scales::comma)+
       scale_colour_discrete(name  ="Device")+
       geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
       geom_text(check_overlap = TRUE, colour = "black")+
@@ -226,6 +229,9 @@ server <- function(input, output, session) {
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
     
+    FilteredDataSetRaw$'Rev. Listings Privates' <- as.numeric(FilteredDataSetRaw$'Rev. Listings Privates')
+    FilteredDataSetRaw$'Rev. Listings Privates' <- format(round(FilteredDataSetRaw$'Rev. Listings Privates', 2), nsmall = 2)
+    
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
                FilteredDataSetRaw$'Rev. Listings Privates',
@@ -247,6 +253,9 @@ server <- function(input, output, session) {
     FilteredDataSetRaw <- rawDataFromStandVirtual[rawDataFromStandVirtual$Date >= input$date_range[1] & 
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
+    
+    FilteredDataSetRaw$'Rev. Listings Dealers' <- as.numeric(FilteredDataSetRaw$'Rev. Listings Dealers')
+    FilteredDataSetRaw$'Rev. Listings Dealers' <- format(round(FilteredDataSetRaw$'Rev. Listings Dealers', 2), nsmall = 2)
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -270,6 +279,9 @@ server <- function(input, output, session) {
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
     
+    FilteredDataSetRaw$'Rev. VAS Private' <- as.numeric(FilteredDataSetRaw$'Rev. VAS Private')
+    FilteredDataSetRaw$'Rev. VAS Private' <- format(round(FilteredDataSetRaw$'Rev. VAS Private', 2), nsmall = 2)
+    
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
                FilteredDataSetRaw$'Rev. VAS Private',
@@ -292,6 +304,9 @@ server <- function(input, output, session) {
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
     
+    FilteredDataSetRaw$'Rev. VAS Dealers' <- as.numeric(FilteredDataSetRaw$'Rev. VAS Dealers')
+    FilteredDataSetRaw$'Rev. VAS Dealers' <- format(round(FilteredDataSetRaw$'Rev. VAS Dealers', 2), nsmall = 2)
+    
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
                FilteredDataSetRaw$'Rev. VAS Dealers',
@@ -313,6 +328,8 @@ server <- function(input, output, session) {
     FilteredDataSetRaw <- rawDataFromStandVirtual[rawDataFromStandVirtual$Date >= input$date_range[1] & 
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
+    FilteredDataSetRaw$'Rev. Export to OLX' <- as.numeric(FilteredDataSetRaw$'Rev. Export to OLX')
+    FilteredDataSetRaw$'Rev. Export to OLX' <- format(round(FilteredDataSetRaw$'Rev. Export to OLX', 2), nsmall = 2)
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
