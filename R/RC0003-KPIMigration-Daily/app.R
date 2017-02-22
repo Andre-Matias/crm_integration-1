@@ -230,7 +230,7 @@ server <- function(input, output, session) {
     
     
     FilteredDataSetRaw$'Rev. Listings Privates' <- as.numeric(FilteredDataSetRaw$'Rev. Listings Privates')
-    FilteredDataSetRaw$'Rev. Listings Privates' <- format(round(FilteredDataSetRaw$'Rev. Listings Privates', 2), nsmall = 2)
+    FilteredDataSetRaw$'Rev. Listings Privates' <- as.integer(format(round(FilteredDataSetRaw$'Rev. Listings Privates', 2), nsmall = 2))
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -255,7 +255,7 @@ server <- function(input, output, session) {
     
     
     FilteredDataSetRaw$'Rev. Listings Dealers' <- as.numeric(FilteredDataSetRaw$'Rev. Listings Dealers')
-    FilteredDataSetRaw$'Rev. Listings Dealers' <- format(round(FilteredDataSetRaw$'Rev. Listings Dealers', 2), nsmall = 2)
+    FilteredDataSetRaw$'Rev. Listings Dealers' <- as.integer(format(round(FilteredDataSetRaw$'Rev. Listings Dealers', 2), nsmall = 2))
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -280,7 +280,7 @@ server <- function(input, output, session) {
     
     
     FilteredDataSetRaw$'Rev. VAS Private' <- as.numeric(FilteredDataSetRaw$'Rev. VAS Private')
-    FilteredDataSetRaw$'Rev. VAS Private' <- format(round(FilteredDataSetRaw$'Rev. VAS Private', 2), nsmall = 2)
+    FilteredDataSetRaw$'Rev. VAS Private' <- as.integer(format(round(FilteredDataSetRaw$'Rev. VAS Private', 2), nsmall = 2))
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -305,7 +305,7 @@ server <- function(input, output, session) {
     
     
     FilteredDataSetRaw$'Rev. VAS Dealers' <- as.numeric(FilteredDataSetRaw$'Rev. VAS Dealers')
-    FilteredDataSetRaw$'Rev. VAS Dealers' <- format(round(FilteredDataSetRaw$'Rev. VAS Dealers', 2), nsmall = 2)
+    FilteredDataSetRaw$'Rev. VAS Dealers' <- as.integer(format(round(FilteredDataSetRaw$'Rev. VAS Dealers', 2), nsmall = 2))
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -329,7 +329,7 @@ server <- function(input, output, session) {
                                                     rawDataFromStandVirtual$Date <= input$date_range[2],]
     
     FilteredDataSetRaw$'Rev. Export to OLX' <- as.numeric(FilteredDataSetRaw$'Rev. Export to OLX')
-    FilteredDataSetRaw$'Rev. Export to OLX' <- format(round(FilteredDataSetRaw$'Rev. Export to OLX', 2), nsmall = 2)
+    FilteredDataSetRaw$'Rev. Export to OLX' <- as.integer(format(round(FilteredDataSetRaw$'Rev. Export to OLX', 2), nsmall = 2))
     
     ggplot(FilteredDataSetRaw, 
            aes(FilteredDataSetRaw$Date, 
@@ -609,6 +609,7 @@ ui <- fluidPage(
                          br(),
                          div(style="display:inline-block;", downloadButton('downloadNNLData', 'Download'), style="float:right"),
                          plotOutput("StandVirtualNNLPrivateGeneral"),
+                         h6("Parts are excluded to 2017-02-20 and 2017-02-21"),
                          plotOutput("StandVirtualNNLDealersGeneral"),
                          plotOutput("StandVirtualNNLDealersCar")
                          
