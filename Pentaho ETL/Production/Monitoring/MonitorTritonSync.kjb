@@ -351,12 +351,12 @@
       <yloc>176</yloc>
     </entry>
     <entry>
-      <name>Check_recent_sync</name>
+      <name>MonitorTritonSync</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;Check_recent_sync.ktr</filename>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;MonitorTritonSync.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -407,7 +407,7 @@
     </hop>
     <hop>
       <from>START</from>
-      <to>Check_recent_sync</to>
+      <to>MonitorTritonSync</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -415,7 +415,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Check_recent_sync</from>
+      <from>MonitorTritonSync</from>
       <to>Simple evaluation</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
