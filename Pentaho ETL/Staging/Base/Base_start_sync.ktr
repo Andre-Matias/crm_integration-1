@@ -499,13 +499,13 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>S3 File Output</from>
-      <to>JSON Input</to>
+      <from>Get rows from result</from>
+      <to>Merge Join</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get rows from result</from>
-      <to>Merge Join</to>
+      <from>S3 File Output</from>
+      <to>JSON Input</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -534,7 +534,12 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>JSON Input</from>
+      <from>S3 File Output</from>
+      <to>JSON Input 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON Input 2</from>
       <to>Write to log 3</to>
       <enabled>Y</enabled>
     </hop>
@@ -939,19 +944,6 @@
         <trim_type>none</trim_type>
         <repeat>N</repeat>
       </field>
-      <field>
-        <name>count_left</name>
-        <path>&#x24;.meta.count_left</path>
-        <type>Number</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
     </fields>
     <limit>0</limit>
     <IsInFields>Y</IsInFields>
@@ -1226,8 +1218,77 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
-      <yloc>160</yloc>
+      <xloc>608</xloc>
+      <yloc>80</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>JSON Input 2</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <ignoreMissingPath>N</ignoreMissingPath>
+    <rownum_field/>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>count_left</name>
+        <path>&#x24;.meta.count_left</path>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <valueField>data</valueField>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>528</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
