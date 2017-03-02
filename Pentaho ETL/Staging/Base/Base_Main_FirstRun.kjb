@@ -21,6 +21,11 @@
         <default_value>India</default_value>
         <description>Country of the Base accounts to connect</description>
       </parameter>
+      <parameter>
+        <name>UUID</name>
+        <default_value>Pyrate_1</default_value>
+        <description>Unique id for the queue</description>
+      </parameter>
     </parameters>
     <slaveservers>
     </slaveservers>
@@ -335,6 +340,11 @@
           <stream_name/>
           <value>&#x24;&#x7b;COUNTRY&#x7d;</value>
         </parameter>
+        <parameter>
+          <name>UUID</name>
+          <stream_name/>
+          <value>&#x24;&#x7b;UUID&#x7d;</value>
+        </parameter>
       </parameters>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -419,8 +429,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>544</xloc>
-      <yloc>384</yloc>
+      <xloc>432</xloc>
+      <yloc>336</yloc>
     </entry>
     <entry>
       <name>Simple evaluation</name>
