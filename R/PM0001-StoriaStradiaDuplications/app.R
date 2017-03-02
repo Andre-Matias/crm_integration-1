@@ -64,7 +64,7 @@ server <- function(input, output) {
   
 }
 
-navbarPage(
+ui <- navbarPage(
   title = (""),
   tabPanel('Overview',titlePanel("Storia.IND and Stradia.ID Duplicated Ads"),
            mainPanel(
