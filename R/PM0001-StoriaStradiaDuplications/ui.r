@@ -1,5 +1,7 @@
 ##ui.R
 library(shiny)
+library(DT)
+#build tab panel 
 
 navbarPage(
   title = (""),
@@ -23,7 +25,7 @@ navbarPage(
                   h6("Date: 30 days for graphs, current day for tables"),
                   h6("Source: Database"),
                   h6("Author: Pedro Matos"))),  
-  tabPanel('Storia Graph', plotOutput("duplicatesPlot")),   
+  tabPanel('Storia Graph', plotOutput("duplicatesPlot"))   
   #tabPanel('Storia Table', DT::dataTableOutput('ex1'))
   #tabPanel('Stradia Graph', plotOutput("duplicatesPlot2")),   
   #tabPanel('Stradia Table', DT::dataTableOutput('ex2'))
