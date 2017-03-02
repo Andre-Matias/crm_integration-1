@@ -340,7 +340,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>352</xloc>
-      <yloc>112</yloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>START</name>
@@ -409,8 +409,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
-      <yloc>112</yloc>
+      <xloc>448</xloc>
+      <yloc>64</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -419,8 +419,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>560</xloc>
-      <yloc>32</yloc>
+      <xloc>592</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>DUMMY</name>
@@ -439,8 +439,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
-      <yloc>208</yloc>
+      <xloc>256</xloc>
+      <yloc>64</yloc>
     </entry>
   </entries>
   <hops>
@@ -479,15 +479,6 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Base_start_sync</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>Base_start_session</from>
