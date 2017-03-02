@@ -761,7 +761,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-      <loglevel>log_level_basic</loglevel>
+      <loglevel>log_level_minimal</loglevel>
       <displayHeader>Y</displayHeader>
       <limitRows>N</limitRows>
       <limitRowsNumber>0</limitRowsNumber>

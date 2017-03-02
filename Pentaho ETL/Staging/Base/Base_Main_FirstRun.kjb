@@ -13,17 +13,17 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value>Cars</default_value>
+        <default_value>Real Estate</default_value>
         <description>Category of the Base accounts &#x28;Cars or Real Estate&#x29;</description>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value>India</default_value>
+        <default_value>Indonesia</default_value>
         <description>Country of the Base accounts to connect</description>
       </parameter>
       <parameter>
         <name>UUID</name>
-        <default_value>Pyrate_1</default_value>
+        <default_value>Pyrate_2</default_value>
         <description>Unique id for the queue</description>
       </parameter>
     </parameters>
