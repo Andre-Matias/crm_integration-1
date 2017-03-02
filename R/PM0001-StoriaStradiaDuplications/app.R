@@ -7,7 +7,7 @@ library(formattable)
 library(scales)
 library(eeptools)
 
-function(input, output) {
+server <- function(input, output) {
   
   
   #load date 
