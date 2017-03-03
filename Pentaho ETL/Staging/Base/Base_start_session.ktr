@@ -19,6 +19,11 @@
         <default_value/>
         <description/>
       </parameter>
+      <parameter>
+        <name>UUID</name>
+        <default_value/>
+        <description/>
+      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -509,11 +514,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Table input</from>
-      <to>Add constants</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Filter rows</from>
       <to>Get System Info</to>
       <enabled>Y</enabled>
@@ -536,6 +536,16 @@
     <hop>
       <from>Write to log</from>
       <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table input</from>
+      <to>Get Variables</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get Variables</from>
+      <to>Add constants</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -587,18 +597,6 @@
         <decimal/>
         <group/>
         <nullif>application&#x2f;json</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>uuid</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>pyrate_1</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
@@ -921,7 +919,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
+      <xloc>112</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
@@ -947,6 +945,9 @@
       <field>
         <name>total_count</name>
         </field>
+      <field>
+        <name>uuid</name>
+        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
@@ -957,6 +958,45 @@
     </remotesteps>
     <GUI>
       <xloc>640</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Get Variables</name>
+    <type>GetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>uuid</name>
+        <variable>&#x24;&#x7b;UUID&#x7d;</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>224</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>

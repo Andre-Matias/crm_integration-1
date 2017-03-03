@@ -13,13 +13,18 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value>Cars</default_value>
+        <default_value>Real Estate</default_value>
         <description>Category of the Base accounts &#x28;Cars or Real Estate&#x29;</description>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value>India</default_value>
+        <default_value>Indonesia</default_value>
         <description>Country of the Base accounts to connect</description>
+      </parameter>
+      <parameter>
+        <name>UUID</name>
+        <default_value>Pyrate_2</default_value>
+        <description>Unique id for the queue</description>
       </parameter>
     </parameters>
     <slaveservers>
@@ -335,12 +340,17 @@
           <stream_name/>
           <value>&#x24;&#x7b;COUNTRY&#x7d;</value>
         </parameter>
+        <parameter>
+          <name>UUID</name>
+          <stream_name/>
+          <value>&#x24;&#x7b;UUID&#x7d;</value>
+        </parameter>
       </parameters>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>352</xloc>
-      <yloc>192</yloc>
+      <xloc>320</xloc>
+      <yloc>144</yloc>
     </entry>
     <entry>
       <name>START</name>
@@ -359,8 +369,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>160</xloc>
-      <yloc>192</yloc>
+      <xloc>128</xloc>
+      <yloc>144</yloc>
     </entry>
     <entry>
       <name>Base_start_sync</name>
@@ -409,8 +419,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>64</yloc>
+      <xloc>432</xloc>
+      <yloc>32</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -419,60 +429,70 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>592</xloc>
-      <yloc>192</yloc>
+      <xloc>432</xloc>
+      <yloc>336</yloc>
     </entry>
     <entry>
-      <name>DUMMY</name>
+      <name>Simple evaluation</name>
       <description/>
-      <type>SPECIAL</type>
-      <start>N</start>
-      <dummy>Y</dummy>
-      <repeat>N</repeat>
-      <schedulerType>0</schedulerType>
-      <intervalSeconds>0</intervalSeconds>
-      <intervalMinutes>60</intervalMinutes>
-      <hour>12</hour>
-      <minutes>0</minutes>
-      <weekDay>1</weekDay>
-      <DayOfMonth>1</DayOfMonth>
+      <type>SIMPLE_EVAL</type>
+      <valuetype>field</valuetype>
+      <fieldname>count</fieldname>
+      <variablename/>
+      <fieldtype>number</fieldtype>
+      <mask/>
+      <comparevalue>0</comparevalue>
+      <minvalue/>
+      <maxvalue/>
+      <successcondition>equal</successcondition>
+      <successnumbercondition>greater</successnumbercondition>
+      <successbooleancondition>false</successbooleancondition>
+      <successwhenvarset>N</successwhenvarset>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>256</xloc>
-      <yloc>64</yloc>
+      <xloc>544</xloc>
+      <yloc>144</yloc>
+    </entry>
+    <entry>
+      <name>Base_check_queue</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;Base_check_queue.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>432</xloc>
+      <yloc>144</yloc>
     </entry>
   </entries>
   <hops>
     <hop>
-      <from>Base_start_session</from>
-      <to>Base_start_sync</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>START</from>
-      <to>Base_start_session</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Base_start_sync</from>
-      <to>DUMMY</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>DUMMY</from>
       <to>Base_start_session</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -487,6 +507,51 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Base_start_session</from>
+      <to>Base_check_queue</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Base_check_queue</from>
+      <to>Simple evaluation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Simple evaluation</from>
+      <to>Base_start_sync</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Simple evaluation</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Base_start_sync</from>
+      <to>Base_start_session</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
   </hops>
