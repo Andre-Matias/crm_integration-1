@@ -22,11 +22,11 @@ server <- function(input, output) {
   
   #Tables(daily duplicates)
   
-  output$ex1 <- DT::renderDataTable(
+  output$ex1 <- renderDataTable(
     datatable(Storiadupfinal2, options = list(pageLength = 25))
   )
   
-  output$ex2 <- DT::renderDataTable(
+  output$ex2 <- renderDataTable(
    datatable(Stradiadupfinal3, options = list(pageLength = 25))
   )
   
@@ -68,7 +68,7 @@ server <- function(input, output) {
 
 ui <- navbarPage(
   title = (""),
-  tabPanel('Overview',titlePanel("Storia.IND and Stradia.ID Duplicated Ads"),
+  tabPanel('Overview',titlePanel("Storia.IND and Stradia.ID Duplicated Adss"),
            mainPanel(
              h5("This report provides data about ad duplications for Storia Indonesia and Stradia India based on some variables."),
              br(),
