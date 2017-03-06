@@ -2,7 +2,7 @@
 
 library(ggplot2)
 library(shiny)
-library(formattable)
+#library(formattable)
 
 server <- function(input, output) {
   
@@ -23,11 +23,11 @@ server <- function(input, output) {
   #Tables(daily duplicates)
   
   output$ex1 <- renderDataTable(
-    datatable(Storiadupfinal2, options = list(pageLength = 25))
+    datatable(Storiadupfinal2, options = list(pageLength = 30))
   )
   
   output$ex2 <- renderDataTable(
-   datatable(Stradiadupfinal3, options = list(pageLength = 25))
+   datatable(Stradiadupfinal3, options = list(pageLength = 30))
   )
   
   
