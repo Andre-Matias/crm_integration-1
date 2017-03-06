@@ -2,14 +2,35 @@
 
 library(ggplot2)
 library(shiny)
-
+library(DT)
+library(formattable)
 
 server <- function(input, output) {
   
   
   #load date 
   load("dfstoriadup.RData")
+  load("Storiadupfinal2.RData")
   load("dfstradia.RData")
+  load("Stradiadupfinal3.Rdata")
+  
+  
+  #Ajust similarity percentage (Shiny has some problems with that)
+  
+  Storiadupfinal2$similarity <- paste(round(Storiadupfinal2$similarity*100,digits=1),"%",sep="")
+  
+  Stradiadupfinal3$similarity <- paste(round(Stradiadupfinal3$similarity*100,digits=1),"%",sep="")
+  
+  #Tables(daily duplicates)
+  
+  output$ex1 <- DT::renderDataTable(
+    DT::datatable(Storiadupfinal2, options = list(pageLength = 25))
+  )
+  
+  output$ex2 <- DT::renderDataTable(
+    DT::datatable(Stradiadupfinal3, options = list(pageLength = 25))
+  )
+  
   
 
   #plot (evolution by month)
@@ -69,10 +90,15 @@ ui <- navbarPage(
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
   tabPanel('Storia Graph', plotOutput("duplicatesPlot")),   
-  tabPanel('Stradia Graph', plotOutput("duplicatesPlot2"))   
-           )
+  tabPanel('Storia Table', DT::dataTableOutput('ex1')),
+  tabPanel('Stradia Graph', plotOutput("duplicatesPlot2")),   
+  tabPanel('Stradia Table', DT::dataTableOutput('ex2'))
+  
+)
 
 shinyApp(ui = ui, server = server)
+
+
 
 
 
