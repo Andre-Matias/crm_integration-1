@@ -69,7 +69,7 @@ ui <- navbarPage(
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
   tabPanel('Storia Graph', plotOutput("duplicatesPlot")),   
-  tabPanel('Stradia Graph', plotOutput("duplicatesPlot2")),   
+  tabPanel('Stradia Graph', plotOutput("duplicatesPlot2"))   
            )
 
 shinyApp(ui = ui, server = server)
