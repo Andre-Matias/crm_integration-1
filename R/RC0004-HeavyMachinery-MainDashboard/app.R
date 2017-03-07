@@ -198,10 +198,7 @@ ui <- fluidPage(
     
     hr(),
     helpText("Source: GA and Database"),
-    h6(max(DataHeavyMachinery$Date)),
     h6("Author: Rodrigo de Caro"),
-    h6(min(DataHeavyMachinery$Date)),
-    h6(max(DataHeavyMachinery$Date)),
     width = 2),
   
   mainPanel(
