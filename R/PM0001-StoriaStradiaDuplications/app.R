@@ -11,7 +11,7 @@ server <- function(input, output) {
   load("dfstoriadup.RData")
   load("Storiadupfinal2.RData")
   load("dfstradia.RData")
-  load("Stradiadupfinal3.Rdata")
+  load("Stradiadupfinal3.RData")
   
   
   #Ajust similarity percentage (Shiny has some problems with that)
@@ -77,7 +77,7 @@ ui <- navbarPage(
                 For Stradia we use the following variables:
                 Same user id, same brand, same model, same year, same mileage and description similarity with at least 70%."),
              br(),
-             h5("In Storia and Stradia graph tabs, we have a plot with the relation between active ads and ad duplications, by day. 
+             h5("In Storia and Stradia graph tabs, we have a plot with the relation between active ads and ad duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With that we can have an overall perspective regarding the evolution of duplicates."), 
              br(),
              h5("In Storia and Stradia tables you can find the current duplications (daily active) and you can look deep for the data using the variables that we used."),
