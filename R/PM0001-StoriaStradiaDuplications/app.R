@@ -1,8 +1,11 @@
 
-
 library(ggplot2)
+library(reshape2)
 library(shiny)
-#library(formattable)
+library(DT)
+library(formattable)
+library(scales)
+library(eeptools)
 
 server <- function(input, output) {
   
@@ -13,7 +16,6 @@ server <- function(input, output) {
   load("dfstradia.RData")
   load("Stradiadupfinal3.Rdata")
   
-  
   #Ajust similarity percentage (Shiny has some problems with that)
   
   Storiadupfinal2$similarity <- paste(round(Storiadupfinal2$similarity*100,digits=1),"%",sep="")
@@ -22,22 +24,18 @@ server <- function(input, output) {
   
   #Tables(daily duplicates)
   
-  output$ex1 <- renderDataTable(
-    Storiadupfinal2, options = list(pageLength = 30)
+  output$ex1 <- DT::renderDataTable(
+    DT::datatable(Storiadupfinal2, options = list(pageLength = 25))
   )
   
-  output$ex2 <- renderDataTable(
-   Stradiadupfinal3, options = list(pageLength = 30)
+  output$ex2 <- DT::renderDataTable(
+    DT::datatable(Stradiadupfinal3, options = list(pageLength = 25))
   )
   
   
-
   #plot (evolution by month)
   
   #Storia Graph 
-  
-  options(scipen=10000)
-  
   output$duplicatesPlot <- renderPlot({
     
     ggplot(df, aes(Date)) + 
@@ -77,7 +75,7 @@ ui <- navbarPage(
                 For Stradia we use the following variables:
                 Same user id, same brand, same model, same year, same mileage and description similarity with at least 70%."),
              br(),
-             h5("In Storia and Stradia graph tabs, we have a plot with the relation between active ads and ad duplications, by day. 
+             h5("In Storia and Stradia graph tabs, we have a plot with the relation between active ads and duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With that we can have an overall perspective regarding the evolution of duplicates."), 
              br(),
              h5("In Storia and Stradia tables you can find the current duplications (daily active) and you can look deep for the data using the variables that we used."),
@@ -89,15 +87,16 @@ ui <- navbarPage(
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
   tabPanel('Storia Graph', plotOutput("duplicatesPlot")),   
-  tabPanel('Storia Table', dataTableOutput('ex1')),
+  tabPanel('Storia Table', DT::dataTableOutput('ex1')),
   tabPanel('Stradia Graph', plotOutput("duplicatesPlot2")),   
-  tabPanel('Stradia Table', dataTableOutput('ex2'))
+  tabPanel('Stradia Table', DT::dataTableOutput('ex2'))
   
-)
+           )
+
+
+
 
 shinyApp(ui = ui, server = server)
-
-
 
 
 
