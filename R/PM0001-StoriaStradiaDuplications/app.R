@@ -14,7 +14,7 @@ server <- function(input, output) {
   load("dfstoriadup.RData")
   load("Storiadupfinal2.RData")
   load("dfstradia.RData")
-  load("Stradiadupfinal3.Rdata")
+  load("Stradiadupfinal3.RData")
   
   #Ajust similarity percentage (Shiny has some problems with that)
   
