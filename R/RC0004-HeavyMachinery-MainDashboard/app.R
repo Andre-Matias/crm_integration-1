@@ -189,7 +189,7 @@ server <- function(input, output, session) {
 ui <- fluidPage(
   #Title of the page
   titlePanel("Heavy Machinery"),
-  helpText("Dashboard to."),
+  helpText("Dashboard with the mainly metrics to Tradus Pro."),
   sidebarPanel(
     sliderInput("date_range", "Choose Date Range:", min = min(DataHeavyMachinery$Date),
                 max = max(DataHeavyMachinery$Date),
