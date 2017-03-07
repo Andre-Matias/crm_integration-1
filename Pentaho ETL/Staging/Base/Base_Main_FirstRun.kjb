@@ -23,7 +23,7 @@
       </parameter>
       <parameter>
         <name>UUID</name>
-        <default_value>Pyrate_1</default_value>
+        <default_value>Chandra1</default_value>
         <description>Unique id for the queue</description>
       </parameter>
     </parameters>
