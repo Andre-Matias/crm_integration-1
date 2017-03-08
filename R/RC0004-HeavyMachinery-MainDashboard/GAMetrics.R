@@ -1,6 +1,8 @@
 
 DataHeavyMachinery <- NULL
 HeavyMachineryYesterday <- NULL
+DataHeavyMachineryDB <- NULL
+HeavyMachineryDBYesterday <- NULL
                             
 #Load the file containing the Data from GoogleAnalytics
 load("ExibitionHeavyMachinery.RData")
@@ -30,28 +32,38 @@ library(RGA)
 
 source("function.R")
 
+## get data from Tradus Pro DB
+cmd_traduspro <- 'plink.exe -i RodrigodeCaroPrivateKey.ppk -N -batch  -ssh -L 10000:172.60.20.136:3306 biuser@54.229.200.159 -P 10022'
+
+system(cmd_traduspro, wait=FALSE)
+Sys.sleep(5)
+
+conn_traduspro <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "v5a2XoAJ", host = "127.0.0.1", port = 10000)
+
+
 #Get the initial Date to execute the GA Query
 if(any(DataHeavyMachinery$Source == "GA")) {
-  dataFiltro <- as.Date(max(DataHeavyMachinery$Date[DataHeavyMachinery$Source == "GA"], 1))+1
+  dataFiltroGA <- as.Date(max(DataHeavyMachinery$Date[DataHeavyMachinery$Source == "GA"], 1))+1
 }else{  
-  dataFiltro<- as.Date("2017-02-28")
-  
+  dataFiltroGA<- as.Date("2017-03-01")
 }
 
-dataFiltro<- as.Date("2017-02-27")
-ExecutedDateHM <- as.Date("2017-02-27")
+#Get the initial Date to execute the DB Query
+if(any(DataHeavyMachineryDB$Source == "DB")) {
+  dataFiltroDB <- as.Date(max(DataHeavyMachineryDB$Date[DataHeavyMachineryDB$Source == "DB"], 1))+1
+}else{  
+  dataFiltroDB<- as.Date("2017-03-01")
+}
 
-DataHeavyMachinery <- NULL
-HeavyMachineryYesterday <- NULL
-DT <- NULL
-
-#Don't reprocess the same date.
-if(dataFiltro != Sys.Date()){
+#Don't reprocess the same date to GA Metrics
+if(dataFiltroGA != Sys.Date()){
   
   #####Get Desktop information on ATI#####
   # Perform query and assign the results to a "data frame" called gaDataTotalSortingOtomoto
-  HeavyMachineryYesterday <- QueryGA(c("ga:date","ga:deviceCategory"),dataFiltro)
+  HeavyMachineryYesterday <- QueryGA(c("ga:date","ga:deviceCategory"),dataFiltroGA)
   
+  
+  HeavyMachineryYesterday$date <- as.Date.POSIXct(HeavyMachineryYesterday$date,tz = "CET")
   
   HeavyMachineryYesterday$"Entering Visits" <- HeavyMachineryYesterday$"sessions"-HeavyMachineryYesterday$"bounces"
   HeavyMachineryYesterday$Source[is.null(HeavyMachineryYesterday$Source)] <- "GA"
@@ -63,9 +75,9 @@ if(dataFiltro != Sys.Date()){
                                          "Device",
                                          "Sessions",
                                          "Page View", 
-                                         "Bounce Rate",
                                          "Users",
                                          "Bounces",
+                                         "Entrance",
                                          "Entering Visits",
                                          "Source",
                                          "Segment")
@@ -78,9 +90,9 @@ if(dataFiltro != Sys.Date()){
                                                         "Sessions",
                                                         "Page View",
                                                         "Bounces",
-                                                        "Bounce Rate",
                                                         "Entering Visits",
-                                                        "Users")]
+                                                        "Users",
+                                                        "Entrance")]
   
   HeavyMachineryYesterday <- unique(HeavyMachineryYesterday, by=c("Date","Segment","Source"))
   
@@ -89,21 +101,27 @@ if(dataFiltro != Sys.Date()){
                                                                                   'Page View' = sum(`Page View`), 
                                                                                   Users = sum(Users),
                                                                                   Bounces = sum(Bounces),
-                                                                                  'Bounce Rate' = sum(`Bounce Rate`),
-                                                                                  'Entering Visits' = sum(`Entering Visits`)))
+                                                                                  'Entering Visits' = sum(`Entering Visits`),
+                                                                                  Entrance = sum(Entrance)))
   DT$Device <- "ALL"
   DT$Segment <- "ALL"
   
   HeavyMachineryYesterday <- rbind(HeavyMachineryYesterday,DT)
   
+  
+  HeavyMachineryYesterday$"Bounce Rate" <- HeavyMachineryYesterday$"Bounces"/HeavyMachineryYesterday$"Entrance"
+  
   DataHeavyMachinery <- rbind(DataHeavyMachinery,HeavyMachineryYesterday)
   
   DataHeavyMachinery <- unique(DataHeavyMachinery, by=c("Date","Segment","Source"))
  
+  
   #########
   
   save(DataHeavyMachinery,
     ExecutedDateHM,
      file = "ExibitionHeavyMachinery.RData")
 }
+
+
 

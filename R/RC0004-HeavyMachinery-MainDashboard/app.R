@@ -198,7 +198,7 @@ ui <- fluidPage(
     
     hr(),
     helpText("Source: GA and Database"),
-    h6("Author: Rodrigo de Caro"),
+    h6("Author: Rodrigo de Caro"), 
     width = 2),
   
   mainPanel(
