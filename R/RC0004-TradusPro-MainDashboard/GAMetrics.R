@@ -30,7 +30,7 @@ library("dplyr")
 # connect to and pull data from the Google Analytics API
 library(RGA)
 
-source("function.R")
+source("Function.R")
 
 ## get data from Tradus Pro DB
 cmd_traduspro <- 'plink.exe -i RodrigodeCaroPrivateKey.ppk -N -batch  -ssh -L 10000:172.60.20.136:3306 biuser@54.229.200.159 -P 10022'
