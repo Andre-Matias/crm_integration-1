@@ -30,7 +30,7 @@ library("dplyr")
 # connect to and pull data from the Google Analytics API
 library(RGA)
 
-#Call Function File to upload
+#Call Function File to upload Pedro
 source("Function.R")
 
 
