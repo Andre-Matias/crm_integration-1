@@ -33,16 +33,6 @@ library(RGA)
 #Call Function File to upload Pedro
 source("Function.R")
 
-
-## get data from Tradus Pro DB
-cmd_traduspro <- 'plink.exe -i RodrigodeCaroPrivateKey.ppk -N -batch  -ssh -L 10000:172.60.20.136:3306 biuser@54.229.200.159 -P 10022'
-
-system(cmd_traduspro, wait=FALSE)
-Sys.sleep(5)
-
-conn_traduspro <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "v5a2XoAJ", host = "127.0.0.1", port = 10000)
-
-
 #Get the initial Date to execute the GA Query
 if(any(DataHeavyMachinery$Source == "GA")) {
   dataFiltroGA <- as.Date(max(DataHeavyMachinery$Date[DataHeavyMachinery$Source == "GA"], 1))+1
