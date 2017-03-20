@@ -173,6 +173,43 @@ server <- function(input, output, session) {
   }
   )
   
+  output$HeavyMachineryPVPerEnteringVisits <- renderPlot({
+    FilteredDataSet <- DataTradus[DataTradus$Date >= input$date_range[1] & 
+                                    DataTradus$Date <= input$date_range[2]&
+                                    DataTradus$Device == input$deviceTraffic,]
+    
+    FilteredDataSet$Date <- as.Date(FilteredDataSet$Date)
+    
+    FilteredDataSet$PVPerEV <- FilteredDataSet$'Page View'/FilteredDataSet$'Entering Visits'
+    FilteredDataSet$PVPerEV <- round(FilteredDataSet$PVPerEV, 0)
+    
+    # if(FilteredDataSet$'Entering Visits' == 0){
+    #   FilteredDataSet$PVPerEV <- 0
+    # }else{
+    #   FilteredDataSet$PVPerEV <- FilteredDataSet$'Page View'/FilteredDataSet$'Entering Visits'
+    #   FilteredDataSet$PVPerEV <- round(FilteredDataSet$PVPerEV, 0)
+    #   print(FilteredDataSet$'Entering Visits')
+    # }
+    # str(FilteredDataSet)
+    
+    ggplot(FilteredDataSet, 
+           aes(FilteredDataSet$Date, 
+               FilteredDataSet$PVPerEV,
+               group=FilteredDataSet$Device,
+               colour=FilteredDataSet$Device,
+               label=FilteredDataSet$PVPerEV))+
+      geom_line(stat = "identity")+
+      theme(text = element_text(size=14), plot.title = element_text(hjust = 0.5)) +
+      labs(x="Date",y="Page View per Entering Visits")+ 
+      #scale_y_continuous(labels = scales::comma)+
+      scale_colour_discrete(name  ="Device")+
+      #geom_vline(xintercept = as.numeric(as.Date("2017-02-20")))+ 
+      geom_text(check_overlap = TRUE, colour = "black")+
+      geom_hline(yintercept = mean(FilteredDataSet$PVPerEV), color="blue")
+    
+  }
+  )
+  
   output$downloadTrafficData <- downloadHandler(
     filename = function() { paste(input$date_range[1], '.csv', sep='') },
     content = function(file) {
@@ -189,7 +226,7 @@ server <- function(input, output, session) {
 ui <- fluidPage(
   #Title of the page
   titlePanel("Heavy Machinery"),
-  helpText("Dashboard with the mainly metrics to Tradus Pro."),
+  helpText("Dashboard with the mainly metrics to Tradus"),
   sidebarPanel(
     sliderInput("date_range", "Choose Date Range:", min = min(DataTradus$Date),
                 max = max(DataTradus$Date),
@@ -199,6 +236,7 @@ ui <- fluidPage(
     hr(),
     helpText("Source: GA and Database"),
     h6("Author: Rodrigo de Caro"), 
+    helpText("The average of the period is represented by the blue line"),
     width = 2),
   
   mainPanel(
@@ -214,10 +252,17 @@ ui <- fluidPage(
                          br(),
                          br(),
                          plotOutput("TradusDAU"),
+                         helpText("Number of unique users who visited Tradus Pro."), 
                          plotOutput("TradusSession"),
+                         helpText("Pageviews by user for every 30 minute."), 
                          plotOutput("TradusPageView"),
+                         helpText("Number of times a set of Pages has been viewed."), 
                          plotOutput("TradusBounceRate"),
-                         plotOutput("TradusEnteringVisits")
+                         helpText("the ratio between the total number of visits, and the number of visits that don't go beyond one page."), 
+                         plotOutput("TradusEnteringVisits"),
+                         helpText("Number of visits that involve at least two pages on a website."), 
+                         plotOutput("HeavyMachineryPVPerEnteringVisits"),
+                         helpText("Average of Page View per Visits.")
                          
                 )
                
