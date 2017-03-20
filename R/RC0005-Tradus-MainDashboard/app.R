@@ -252,7 +252,7 @@ ui <- fluidPage(
                          br(),
                          br(),
                          plotOutput("TradusDAU"),
-                         helpText("Number of unique users who visited Tradus Pro."), 
+                         helpText("Number of unique users who visited Tradus."), 
                          plotOutput("TradusSession"),
                          helpText("Pageviews by user for every 30 minute."), 
                          plotOutput("TradusPageView"),
