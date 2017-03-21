@@ -2,7 +2,7 @@
 
 library(ggplot2)
 library(shiny)
-#library(formattable)
+library(scales)
 
 server <- function(input, output) {
   
