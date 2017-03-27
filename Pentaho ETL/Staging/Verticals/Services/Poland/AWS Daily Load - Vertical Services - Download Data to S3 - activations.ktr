@@ -462,6 +462,16 @@
   <order>
     <hop>
       <from>activations</from>
+      <to>dates</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>dates</from>
+      <to>S3 File Output</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>activations</from>
       <to>S3 File Output</to>
       <enabled>Y</enabled>
     </hop>
@@ -485,16 +495,16 @@
     <footer>N</footer>
     <format>DOS</format>
     <compression>GZip</compression>
-    <encoding/>
+    <encoding>windows-1252</encoding>
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;activations-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;activations-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extention>txt</extention>
       <append>N</append>
       <split>N</split>
@@ -520,8 +530,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>507</xloc>
-      <yloc>117</yloc>
+      <xloc>496</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -530,7 +540,7 @@
     <name>activations</name>
     <type>TableInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -538,7 +548,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>select &#x2a; from activations</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, code&#xd;&#xa;, completed&#xd;&#xa;, completed_at&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM activations&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -554,6 +564,32 @@
     <GUI>
       <xloc>283</xloc>
       <yloc>117</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>dates</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

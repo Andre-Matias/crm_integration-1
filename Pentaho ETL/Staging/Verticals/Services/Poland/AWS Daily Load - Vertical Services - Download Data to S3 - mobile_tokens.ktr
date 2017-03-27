@@ -492,7 +492,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;mobile_tokens-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;mobile_tokens-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -522,7 +522,7 @@
     </remotesteps>
     <GUI>
       <xloc>464</xloc>
-      <yloc>192</yloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

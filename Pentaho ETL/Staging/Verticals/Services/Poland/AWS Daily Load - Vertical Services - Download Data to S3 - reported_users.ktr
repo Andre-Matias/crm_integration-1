@@ -463,11 +463,6 @@
   <order>
     <hop>
       <from>reported_users</from>
-      <to>Transformaci&#xf3;n Simulada &#x28;no hace nada&#x29;</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Transformaci&#xf3;n Simulada &#x28;no hace nada&#x29;</from>
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -497,7 +492,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;reported_users-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;reported_users-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -560,31 +555,6 @@
     <GUI>
       <xloc>240</xloc>
       <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Transformaci&#xf3;n Simulada &#x28;no hace nada&#x29;</name>
-    <type>Dummy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

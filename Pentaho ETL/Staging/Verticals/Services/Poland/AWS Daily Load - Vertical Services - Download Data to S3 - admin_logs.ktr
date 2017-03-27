@@ -436,23 +436,22 @@
   <notepads>
   </notepads>
   <connection>
-    <name>Chandra Redshift</name>
-    <server>gv-chandra.ckwrimb1igb1.us-west-2.redshift.amazonaws.com</server>
-    <type>REDSHIFT</type>
+    <name>Services Vertical Poland</name>
+    <server>fix-staging-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <type>POSTGRESQL</type>
     <access>Native</access>
-    <database>globalverticals</database>
-    <port>5439</port>
-    <username>pyrate</username>
-    <password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</password>
+    <database>fixdb</database>
+    <port>5432</port>
+    <username>fix_user</username>
+    <password>Encrypted 2be98afc86aa7f2e4ad10b64fce93bcc9</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
-      <attribute><code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code><attribute>true</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>5439</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
@@ -492,7 +491,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;admin_logs-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;admin_logs-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -538,7 +537,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Chandra Redshift</connection>
+    <connection>Services Vertical Poland</connection>
     <sql>SELECT&#xd;&#xa;&#x2a; FROM admin_logs&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>

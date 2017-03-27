@@ -305,7 +305,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>96</xloc>
-      <yloc>112</yloc>
+      <yloc>64</yloc>
     </entry>
     <entry>
       <name>activations</name>
@@ -763,7 +763,7 @@
       <yloc>176</yloc>
     </entry>
     <entry>
-      <name>feedback</name>
+      <name>feedback - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -903,7 +903,7 @@
       <yloc>272</yloc>
     </entry>
     <entry>
-      <name>individuals</name>
+      <name>individuals - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -973,7 +973,7 @@
       <yloc>272</yloc>
     </entry>
     <entry>
-      <name>main categories</name>
+      <name>main categories - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1004,7 +1004,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>816</xloc>
+      <xloc>800</xloc>
       <yloc>384</yloc>
     </entry>
     <entry>
@@ -1043,7 +1043,7 @@
       <yloc>272</yloc>
     </entry>
     <entry>
-      <name>n s events</name>
+      <name>n s events - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1074,11 +1074,11 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>656</xloc>
+      <xloc>640</xloc>
       <yloc>384</yloc>
     </entry>
     <entry>
-      <name>pages</name>
+      <name>pages -edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1883,7 +1883,7 @@
       <yloc>864</yloc>
     </entry>
     <entry>
-      <name>n s sms</name>
+      <name>n s sms - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1918,7 +1918,7 @@
       <yloc>784</yloc>
     </entry>
     <entry>
-      <name>n s web</name>
+      <name>n s web - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1953,7 +1953,7 @@
       <yloc>864</yloc>
     </entry>
     <entry>
-      <name>n s pushes</name>
+      <name>n s pushes - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -1988,7 +1988,7 @@
       <yloc>784</yloc>
     </entry>
     <entry>
-      <name>n s mails</name>
+      <name>n s mails - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -2338,7 +2338,7 @@
       <yloc>544</yloc>
     </entry>
     <entry>
-      <name>fields_backup</name>
+      <name>fields_backup - not exist</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -2373,7 +2373,7 @@
       <yloc>592</yloc>
     </entry>
     <entry>
-      <name>feedback_replays</name>
+      <name>feedback_replays - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -2478,7 +2478,7 @@
       <yloc>544</yloc>
     </entry>
     <entry>
-      <name>emai log</name>
+      <name>emai log - edited</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -2583,7 +2583,7 @@
       <yloc>608</yloc>
     </entry>
     <entry>
-      <name>categories_backup</name>
+      <name>categories_backup - not exist</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
@@ -2662,17 +2662,28 @@
       <xloc>32</xloc>
       <yloc>896</yloc>
     </entry>
+    <entry>
+      <name>DUMMY</name>
+      <description/>
+      <type>SPECIAL</type>
+      <start>N</start>
+      <dummy>Y</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>112</xloc>
+      <yloc>128</yloc>
+    </entry>
   </entries>
   <hops>
-    <hop>
-      <from>START</from>
-      <to>activations</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
     <hop>
       <from>activations</from>
       <to>admin logs</to>
@@ -2783,7 +2794,7 @@
     </hop>
     <hop>
       <from>faqs</from>
-      <to>feedback</to>
+      <to>feedback - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2791,7 +2802,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>feedback</from>
+      <from>feedback - edited</from>
       <to>fields</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -2819,7 +2830,7 @@
     </hop>
     <hop>
       <from>guest registration log</from>
-      <to>individuals</to>
+      <to>individuals - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2827,7 +2838,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>individuals</from>
+      <from>individuals - edited</from>
       <to>ltm translations</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -2837,7 +2848,7 @@
     </hop>
     <hop>
       <from>ltm translations</from>
-      <to>main categories</to>
+      <to>main categories - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2845,7 +2856,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>main categories</from>
+      <from>main categories - edited</from>
       <to>migrations</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -2855,7 +2866,7 @@
     </hop>
     <hop>
       <from>migrations</from>
-      <to>n s events</to>
+      <to>n s events - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2863,8 +2874,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>n s events</from>
-      <to>pages</to>
+      <from>n s events - edited</from>
+      <to>pages -edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2872,7 +2883,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>pages</from>
+      <from>pages -edited</from>
       <to>persistences</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -3026,19 +3037,19 @@
     </hop>
     <hop>
       <from>hidden_service_requests</from>
-      <to>fields_backup</to>
+      <to>fields_backup - not exist</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>fields_backup</from>
-      <to>feedback_replays</to>
+      <from>fields_backup - not exist</from>
+      <to>feedback_replays - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -3152,7 +3163,7 @@
     </hop>
     <hop>
       <from>newsletter</from>
-      <to>n s sms</to>
+      <to>n s sms - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3160,8 +3171,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>n s sms</from>
-      <to>n s web</to>
+      <from>n s sms - edited</from>
+      <to>n s web - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3169,8 +3180,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>n s web</from>
-      <to>n s pushes</to>
+      <from>n s web - edited</from>
+      <to>n s pushes - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3178,8 +3189,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>n s pushes</from>
-      <to>n s mails</to>
+      <from>n s pushes - edited</from>
+      <to>n s mails - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3187,7 +3198,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>n s mails</from>
+      <from>n s mails - edited</from>
       <to>mobile_tokens_log</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -3196,7 +3207,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>feedback_replays</from>
+      <from>feedback_replays - edited</from>
       <to>failed_jobs</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -3215,7 +3226,7 @@
     </hop>
     <hop>
       <from>email_reminder_log</from>
-      <to>emai log</to>
+      <to>emai log - edited</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3223,7 +3234,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>emai log</from>
+      <from>emai log - edited</from>
       <to>deleted_conversation</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -3242,19 +3253,19 @@
     </hop>
     <hop>
       <from>conversations</from>
-      <to>categories_backup</to>
+      <to>categories_backup - not exist</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>categories_backup</from>
+      <from>categories_backup - not exist</from>
       <to>banned</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -3275,6 +3286,42 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>DUMMY</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>DUMMY</from>
+      <to>activations</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>hidden_service_requests</from>
+      <to>feedback_replays - edited</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>conversations</from>
+      <to>banned</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
