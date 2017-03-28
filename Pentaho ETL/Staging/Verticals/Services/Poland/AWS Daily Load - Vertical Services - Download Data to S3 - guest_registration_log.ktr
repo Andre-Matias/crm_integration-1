@@ -464,6 +464,16 @@
     <hop>
       <from>guest_registration_log</from>
       <to>S3 File Output</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>select</from>
+      <to>S3 File Output</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>guest_registration_log</from>
+      <to>select</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -539,7 +549,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, category_id&#xd;&#xa;-- , form_data&#xd;&#xa;, &#x22;location&#x22;&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM guest_registration_log&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, category_id&#xd;&#xa; , form_data&#xd;&#xa;,location&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM guest_registration_log&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -555,6 +565,47 @@
     <GUI>
       <xloc>280</xloc>
       <yloc>181</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>form_data</name>
+        <rename>form_data</rename>
+        <type>String</type>
+        <length>3000</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

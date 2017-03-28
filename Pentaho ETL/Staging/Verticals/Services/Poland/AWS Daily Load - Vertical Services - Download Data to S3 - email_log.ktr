@@ -471,6 +471,11 @@
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>email_log</from>
+      <to>S3 File Output 5 2</to>
+      <enabled>N</enabled>
+    </hop>
   </order>
   <step>
     <name>S3 File Output 5 2</name>
@@ -526,40 +531,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>464</xloc>
+      <xloc>432</xloc>
       <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>email_log</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;&#x2a; from &#xd;&#xa;email_log</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>144</xloc>
-      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -579,7 +552,7 @@
       <meta>        <name>content</name>
         <rename>content</rename>
         <type>String</type>
-        <length>1000</length>
+        <length>3000</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -601,6 +574,38 @@
     <GUI>
       <xloc>288</xloc>
       <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>email_log</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, &#x22;to&#x22;&#xd;&#xa;, subject&#xd;&#xa;,  content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM email_log&#xd;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>144</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

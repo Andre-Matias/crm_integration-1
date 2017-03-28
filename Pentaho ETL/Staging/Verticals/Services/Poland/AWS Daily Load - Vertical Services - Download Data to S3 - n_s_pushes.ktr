@@ -463,11 +463,11 @@
   <order>
     <hop>
       <from>n_s_pushes</from>
-      <to>Selecciona&#x2f;Renombra valores</to>
+      <to>select</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Selecciona&#x2f;Renombra valores</from>
+      <from>select</from>
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -533,39 +533,7 @@
     </step>
 
   <step>
-    <name>n_s_pushes</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;&#x2a; from &#xd;&#xa;n_s_pushes</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>240</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Selecciona&#x2f;Renombra valores</name>
+    <name>select</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -616,6 +584,38 @@
     <GUI>
       <xloc>336</xloc>
       <yloc>128</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>n_s_pushes</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;&#x2a; from &#xd;&#xa;n_s_pushes</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>240</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

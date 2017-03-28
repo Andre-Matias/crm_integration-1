@@ -462,11 +462,11 @@
   <order>
     <hop>
       <from>pages</from>
-      <to>Selecciona&#x2f;Renombra valores</to>
+      <to>SELECT</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Selecciona&#x2f;Renombra valores</from>
+      <from>SELECT</from>
       <to>S3 File Output</to>
       <enabled>Y</enabled>
     </hop>
@@ -532,39 +532,7 @@
     </step>
 
   <step>
-    <name>pages</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, title&#xd;&#xa;, slug&#xd;&#xa;, content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM pages&#xd;&#xa;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>176</xloc>
-      <yloc>160</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Selecciona&#x2f;Renombra valores</name>
+    <name>SELECT</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -600,6 +568,38 @@
     <GUI>
       <xloc>336</xloc>
       <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>pages</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, title&#xd;&#xa;, slug&#xd;&#xa;, content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM pages&#xd;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>176</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

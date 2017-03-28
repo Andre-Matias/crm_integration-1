@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</name>
+    <name>AWS Daily Load - Vertical Services - Download Data to S3 - Generic</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -9,6 +9,16 @@
     <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
+      <parameter>
+        <name>S3_NAME</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>TABLE_NAME</name>
+        <default_value/>
+        <description/>
+      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -428,32 +438,52 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;03&#x2f;28 11&#x3a;17&#x3a;18.523</created_date>
+    <created_date>2017&#x2f;03&#x2f;22 17&#x3a;04&#x3a;46.907</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;03&#x2f;28 11&#x3a;17&#x3a;18.523</modified_date>
+    <modified_date>2017&#x2f;03&#x2f;22 17&#x3a;04&#x3a;46.907</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
+    <notepad>
+      <note>normal</note>
+      <xloc>512</xloc>
+      <yloc>112</yloc>
+      <width>67</width>
+      <heigth>34</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <connection>
-    <name>Chandra Redshift</name>
-    <server>gv-chandra.ckwrimb1igb1.us-west-2.redshift.amazonaws.com</server>
-    <type>REDSHIFT</type>
+    <name>Services Vertical Poland</name>
+    <server>fix-staging-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <type>POSTGRESQL</type>
     <access>Native</access>
-    <database>globalverticals</database>
-    <port>5439</port>
-    <username>pyrate</username>
-    <password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</password>
+    <database>fixdb</database>
+    <port>5432</port>
+    <username>fix_user</username>
+    <password>Encrypted 2be98afc86aa7f2e4ad10b64fce93bcc9</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
-      <attribute><code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code><attribute>true</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>5439</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
@@ -463,14 +493,14 @@
   </connection>
   <order>
     <hop>
-      <from>Table input</from>
-      <to>Copy rows to result</to>
+      <from>table input</from>
+      <to>S3 File Output</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Copy rows to result</name>
-    <type>RowsToResult</type>
+    <name>S3 File Output</name>
+    <type>S3FileOutputPlugin</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -479,6 +509,41 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <separator>&#x3b;</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>N</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>GZip</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz</name>
+      <is_command>N</is_command>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>txt</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>N</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+    </fields>
+      <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
+      <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -487,27 +552,27 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>176</yloc>
+      <xloc>752</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Table input</name>
+    <name>table input</name>
     <type>TableInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Chandra Redshift</connection>
-    <sql>select table_name, REPLACE&#x28;table_name,&#x27;fixpl_&#x27;,&#x27;&#x27;&#x29; as s3_name from information_schema.tables&#xd;&#xa;where table_schema &#x3d; &#x27;rdl_vertical_services&#x27; and table_name like &#x27;fixpl_&#x25;&#x27;&#x3b;</sql>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;&#x2a;&#xd;&#xa;FROM &#x24;&#x7b;S3_NAME&#x7d;&#xd;&#xa;&#xd;&#xa;</sql>
     <limit>0</limit>
-    <lookup/>
+    <lookup>not Normal tables&#x3f;</lookup>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
@@ -519,8 +584,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>176</yloc>
+      <xloc>528</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
