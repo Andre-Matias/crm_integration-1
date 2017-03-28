@@ -481,7 +481,7 @@
     </partitioning>
     <oauthServiceAccount>717032672419-compute&#x40;developer.gserviceaccount.com</oauthServiceAccount>
     <appName>Services PL</appName>
-    <oauthKeyFile>C&#x3a;&#x5c;Users&#x5c;Miguel Chin&#x5c;Downloads&#x5c;Services PL-a6067feca0a0.p12</oauthKeyFile>
+    <oauthKeyFile>&#x2f;home&#x2f;ubuntu&#x2f;GA&#x2f;Services PL-a6067feca0a0.p12</oauthKeyFile>
     <profileName/>
     <profileTableId/>
     <customTableId>ga&#x3a;141469113</customTableId>
@@ -607,7 +607,7 @@
     </partitioning>
     <oauthServiceAccount>717032672419-compute&#x40;developer.gserviceaccount.com</oauthServiceAccount>
     <appName>Services PL</appName>
-    <oauthKeyFile>C&#x3a;&#x5c;Users&#x5c;Miguel Chin&#x5c;Downloads&#x5c;Services PL-a6067feca0a0.p12</oauthKeyFile>
+    <oauthKeyFile>&#x2f;home&#x2f;ubuntu&#x2f;GA&#x2f;Services PL-a6067feca0a0.p12</oauthKeyFile>
     <profileName/>
     <profileTableId/>
     <customTableId>ga&#x3a;141469113</customTableId>
