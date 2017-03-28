@@ -44,7 +44,7 @@ server <- function(input, output) {
       geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 350000)) + 
+      coord_cartesian(ylim = c(30000, 380000)) + 
       geom_text(aes(y= Duplicates,label = Duplicates, vjust=-2)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) + 
       ggtitle("Active Ads vs Active Duplicates by Day") +
