@@ -382,13 +382,13 @@
         <pass_all_parameters>Y</pass_all_parameters>
         <parameter>
           <name>DATE</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;A&#x7d;</value>
+          <stream_name>DATE</stream_name>
+          <value/>
         </parameter>
         <parameter>
           <name>DATE_PATH</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;B&#x7d;</value>
+          <stream_name>DATE_PATH</stream_name>
+          <value/>
         </parameter>
       </parameters>
       <parallel>N</parallel>
@@ -432,11 +432,11 @@
       <pass_export>N</pass_export>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
             <parameter>            <name>DATE_PATH</name>
-            <stream_name/>
-            <value>&#x24;&#x7b;B&#x7d;</value>
+            <stream_name>DATE_PATH</stream_name>
+            <value/>
             </parameter>            <parameter>            <name>DATE</name>
-            <stream_name/>
-            <value>&#x24;&#x7b;A&#x7d;</value>
+            <stream_name>DATE</stream_name>
+            <value/>
             </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
