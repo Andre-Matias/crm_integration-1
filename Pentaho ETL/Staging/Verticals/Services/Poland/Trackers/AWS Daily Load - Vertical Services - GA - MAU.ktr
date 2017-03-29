@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Vertical Services - GA to S3</name>
+    <name>AWS Daily Load - Vertical Services - GA - MAU</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -11,12 +11,12 @@
     <parameters>
       <parameter>
         <name>DATE</name>
-        <default_value>2017-03-26</default_value>
+        <default_value>2017-03-10</default_value>
         <description/>
       </parameter>
       <parameter>
-        <name>DATE_PATH</name>
-        <default_value>2017&#x2f;03&#x2f;26</default_value>
+        <name>FIRST_DAY</name>
+        <default_value>2017-03-01</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -438,14 +438,39 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;03&#x2f;28 14&#x3a;42&#x3a;37.815</created_date>
+    <created_date>2017&#x2f;03&#x2f;29 15&#x3a;31&#x3a;38.445</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;03&#x2f;28 14&#x3a;42&#x3a;37.815</modified_date>
+    <modified_date>2017&#x2f;03&#x2f;29 15&#x3a;31&#x3a;38.445</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
+  <connection>
+    <name>Chandra Redshift</name>
+    <server>gv-chandra.ckwrimb1igb1.us-west-2.redshift.amazonaws.com</server>
+    <type>REDSHIFT</type>
+    <access>Native</access>
+    <database>globalverticals</database>
+    <port>5439</port>
+    <username>pyrate</username>
+    <password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5439</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
   <order>
     <hop>
       <from>Google Analytics</from>
@@ -453,18 +478,13 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Google Analytics 2</from>
-      <to>Add constants 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Add constants</from>
-      <to>S3 File Output</to>
+      <to>Delete</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Add constants 2</from>
-      <to>S3 File Output 2</to>
+      <from>Delete</from>
+      <to>Table output</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -501,15 +521,15 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>256</xloc>
-      <yloc>96</yloc>
+      <xloc>240</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Add constants 2</name>
-    <type>Constant</type>
+    <name>Delete</name>
+    <type>Delete</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -518,20 +538,24 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <fields>
-      <field>
+    <connection>Chandra Redshift</connection>
+    <commit>100</commit>
+    <lookup>
+      <schema>rdl_vertical_services</schema>
+      <table>trackers_monthly_traffic</table>
+      <key>
+        <name>ga&#x3a;yearMonth</name>
+        <field>yearmonth</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <key>
         <name>tracker</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>ga</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
+        <field>tracker</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+    </lookup>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -540,8 +564,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>256</xloc>
-      <yloc>192</yloc>
+      <xloc>320</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -564,10 +588,10 @@
     <profileTableId/>
     <customTableId>ga&#x3a;141469113</customTableId>
     <useCustomTableId>Y</useCustomTableId>
-    <startDate>&#x24;&#x7b;DATE&#x7d;</startDate>
+    <startDate>&#x24;&#x7b;FIRST_DAY&#x7d;</startDate>
     <endDate>&#x24;&#x7b;DATE&#x7d;</endDate>
-    <dimensions>ga&#x3a;date</dimensions>
-    <metrics>ga&#x3a;users,ga&#x3a;sessions,ga&#x3a;bounces,ga&#x3a;pageviews,ga&#x3a;sessionDuration</metrics>
+    <dimensions>ga&#x3a;yearMonth</dimensions>
+    <metrics>ga&#x3a;users</metrics>
     <filters/>
     <sort/>
     <useSegment>Y</useSegment>
@@ -579,10 +603,10 @@
     <rowLimit>0</rowLimit>
       <feedField>
         <feedFieldType>Dimension</feedFieldType>
-        <feedField>ga&#x3a;date</feedField>
-        <outField>ga&#x3a;date</outField>
-        <type>Date</type>
-        <conversionMask>yyyyMMdd</conversionMask>
+        <feedField>ga&#x3a;yearMonth</feedField>
+        <outField>ga&#x3a;yearMonth</outField>
+        <type>String</type>
+        <conversionMask/>
       </feedField>
       <feedField>
         <feedFieldType>Metric</feedFieldType>
@@ -591,34 +615,6 @@
         <type>Integer</type>
         <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
       </feedField>
-      <feedField>
-        <feedFieldType>Metric</feedFieldType>
-        <feedField>ga&#x3a;sessions</feedField>
-        <outField>ga&#x3a;sessions</outField>
-        <type>Integer</type>
-        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
-      </feedField>
-      <feedField>
-        <feedFieldType>Metric</feedFieldType>
-        <feedField>ga&#x3a;bounces</feedField>
-        <outField>ga&#x3a;bounces</outField>
-        <type>Integer</type>
-        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
-      </feedField>
-      <feedField>
-        <feedFieldType>Metric</feedFieldType>
-        <feedField>ga&#x3a;pageviews</feedField>
-        <outField>ga&#x3a;pageviews</outField>
-        <type>Integer</type>
-        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
-      </feedField>
-      <feedField>
-        <feedFieldType>Metric</feedFieldType>
-        <feedField>ga&#x3a;sessionDuration</feedField>
-        <outField>ga&#x3a;sessionDuration</outField>
-        <type>Integer</type>
-        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
-      </feedField>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -627,15 +623,15 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
-      <yloc>96</yloc>
+      <xloc>144</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Google Analytics 2</name>
-    <type>TypeExitGoogleAnalyticsInputStep</type>
+    <name>Table output</name>
+    <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -644,107 +640,37 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <oauthServiceAccount>717032672419-compute&#x40;developer.gserviceaccount.com</oauthServiceAccount>
-    <appName>Services PL</appName>
-    <oauthKeyFile>&#x2f;home&#x2f;ubuntu&#x2f;GA&#x2f;Services PL-a6067feca0a0.p12</oauthKeyFile>
-    <profileName/>
-    <profileTableId/>
-    <customTableId>ga&#x3a;141469113</customTableId>
-    <useCustomTableId>Y</useCustomTableId>
-    <startDate>&#x24;&#x7b;DATE&#x7d;</startDate>
-    <endDate>&#x24;&#x7b;DATE&#x7d;</endDate>
-    <dimensions>ga&#x3a;date,ga&#x3a;exitPagePath</dimensions>
-    <metrics>ga&#x3a;exits</metrics>
-    <filters/>
-    <sort/>
-    <useSegment>Y</useSegment>
-    <useCustomSegment>N</useCustomSegment>
-    <customSegment/>
-    <segmentId>gaid&#x3a;&#x3a;-1</segmentId>
-    <segmentName>All Visits</segmentName>
-    <samplingLevel>DEFAULT</samplingLevel>
-    <rowLimit>0</rowLimit>
-      <feedField>
-        <feedFieldType>Dimension</feedFieldType>
-        <feedField>ga&#x3a;date</feedField>
-        <outField>ga&#x3a;date</outField>
-        <type>Date</type>
-        <conversionMask>yyyyMMdd</conversionMask>
-      </feedField>
-      <feedField>
-        <feedFieldType>Dimension</feedFieldType>
-        <feedField>ga&#x3a;exitPagePath</feedField>
-        <outField>ga&#x3a;exitPagePath</outField>
-        <type>String</type>
-        <conversionMask/>
-      </feedField>
-      <feedField>
-        <feedFieldType>Metric</feedFieldType>
-        <feedField>ga&#x3a;exits</feedField>
-        <outField>ga&#x3a;exits</outField>
-        <type>Integer</type>
-        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
-      </feedField>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>160</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>S3 File Output</name>
-    <type>S3FileOutputPlugin</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>N</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>GZip</compression>
-    <encoding/>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;GA&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;general</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
+    <connection>Chandra Redshift</connection>
+    <schema>rdl_vertical_services</schema>
+    <table>trackers_monthly_traffic</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
     <fields>
+        <field>
+          <column_name>yearmonth</column_name>
+          <stream_name>ga&#x3a;yearMonth</stream_name>
+        </field>
+        <field>
+          <column_name>users</column_name>
+          <stream_name>ga&#x3a;users</stream_name>
+        </field>
+        <field>
+          <column_name>tracker</column_name>
+          <stream_name>tracker</stream_name>
+        </field>
     </fields>
-      <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
-      <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -753,68 +679,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>S3 File Output 2</name>
-    <type>S3FileOutputPlugin</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>N</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>GZip</compression>
-    <encoding/>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;GA&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;exits</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-    </fields>
-      <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
-      <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>192</yloc>
+      <xloc>416</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
