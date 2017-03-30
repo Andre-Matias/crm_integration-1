@@ -16,6 +16,11 @@
         <default_value/>
         <description/>
       </parameter>
+      <parameter>
+        <name>TABLE_NAME</name>
+        <default_value/>
+        <description/>
+      </parameter>
     </parameters>
   <connection>
     <name>Chandra Redshift</name>
@@ -148,7 +153,7 @@
         </field>
         <field>
           <id>START_JOB_ENTRY</id>
-          <enabled>Y</enabled>
+          <enabled>N</enabled>
           <name>START_JOB_ENTRY</name>
         </field>
         <field>
@@ -239,7 +244,7 @@
         </field>
         <field>
           <id>LOG_FIELD</id>
-          <enabled>Y</enabled>
+          <enabled>N</enabled>
           <name>LOG_FIELD</name>
         </field>
         <field>
@@ -341,11 +346,7 @@
       <name>SQL</name>
       <description/>
       <type>SQL</type>
-<<<<<<< HEAD
       <sql>COPY rdl_vertical_services.&#x24;&#x7b;TABLE_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#xd;&#xa;REGION as &#x27;us-east-1&#x27;&#x3b;</sql>
-=======
-      <sql>COPY rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27;&#xd;&#xa;GZIP&#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;ACCEPTINVCHARS as &#x27; &#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
->>>>>>> origin/master
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
@@ -371,8 +372,8 @@
       <name>Write To Log</name>
       <description/>
       <type>WRITE_TO_LOG</type>
-      <logmessage>-------------------------------------------------------------&#xd;&#xa;Trying &#x24;&#x7b;TABLE_NAME&#x7d;&#xd;&#xa;&#xd;&#xa;&#x24;&#x7b;S3_NAME&#x7d;&#xd;&#xa;-------------------------------------------------------------</logmessage>
-      <loglevel>Detailed</loglevel>
+      <logmessage>Trying &#x24;&#x7b;TABLE_NAME&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
       <logsubject/>
       <parallel>N</parallel>
       <draw>Y</draw>
