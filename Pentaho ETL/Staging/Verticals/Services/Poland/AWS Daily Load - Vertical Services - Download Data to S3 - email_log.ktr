@@ -463,11 +463,11 @@
   <order>
     <hop>
       <from>email_log</from>
-      <to>select</to>
+      <to>Selecciona&#x2f;Renombra valores</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>select</from>
+      <from>Selecciona&#x2f;Renombra valores</from>
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -538,6 +538,7 @@
     </step>
 
   <step>
+<<<<<<< HEAD
     <name>email_log</name>
     <type>TableInput</type>
     <description/>
@@ -571,6 +572,9 @@
 
   <step>
     <name>select</name>
+=======
+    <name>Selecciona&#x2f;Renombra valores</name>
+>>>>>>> origin/master
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -604,8 +608,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>112</yloc>
+      <xloc>288</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

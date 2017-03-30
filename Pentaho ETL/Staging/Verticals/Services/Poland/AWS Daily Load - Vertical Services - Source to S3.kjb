@@ -351,8 +351,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>848</xloc>
-      <yloc>128</yloc>
+      <xloc>880</xloc>
+      <yloc>80</yloc>
     </entry>
     <entry>
       <name>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</name>
