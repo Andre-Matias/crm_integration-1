@@ -45,7 +45,7 @@ server <- function(input, output) {
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
       coord_cartesian(ylim = c(30000, 380000)) + 
-      geom_text(aes(y= Duplicates,label = Duplicates, vjust=-2)) +
+      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("Active Ads vs Active Duplicates by Day") +
@@ -62,7 +62,7 @@ server <- function(input, output) {
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
       coord_cartesian(ylim = c(0, 55000)) + 
-      geom_text(aes(y= Duplicates,label = Duplicates, vjust=-1)) + 
+      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("Active Ads vs Active Duplicates by Day") + 
