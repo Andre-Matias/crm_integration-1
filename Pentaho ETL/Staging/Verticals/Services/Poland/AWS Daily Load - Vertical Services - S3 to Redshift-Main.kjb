@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>AWS Daily Load - Vertical Services - S3 to Redshift</name>
+  <name>AWS Daily Load - Vertical Services - S3 to Redshift-Main</name>
   <description/>
   <extended_description/>
   <job_version/>
@@ -11,6 +11,16 @@
   <modified_user>-</modified_user>
   <modified_date>2017&#x2f;03&#x2f;28 10&#x3a;45&#x3a;24.901</modified_date>
     <parameters>
+      <parameter>
+        <name>S3_NAME</name>
+        <default_value>s3_name</default_value>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>TABLE_NAME</name>
+        <default_value>table_name</default_value>
+        <description/>
+      </parameter>
     </parameters>
     <slaveservers>
     </slaveservers>
@@ -288,73 +298,6 @@
    <shared_objects_file/>
   <entries>
     <entry>
-      <name>START</name>
-      <description/>
-      <type>SPECIAL</type>
-      <start>Y</start>
-      <dummy>N</dummy>
-      <repeat>N</repeat>
-      <schedulerType>0</schedulerType>
-      <intervalSeconds>0</intervalSeconds>
-      <intervalMinutes>60</intervalMinutes>
-      <hour>12</hour>
-      <minutes>0</minutes>
-      <weekDay>1</weekDay>
-      <DayOfMonth>1</DayOfMonth>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>240</xloc>
-      <yloc>112</yloc>
-    </entry>
-    <entry>
-      <name>Success</name>
-      <description/>
-      <type>SUCCESS</type>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>944</xloc>
-      <yloc>304</yloc>
-    </entry>
-    <entry>
-      <name>AWS Daily Load - Vertical Services - S3 to Redshift - Load tables</name>
-      <description/>
-      <type>JOB</type>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Vertical Services - S3 to Redshift - Load tables.kjb</filename>
-      <jobname/>
-      <arg_from_previous>Y</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>Y</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-            <parameter>            <name>TABLE_NAME</name>
-            <stream_name>table_name</stream_name>
-            <value/>
-            </parameter>            <parameter>            <name>S3_NAME</name>
-            <stream_name>s3_name</stream_name>
-            <value/>
-            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>720</xloc>
-      <yloc>240</yloc>
-    </entry>
-    <entry>
       <name>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</name>
       <description/>
       <type>TRANS</type>
@@ -389,16 +332,80 @@
       <xloc>432</xloc>
       <yloc>176</yloc>
     </entry>
+    <entry>
+      <name>LOAD TABLES</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Vertical Services - S3 to Redshift - Load tables.kjb</filename>
+      <jobname/>
+      <arg_from_previous>Y</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>S3_NAME</name>
+            <stream_name>s3_name</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>704</xloc>
+      <yloc>160</yloc>
+    </entry>
+    <entry>
+      <name>START</name>
+      <description/>
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>128</xloc>
+      <yloc>176</yloc>
+    </entry>
+    <entry>
+      <name>&#xc9;xito</name>
+      <description/>
+      <type>SUCCESS</type>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>960</xloc>
+      <yloc>208</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
-      <from>AWS Daily Load - Vertical Services - S3 to Redshift - Load tables</from>
-      <to>Success</to>
+      <from>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</from>
+      <to>LOAD TABLES</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>START</from>
@@ -410,8 +417,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</from>
-      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Load tables</to>
+      <from>LOAD TABLES</from>
+      <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
