@@ -14,11 +14,6 @@
         <default_value/>
         <description/>
       </parameter>
-      <parameter>
-        <name>TABLE_NAME</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -572,7 +567,7 @@
     <connection>Services Vertical Poland</connection>
     <sql>SELECT&#xd;&#xa;&#x2a;&#xd;&#xa;FROM &#x24;&#x7b;S3_NAME&#x7d;&#xd;&#xa;&#xd;&#xa;</sql>
     <limit>0</limit>
-    <lookup>not Normal tables&#x3f;</lookup>
+    <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
