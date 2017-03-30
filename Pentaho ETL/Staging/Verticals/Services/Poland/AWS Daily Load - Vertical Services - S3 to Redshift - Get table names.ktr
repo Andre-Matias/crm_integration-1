@@ -505,7 +505,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>select table_name, REPLACE&#x28;table_name,&#x27;fixpl_&#x27;,&#x27;&#x27;&#x29; as s3_name from information_schema.tables&#xd;&#xa;where table_schema &#x3d; &#x27;rdl_vertical_services&#x27; and table_name like &#x27;fixpl_&#x25;&#x27;&#x3b;</sql>
+    <sql>select table_name, REPLACE&#x28;table_name,&#x27;fixpl_&#x27;,&#x27;&#x27;&#x29; as s3_name from information_schema.tables&#xd;&#xa;where table_schema &#x3d; &#x27;rdl_vertical_services&#x27; and table_name like &#x27;fixpl_n&#x25;&#x27;&#x3b;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

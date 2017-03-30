@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>AWS Daily Load - Vertical Services - S3 to Redshift</name>
+  <name>AWS Daily Load - Vertical Services - S3 to Redshift - Load tables</name>
   <description/>
   <extended_description/>
   <job_version/>
@@ -346,7 +346,7 @@
       <name>SQL</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY rdl_vertical_services.&#x24;&#x7b;TABLE_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
+      <sql>COPY rdl_vertical_services.&#x24;&#x7b;TABLE_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#xd;&#xa;REGION as &#x27;us-east-1&#x27;&#x3b;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
