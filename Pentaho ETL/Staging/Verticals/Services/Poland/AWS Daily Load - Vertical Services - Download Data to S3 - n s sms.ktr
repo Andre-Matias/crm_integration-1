@@ -533,6 +533,38 @@
     </step>
 
   <step>
+    <name>n_s_sms</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, &#x22;to&#x22;&#xd;&#xa;, regexp_replace&#x28;content, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as  content&#xd;&#xa;-- , content&#xd;&#xa;, model&#xd;&#xa;, model_id&#xd;&#xa;, sent&#xd;&#xa;, &#x22;force&#x22;&#xd;&#xa;, deleted_at&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM n_s_sms&#xd;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>240</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
     <name>select</name>
     <type>SelectValues</type>
     <description/>
@@ -569,38 +601,6 @@
     <GUI>
       <xloc>336</xloc>
       <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>n_s_sms</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;&#x2a; from &#xd;&#xa;n_s_sms</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>240</xloc>
-      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
