@@ -389,6 +389,29 @@
       <xloc>432</xloc>
       <yloc>176</yloc>
     </entry>
+    <entry>
+      <name>Shell - Delete files</name>
+      <description/>
+      <type>SHELL</type>
+      <filename/>
+      <work_directory>&#x2f;home&#x2f;pentaho&#x2f;</work_directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <set_append_logfile>N</set_append_logfile>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>aws s3 rm s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f; --recursive</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>304</xloc>
+      <yloc>240</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -398,15 +421,24 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>START</from>
-      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
+      <to>Shell - Delete files</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Shell - Delete files</from>
+      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
