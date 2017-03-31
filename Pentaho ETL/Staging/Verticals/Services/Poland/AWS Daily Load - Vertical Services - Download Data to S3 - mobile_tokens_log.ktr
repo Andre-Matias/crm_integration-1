@@ -549,7 +549,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, tokens&#xd;&#xa;, regexp_replace&#x28;response, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as response&#xd;&#xa;-- , response&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM mobile_tokens_log&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, regexp_replace&#x28;tokens, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as tokens&#xd;&#xa;, regexp_replace&#x28;response, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as response&#xd;&#xa;-- , response&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM mobile_tokens_log&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -619,7 +619,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
+      <xloc>304</xloc>
       <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>

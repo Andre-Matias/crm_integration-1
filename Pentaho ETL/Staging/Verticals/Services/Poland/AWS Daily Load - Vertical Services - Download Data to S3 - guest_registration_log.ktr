@@ -584,7 +584,7 @@
       <meta>        <name>form_data</name>
         <rename>form_data</rename>
         <type>String</type>
-        <length>3000</length>
+        <length>1000</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>

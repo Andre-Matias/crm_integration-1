@@ -463,11 +463,11 @@
   <order>
     <hop>
       <from>email_log</from>
-      <to>Selecciona&#x2f;Renombra valores</to>
+      <to>select</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Selecciona&#x2f;Renombra valores</from>
+      <from>select</from>
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -538,43 +538,7 @@
     </step>
 
   <step>
-<<<<<<< HEAD
-    <name>email_log</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, &#x22;to&#x22;&#xd;&#xa;, subject&#xd;&#xa;, regexp_replace&#x28;content, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as content&#xd;&#xa;-- ,  content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM email_log&#xd;&#xa;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>144</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
     <name>select</name>
-=======
-    <name>Selecciona&#x2f;Renombra valores</name>
->>>>>>> origin/master
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -588,7 +552,7 @@
       <meta>        <name>content</name>
         <rename>content</rename>
         <type>String</type>
-        <length>3000</length>
+        <length>1000</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -610,6 +574,38 @@
     <GUI>
       <xloc>288</xloc>
       <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>email_log</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, &#x22;to&#x22;&#xd;&#xa;, subject&#xd;&#xa;, regexp_replace&#x28;content, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM email_log&#xd;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>144</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

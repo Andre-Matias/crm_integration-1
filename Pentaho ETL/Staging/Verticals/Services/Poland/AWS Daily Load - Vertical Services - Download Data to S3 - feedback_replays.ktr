@@ -463,11 +463,11 @@
   <order>
     <hop>
       <from>feedback_replies</from>
-      <to>Selecciona&#x2f;Renombra valores</to>
+      <to>selec</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Selecciona&#x2f;Renombra valores</from>
+      <from>selec</from>
       <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -533,7 +533,7 @@
     </step>
 
   <step>
-    <name>Selecciona&#x2f;Renombra valores</name>
+    <name>selec</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
