@@ -314,7 +314,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>128</xloc>
+      <xloc>80</xloc>
       <yloc>32</yloc>
     </entry>
     <entry>
@@ -1351,7 +1351,7 @@
       <description/>
       <type>WRITE_TO_LOG</type>
       <logmessage>DONE&#xd;&#xa;&#x24;&#x7b;S3_NAME&#x7d;</logmessage>
-      <loglevel/>
+      <loglevel>Basic</loglevel>
       <logsubject/>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -1359,17 +1359,34 @@
       <xloc>976</xloc>
       <yloc>464</yloc>
     </entry>
+    <entry>
+      <name>LOG 2</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <logmessage>start&#x3a;&#xd;&#xa;&#x24;&#x7b;S3_NAME&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>160</xloc>
+      <yloc>16</yloc>
+    </entry>
+    <entry>
+      <name>LOG 3</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <logmessage>ERROR&#xd;&#xa;&#x24;&#x7b;S3_NAME&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>784</xloc>
+      <yloc>1056</yloc>
+    </entry>
   </entries>
   <hops>
-    <hop>
-      <from>START</from>
-      <to>feedback</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
     <hop>
       <from>feedback</from>
       <to>feedback  s3</to>
@@ -1830,8 +1847,35 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
+      <from>DUMMY</from>
+      <to>LOG</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>LOG 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>LOG 2</from>
+      <to>feedback</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
       <from>generic process - download by table</from>
-      <to>DUMMY</to>
+      <to>LOG</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1839,12 +1883,12 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>DUMMY</from>
-      <to>LOG</to>
+      <from>generic process - download by table</from>
+      <to>LOG 3</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
   </hops>

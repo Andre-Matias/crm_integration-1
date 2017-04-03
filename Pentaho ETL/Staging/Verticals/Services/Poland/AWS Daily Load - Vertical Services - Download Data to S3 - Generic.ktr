@@ -464,7 +464,7 @@
   </notepads>
   <connection>
     <name>Services Vertical Poland</name>
-    <server>fix-staging-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <server>fix-stg-prm-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
