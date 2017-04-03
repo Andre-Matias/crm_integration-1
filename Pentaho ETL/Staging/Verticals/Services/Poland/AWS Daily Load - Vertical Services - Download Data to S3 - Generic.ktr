@@ -565,7 +565,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;&#x2a;&#xd;&#xa;FROM &#x24;&#x7b;S3_NAME&#x7d;&#xd;&#xa;&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;&#x2a;&#xd;&#xa;FROM &#x24;&#x7b;S3_NAME&#x7d;&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
