@@ -1,0 +1,9 @@
+{
+    "path" : "~/R/test dashboard/data",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

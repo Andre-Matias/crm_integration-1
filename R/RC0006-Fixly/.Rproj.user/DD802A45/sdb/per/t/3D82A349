@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# load the shinydashboard package\nlibrary(shiny)\nrequire(shinydashboard)\nlibrary(ggplot2)\nlibrary(plyr)\n\n#source the components of the app\nsource(file=\"data/data.R\")\nsource(file=\"header/header.R\")\nsource(file=\"sidebar/sidebar.R\")\nsource(file=\"body/body.R\")\n\n# create the user interface for the dashboard\n# all shiny dashboards have the same three basic layout elements:\n# a header\n# a sidebar\n# a body\n\nui <- dashboardPage(header, sidebar, body, skin=\"purple\")\n\n# create the server functions for the dashboard  \nserver <- function(input, output) { \n  server_dashboard(input, output)\n  server_overlap(input, output)\n}\n\n# render the dashboard as a shiny app\nshinyApp(ui, server)",
+    "created" : 1490109989648.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2416621876",
+    "id" : "3D82A349",
+    "lastKnownWriteTime" : 1490366181,
+    "last_content_update" : 1490366181381,
+    "path" : "~/R/test dashboard/app.R",
+    "project_path" : "app.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
