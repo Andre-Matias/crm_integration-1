@@ -44,9 +44,10 @@ server <- function(input, output) {
       geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 350000)) + 
-      geom_text(aes(y= Duplicates,label = Duplicates, vjust=-2)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) + 
+      coord_cartesian(ylim = c(30000, 380000)) + 
+      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
+      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
+      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("Active Ads vs Active Duplicates by Day") +
       theme(plot.title = element_text(lineheight=.8, face="bold"))
     
@@ -60,9 +61,10 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 55000)) + 
-      geom_text(aes(y= Duplicates,label = Duplicates, vjust=-1)) + 
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) + 
+      coord_cartesian(ylim = c(0, 42000)) + 
+      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
+      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
+      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("Active Ads vs Active Duplicates by Day") + 
       theme(plot.title = element_text(lineheight=.8, face="bold")) 
     
@@ -79,6 +81,7 @@ server <- function(input, output) {
       geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=1)) + 
       geom_text(aes(y= dfstoriadel1$"Deleted 1 Day %",label = percent(dfstoriadel1$"Deleted 1 Day %"), vjust=1)) + 
       ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.01),labels=percent) + 
+      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("%Deleted ads based on creation date of the last 7, 3 and 1 Day") + 
       theme(plot.title = element_text(lineheight=.8, face="bold")) 
     
@@ -95,6 +98,7 @@ server <- function(input, output) {
     geom_text(aes(y= dfstradiadel1$"Deleted 3 Days %",label = percent(dfstradiadel1$"Deleted 3 Days %"), vjust=1)) + 
     geom_text(aes(y= dfstradiadel1$"Deleted 1 Day %",label = percent(dfstradiadel1$"Deleted 1 Day %"), vjust=1)) + 
     ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.2),labels=percent) + 
+    scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
     ggtitle("%Deleted ads based on creation date of the last 7, 3 and 1 Day") + 
     theme(plot.title = element_text(lineheight=.8, face="bold"))  
   

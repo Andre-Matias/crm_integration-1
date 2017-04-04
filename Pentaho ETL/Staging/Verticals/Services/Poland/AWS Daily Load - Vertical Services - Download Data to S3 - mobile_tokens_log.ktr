@@ -464,6 +464,16 @@
     <hop>
       <from>mobile_tokens_log</from>
       <to>S3 File Output 5 2</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>mobile_tokens_log</from>
+      <to>select</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select</from>
+      <to>S3 File Output 5 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -492,7 +502,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;mobile_tokens_log-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;mobile_tokens_log-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -531,7 +541,7 @@
     <name>mobile_tokens_log</name>
     <type>TableInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -539,7 +549,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;&#x2a; from &#xd;&#xa;mobile_tokens_log</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, regexp_replace&#x28;tokens, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as tokens&#xd;&#xa;, regexp_replace&#x28;response, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as response&#xd;&#xa;-- , response&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM mobile_tokens_log&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -554,7 +564,63 @@
     </remotesteps>
     <GUI>
       <xloc>240</xloc>
-      <yloc>176</yloc>
+      <yloc>160</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>tokens</name>
+        <rename>tokens</rename>
+        <type>String</type>
+        <length>1000</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>response</name>
+        <rename>response</rename>
+        <type>String</type>
+        <length>1000</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
