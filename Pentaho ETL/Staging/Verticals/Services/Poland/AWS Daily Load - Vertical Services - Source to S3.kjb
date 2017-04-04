@@ -341,11 +341,11 @@
       <create_parent_folder>N</create_parent_folder>
       <pass_export>N</pass_export>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-            <parameter>            <name>TABLE_NAME</name>
-            <stream_name>table_name</stream_name>
-            <value/>
-            </parameter>            <parameter>            <name>S3_NAME</name>
+            <parameter>            <name>S3_NAME</name>
             <stream_name>s3_name</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>TABLE_NAME</name>
+            <stream_name>table_name</stream_name>
             <value/>
             </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
       <parallel>N</parallel>
