@@ -346,7 +346,7 @@
       <name>SQL</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;</sql>
+      <sql>truncate table rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
