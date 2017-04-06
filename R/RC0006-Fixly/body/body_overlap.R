@@ -5,7 +5,7 @@
 tab_main <-fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Segmentation Criteria (OLX.pl) "
+    title = "Segmentation Criteria (OLX.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
@@ -35,6 +35,7 @@ tab_total <-fluidRow(
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,verbatimTextOutput("globalInfo")
     ,plotOutput("totalProfByCat", height = "300px", click = "plotTotal_click")
   ) ,
   
@@ -44,6 +45,7 @@ tab_total <-fluidRow(
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,verbatimTextOutput("globalInfo2")
     ,div(style="display:inline-block;", downloadButton('downloadTotalProf', 'Download'), style="float:right")
     ,dataTableOutput("totalProfTable")
   )
@@ -176,7 +178,7 @@ frow_overlap1<- fluidRow(
     # The id lets us use input$tabset1 on the server to find the current tab
     id = "tab_buckets",
     width = 12,
-    height = "800px",
+    height = "850px",
     tabPanel("Global",tab_main,tab_total),
     tabPanel("Gold Bucket", tab_gold, tab_gold_table),
     tabPanel("Silver Bucket", tab_silver, tab_silver_table),
@@ -203,7 +205,7 @@ server_overlap = function(input, output) {
                   class = c('compact', 'cell-border'),
                   options = list(dom = 'ft',paging = FALSE,ordering=FALSE, searching = FALSE, autoWidth = FALSE,
                                  rowCallback = JS('function(row, column, data) {$("td", row).css("text-align", "left");
-                                                  }'),
+}'),
                                  initComplete = JS(
                                    "function(settings, json) {",
                                    "$(this.api().table().header()).css({'background-color': '#9999CC ', 'color': '#000'});",
@@ -212,7 +214,7 @@ server_overlap = function(input, output) {
                                  columnDefs = list(list(visible=FALSE, targets=c(0,8)
                                  )
                                  )))
-  )
+    )
   
   output$MainHeatMap <- renderPlot({
     treemap(totalUsersPerBucket, #Your data frame object
@@ -234,7 +236,7 @@ server_overlap = function(input, output) {
     ggplot(data = totalProf[order(totalProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_bar(stat="identity") + ylab("# Professional Userss") +
+      geom_bar(stat="identity") + ylab("# Professional Users") +
       geom_text(data=subset(totalProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
       xlab("Ads Category (L2)") + theme(legend.position="bottom"
                                         ,plot.title = element_text(size=15, face="bold"),
@@ -384,13 +386,15 @@ server_overlap = function(input, output) {
   }
   
   # # tables with professionals data
-  output$goldProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
-  output$silverProfTable <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
-  output$bronzeProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
-  output$totalProfTable  <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=3, columnDefs = list(list(visible=FALSE, targets=c(0,3,5,8,9)))))
+  output$goldProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
+  output$silverProfTable <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
+  output$bronzeProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
+  output$totalProfTable  <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=3, columnDefs = list(list(visible=FALSE, targets=c(0,3,4,6,9,10)))))
   
   # # labels with info
+  output$globalInfo = renderText("Please click on the bar chart to filter the professionals additional data")
+  output$globalInfo2 = renderText("Please use the search input to filter the data")
   output$goldInfo = renderText("Please click on the bar chart to filter the gold bucket data")
   output$silverInfo = renderText("Please click on the bar chart to filter the silver bucket data")
   output$bronzeInfo = renderText("Please click on the bar chart to filter the bronze bucket data")
-  }
+}
