@@ -228,13 +228,13 @@ server_overlap = function(input, output) {
   # fluid row Gold, graph 1: sales by region quarter bar graph
   totalProf <- subset(df_unpvot, variable %in% c("total.olx","total.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx","total.olx.and.fixly"),ordered = TRUE)
+  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx","total.olx.and.fixly"),ordered = FALSE)
   
   output$totalProfByCat <- renderPlot({
     ggplot(data = totalProf,
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_bar(stat="identity") + ylab("# Professional Users") +
+      geom_bar(stat="identity") + ylab("# Professional Userss") +
       geom_text(data=subset(totalProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
       xlab("Ads Category (L2)") + theme(legend.position="bottom"
                                         ,plot.title = element_text(size=15, face="bold"),
