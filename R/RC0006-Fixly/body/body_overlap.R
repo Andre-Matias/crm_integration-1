@@ -319,7 +319,7 @@ server_overlap = function(input, output) {
   bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx","bronze.olx.and.fixly"),ordered = TRUE)
   
   output$bronzeProfByCat <- renderPlot({
-    ggplot(data = bronzeProf,
+    ggplot(data = bronzeProf[order(bronzeProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
