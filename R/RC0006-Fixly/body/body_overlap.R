@@ -322,7 +322,7 @@ server_overlap = function(input, output) {
     ggplot(data = bronzeProf,
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_bar(stat="identity") + ylab("# Professional Users") +
+      geom_bar(stat="identity") + ylab("# Professional Userss") +
       geom_text(data=subset(bronzeProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
       xlab("Ads Category (L2)") + theme(legend.position="bottom"
                                         ,plot.title = element_text(size=15, face="bold"),
