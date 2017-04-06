@@ -5,7 +5,7 @@
 tab_main <-fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Segmentation Criteria (OLX.pl)"
+    title = "Segmentation Criteria (OLX.pl) "
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
