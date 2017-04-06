@@ -231,7 +231,7 @@ server_overlap = function(input, output) {
   totalProf$variable <- factor(totalProf$variable, levels = c("total.olx.and.fixly","total.olx"),ordered = FALSE)
   
   output$totalProfByCat <- renderPlot({
-    ggplot(data = totalProf,
+    ggplot(data = totalProf[order(totalProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Userss") +
@@ -247,7 +247,7 @@ server_overlap = function(input, output) {
   goldProf$variable <- factor(goldProf$variable, levels = c("gold.olx","gold.olx.and.fixly"),ordered = TRUE)
   
   output$goldProfByCat <- renderPlot({
-    ggplot(data = goldProf,
+    ggplot(data = goldProf[order(goldProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
@@ -283,7 +283,7 @@ server_overlap = function(input, output) {
   silverProf$variable <- factor(silverProf$variable, levels = c("silver.olx","silver.olx.and.fixly"),ordered = TRUE)
   
   output$silverProfByCat <- renderPlot({
-    ggplot(data = silverProf,
+    ggplot(data = silverProf[order(silverProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
