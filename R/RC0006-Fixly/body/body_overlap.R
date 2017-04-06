@@ -228,13 +228,13 @@ server_overlap = function(input, output) {
   # fluid row Gold, graph 1: sales by region quarter bar graph
   totalProf <- subset(df_unpvot, variable %in% c("total.olx","total.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx.and.fixly", "total.olx"),ordered = TRUE)
+  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx","total.olx.and.fixly"),ordered = FALSE)
   
   output$totalProfByCat <- renderPlot({
-    ggplot(data = totalProf,
+    ggplot(data = totalProf[order(totalProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_bar(stat="identity") + ylab("# Professional Users") +
+      geom_bar(stat="identity") + ylab("# Professional Userss") +
       geom_text(data=subset(totalProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
       xlab("Ads Category (L2)") + theme(legend.position="bottom"
                                         ,plot.title = element_text(size=15, face="bold"),
@@ -244,10 +244,10 @@ server_overlap = function(input, output) {
   # fluid row Gold, graph 1: sales by region quarter bar graph
   goldProf <- subset(df_unpvot, variable %in% c("gold.olx","gold.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  goldProf$variable <- factor(goldProf$variable, levels = c("gold.olx.and.fixly", "gold.olx"),ordered = TRUE)
+  goldProf$variable <- factor(goldProf$variable, levels = c("gold.olx","gold.olx.and.fixly"),ordered = TRUE)
   
   output$goldProfByCat <- renderPlot({
-    ggplot(data = goldProf,
+    ggplot(data = goldProf[order(goldProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
@@ -280,10 +280,10 @@ server_overlap = function(input, output) {
   # # fluid row Silver, graph 2: sales be region current/prior year
   silverProf <- subset(df_unpvot, variable %in% c("silver.olx","silver.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  silverProf$variable <- factor(silverProf$variable, levels = c("silver.olx.and.fixly","silver.olx"),ordered = TRUE)
+  silverProf$variable <- factor(silverProf$variable, levels = c("silver.olx","silver.olx.and.fixly"),ordered = TRUE)
   
   output$silverProfByCat <- renderPlot({
-    ggplot(data = silverProf,
+    ggplot(data = silverProf[order(silverProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
@@ -316,10 +316,10 @@ server_overlap = function(input, output) {
   # # fluid row bronze, graph 2: sales be region current/prior year
   bronzeProf <- subset(df_unpvot, variable %in% c("bronze.olx","bronze.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx.and.fixly", "bronze.olx"),ordered = TRUE)
+  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx","bronze.olx.and.fixly"),ordered = TRUE)
   
   output$bronzeProfByCat <- renderPlot({
-    ggplot(data = bronzeProf,
+    ggplot(data = bronzeProf[order(bronzeProf$variable, decreasing=T),],
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
