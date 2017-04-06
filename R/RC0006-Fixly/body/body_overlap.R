@@ -316,13 +316,13 @@ server_overlap = function(input, output) {
   # # fluid row bronze, graph 2: sales be region current/prior year
   bronzeProf <- subset(df_unpvot, variable %in% c("bronze.olx","bronze.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx","bronze.olx.and.fixly"),ordered = TRUE)
+  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx.and.fixly","bronze.olx"),ordered = TRUE)
   
   output$bronzeProfByCat <- renderPlot({
     ggplot(data = bronzeProf,
            aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
-      scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_bar(stat="identity") + ylab("# Professional Userss") +
+      scale_fill_manual(values=c("#66CC99","#9999CC")) +
+      geom_bar(stat="identity") + ylab("# Professional Users") +
       geom_text(data=subset(bronzeProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
       xlab("Ads Category (L2)") + theme(legend.position="bottom"
                                         ,plot.title = element_text(size=15, face="bold"),
