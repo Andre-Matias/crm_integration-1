@@ -387,8 +387,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1248</xloc>
-      <yloc>256</yloc>
+      <xloc>480</xloc>
+      <yloc>416</yloc>
     </entry>
     <entry>
       <name>SQL</name>
@@ -451,7 +451,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>SQL</from>
+      <from>SQL - vert_services_fixly_user_l3_city &#x3a;&#x3a; report users</from>
       <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -460,20 +460,11 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>SQL - vert_services_fixly_user_l3_city &#x3a;&#x3a; report users</from>
-      <to>&#xc9;xito</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
       <from>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; report segmentation</from>
       <to>waiting1</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -482,7 +473,7 @@
       <to>SQL vert_services_fixly_prof_l3_city &#x3a;&#x3a; report professionals</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -491,13 +482,22 @@
       <to>waiting2</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
       <from>waiting2</from>
       <to>SQL - vert_services_fixly_user_l3_city &#x3a;&#x3a; report users</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; report segmentation</from>
+      <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
