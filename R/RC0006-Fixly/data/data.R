@@ -37,7 +37,7 @@ res <- dbSendQuery(conn_chandra, "select
                    email as \"E-mail\",
                    c.new_id as categoryid,
                    name_en as \"Category\",
-                   sum(nnls) as \"NNLs\",
+                   sum(nnls) as \"NNL 6 months\",
                    sum(active_ads) as \"Active Ads\",
                    sum(reve1m) as \"Revenue 1 Month\",
                    sum(reve1m) as \"Revenue 6 Months\",
