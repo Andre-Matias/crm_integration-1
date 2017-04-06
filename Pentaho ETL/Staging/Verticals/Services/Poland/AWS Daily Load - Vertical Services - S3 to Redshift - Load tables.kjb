@@ -346,7 +346,7 @@
       <name>SQL</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY rdl_vertical_services.&#x24;&#x7b;TABLE_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#xd;&#xa;REGION as &#x27;us-east-1&#x27;&#x3b;</sql>
+      <sql>truncate table rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
@@ -381,6 +381,19 @@
       <xloc>336</xloc>
       <yloc>176</yloc>
     </entry>
+    <entry>
+      <name>Write To Log 2</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <logmessage>ERROR HERE&#x3a; &#x24;&#x7b;TABLE_NAME&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>496</xloc>
+      <yloc>288</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -407,7 +420,16 @@
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>SQL</from>
+      <to>Write To Log 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
       <unconditional>N</unconditional>
     </hop>
   </hops>
