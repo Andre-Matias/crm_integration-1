@@ -1,135 +1,174 @@
+##################################################################
+# MAIN TAB
+##################################################################
+
 tab_main <-fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Segment Description"
+    title = "Segmentation Criteria (OLX.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
     ,dataTableOutput("MainDescription")
+    ,strong("Descriptions"),br()
+    ,strong("Gold - "),em(df_desc[1,8]),br()
+    ,strong("Silver - "),em(df_desc[2,8]),br()
+    ,strong("Bronze - "),em(df_desc[3,8]),br()
+    ,strong("Tin - "),em(df_desc[4,8]),br()
+    ,strong("Drop-off - "),em(df_desc[5,8])
   )
   
   # second box for sales by year and region bar
   ,box(
-   title = "Percent of Segments"
-   ,status = "primary"
-   ,solidHeader = TRUE
-   ,collapsible = TRUE
-   ,plotOutput("MainHeatMap", height = "300px")
+    title = "Professional Users by Bucket (OLX.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    ,plotOutput("MainHeatMap", height = "300px")
   )
 )
 
 tab_total <-fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Professional Users by Category"
+    title = "Professional Users by Category (Overlap OLX.pl and Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
     ,plotOutput("totalProfByCat", height = "300px", click = "plotTotal_click")
   ) ,
   
-  div(style="display:inline-block;", downloadButton('downloadTotalProf', 'Download'), style="float:right"),
   # first box for sales by quarter and region bar
   box(
-    title = ""
+    title = "Professional Users Additional Data (OLX.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,div(style="display:inline-block;", downloadButton('downloadTotalProf', 'Download'), style="float:right")
     ,dataTableOutput("totalProfTable")
   )
 )
 
-#tab_main_detail <- column(dataTableOutput('mytable3'), width = 3)
+##################################################################
+# GOLD TAB
+##################################################################
 
 tab_gold <-fluidRow(
-  # first box for sales by quarter and region bar
+  # first box for Professional Users by Category
   box(
-    title = "Professional Users by Category"
+    title = "Professional Users by Category (Overlap OLX.pl and Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
+    ,verbatimTextOutput("goldInfo")
     ,plotOutput("goldProfByCat", height = "300px", click = "plotGold_click")
   )
   
-  # second box for sales by year and region bar
+  # second box for Professional Users Onboarding
   ,box(
-    title = "Professional Users Onboarding"
+    title = "Professional Users Onboarding (Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
     ,plotOutput("goldProfOnboarding", height = "300px")
   )
 )
 
-tab_gold_download <- fluidRow(
-  div(style="display:inline-block;", downloadButton('downloadGoldProf', 'Download'), style="float:right")
+tab_gold_table <-fluidRow(
+  box(
+    title = "Professional Users Additional Data (OLX.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    , width = 12
+    ,div(style="display:inline-block;", downloadButton('downloadGoldProf', 'Download'), style="float:right")
+    ,dataTableOutput(outputId = "goldProfTable"))
 )
 
-tab_gold_table <-fluidRow(
-  column(
-    dataTableOutput(outputId = "goldProfTable"), width = 12)
-)
+##################################################################
+# SILVER TAB
+##################################################################
 
 tab_silver <- fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Professional Users by Category"
+    title = "Professional Users by Category (Overlap OLX.pl and Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
+    ,verbatimTextOutput("silverInfo")
     ,plotOutput("silverProfByCat", height = "300px", click = "plotSilver_click")
   )
   
   # second box for sales by year and region bar
   ,box(
-    title = "Professional Users Onboarding"
+    title = "Professional Users Onboarding (Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
     ,plotOutput("silverProfOnboarding", height = "300px")
   )
 )
 
-tab_silver_download <- fluidRow(
-  div(style="display:inline-block;", downloadButton('downloadSilverProf', 'Download'), style="float:right")
+tab_silver_table <-fluidRow(
+  box(
+    title = "Professional Users Additional Data (OLX.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    , width = 12
+    ,div(style="display:inline-block;", downloadButton('downloadSilverProf', 'Download'), style="float:right")
+    ,dataTableOutput(outputId = "silverProfTable")
+  )
 )
 
-tab_silver_table <- fluidRow(  
-  column(
-    dataTableOutput(outputId = "silverProfTable"), height = "150px", width = 12)
-)
+##################################################################
+# BRONZE TAB
+##################################################################
+
 
 tab_bronze <- fluidRow(
   # first box for sales by quarter and region bar
   box(
-    title = "Professional Users by Category"
+    title = "Professional Users by Category (Overlap OLX.pl and Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
+    ,verbatimTextOutput("bronzeInfo")
     ,plotOutput("bronzeProfByCat", height = "300px", click = "plotBronze_click")
   )
   
   # second box for sales by year and region bar
   ,box(
-    title = "Professional Users Onboarding"
+    title = "Professional Users Onboarding (Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
+    ,height = "420px"
     ,plotOutput("bronzeProfOnboarding", height = "300px")
   )
 )
 
-
-tab_bronze_download <- fluidRow(
-  div(style="display:inline-block;", downloadButton('downloadBronzeProf', 'Download'), style="float:right")
-)
-
 tab_bronze_table <- fluidRow(
-  column(
-    dataTableOutput(outputId = "bronzeProfTable"), height = "150px", width = 12)
+  box(
+    title = "Professional Users Additional Data (OLX.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    , width = 12
+    ,div(style="display:inline-block;", downloadButton('downloadBronzeProf', 'Download'), style="float:right")
+    ,dataTableOutput(outputId = "bronzeProfTable")
+  )
 )
 
-
+##################################################################
+# ALL
+##################################################################
 
 frow_overlap1<- fluidRow(
   tabBox(
@@ -138,26 +177,41 @@ frow_overlap1<- fluidRow(
     id = "tab_buckets",
     width = 12,
     height = "800px",
-    tabPanel("Main", tab_main,tab_total),
-    tabPanel("Gold Bucket", tab_gold, tab_gold_download, tab_gold_table),
-    tabPanel("Silver Bucket", tab_silver, tab_silver_download, tab_silver_table),
-    tabPanel("Bronze Bucket", tab_bronze, tab_bronze_download, tab_bronze_table)
+    tabPanel("Global",tab_main,tab_total),
+    tabPanel("Gold Bucket", tab_gold, tab_gold_table),
+    tabPanel("Silver Bucket", tab_silver, tab_silver_table),
+    tabPanel("Bronze Bucket", tab_bronze, tab_bronze_table)
   )
 )
 
 #############################################################################
-#output to dashboardBody
+# output to dashboardBody
+#############################################################################
 tab_overlap <- tabItem(tabName = "overlap", frow_overlap1)
 
-#output to server function
+#############################################################################
+# output to server function
+#############################################################################
+
 server_overlap = function(input, output) {
-  output$mytable3 = renderDataTable({
-    iris
-  }, options = list(lengthMenu = c(5, 30, 50), pageLength = 5))
-  
-  output$MainDescription <- renderDataTable({
-    df_desc},
-    options = list(paging = FALSE, Width = "50px", searching = FALSE)
+  df_desc_character <- df_desc
+  df_desc_character$`# professionals` <- as.character(df_desc_character$`# professionals`)
+  df_desc_character$`# active ads` <- as.character(df_desc_character$`# active ads`)
+  df_desc_character$`vas generated revenue` <- as.character(df_desc_character$`vas generated revenue`)
+  output$MainDescription <- renderDataTable(
+    DT::datatable(df_desc_character,
+                  class = c('compact', 'cell-border'),
+                  options = list(dom = 'ft',paging = FALSE,ordering=FALSE, searching = FALSE, autoWidth = FALSE,
+                                 rowCallback = JS('function(row, column, data) {$("td", row).css("text-align", "left");
+                                                  }'),
+                                 initComplete = JS(
+                                   "function(settings, json) {",
+                                   "$(this.api().table().header()).css({'background-color': '#9999CC ', 'color': '#000'});",
+                                   #"$(this.api().table().header()).css({'text-align', 'right'});",
+                                   "}"),
+                                 columnDefs = list(list(visible=FALSE, targets=c(0,8)
+                                 )
+                                 )))
   )
   
   output$MainHeatMap <- renderPlot({
@@ -172,133 +226,147 @@ server_overlap = function(input, output) {
   })
   
   # fluid row Gold, graph 1: sales by region quarter bar graph
-  TotalProf <- subset(df_unpvot, variable %in% c("TOTAL","TOTALBOTH"), select = c(Service,CATEGORYID,CATEGORY,variable,value))
-  
-  TotalProfOrder <- subset(df_unpvot, variable %in% c("TOTAL"), select = CATEGORY)
+  totalProf <- subset(df_unpvot, variable %in% c("total.olx","total.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
   output$totalProfByCat <- renderPlot({
-    ggplot(data = TotalProf,
-           aes(x=CATEGORY, y=value, fill=variable)) +  
+    ggplot(data = totalProf,
+           aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
-      scale_x_discrete(limits=TotalProfOrder$CATEGORY) +
-      xlab("Source") + theme(legend.position="bottom"
-                             ,plot.title = element_text(size=15, face="bold"),
-                             axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
+      geom_text(data=subset(totalProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
+      xlab("Ads Category (L2)") + theme(legend.position="bottom"
+                                        ,plot.title = element_text(size=15, face="bold"),
+                                        axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
   })
   
   # fluid row Gold, graph 1: sales by region quarter bar graph
-  goldProf <- subset(df_unpvot, variable %in% c("GOLD","GOLDBOTH"), select = c(Service,CATEGORYID,CATEGORY,variable,value))
-  
-  goldProfOrder <- subset(df_unpvot, variable %in% c("GOLD"), select = CATEGORY)
+  goldProf <- subset(df_unpvot, variable %in% c("gold.olx","gold.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
   output$goldProfByCat <- renderPlot({
     ggplot(data = goldProf,
-           aes(x=CATEGORY, y=value, fill=variable)) +  
+           aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
       scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
-      scale_x_discrete(limits=goldProfOrder$CATEGORY) +
-      xlab("Source") + theme(legend.position="bottom"
-                             ,plot.title = element_text(size=15, face="bold"),
-                             axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
+      geom_text(data=subset(goldProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
+      xlab("Ads Category (L2)") + theme(legend.position="bottom"
+                                        ,plot.title = element_text(size=15, face="bold"),
+                                        axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
   })
   
   # # fluid row Gold, graph 2: sales be region current/prior year
-  goldProf_daily <- subset(df_unpvot_daily, variable %in% c("GOLD","GOLDBOTH"), select = c(CATEGORY,CATEGORYID,DIA,variable,value))
+  goldProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "GOLD"))
+  
   output$goldProfOnboarding <- renderPlot({
     x_Numeric <- function(e) {
       if(is.null(e)) return(1)
       round(e$x, 0)
     } 
-    subsetGoldProfDaily <- as.data.frame(goldProf_daily[goldProf_daily$CATEGORYID == as.numeric(x_Numeric(input$plotGold_click)),])
     
-    ggplot(data=subsetGoldProfDaily, aes(x=DIA, y=value, group=CATEGORY, colour=CATEGORY)) + scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_line() +
-      geom_point()
+    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
+      geom_line(colour="#66CC99", size=1) +
+      geom_point(colour="#66CC99", size=2) +
+      scale_shape_discrete(name  ="Ads Category (L2)")+
+      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
+      ylab("# Registered Professional Users") +
+      xlab("Registration Date") +
+      scale_x_date(date_labels = "%b %d")
   })
   
   
   # # fluid row Silver, graph 2: sales be region current/prior year
-  silverProf <- subset(df_unpvot, variable %in% c("SILVER","SILVERBOTH"), select = c(Service,CATEGORYID,CATEGORY,variable,value))
-  silverProfOrder <- subset(df_unpvot, variable %in% c("GOLD"), select = CATEGORY)
+  silverProf <- subset(df_unpvot, variable %in% c("silver.olx","silver.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
+  
   output$silverProfByCat <- renderPlot({
     ggplot(data = silverProf,
-           aes(x=factor(CATEGORY), y=value, fill=variable)) +  scale_fill_manual(values=c("#9999CC", "#66CC99")) +  
-      geom_bar(stat="identity") + ylab("# Professional Users") + 
-      scale_x_discrete(limits=silverProfOrder$CATEGORY) +
-      xlab("Source") + theme(legend.position="bottom" 
-                             ,plot.title = element_text(size=15, face="bold"),
-                             axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold")) 
+           aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
+      scale_fill_manual(values=c("#9999CC", "#66CC99")) +
+      geom_bar(stat="identity") + ylab("# Professional Users") +
+      geom_text(data=subset(silverProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
+      xlab("Ads Category (L2)") + theme(legend.position="bottom"
+                                        ,plot.title = element_text(size=15, face="bold"),
+                                        axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
   })
   
-  # # fluid row Silver, graph 2: sales be region current/prior year
-  silverProf_daily <- subset(df_unpvot_daily, variable %in% c("SILVER","SILVERBOTH"), select = c(CATEGORY,CATEGORYID,DIA,variable,value))
+  # # fluid row Gold, graph 2: sales be region current/prior year
+  silverProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "SILVER"))
   
   output$silverProfOnboarding <- renderPlot({
     x_Numeric <- function(e) {
       if(is.null(e)) return(1)
       round(e$x, 0)
     } 
-    subsetSilverProfDaily <- as.data.frame(silverProf_daily[silverProf_daily$CATEGORYID == as.numeric(x_Numeric(input$plotSilver_click)),])
-    ggplot(data=subsetSilverProfDaily, aes(x=DIA, y=value, group=CATEGORY, colour=CATEGORY)) + scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_line() +
-      geom_point()
+    
+    ggplot(data=silverProf_daily[silverProf_daily$categoryid == as.numeric(x_Numeric(input$plotSilver_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
+      geom_line(colour="#66CC99", size=1) +
+      geom_point(colour="#66CC99", size=2) +
+      scale_shape_discrete(name  ="Ads Category (L2)")+
+      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
+      ylab("# Registered Professional Users") +
+      xlab("Registration Date") +
+      scale_x_date(date_labels = "%b %d")
   })
   
   
   # # fluid row bronze, graph 2: sales be region current/prior year
-  bronzeProf <- subset(df_unpvot, variable %in% c("BRONZE","BRONZEBOTH"), select = c(Service,CATEGORYID,CATEGORY,variable,value))
-  bronzeProfOrder <- subset(df_unpvot, variable %in% c("GOLD"), select = CATEGORY)
-  #mdfr2 <- dcast(mdfr, id.vars = c("Service","CATEGORY"))
+  bronzeProf <- subset(df_unpvot, variable %in% c("bronze.olx","bronze.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
+  
   output$bronzeProfByCat <- renderPlot({
     ggplot(data = bronzeProf,
-           aes(x=factor(CATEGORY), y=value, fill=variable)) +  scale_fill_manual(values=c("#9999CC", "#66CC99")) +  
+           aes(x=reorder(category, categoryid), y=value, fill=variable)) +  
+      scale_fill_manual(values=c("#9999CC", "#66CC99")) +
       geom_bar(stat="identity") + ylab("# Professional Users") +
-      scale_x_discrete(limits=bronzeProfOrder$CATEGORY) + 
-      xlab("Source") + theme(legend.position="bottom" 
-                             ,plot.title = element_text(size=15, face="bold"),
-                             axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold")) 
+      geom_text(data=subset(bronzeProf,value>0), aes(label=value),  colour="black", position=position_dodge(width=0.9), vjust=-0.25, size=3, check_overlap = TRUE)+
+      xlab("Ads Category (L2)") + theme(legend.position="bottom"
+                                        ,plot.title = element_text(size=15, face="bold"),
+                                        axis.text.x = element_text(angle = 25, hjust = 1,size=10, face="bold"))
   })
   
-  # # fluid row Silver, graph 2: sales be region current/prior year
-  bronzeProf_daily <- subset(df_unpvot_daily, variable %in% c("BRONZE","BRONZEBOTH"), select = c(CATEGORY,CATEGORYID,DIA,variable,value))
+  # # fluid row Bronze, graph 2: sales be region current/prior year
+  bronzeProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "BRONZE"))
   
   output$bronzeProfOnboarding <- renderPlot({
     x_Numeric <- function(e) {
       if(is.null(e)) return(1)
       round(e$x, 0)
     } 
-    subsetBronzeProfDaily <- as.data.frame(bronzeProf_daily[bronzeProf_daily$CATEGORYID == as.numeric(x_Numeric(input$plotBronze_click)),])
-    ggplot(data=subsetBronzeProfDaily, aes(x=DIA, y=value, group=CATEGORY, colour=CATEGORY)) + scale_fill_manual(values=c("#9999CC", "#66CC99")) +
-      geom_line() +
-      geom_point()
-  }) 
+    
+    ggplot(data=bronzeProf_daily[bronzeProf_daily$categoryid == as.numeric(x_Numeric(input$plotBronze_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
+      geom_line(colour="#66CC99", size=1) +
+      geom_point(colour="#66CC99", size=2) +
+      scale_shape_discrete(name  ="Ads Category (L2)")+
+      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
+      ylab("# Registered Professional Users") +
+      xlab("Registration Date") +
+      scale_x_date(date_labels = "%b %d")
+  })
   
+  
+  # # download buttons
   output$downloadTotalProf <- downloadHandler(
-    filename = function() { paste("input$date_range[1]", '.csv', sep='') },
+    filename = function() { paste("TotalSegmentation_filtered_", format(Sys.time(), "%Y%m%d%H%M%S"),'.csv', sep='') },
     content = function(file) {
-      write.csv(TotalProf, file)
+      write.csv(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),], file)
     }
   )
   
   output$downloadGoldProf <- downloadHandler(
-    filename = function() { paste("input$date_range[1]", '.csv', sep='') },
+    filename = function() { paste("GoldBucket_filtered_", format(Sys.time(), "%Y%m%d%H%M%S") , '.csv', sep='') },
     content = function(file) {
-      write.csv(goldProf, file)
+      write.csv(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",], file)
     }
   )
   
   output$downloadSilverProf <- downloadHandler(
-    filename = function() { paste("input$date_range[1]", '.csv', sep='') },
+    filename = function() { paste("SilverBucket_filtered_", format(Sys.time(), "%Y%m%d%H%M%S") , '.csv', sep='') },
     content = function(file) {
-      write.csv(silverProf, file)
+      write.csv(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",], file)
     }
   )
   
   output$downloadBronzeProf <- downloadHandler(
-    filename = function() { paste("input$date_range[1]", '.csv', sep='') },
+    filename = function() { paste("BronzeBucket_filtered_", format(Sys.time(), "%Y%m%d%H%M%S") , '.csv', sep='') },
     content = function(file) {
-      write.csv(bronzeProf, file)
+      write.csv(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",], file)
     }
   )
   
@@ -307,14 +375,14 @@ server_overlap = function(input, output) {
     round(e$x, 0)
   }
   
-  output$goldProfTable   <- renderDataTable(as.data.frame(goldProf[goldProf$CATEGORYID == as.numeric(x_Numeric(input$plotGold_click)),]), options = list(pageLength=5))
-  output$silverProfTable <- renderDataTable(as.data.frame(silverProf[silverProf$CATEGORYID == as.numeric(x_Numeric(input$plotSilver_click)),]), options = list(pageLength=5))
-  output$bronzeProfTable <- renderDataTable(as.data.frame(bronzeProf[bronzeProf$CATEGORYID == as.numeric(x_Numeric(input$plotBronze_click)),]), options = list(pageLength=5))
-  output$totalProfTable  <- renderDataTable(as.data.frame(TotalProf[TotalProf$CATEGORYID == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=5, Width = "50px", searching = FALSE))
+  # # tables with professionals data
+  output$goldProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
+  output$silverProfTable <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
+  output$bronzeProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,3,9)))))
+  output$totalProfTable  <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=3, columnDefs = list(list(visible=FALSE, targets=c(0,3,5,8,9)))))
   
-  
-  output$info <- renderText({
-    paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
-  })
-
-}
+  # # labels with info
+  output$goldInfo = renderText("Please click on the bar chart to filter the gold bucket data")
+  output$silverInfo = renderText("Please click on the bar chart to filter the silver bucket data")
+  output$bronzeInfo = renderText("Please click on the bar chart to filter the bronze bucket data")
+  }

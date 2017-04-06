@@ -4,7 +4,7 @@ require(shinydashboard)
 library(ggplot2)
 library(plyr)
 library(treemap)
-
+library(DT)
 
 #source the components of the app
 source(file="data/data.R")
