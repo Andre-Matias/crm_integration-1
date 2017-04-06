@@ -228,7 +228,7 @@ server_overlap = function(input, output) {
   # fluid row Gold, graph 1: sales by region quarter bar graph
   totalProf <- subset(df_unpvot, variable %in% c("total.olx","total.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx.and.fixly", "total.olx"),ordered = TRUE)
+  totalProf$variable <- factor(totalProf$variable, levels = c("total.olx","total.olx.and.fixly"),ordered = TRUE)
   
   output$totalProfByCat <- renderPlot({
     ggplot(data = totalProf,
@@ -244,7 +244,7 @@ server_overlap = function(input, output) {
   # fluid row Gold, graph 1: sales by region quarter bar graph
   goldProf <- subset(df_unpvot, variable %in% c("gold.olx","gold.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  goldProf$variable <- factor(goldProf$variable, levels = c("gold.olx.and.fixly", "gold.olx"),ordered = TRUE)
+  goldProf$variable <- factor(goldProf$variable, levels = c("gold.olx","gold.olx.and.fixly"),ordered = TRUE)
   
   output$goldProfByCat <- renderPlot({
     ggplot(data = goldProf,
@@ -280,7 +280,7 @@ server_overlap = function(input, output) {
   # # fluid row Silver, graph 2: sales be region current/prior year
   silverProf <- subset(df_unpvot, variable %in% c("silver.olx","silver.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  silverProf$variable <- factor(silverProf$variable, levels = c("silver.olx.and.fixly","silver.olx"),ordered = TRUE)
+  silverProf$variable <- factor(silverProf$variable, levels = c("silver.olx","silver.olx.and.fixly"),ordered = TRUE)
   
   output$silverProfByCat <- renderPlot({
     ggplot(data = silverProf,
@@ -316,7 +316,7 @@ server_overlap = function(input, output) {
   # # fluid row bronze, graph 2: sales be region current/prior year
   bronzeProf <- subset(df_unpvot, variable %in% c("bronze.olx","bronze.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
   
-  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx.and.fixly", "bronze.olx"),ordered = TRUE)
+  bronzeProf$variable <- factor(bronzeProf$variable, levels = c("bronze.olx","bronze.olx.and.fixly"),ordered = TRUE)
   
   output$bronzeProfByCat <- renderPlot({
     ggplot(data = bronzeProf,
