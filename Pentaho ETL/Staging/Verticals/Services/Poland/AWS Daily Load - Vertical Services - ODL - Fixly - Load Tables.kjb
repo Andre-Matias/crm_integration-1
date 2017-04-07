@@ -377,8 +377,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>144</xloc>
-      <yloc>240</yloc>
+      <xloc>128</xloc>
+      <yloc>224</yloc>
     </entry>
     <entry>
       <name>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request</name>
