@@ -424,7 +424,7 @@
       <name>waiting3</name>
       <description/>
       <type>DELAY</type>
-      <maximumTimeout>5</maximumTimeout>
+      <maximumTimeout>2</maximumTimeout>
       <scaletime>0</scaletime>
       <parallel>N</parallel>
       <draw>Y</draw>
