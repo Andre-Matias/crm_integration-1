@@ -5,6 +5,7 @@ library(ggplot2)
 library(plyr)
 library(treemap)
 library(DT)
+library(shinyjs)
 
 #source the components of the app
 source(file="data/data.R")
@@ -21,10 +22,13 @@ source(file="body/body.R")
 ui <- dashboardPage(header, sidebar, body, skin="purple")
 
 # create the server functions for the dashboard  
-server <- function(input, output) { 
+server <- function(input, output, session) { 
   server_dashboard(input, output)
+  server_professional(input, output, session)
+  server_users(input, output, session)
   server_overlap(input, output)
 }
 
 # render the dashboard as a shiny app
 shinyApp(ui, server)
+
