@@ -355,7 +355,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>896</xloc>
-      <yloc>1088</yloc>
+      <yloc>1168</yloc>
     </entry>
     <entry>
       <name>feedback</name>
@@ -411,7 +411,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>16</yloc>
     </entry>
     <entry>
@@ -468,7 +468,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>80</yloc>
     </entry>
     <entry>
@@ -591,7 +591,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>144</yloc>
     </entry>
     <entry>
@@ -626,7 +626,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>208</yloc>
     </entry>
     <entry>
@@ -661,7 +661,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>272</yloc>
     </entry>
     <entry>
@@ -696,7 +696,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>336</yloc>
     </entry>
     <entry>
@@ -775,7 +775,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>400</yloc>
     </entry>
     <entry>
@@ -810,7 +810,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>464</yloc>
     </entry>
     <entry>
@@ -867,7 +867,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>528</yloc>
     </entry>
     <entry>
@@ -924,7 +924,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>592</yloc>
     </entry>
     <entry>
@@ -981,7 +981,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
+      <xloc>432</xloc>
       <yloc>656</yloc>
     </entry>
     <entry>
@@ -1095,7 +1095,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
+      <xloc>432</xloc>
       <yloc>784</yloc>
     </entry>
     <entry>
@@ -1152,7 +1152,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
+      <xloc>432</xloc>
       <yloc>848</yloc>
     </entry>
     <entry>
@@ -1209,7 +1209,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
+      <xloc>432</xloc>
       <yloc>912</yloc>
     </entry>
     <entry>
@@ -1231,7 +1231,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>288</xloc>
+      <xloc>272</xloc>
       <yloc>976</yloc>
     </entry>
     <entry>
@@ -1266,7 +1266,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
+      <xloc>432</xloc>
       <yloc>976</yloc>
     </entry>
     <entry>
@@ -1288,7 +1288,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>288</xloc>
+      <xloc>272</xloc>
       <yloc>1040</yloc>
     </entry>
     <entry>
@@ -1323,7 +1323,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
+      <xloc>432</xloc>
       <yloc>1040</yloc>
     </entry>
     <entry>
@@ -1391,8 +1391,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>288</xloc>
-      <yloc>1104</yloc>
+      <xloc>272</xloc>
+      <yloc>1184</yloc>
     </entry>
     <entry>
       <name>&#xc9;xito</name>
@@ -1403,6 +1403,63 @@
       <nr>0</nr>
       <xloc>1328</xloc>
       <yloc>640</yloc>
+    </entry>
+    <entry>
+      <name>users</name>
+      <description/>
+      <type>SIMPLE_EVAL</type>
+      <valuetype>variable</valuetype>
+      <fieldname>&#x24;&#x7b;S3_NAME&#x7d;</fieldname>
+      <variablename>&#x24;&#x7b;S3_NAME&#x7d;</variablename>
+      <fieldtype>string</fieldtype>
+      <mask/>
+      <comparevalue>users</comparevalue>
+      <minvalue/>
+      <maxvalue/>
+      <successcondition>equal</successcondition>
+      <successnumbercondition>equal</successnumbercondition>
+      <successbooleancondition>false</successbooleancondition>
+      <successwhenvarset>N</successwhenvarset>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>1120</yloc>
+    </entry>
+    <entry>
+      <name>users &#x28;2&#x29;</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Vertical Services - Download Data to S3 - guest_registration_log.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>432</xloc>
+      <yloc>1120</yloc>
     </entry>
   </entries>
   <hops>
@@ -1884,15 +1941,6 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>guest_registration_log</from>
-      <to>S3_NAME variable</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>S3_NAME variable</from>
       <to>generic process - download by table</to>
       <from_nr>0</from_nr>
@@ -1913,6 +1961,42 @@
     <hop>
       <from>LOG</from>
       <to>&#xc9;xito</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>guest_registration_log</from>
+      <to>users</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>users</from>
+      <to>S3_NAME variable</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>users</from>
+      <to>users &#x28;2&#x29;</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>users &#x28;2&#x29;</from>
+      <to>DUMMY</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
