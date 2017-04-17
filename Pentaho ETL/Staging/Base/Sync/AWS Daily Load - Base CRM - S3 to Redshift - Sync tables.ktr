@@ -4230,7 +4230,7 @@
     <rownumByFile>N</rownumByFile>
     <rownum_field/>
     <format>Unix</format>
-    <encoding/>
+    <encoding>UTF-8</encoding>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
       <name>s3&#x3a;&#x2f;&#x2f;AKIAJ64EPWTWUB3XAQTA&#x3a;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x40;s3&#x2f;verticals-raw-data&#x2f;BaseCRM&#x2f;raw&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;</name>
