@@ -6,6 +6,7 @@ library(plyr)
 library(treemap)
 library(DT)
 library(shinyjs)
+library(googleVis)
 
 #source the components of the app
 source(file="data/data.R")

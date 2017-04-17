@@ -41,7 +41,7 @@ tab_main_professionals_line_evolution <- fluidRow(
              plotOutput("percentOfActiveUsersOnboardingProf", height = "300px")),
     
     tabPanel(title="Stickness",id="sticknessIdProf",value='sticknessValProf',
-             plotOutput("sticknessOnboardingProf", height = "300px")),
+             htmlOutput("sticknessOnboardingProf")),
     
     tabPanel(title="Bounce Payment",id="bouncePaymentIdProf",value='bouncePaymentValProf',
              plotOutput("bouncePaymentOnboardingProf", height = "300px")),
@@ -76,7 +76,7 @@ server_professional <- function(input, output, session) {
   
   # fluid row 1, kpi 2: market share
   output$mauBoxProf <- renderValueBox({
-    valueBox("1.1 K",
+    valueBox(box_mau,
              "MAU Professionals",
              icon = icon("list"),
              color = "aqua")
@@ -84,7 +84,7 @@ server_professional <- function(input, output, session) {
   
   # fluid row 1, kpi 2: market share
   output$bounceRateBoxProf <- renderValueBox({
-    valueBox("25%",
+    valueBox(box_bounce_rate,
              "Bounce Rate",
              icon = icon("list"),
              color = "aqua")
@@ -101,7 +101,7 @@ server_professional <- function(input, output, session) {
   
   # fluid row 1, kpi 1: pieces sold
   output$sticknessBoxProf <- renderValueBox({
-    valueBox("30%"
+    valueBox(box_stickiness
              ,"Stickness"
              ,icon = icon("inbox")
              ,color = "green")
@@ -245,25 +245,15 @@ server_professional <- function(input, output, session) {
   goldProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "GOLD"))
   
   output$mauOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+    ggplot(data=df_mau, aes(x=yearmonth, y=users, group=1)) +
+      geom_line(color='red')+
+      geom_point(color='red')
   })
   
   output$bounceRateOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+    ggplot(data=df_traffic, aes(x=date, y=bounce_rate, group=1)) +
+      geom_line(color='red')+
+      geom_point(color='red')
   })
   
   output$percentOfActiveUsersOnboardingProf <- renderPlot({
@@ -277,15 +267,13 @@ server_professional <- function(input, output, session) {
       scale_x_date(date_labels = "%b %d")
   })
   
-  output$sticknessOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$sticknessOnboardingProf <- renderGvis({
+    chart <- gvisLineChart(df_traffic, xvar = 'date', yvar = 'stickiness', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      colors = "['#0D737B']"
+    ))
+    chart
   })
   
   output$bouncePaymentOnboardingProf <- renderPlot({

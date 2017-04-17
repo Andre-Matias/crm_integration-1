@@ -76,7 +76,7 @@ server_users <- function(input, output, session) {
   
   # fluid row 1, kpi 2: market share
   output$mauBox <- renderValueBox({
-    valueBox("1.1 K",
+    valueBox(box_mau,
              "MAU",
              icon = icon("list"),
              color = "aqua")
@@ -84,7 +84,7 @@ server_users <- function(input, output, session) {
   
   # fluid row 1, kpi 2: market share
   output$bounceRateBox <- renderValueBox({
-    valueBox("25%",
+    valueBox(box_bounce_rate,
              "Bounce Rate",
              icon = icon("list"),
              color = "aqua")
@@ -101,7 +101,7 @@ server_users <- function(input, output, session) {
   
   # fluid row 1, kpi 1: pieces sold
   output$sticknessBox <- renderValueBox({
-    valueBox("30%"
+    valueBox(box_stickiness
              ,"Stickness"
              ,icon = icon("inbox")
              ,color = "green")
@@ -245,179 +245,53 @@ server_users <- function(input, output, session) {
   goldProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "GOLD"))
   
   output$mauOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
-    
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+    ggplot(data=df_mau, aes(x=yearmonth, y=users, group=1)) +
+      geom_line(color='red')+
+      geom_point(color='red')
   })
   
   output$bounceRateOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
-    
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+    ggplot(data=df_traffic, aes(x=date, y=bounce_rate, group=1)) +
+      geom_line(color='red')+
+      geom_point(color='red')
   })
   
   output$percentOfActiveUsersOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$sticknessOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
-    
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+    ggplot(data=df_traffic, aes(x=date, y=stickiness, group=1)) +
+      geom_line(color='red')+
+      geom_point(color='red')
   })
   
   output$numberOfRequestOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$numberOfPostingUsersOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$usersXrequestPerActiveUsersOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$satisfiedUsersOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$totalRequestsOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$professionalRatingUsersOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
   output$usersRatesXStarsOnboarding <- renderPlot({
-    x_Numeric <- function(e) {
-      if(is.null(e)) return(1)
-      round(e$x, 0)
-    } 
     
-    ggplot(data=goldProf_daily[goldProf_daily$categoryid == as.numeric(x_Numeric(input$plotGold_click)),], aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
   })
   
 }
