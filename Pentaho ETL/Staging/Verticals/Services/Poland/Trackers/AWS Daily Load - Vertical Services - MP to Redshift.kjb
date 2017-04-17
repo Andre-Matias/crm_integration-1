@@ -404,8 +404,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1008</xloc>
-      <yloc>256</yloc>
+      <xloc>1040</xloc>
+      <yloc>240</yloc>
     </entry>
     <entry>
       <name>AWS Daily Load - Vertical Services - MP S3 to Redshift</name>
