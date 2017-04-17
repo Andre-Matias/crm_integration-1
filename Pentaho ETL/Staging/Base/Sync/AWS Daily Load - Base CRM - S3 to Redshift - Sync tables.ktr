@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value>RE</default_value>
+        <default_value>Real Estate</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -26,7 +26,7 @@
       </parameter>
       <parameter>
         <name>DATE_PATH</name>
-        <default_value>2017&#x2f;03&#x2f;06</default_value>
+        <default_value>2017&#x2f;03&#x2f;16</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -1110,11 +1110,11 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <commit>500</commit>
+    <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>rdl_basecrm</schema>
-      <table>stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <schema>testing</schema>
+      <table>test_stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1281,11 +1281,11 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <commit>100</commit>
+    <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>rdl_basecrm</schema>
-      <table>stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <schema>testing</schema>
+      <table>test_stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1455,11 +1455,11 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <commit>100</commit>
+    <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>rdl_basecrm</schema>
-      <table>stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <schema>testing</schema>
+      <table>test_stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1621,7 +1621,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1168</xloc>
+      <xloc>1232</xloc>
       <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1639,11 +1639,11 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <commit>100</commit>
+    <commit>1000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>rdl_basecrm</schema>
-      <table>str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <schema>testing</schema>
+      <table>test_str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1732,11 +1732,11 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <commit>100</commit>
+    <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>rdl_basecrm</schema>
-      <table>str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <schema>testing</schema>
+      <table>test_str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -4229,7 +4229,7 @@
     <rownum>N</rownum>
     <rownumByFile>N</rownumByFile>
     <rownum_field/>
-    <format>DOS</format>
+    <format>Unix</format>
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
