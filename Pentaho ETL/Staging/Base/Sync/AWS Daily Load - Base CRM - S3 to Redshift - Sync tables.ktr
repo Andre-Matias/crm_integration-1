@@ -25,6 +25,11 @@
         <description/>
       </parameter>
       <parameter>
+        <name>COU_TABLE</name>
+        <default_value>Latam</default_value>
+        <description/>
+      </parameter>
+      <parameter>
         <name>DATE_PATH</name>
         <default_value>2017&#x2f;04&#x2f;16</default_value>
         <description/>
@@ -1099,6 +1104,190 @@
     </step>
 
   <step>
+    <name>Insert &#x2f; Update Contacts</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Chandra Redshift</connection>
+    <commit>5000</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>testing</schema>
+      <table>test_stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <key>
+        <name>id</name>
+        <field>id</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>owner_id</name>
+        <field>owner_id</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>inserted_date</name>
+        <rename>insert_date</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>id</name>
+        <rename>id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>creator_id</name>
+        <rename>creator_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>contact_id</name>
+        <rename>contact_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>created_at</name>
+        <rename>created_at</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>updated_at</name>
+        <rename>updated_at</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>title</name>
+        <rename>title</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>name</name>
+        <rename>name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>first_name</name>
+        <rename>first_name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>last_name</name>
+        <rename>last_name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>description</name>
+        <rename>description</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>industry</name>
+        <rename>industry</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>website</name>
+        <rename>website</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>email</name>
+        <rename>email</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>phone</name>
+        <rename>phone</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>mobile</name>
+        <rename>mobile</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>fax</name>
+        <rename>fax</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>twitter</name>
+        <rename>twitter</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>facebook</name>
+        <rename>facebook</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>linkedin</name>
+        <rename>linkedin</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>skype</name>
+        <rename>skype</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>owner_id</name>
+        <rename>owner_id</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>is_organization</name>
+        <rename>is_organization</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>address</name>
+        <rename>address</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>custom_fields</name>
+        <rename>custom_fields</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>customer_status</name>
+        <rename>customer_status</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>prospect_status</name>
+        <rename>prospect_status</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>tags</name>
+        <rename>tags</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1232</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
     <name>Insert &#x2f; Update Deals</name>
     <type>InsertUpdate</type>
     <description/>
@@ -1114,7 +1303,7 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>testing</schema>
-      <table>test_stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <table>test_stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1285,7 +1474,7 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>testing</schema>
-      <table>test_stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <table>test_stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1444,190 +1633,6 @@
     </step>
 
   <step>
-    <name>Insert &#x2f; Update Contacts</name>
-    <type>InsertUpdate</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Chandra Redshift</connection>
-    <commit>5000</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
-      <key>
-        <name>id</name>
-        <field>id</field>
-        <condition>&#x3d;</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>owner_id</name>
-        <field>owner_id</field>
-        <condition>&#x3d;</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>inserted_date</name>
-        <rename>insert_date</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>id</name>
-        <rename>id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>creator_id</name>
-        <rename>creator_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>contact_id</name>
-        <rename>contact_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>created_at</name>
-        <rename>created_at</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>updated_at</name>
-        <rename>updated_at</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>title</name>
-        <rename>title</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>name</name>
-        <rename>name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>first_name</name>
-        <rename>first_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>last_name</name>
-        <rename>last_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>description</name>
-        <rename>description</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>industry</name>
-        <rename>industry</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>website</name>
-        <rename>website</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>email</name>
-        <rename>email</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>phone</name>
-        <rename>phone</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mobile</name>
-        <rename>mobile</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>fax</name>
-        <rename>fax</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>twitter</name>
-        <rename>twitter</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>facebook</name>
-        <rename>facebook</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>linkedin</name>
-        <rename>linkedin</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>skype</name>
-        <rename>skype</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>owner_id</name>
-        <rename>owner_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>is_organization</name>
-        <rename>is_organization</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>address</name>
-        <rename>address</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>custom_fields</name>
-        <rename>custom_fields</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>customer_status</name>
-        <rename>customer_status</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>prospect_status</name>
-        <rename>prospect_status</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>tags</name>
-        <rename>tags</rename>
-        <update>Y</update>
-      </value>
-    </lookup>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1232</xloc>
-      <yloc>352</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
     <name>Insert &#x2f; Update Stages</name>
     <type>InsertUpdate</type>
     <description/>
@@ -1643,7 +1648,7 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>testing</schema>
-      <table>test_str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <table>test_str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1736,7 +1741,7 @@
     <update_bypassed>N</update_bypassed>
     <lookup>
       <schema>testing</schema>
-      <table>test_str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;</table>
+      <table>test_str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>

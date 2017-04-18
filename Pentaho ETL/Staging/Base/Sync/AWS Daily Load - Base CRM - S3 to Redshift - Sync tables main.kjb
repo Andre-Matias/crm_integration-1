@@ -26,6 +26,11 @@
         <default_value>Latam</default_value>
         <description/>
       </parameter>
+      <parameter>
+        <name>COU_TABLE</name>
+        <default_value>Latam</default_value>
+        <description/>
+      </parameter>
     </parameters>
     <slaveservers>
     </slaveservers>
@@ -368,22 +373,27 @@
         <parameter>
           <name>CATEGORY</name>
           <stream_name/>
-          <value/>
+          <value>&#x24;&#x7b;CATEGORY&#x7d;</value>
         </parameter>
         <parameter>
           <name>CAT_TABLE</name>
           <stream_name/>
-          <value/>
+          <value>&#x24;&#x7b;CAT_TABLE&#x7d;</value>
         </parameter>
         <parameter>
           <name>COUNTRY</name>
           <stream_name/>
-          <value/>
+          <value>&#x24;&#x7b;COUNTRY&#x7d;</value>
         </parameter>
         <parameter>
           <name>DATE_PATH</name>
           <stream_name>DATE_PATH</stream_name>
           <value/>
+        </parameter>
+        <parameter>
+          <name>COU_TABLE</name>
+          <stream_name/>
+          <value>&#x24;&#x7b;COU_TABLE&#x7d;</value>
         </parameter>
       </parameters>
       <parallel>N</parallel>
