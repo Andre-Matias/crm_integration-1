@@ -430,7 +430,7 @@
       <name>Load to Redshift</name>
       <description/>
       <type>SQL</type>
-      <sql>TRUNCATE rdl_basecrm.stg_d_base_calls_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_basecrm.stg_d_base_calls_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;verticals-raw-data&#x2f;BaseCRM&#x2f;Calls&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
+      <sql>TRUNCATE rdl_basecrm.stg_d_base_calls_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_basecrm.stg_d_base_calls_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;verticals-raw-data&#x2f;BaseCRM&#x2f;Calls&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;escape&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
@@ -455,8 +455,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>624</xloc>
-      <yloc>176</yloc>
+      <xloc>704</xloc>
+      <yloc>96</yloc>
     </entry>
     <entry>
       <name>AWS Daily Load - Base CRM - Base to S3 - Call Outcome</name>
@@ -500,7 +500,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>832</xloc>
+      <xloc>784</xloc>
       <yloc>320</yloc>
     </entry>
     <entry>
@@ -533,7 +533,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1104</xloc>
-      <yloc>320</yloc>
+      <yloc>240</yloc>
     </entry>
   </entries>
   <hops>
@@ -560,7 +560,7 @@
       <to>Load to Poseidon</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -569,7 +569,7 @@
       <to>AWS Daily Load - Base CRM - Base to S3 - Call Outcome</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -587,7 +587,7 @@
       <to>Load to Poseidon 2</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -596,9 +596,27 @@
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Load to Redshift</from>
+      <to>AWS Daily Load - Base CRM - Base to S3 - Call Outcome</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Load to Redshift 2</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
