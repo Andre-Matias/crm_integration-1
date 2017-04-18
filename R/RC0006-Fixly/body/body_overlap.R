@@ -1,7 +1,6 @@
 ##################################################################
 # MAIN TAB
 ##################################################################
-
 tab_main <-fluidRow(
   # first box for sales by quarter and region bar
   box(
@@ -10,12 +9,12 @@ tab_main <-fluidRow(
     ,solidHeader = TRUE
     ,collapsible = TRUE
     ,dataTableOutput("MainDescription")
-    ,strong("Descriptions"),br()
-    ,strong("Gold - "),em(df_desc[1,8]),br()
-    ,strong("Silver - "),em(df_desc[2,8]),br()
-    ,strong("Bronze - "),em(df_desc[3,8]),br()
-    ,strong("Tin - "),em(df_desc[4,8]),br()
-    ,strong("Drop-off - "),em(df_desc[5,8])
+    ,strong("Description"),br()
+    ,strong("Gold - "),em(df_desc[1,9]),br()
+    ,strong("Silver - "),em(df_desc[2,9]),br()
+    ,strong("Bronze - "),em(df_desc[3,9]),br()
+    ,strong("Tin - "),em(df_desc[4,9]),br()
+    ,strong("Drop-off - "),em(df_desc[5,9])
   )
   
   # second box for sales by year and region bar
@@ -179,7 +178,7 @@ frow_overlap1<- fluidRow(
     id = "tab_buckets",
     width = 12,
     height = "850px",
-    tabPanel("Global",tab_main,tab_total),
+    tabPanel("Global", tab_main,tab_total),
     tabPanel("Gold Bucket", tab_gold, tab_gold_table),
     tabPanel("Silver Bucket", tab_silver, tab_silver_table),
     tabPanel("Bronze Bucket", tab_bronze, tab_bronze_table)
@@ -211,7 +210,7 @@ server_overlap = function(input, output) {
                                    "$(this.api().table().header()).css({'background-color': '#9999CC ', 'color': '#000'});",
                                    #"$(this.api().table().header()).css({'text-align', 'right'});",
                                    "}"),
-                                 columnDefs = list(list(visible=FALSE, targets=c(0,8)
+                                 columnDefs = list(list(visible=FALSE, targets=c(0,8,9)
                                  )
                                  )))
     )

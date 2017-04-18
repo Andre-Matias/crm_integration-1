@@ -99,7 +99,8 @@ res <- dbSendQuery(conn_chandra, "
                                       sum(active_ads)
                                       OVER () AS total_active_ads,
                                       sum(reve1m)
-                                      OVER () AS total_vas
+                                      OVER () AS total_vas,
+                                      max(inserted_date) OVER () as inserted_date
                                     FROM odl_global_verticals.vert_services_fixly_buckets_segment
                                     where email is not null
                                 )
@@ -110,9 +111,10 @@ res <- dbSendQuery(conn_chandra, "
                                    sum(active_ads) as \"# active ads\",
                                    convert(varchar,round(sum(active_ads)*100.0/max(total_active_ads),0)) + '% ' as \"% active ads\",
                                    sum(reve1m) as \"VAS generated revenue\",
-                                   convert(varchar,round(sum(reve1m)*100.0/max(total_vas),0)) + '% ' as \"%VAS generated revenue\"
+                                   convert(varchar,round(sum(reve1m)*100.0/max(total_vas),0)) + '% ' as \"%VAS generated revenue\",
+                                   inserted_date
                                  from buckets, users
-                                 group by bucket, total_users
+                                 group by bucket, total_users,inserted_date
                                 order by 6 desc, 4 desc")
 
 df_desc <- dbFetch(res)
