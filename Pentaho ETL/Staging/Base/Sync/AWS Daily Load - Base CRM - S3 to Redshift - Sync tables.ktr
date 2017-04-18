@@ -2190,8 +2190,8 @@
       <field>
         <name>owner_id</name>
         <path>&#x24;.owner_id</path>
-        <type>Number</type>
-        <format/>
+        <type>Integer</type>
+        <format>&#x23;</format>
         <currency/>
         <decimal/>
         <group/>
@@ -2203,7 +2203,7 @@
       <field>
         <name>is_organization</name>
         <path>&#x24;.is_organization</path>
-        <type>Boolean</type>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -2558,7 +2558,7 @@
       <field>
         <name>hot</name>
         <path>&#x24;.hot</path>
-        <type>Boolean</type>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -3496,6 +3496,28 @@
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
       </field>
+      <field>
+        <in_stream_name>hot</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>true</replace_string>
+        <replace_by_string>Y</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>hot</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>false</replace_string>
+        <replace_by_string>N</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
     </fields>
     <cluster_schema/>
     <remotesteps>
@@ -3633,6 +3655,28 @@
         <use_regex>no</use_regex>
         <replace_string>Z</replace_string>
         <replace_by_string/>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>is_organization</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>true</replace_string>
+        <replace_by_string>Y</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>is_organization</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>false</replace_string>
+        <replace_by_string>N</replace_by_string>
         <set_empty_string>N</set_empty_string>
         <replace_field_by_string/>
         <whole_word>no</whole_word>
