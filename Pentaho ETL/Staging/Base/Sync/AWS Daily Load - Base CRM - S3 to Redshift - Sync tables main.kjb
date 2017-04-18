@@ -13,17 +13,17 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value/>
+        <default_value>Cars</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>CAT_TABLE</name>
-        <default_value/>
+        <default_value>200</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value/>
+        <default_value>Latam</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -382,7 +382,7 @@
         </parameter>
         <parameter>
           <name>DATE_PATH</name>
-          <stream_name>YESTERDAY_PATH</stream_name>
+          <stream_name>DATE_PATH</stream_name>
           <value/>
         </parameter>
       </parameters>

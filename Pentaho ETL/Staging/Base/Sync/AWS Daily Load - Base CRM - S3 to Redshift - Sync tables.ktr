@@ -11,12 +11,12 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value>Real Estate</default_value>
+        <default_value>Cars</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>CAT_TABLE</name>
-        <default_value>201</default_value>
+        <default_value>200</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -26,7 +26,7 @@
       </parameter>
       <parameter>
         <name>DATE_PATH</name>
-        <default_value>2017&#x2f;03&#x2f;16</default_value>
+        <default_value>2017&#x2f;04&#x2f;16</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -509,7 +509,7 @@
     </hop>
     <hop>
       <from>Select values</from>
-      <to>Insert &#x2f; Update 2</to>
+      <to>Insert &#x2f; Update Deals</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -539,7 +539,7 @@
     </hop>
     <hop>
       <from>Select values 2</from>
-      <to>Insert &#x2f; Update 2 2</to>
+      <to>Insert &#x2f; Update Leads</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -569,7 +569,7 @@
     </hop>
     <hop>
       <from>Select values 2 2</from>
-      <to>Insert &#x2f; Update 2 2 2</to>
+      <to>Insert &#x2f; Update Contacts</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -599,7 +599,7 @@
     </hop>
     <hop>
       <from>Select values 2 2 2</from>
-      <to>Insert &#x2f; Update 2 2 2 2</to>
+      <to>Insert &#x2f; Update Stages</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -1099,7 +1099,7 @@
     </step>
 
   <step>
-    <name>Insert &#x2f; Update 2</name>
+    <name>Insert &#x2f; Update Deals</name>
     <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
@@ -1270,7 +1270,7 @@
     </step>
 
   <step>
-    <name>Insert &#x2f; Update 2 2</name>
+    <name>Insert &#x2f; Update Leads</name>
     <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
@@ -1444,7 +1444,7 @@
     </step>
 
   <step>
-    <name>Insert &#x2f; Update 2 2 2</name>
+    <name>Insert &#x2f; Update Contacts</name>
     <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
@@ -1628,7 +1628,7 @@
     </step>
 
   <step>
-    <name>Insert &#x2f; Update 2 2 2 2</name>
+    <name>Insert &#x2f; Update Stages</name>
     <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
