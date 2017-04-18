@@ -22,7 +22,7 @@ res <- dbSendQuery(conn_chandra, "select
                         500 as \"bronze olx and fixly\",
                         sum(1) \"total olx\",
                         500 as \"total olx and fixly\"
-                    from public.fixly_buckets b
+                    from odl_global_verticals.vert_services_fixly_buckets_segment b
                       join md_category_english c
                         on b.category_id=c.id
                     where email is not null
@@ -44,7 +44,7 @@ res <- dbSendQuery(conn_chandra, "select
                                     sum(reve1m) as \"Revenue 6 Months\",
                                     b.bucket,
                                     'FALSE' as Onboarded
-                                  from public.fixly_buckets b
+                                  from odl_global_verticals.vert_services_fixly_buckets_segment b
                                     join md_category_english c
                                       on b.category_id=c.id
                                   where email is not null
@@ -61,7 +61,7 @@ res <- dbSendQuery(conn_chandra, "
                                    b.bucket,
                                    trunc(created_at) created_at,
                                    count(distinct u.email) n_reg
-                                   from public.fixly_buckets b
+                                   from odl_global_verticals.vert_services_fixly_buckets_segment b
                                    join public.md_category_english c
                                    on b.category_id=c.id
                                    left join rdl_vertical_services.fixpl_users u
@@ -77,7 +77,7 @@ dbClearResult(dbListResults(conn_chandra)[[1]])
 
 res <- dbSendQuery(conn_chandra, "select bucket,
                              count(distinct user_id)
-                             from public.fixly_buckets
+                             from odl_global_verticals.vert_services_fixly_buckets_segment
                              group by bucket")
 
 totalUsersPerBucket <-dbFetch(res)
@@ -88,7 +88,7 @@ dbClearResult(dbListResults(conn_chandra)[[1]])
 
 res <- dbSendQuery(conn_chandra, "
                                 with users as(
-                                  select count(DISTINCT user_id) total_users from public.fixly_buckets
+                                  select count(DISTINCT user_id) total_users from odl_global_verticals.vert_services_fixly_buckets_segment
                                 ),
                                 buckets as (
                                     SELECT
@@ -100,7 +100,7 @@ res <- dbSendQuery(conn_chandra, "
                                       OVER () AS total_active_ads,
                                       sum(reve1m)
                                       OVER () AS total_vas
-                                    FROM public.fixly_buckets
+                                    FROM odl_global_verticals.vert_services_fixly_buckets_segment
                                     where email is not null
                                 )
                                  select
