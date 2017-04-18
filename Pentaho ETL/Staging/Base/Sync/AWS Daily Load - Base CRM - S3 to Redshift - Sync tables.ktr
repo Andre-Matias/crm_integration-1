@@ -1118,8 +1118,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1302,8 +1302,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1473,8 +1473,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1647,8 +1647,8 @@
     <commit>1000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1740,8 +1740,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
