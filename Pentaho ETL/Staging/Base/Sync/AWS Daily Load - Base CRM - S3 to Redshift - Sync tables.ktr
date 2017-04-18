@@ -1118,8 +1118,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_contacts_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1302,8 +1302,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_deals_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1473,8 +1473,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>stg_d_base_leads_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1647,8 +1647,8 @@
     <commit>1000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>str_d_base_stages_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -1740,8 +1740,8 @@
     <commit>5000</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
-      <schema>testing</schema>
-      <table>test_str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
+      <schema>rdl_basecrm</schema>
+      <table>str_d_base_users_&#x24;&#x7b;CAT_TABLE&#x7d;_&#x24;&#x7b;COU_TABLE&#x7d;</table>
       <key>
         <name>id</name>
         <field>id</field>
@@ -3169,7 +3169,7 @@
       <field>
         <name>active</name>
         <path>&#x24;.stages.items..active</path>
-        <type>Boolean</type>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -3182,7 +3182,7 @@
       <field>
         <name>has_original_name</name>
         <path>&#x24;.stages.items..has_original_name</path>
-        <type>Boolean</type>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -3316,7 +3316,7 @@
       <field>
         <name>confirmed</name>
         <path>&#x24;.confirmed</path>
-        <type>Boolean</type>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -3758,6 +3758,50 @@
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
       </field>
+      <field>
+        <in_stream_name>active</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>true</replace_string>
+        <replace_by_string>Y</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>active</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>false</replace_string>
+        <replace_by_string>N</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>has_original_name</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>true</replace_string>
+        <replace_by_string>Y</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>has_original_name</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>false</replace_string>
+        <replace_by_string>N</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
     </fields>
     <cluster_schema/>
     <remotesteps>
@@ -3824,6 +3868,28 @@
         <use_regex>no</use_regex>
         <replace_string>Z</replace_string>
         <replace_by_string/>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>confirmed</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>true</replace_string>
+        <replace_by_string>Y</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+      <field>
+        <in_stream_name>confirmed</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>false</replace_string>
+        <replace_by_string>N</replace_by_string>
         <set_empty_string>N</set_empty_string>
         <replace_field_by_string/>
         <whole_word>no</whole_word>
