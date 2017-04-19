@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Base CRM - Base to S3 - Call Outcome</name>
+    <name>AWS Daily Load - Base CRM - Base to S3 - Orders</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -11,12 +11,12 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value>Cars</default_value>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value>Latam</default_value>
+        <default_value/>
         <description/>
       </parameter>
     </parameters>
@@ -438,9 +438,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;04&#x2f;05 10&#x3a;24&#x3a;02.491</created_date>
+    <created_date>2017&#x2f;04&#x2f;19 10&#x3a;51&#x3a;02.960</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;04&#x2f;05 10&#x3a;24&#x3a;02.491</modified_date>
+    <modified_date>2017&#x2f;04&#x2f;19 10&#x3a;51&#x3a;02.960</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -488,11 +488,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>HTTP Client</from>
-      <to>JSON Input</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Merge Join</from>
       <to>Add constants</to>
       <enabled>Y</enabled>
@@ -500,11 +495,6 @@
     <hop>
       <from>Replace in string</from>
       <to>Write to log</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Replace in string 2</from>
-      <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -518,8 +508,13 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>JSON Input</from>
-      <to>Replace in string 2</to>
+      <from>Filter rows</from>
+      <to>S3 File Output 5 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Replace in string 2</from>
+      <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -528,8 +523,18 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>S3 File Output 5 2</to>
+      <from>HTTP Client</from>
+      <to>JSON Input</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON Input</from>
+      <to>Get System Info</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get System Info</from>
+      <to>Replace in string 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -564,7 +569,7 @@
         <currency/>
         <decimal/>
         <group/>
-        <nullif>https&#x3a;&#x2f;&#x2f;api.getbase.com&#x2f;v2_beta&#x2f;call_outcomes&#x3f;page&#x3d;REPLACEPAGE&#x26;per_page&#x3d;100</nullif>
+        <nullif>https&#x3a;&#x2f;&#x2f;api.getbase.com&#x2f;v2&#x2f;orders&#x3f;page&#x3d;REPLACEPAGE&#x26;per_page&#x3d;100</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
@@ -578,8 +583,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
-      <yloc>128</yloc>
+      <xloc>480</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -613,8 +618,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>128</yloc>
+      <xloc>208</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -630,7 +635,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-<send_true_to>S3 File Output 5 2</send_true_to>
+<send_true_to>Text file output</send_true_to>
 <send_false_to/>
     <compare>
 <condition>
@@ -648,8 +653,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1232</xloc>
-      <yloc>128</yloc>
+      <xloc>1168</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -667,7 +672,7 @@
     </partitioning>
     <fields>
     </fields>
-    <limit>20</limit>
+    <limit>500</limit>
     <never_ending>N</never_ending>
     <interval_in_ms>5000</interval_in_ms>
     <row_time_field>now</row_time_field>
@@ -680,8 +685,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
-      <yloc>128</yloc>
+      <xloc>128</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -732,8 +737,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>128</yloc>
+      <xloc>768</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -770,7 +775,7 @@
       <field>
         <name>id</name>
         <path>&#x24;..data.id</path>
-        <type>String</type>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -781,22 +786,9 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>creator_id</name>
-        <path>&#x24;..data.creator_id</path>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>name</name>
-        <path>&#x24;..data.name</path>
-        <type>String</type>
+        <name>deal_id</name>
+        <path>&#x24;..data.deal_id</path>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -809,7 +801,7 @@
       <field>
         <name>updated_at</name>
         <path>&#x24;..data.updated_at</path>
-        <type>String</type>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -822,7 +814,20 @@
       <field>
         <name>created_at</name>
         <path>&#x24;..data.created_at</path>
-        <type>String</type>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>discount</name>
+        <path>&#x24;..data.discount</path>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -853,8 +858,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>960</xloc>
-      <yloc>128</yloc>
+      <xloc>848</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -885,8 +890,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>128</yloc>
+      <xloc>352</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -923,8 +928,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>672</xloc>
-      <yloc>128</yloc>
+      <xloc>592</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -994,8 +999,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1056</xloc>
-      <yloc>128</yloc>
+      <xloc>1024</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1025,7 +1030,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;verticals-raw-data&#x2f;BaseCRM&#x2f;Call_Outcome&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;verticals-raw-data&#x2f;BaseCRM&#x2f;Orders&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -1044,6 +1049,18 @@
     </file>
     <fields>
       <field>
+        <name>TODAY</name>
+        <type>Date</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
         <name>id</name>
         <type>String</type>
         <format/>
@@ -1056,19 +1073,7 @@
         <precision>-1</precision>
       </field>
       <field>
-        <name>creator_id</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>name</name>
+        <name>deal_id</name>
         <type>String</type>
         <format/>
         <currency/>
@@ -1103,6 +1108,18 @@
         <length>-1</length>
         <precision>-1</precision>
       </field>
+      <field>
+        <name>discount</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
     </fields>
       <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
       <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
@@ -1114,8 +1131,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1312</xloc>
-      <yloc>128</yloc>
+      <xloc>1280</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1162,6 +1179,21 @@
         <grouping_symbol/>
         <currency_symbol/>
         <storage_type/>
+      </meta>      <meta>        <name>TODAY</name>
+        <rename>TODAY</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy&#x2f;MM&#x2f;dd HH&#x3a;mm&#x3a;ss</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
       </meta>    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
@@ -1170,8 +1202,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1168</xloc>
-      <yloc>128</yloc>
+      <xloc>1088</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1202,8 +1234,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>224</yloc>
+      <xloc>352</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1237,8 +1269,39 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>128</yloc>
+      <xloc>688</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Get System Info</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>TODAY</name>
+        <type>today start</type>
+        </field>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>928</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

@@ -557,7 +557,7 @@
         <currency/>
         <decimal/>
         <group/>
-        <nullif>json</nullif>
+        <nullif>application&#x2f;json</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
