@@ -11,7 +11,7 @@ tab_main_professionals_box <-fluidRow(
   valueBoxOutput("mauBoxProf", width = 2)
   ,valueBoxOutput("percentOfActiveUsersBoxProf", width = 2)
   ,valueBoxOutput("bouncePaymentBoxProf", width = 2)
-  ,valueBoxOutput("aprovedQuotesPerActiveBoxProf", width = 2)
+  ,valueBoxOutput("ApprovedQuotesPerActiveBoxProf", width = 2)
   ,valueBoxOutput("avgNumberOfQuotesBoxProf", width = 2)
   ,valueBoxOutput("avgRatingUsersBoxProf", width = 2)
   
@@ -23,46 +23,93 @@ tab_main_professionals_box_2 <-fluidRow(
   valueBoxOutput("bounceRateBoxProf", width = 2)
   ,valueBoxOutput("sticknessBoxProf", width = 2)
   ,valueBoxOutput("quotesBoxProf", width = 2)
-  ,valueBoxOutput("aprovedQuotesBoxProf", width = 2)
-  ,valueBoxOutput("ratedProfessionalsXStarsBoxProf", width = 2)
+  ,valueBoxOutput("ApprovedQuotesBoxProf", width = 2)
+  ,valueBoxOutput("ratedProfessionals123StarsBoxProf", width = 2)
+  ,valueBoxOutput("ratedProfessionals45StarsBoxProf", width = 2)
   
 )
 
 tab_main_professionals_line_evolution <- fluidRow(
   tabsetPanel(
     id = "navbar",
-    tabPanel(title="Monthly Active Users",id="mauIdProf",value='mauValProf',
-             plotOutput("mauOnboardingProf", height = "300px")),
-    
+    tabPanel(title="Daily Active Users",id="mauIdProf",value='mauValProf',
+             box(
+               title = "Daily Active Users"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("mauOnboardingProf")
+             )),
     tabPanel(title="Bounce Rate",id="bounceRateIdProf",value='bounceRateValProf',
-             plotOutput("bounceRateOnboardingProf", height = "300px")),
+             box(
+               title = "Daily Bounce Rate"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("bounceRateOnboardingProf")
+             )),
+    tabPanel(title="Registered Professionals",id="percentOfActiveUsersIdProf",value='percentOfActiveUsersValProf',
+             fluidRow(
+               box(
+                 title = "Daily Registered Professionals"
+                 ,status = "primary"
+                 ,solidHeader = FALSE 
+                 ,collapsible = FALSE
+                 ,width = 8
+                 ,htmlOutput("percentOfActiveUsersOnboardingProf")
+               ),
+               infoBoxOutput("percentOfActiveUsersOnboardingBoxProf", width = 4)
+             ),
+             fluidRow(
+               box(
+                 title = "Registered Professionals Per Category"
+                 ,status = "primary"
+                 ,solidHeader = FALSE 
+                 ,collapsible = FALSE
+                 ,width = 6
+                 ,htmlOutput("registeredUsersPerCategory")
+               ),
+               box(
+                 title = "Registered Professionals Per City"
+                 ,status = "primary"
+                 ,solidHeader = FALSE 
+                 ,collapsible = FALSE
+                 ,width = 6
+                 ,htmlOutput("registeredUsersPerCity")
+               )
+             )),
     
-    tabPanel(title="Percent of Active Users",id="percentOfActiveUsersIdProf",value='percentOfActiveUsersValProf',
-             plotOutput("percentOfActiveUsersOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Stickness",id="sticknessIdProf",value='sticknessValProf',
-             htmlOutput("sticknessOnboardingProf")),
-    
-    tabPanel(title="Bounce Payment",id="bouncePaymentIdProf",value='bouncePaymentValProf',
-             plotOutput("bouncePaymentOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Quotes",id="quotesIdProf",value='quotesValProf',
-             plotOutput("quotesOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Aproved Quotes Per Active",id="aprovedQuotesPerActiveIdProf",value='aprovedQuotesPerActiveValProf',
-             plotOutput("aprovedQuotesPerActiveOnboardingProf", height = "300px")),
-  
-    tabPanel(title="Aproved Quotes",id="aprovedQuotesIdProf",value='aprovedQuotesValProf',
-             plotOutput("aprovedQuotesOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Average Number of Quotes",id="avgNumberOfQuotesIdProf",value='avgNumberOfQuotesValProf',
-             plotOutput("avgNumberOfQuotesOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Rated Professionals X Stars",id="ratedProfessionalsXStarsIdProf",value='ratedProfessionalsXStarsValProf',
-             plotOutput("ratedProfessionalsXStarsOnboardingProf", height = "300px")),
-    
-    tabPanel(title="Average Rating Users",id="avgRatingUsersIdProf",value='avgRatingUsersValProf',
-             plotOutput("avgRatingUsersOnboardingProf", height = "300px"))
+    tabPanel(title="Stickiness",id="sticknessIdProf",value='sticknessValProf',
+             box(
+               title = "Daily Stickiness"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("sticknessOnboardingProf")
+             ))
+    # tabPanel(title="Bounce Payment",id="bouncePaymentIdProf",value='bouncePaymentValProf',
+    #          htmlOutput("bouncePaymentOnboardingProf")),
+    # 
+    # tabPanel(title="Quotes",id="quotesIdProf",value='quotesValProf',
+    #          htmlOutput("quotesOnboardingProf")),
+    # 
+    # tabPanel(title="Approved Quotes Per Active",id="ApprovedQuotesPerActiveIdProf",value='ApprovedQuotesPerActiveValProf',
+    #          htmlOutput("ApprovedQuotesPerActiveOnboardingProf")),
+    # 
+    # tabPanel(title="Approved Quotes",id="ApprovedQuotesIdProf",value='ApprovedQuotesValProf',
+    #          htmlOutput("ApprovedQuotesOnboardingProf")),
+    # 
+    # tabPanel(title="Average Number of Quotes",id="avgNumberOfQuotesIdProf",value='avgNumberOfQuotesValProf',
+    #          htmlOutput("avgNumberOfQuotesOnboardingProf")),
+    # 
+    # tabPanel(title="Rated Professionals X Stars",id="ratedProfessionalsXStarsIdProf",value='ratedProfessionalsXStarsValProf',
+    #          htmlOutput("ratedProfessionalsXStarsOnboardingProf")),
+    # 
+    # tabPanel(title="Average Rating Users",id="avgRatingUsersIdProf",value='avgRatingUsersValProf',
+    #          htmlOutput("avgRatingUsersOnboardingProf"))
   )
 )
 
@@ -77,69 +124,69 @@ server_professional <- function(input, output, session) {
   # fluid row 1, kpi 2: market share
   output$mauBoxProf <- renderValueBox({
     valueBox(box_mau,
-             "MAU Professionals",
-             icon = icon("list"),
+             paste("Monthly Active Users -",current_month),
+             icon = icon("line-chart"),
              color = "aqua")
   })
   
   # fluid row 1, kpi 2: market share
   output$bounceRateBoxProf <- renderValueBox({
     valueBox(box_bounce_rate,
-             "Bounce Rate",
-             icon = icon("list"),
+             paste("Bounce Rate -",current_month),
+             icon = icon("sign-out"),
              color = "aqua")
   })
   
   
   # fluid row 1, kpi 1: pieces sold
   output$percentOfActiveUsersBoxProf <- renderValueBox({
-    valueBox("45%"
-             ,"Active Users"
-             ,icon = icon("inbox")
+    valueBox(box_registered_pros
+             ,"Registered Professionals"
+             ,icon = icon("wrench")
              ,color = "green")
   })
   
   # fluid row 1, kpi 1: pieces sold
   output$sticknessBoxProf <- renderValueBox({
     valueBox(box_stickiness
-             ,"Stickness"
-             ,icon = icon("inbox")
+             ,"Stickiness"
+             ,icon = icon("users")
              ,color = "green")
   })
   
   # fluid row 1, kpi 2: market share
   output$bouncePaymentBoxProf <- renderValueBox({
     valueBox(
-      formatC(24562, format="d", big.mark=',')
-      ,"Bounce Payment"
-      ,icon = icon("users")
+      dash
+      ,"Bounces on Payment Form"
+      ,icon = icon("thumbs-down")
       ,color = "green")
   })
   
   # fluid row 1, kpi 3: profit margin
   output$quotesBoxProf <- renderValueBox({
     valueBox(
-      formatC(1302, format="d", big.mark=',')
+      dash
       ,"Quotes"
-      ,icon = icon("user-md")
+      ,icon = icon("money")
       ,color = "green")
   })
   
   # fluid row 1, kpi 3: profit margin
-  output$aprovedQuotesPerActiveBoxProf <- renderValueBox({
+  output$ApprovedQuotesPerActiveBoxProf <- renderValueBox({
     valueBox(
-      formatC(202, format="d", big.mark=',')
-      ,"Aproved Quotes Per Active"
-      ,icon = icon("eur")
+      dash
+      ,"Pros with Approved Quotes"
+      ,icon = icon("wrench")
       ,color = "orange")
   })
   
   # fluid row 1, kpi 3: profit margin
-  output$aprovedQuotesBoxProf <- renderValueBox({
+  output$ApprovedQuotesBoxProf <- renderValueBox({
     valueBox(
-      formatC(124, format="d", big.mark=',')
-      ,"Aproved Quotes"
-      ,icon = icon("thumbs-o-up")
+      dash
+      ,"Approved Quotes"
+      ,icon = icon("money")
       ,color = "orange")
   })
   
@@ -147,19 +194,27 @@ server_professional <- function(input, output, session) {
   # fluid row 1, kpi 3: profit margin
   output$avgNumberOfQuotesBoxProf <- renderValueBox({
     valueBox(
-      formatC(124, format="d", big.mark=',')
-      ,"Avg Number of Quotes"
-      ,icon = icon("thumbs-o-up")
+      dash
+      ,"Quotes until One Gets Approved"
+      ,icon = icon("money")
       ,color = "orange")
   })
   
   
   # fluid row 1, kpi 3: profit margin
-  output$ratedProfessionalsXStarsBoxProf <- renderValueBox({
+  output$ratedProfessionals45StarsBoxProf <- renderValueBox({
     valueBox(
-      formatC(124, format="d", big.mark=',')
-      ,"Rated Professionals"
-      ,icon = icon("thumbs-o-up")
+      dash
+      ,"Pros Rated with 4 or 5 Stars"
+      ,icon = icon("wrench")
+      ,color = "yellow")
+  })
+  
+  output$ratedProfessionals123StarsBoxProf <- renderValueBox({
+    valueBox(
+      dash
+      ,"Pros Rated with 1,2 or 3 Stars"
+      ,icon = icon("wrench")
       ,color = "yellow")
   })
   
@@ -167,10 +222,22 @@ server_professional <- function(input, output, session) {
   # fluid row 1, kpi 3: profit margin
   output$avgRatingUsersBoxProf <- renderValueBox({
     valueBox(
-      formatC(124, format="d", big.mark=',')
-      ,"Avg Rating Users"
-      ,icon = icon("thumbs-o-up")
+      dash
+      ,"Average User Rating"
+      ,icon = icon("star")
       ,color = "yellow")
+  })
+  
+  
+  
+  # value box percentage of registered pros
+  output$percentOfActiveUsersOnboardingBoxProf <- renderValueBox({
+    infoBox(
+      "Registered professionals / (MAU * (1 - Bounce rate))"
+      ,formatC(box_registered_pros_mau, format="d", big.mark=',')
+      ,icon = icon("wrench")
+      ,color = "green"
+    )
   })
   
   #####################
@@ -198,160 +265,115 @@ server_professional <- function(input, output, session) {
     updateTabsetPanel(session, "navbar", 'sticknessValProf')
   })
   
-  # on click of a tab2 valuebox
-  shinyjs::onclick('bouncePaymentBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'bouncePaymentValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('quotesBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'quotesValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('aprovedQuotesPerActiveBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'aprovedQuotesPerActiveValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('aprovedQuotesBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'aprovedQuotesValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('avgNumberOfQuotesBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'avgNumberOfQuotesValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('ratedProfessionalsXStarsBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'ratedProfessionalsXStarsValProf')
-  })
-  
-  # on click of a tab2 valuebox
-  shinyjs::onclick('avgRatingUsersBoxProf',expr={
-    # move to tab2
-    updateTabsetPanel(session, "navbar", 'avgRatingUsersValProf')
-  })
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('bouncePaymentBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'bouncePaymentValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('quotesBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'quotesValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('ApprovedQuotesPerActiveBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'ApprovedQuotesPerActiveValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('ApprovedQuotesBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'ApprovedQuotesValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('avgNumberOfQuotesBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'avgNumberOfQuotesValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('ratedProfessionalsXStarsBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'ratedProfessionalsXStarsValProf')
+  # })
+  # 
+  # # on click of a tab2 valuebox
+  # shinyjs::onclick('avgRatingUsersBoxProf',expr={
+  #   # move to tab2
+  #   updateTabsetPanel(session, "navbar", 'avgRatingUsersValProf')
+  # })
   
   
   # # fluid row Gold, graph 2: sales be region current/prior year
   goldProf_daily <- as.data.frame(subset(df_teste_daily, bucket == "GOLD"))
   
-  output$mauOnboardingProf <- renderPlot({
-    ggplot(data=df_mau, aes(x=yearmonth, y=users, group=1)) +
-      geom_line(color='red')+
-      geom_point(color='red')
-  })
-  
-  output$bounceRateOnboardingProf <- renderPlot({
-    ggplot(data=df_traffic, aes(x=date, y=bounce_rate, group=1)) +
-      geom_line(color='red')+
-      geom_point(color='red')
-  })
-  
-  output$percentOfActiveUsersOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
-  })
-  
-  output$sticknessOnboardingProf <- renderGvis({
-    chart <- gvisLineChart(df_traffic, xvar = 'date', yvar = 'stickiness', options = list(
+  output$mauOnboardingProf <- renderGvis({
+    chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'dau', options = list(
       legend = 'none',
       backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
       colors = "['#0D737B']"
     ))
     chart
   })
   
-  output$bouncePaymentOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$bounceRateOnboardingProf <- renderGvis({
+    chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'bounce_rate', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
+      colors = "['#00A65A']"
+    ))
+    chart
   })
   
-  output$quotesOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$percentOfActiveUsersOnboardingProf <- renderGvis({
+    chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'registered_professionals', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
+      colors = "['#00A65A']"
+    ))
+    chart
   })
   
-  output$aprovedQuotesPerActiveOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$registeredUsersPerCategory <- renderGvis({
+    chart <- gvisBarChart(catL1_chart, xvar = 'category', yvar = c('x','x.html.tooltip'), options=list(
+      legend = 'none',
+      tooltip="{isHtml:'true',trigger:'selection'}"
+      ))
+    chart
   })
   
-  output$aprovedQuotesOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$registeredUsersPerCity <- renderGvis({
+    chart <- gvisColumnChart(df_citiesDB, xvar = 'city_desc', yvar = 'count', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: 'transparent'}}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
+      colors = "['#F39B11']"
+    ))
+    chart
   })
   
-  output$avgNumberOfQuotesOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
+  output$sticknessOnboardingProf <- renderGvis({
+    chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'stickiness', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
+      colors = "['#0D737B']"
+    ))
+    chart
   })
   
-  output$ratedProfessionalsXStarsOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
-  })
-  
-  output$avgRatingUsersOnboardingProf <- renderPlot({
-    ggplot(data=goldProf_daily, aes(x=created_at, y=sum, group=category, shape=category))  +
-      geom_line(colour="#66CC99", size=1) +
-      geom_point(colour="#66CC99", size=2) +
-      scale_shape_discrete(name  ="Ads Category (L2)")+
-      geom_text(aes(label=sum),  colour="black", position=position_dodge(width=0.9), vjust=-1.25, size=3, check_overlap = TRUE) +
-      ylab("# Registered Professional Users") +
-      xlab("Registration Date") +
-      scale_x_date(date_labels = "%b %d")
-  })
   
 }
 

@@ -26,7 +26,7 @@ res <- dbSendQuery(conn_chandra, "select
                       join md_category_english c
                         on b.category_id=c.id
                     where email is not null
-                    group by c.new_id, name_en;
+                    group by c.new_id, name_en ;
                    ")
 df_teste <-dbFetch(res)
 df_teste <- data.frame(df_teste, stringsAsFactors=FALSE)
@@ -48,7 +48,7 @@ res <- dbSendQuery(conn_chandra, "select
                                     join md_category_english c
                                       on b.category_id=c.id
                                   where email is not null
-                                  group by  user_id, email, phone, c.new_id, name_en, b.bucket")
+                                  group by  user_id, email, phone, c.new_id, name_en, b.bucket ")
 df_prof_bucket <-dbFetch(res)
 df_prof_bucket <- data.frame(df_prof_bucket, stringsAsFactors=FALSE)
 dbClearResult(dbListResults(conn_chandra)[[1]])
@@ -70,7 +70,7 @@ res <- dbSendQuery(conn_chandra, "
                                    group by  b.bucket, c.new_id, c.name_en,trunc(created_at))
                                    select bucket, categoryid, category, isnull(created_at, trunc(getdate())) created_at, n_reg, sum(n_reg) over (partition by bucket, category, categoryid order by created_at rows unbounded preceding)
                                    from registration
-                                   order by bucket, categoryid")
+                                   order by bucket, categoryid ")
 
 df_teste_daily <- dbFetch(res)
 dbClearResult(dbListResults(conn_chandra)[[1]])
@@ -78,7 +78,7 @@ dbClearResult(dbListResults(conn_chandra)[[1]])
 res <- dbSendQuery(conn_chandra, "select bucket,
                              count(distinct user_id)
                              from odl_global_verticals.vert_services_fixly_buckets_segment
-                             group by bucket")
+                             group by bucket ")
 
 totalUsersPerBucket <-dbFetch(res)
 
@@ -115,7 +115,7 @@ res <- dbSendQuery(conn_chandra, "
                                    inserted_date
                                  from buckets, users
                                  group by bucket, total_users,inserted_date
-                                order by 6 desc, 4 desc")
+                                order by 6 desc, 4 desc ")
 
 df_desc <- dbFetch(res)
 dbClearResult(dbListResults(conn_chandra)[[1]])
@@ -131,41 +131,49 @@ df_desc$Definition <- c("More than 1 active ad and at least 1 VAS purchase withi
 
 ### data from trackers ###
   # getting the tables
-df_mau <- dbSendQuery(conn_chandra,
-                        "SELECT *
-                        FROM rdl_vertical_services.trackers_monthly_traffic
-                        WHERE tracker = 'ga'")
-df_mau <- dbFetch(df_mau)
-df_mau$month <- 
-dbClearResult(dbListResults(conn_chandra)[[1]])
 
-df_traffic <- dbSendQuery(conn_chandra,
-                          "SELECT *
-                          FROM rdl_vertical_services.trackers_general_traffic
-                          WHERE tracker = 'ga'
+
+df_dailyDB <- dbSendQuery(conn_chandra,
+                          "with trackers as (
+    SELECT *
+    FROM rdl_vertical_services.trackers_general_traffic
+    WHERE tracker = 'ga'
+),
+registered_users as( with active_profs as (
+select registration_date,
+ count(distinct professional_id)
+from odl_global_verticals.vert_services_fixly_prof_l3_city
+group by registration_date)
+select registration_date,
+ sum(actp.count) over(order by actp.registration_date rows unbounded preceding) registered_professionals
+from active_profs actp
+ORDER BY registration_date ASC)
+SELECT
+  trackers.date,
+  trackers.users,
+  trackers.bounces,
+  trackers.pageviews,
+  trackers.sessions,
+  ISNULL(registered_users.registered_professionals, 0) registered_professionals
+FROM trackers
+LEFT JOIN registered_users ON trackers.date = registered_users.registration_date
                           ORDER BY date ASC")
-df_traffic <- dbFetch(df_traffic)
-df_traffic$yearmonth <- substr(gsub('-','',df_traffic$date),0,6)
-df_traffic$bounce_rate <- round((df_traffic$bounces / df_traffic$sessions) *100,2)
-df_traffic <- merge(df_traffic,df_mau, by='yearmonth')
-df_traffic <- rename(df_traffic, c('users.x'='dau','users.y'='mau'))
-df_traffic$stickiness <- round((df_traffic$dau / df_traffic$mau)*100,2)
 
-dbClearResult(dbListResults(conn_chandra)[[1]])
+df_dailyDB <- dbFetch(df_dailyDB)
 
 df_monthlyDB <- dbSendQuery(conn_chandra,
                             "with sums as (
-                            SELECT
-                            to_char(date_posted, 'YYYY-MM') monthyear,
+  SELECT
+                            to_char(date_posted, 'YYYYMM') monthyear,
                             count(DISTINCT user_id) active_users,
                             count(*) as nb_requests,
                             avg(rating_professional) average_pro_rating
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
                             GROUP BY monthyear
-                            ),
+),
                             satisfied_req as (
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
+                            to_char(date_satisfied, 'YYYYMM') monthyear,
                             count(DISTINCT user_id) satisfied_users,
                             count(*) satisfied_requests
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
@@ -174,7 +182,7 @@ df_monthlyDB <- dbSendQuery(conn_chandra,
                             ),
                             answ_users as (
                             SELECT
-                            to_char(date_first_reply, 'YYYY-MM') monthyear,
+                            to_char(date_first_reply, 'YYYYMM') monthyear,
                             count(DISTINCT user_id) answered_users
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
                             WHERE qty_answers > 0
@@ -182,119 +190,102 @@ df_monthlyDB <- dbSendQuery(conn_chandra,
                             ),
                             u_avg_rating as (
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
+                            to_char(date_satisfied, 'YYYYMM') monthyear,
                             avg(rating_professional) avg_user_rating
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
                             GROUP BY monthyear
                             ),
                             p_avg_rating as (
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
+                            to_char(date_satisfied, 'YYYYMM') monthyear,
                             avg(rating_user) avg_pro_rating
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
                             GROUP BY monthyear
                             ),
-                            p_raters1 as (
+                            p_raters as (
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) p_raters_1star
+                            to_char(date_satisfied, 'YYYYMM') monthyear,
+                            count(DISTINCT case when rating_user = 1 then user_id else null end) p_raters_1stars,
+                            count(DISTINCT case when rating_user = 2 then user_id else null end) p_raters_2stars,
+                            count(DISTINCT case when rating_user = 3 then user_id else null end) p_raters_3stars,
+                            count(DISTINCT case when rating_user = 4 then user_id else null end) p_raters_4stars,
+                            count(DISTINCT case when rating_user = 5 then user_id else null end) p_raters_5stars
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_user = 1
                             GROUP BY monthyear
                             ),
-                            p_raters2 as (
+                            u_raters as(
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) p_raters_2stars
+                            to_char(date_satisfied, 'YYYYMM') monthyear,
+                            count(DISTINCT case when rating_professional = 1 then user_id else null end) u_raters_1stars,
+                            count(DISTINCT case when rating_professional = 2 then user_id else null end) u_raters_2stars,
+                            count(DISTINCT case when rating_professional = 3 then user_id else null end) u_raters_3stars,
+                            count(DISTINCT case when rating_professional = 4 then user_id else null end) u_raters_4stars,
+                            count(DISTINCT case when rating_professional = 5 then user_id else null end) u_raters_5stars
                             FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_user = 2
                             GROUP BY monthyear
                             ),
-                            p_raters3 as (
+                            traffic_m as (
                             SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) p_raters_3stars
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_user = 3
-                            GROUP BY monthyear
+                            left(yearmonth,4)+right(yearmonth,2) date,
+                            users
+                            FROM rdl_vertical_services.trackers_monthly_traffic
+                            WHERE tracker = 'ga'
                             ),
-                            p_raters4 as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) p_raters_4stars
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_user = 4
-                            GROUP BY monthyear
+                            traffic_d as (
+                            select to_char(date, 'YYYYMM') monthyear,
+                            sum(bounces)*1.0/sum(sessions) * 100 bounce_rate,
+                            avg(users) avg_dau
+                            FROM rdl_vertical_services.trackers_general_traffic
+                            where tracker='ga'
+                            group by to_char(date, 'YYYYMM')
                             ),
-                            p_raters5 as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) p_raters_5stars
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_user = 5
-                            GROUP BY monthyear
-                            ),
-                            u_raters1 as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) u_raters_1star
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_professional = 1
-                            GROUP BY monthyear
-                            ),
-                            u_raters2 as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) u_raters_2star
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_professional = 2
-                            GROUP BY monthyear
-                            ),
-                            u_raters3 as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) u_raters_3star
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_professional = 3
-                            GROUP BY monthyear
-                            ),
-                            u_raters4 as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) u_raters_4star
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_professional = 4
-                            GROUP BY monthyear
-                            ),
-                            u_raters5 as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYY-MM') monthyear,
-                            count(DISTINCT user_id) u_raters_5star
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE rating_professional = 5
-                            GROUP BY monthyear
+                            active_profs as (
+                            select to_char(registration_date, 'YYYYMM') monthyear,
+                            count(distinct professional_id) registered_professionals
+                            from odl_global_verticals.vert_services_fixly_prof_l3_city
+                            group by to_char(registration_date, 'YYYYMM')
                             )
-                            SELECT *
-                            FROM sums a
-                            JOIN satisfied_req b ON a.monthyear = b.monthyear
-                            JOIN answ_users c ON a.monthyear = c.monthyear
-                            JOIN u_avg_rating d ON a.monthyear = d.monthyear
-                            JOIN p_avg_rating e ON a.monthyear = e.monthyear
-                            JOIN p_raters1 pr1 ON a.monthyear = pr1.monthyear
-                            JOIN p_raters2 pr2 ON a.monthyear = pr2.monthyear
-                            JOIN p_raters3 pr3 ON a.monthyear = pr3.monthyear
-                            JOIN p_raters4 pr4 ON a.monthyear = pr4.monthyear
-                            JOIN p_raters5 pr5 ON a.monthyear = pr5.monthyear
-                            JOIN u_raters1 ur1 ON a.monthyear = ur1.monthyear
-                            JOIN u_raters2 ur2 ON a.monthyear = ur2.monthyear
-                            JOIN u_raters3 ur3 ON a.monthyear = ur3.monthyear
-                            JOIN u_raters4 ur4 ON a.monthyear = ur4.monthyear
-                            JOIN u_raters5 ur5 ON a.monthyear = ur5.monthyear")
+                            SELECT
+                            a.date,
+                            a.users,
+                            b.satisfied_users,
+                            b.satisfied_requests,
+                            c.answered_users,
+                            d.avg_user_rating,
+                            e.avg_pro_rating,
+                            f.active_users,
+                            f.nb_requests,
+                            f.average_pro_rating,
+                            sum(actp.registered_professionals) over(order by a.date rows unbounded preceding) registered_professionals,
+                            (sum(actp.registered_professionals) over(order by a.date rows unbounded preceding)*1.0) / a.users * 100 registered_professionals_mau,
+                            br.bounce_rate,
+                            br.avg_dau*1.0/a.users*100 stickiness,
+                            pr.p_raters_1stars,
+                            pr.p_raters_2stars,
+                            pr.p_raters_3stars,
+                            pr.p_raters_4stars,
+                            pr.p_raters_5stars,
+                            ur.u_raters_1stars,
+                            ur.u_raters_2stars,
+                            ur.u_raters_3stars,
+                            ur.u_raters_4stars,
+                            ur.u_raters_5stars
+                            FROM traffic_m a
+                            LEFT JOIN satisfied_req b ON a.date = b.monthyear
+                            LEFT JOIN answ_users c ON a.date = c.monthyear
+                            LEFT JOIN u_avg_rating d ON a.date = d.monthyear
+                            LEFT JOIN p_avg_rating e ON a.date = e.monthyear
+                            LEFT JOIN sums f ON a.date = f.monthyear
+                            LEFT JOIN active_profs actp ON a.date = actp.monthyear
+                            LEFT JOIN traffic_d br ON a.date = br.monthyear
+                            LEFT JOIN p_raters pr ON a.date = pr.monthyear
+                            LEFT JOIN u_raters ur ON a.date = ur.monthyear
+                            ORDER BY a.date ASC")
 df_monthlyDB <- dbFetch(df_monthlyDB)
 
 df_globalDB <- dbSendQuery(conn_chandra,
                            "with req_table as (
-                           SELECT
+  SELECT
                            count(*) total_requests,
                            avg(rating_professional) u_average_rating,
                            avg(rating_user) p_average_rating
@@ -302,113 +293,237 @@ df_globalDB <- dbSendQuery(conn_chandra,
                            pro_table as (
                            SELECT
                            sum(qty_quotes) quotes,
-                           sum(qty_approved_quotes) approved_quotes
+                           sum(qty_approved_quotes) approved_quotes,
+                           count(DISTINCT professional_id) nb_pros
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city),
                            active_pros as (
                            SELECT
-                           count(*) active_pros
+                           count(DISTINCT professional_id) active_pros
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_quotes > 0
                            ),
                            approved_pros as (
                            SELECT
-                           count(*) approved_pros
+                           count(DISTINCT professional_id) approved_pros
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_approved_quotes > 0
                            ),
                            user_table as(
                            SELECT
                            sum(qty_answered_requests) answered_requests,
-                           sum(qty_satisfied_requests) satisfied_requests,
-                           count(*) active_users
+                           sum(qty_satisfied_requests) satisfied_requests
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city),
+                           active_users as (
+                           SELECT
+                           count(DISTINCT user_id) active_users
+                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
+                           WHERE qty_requests > 0
+                           ),
                            answered as (
                            SELECT
-                           count(*) answered_users
+                           count(DISTINCT user_id) answered_users
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_answered_requests > 0
                            ),
                            satisfied as (
                            SELECT
-                           count(*) satisfied_users
+                           count(DISTINCT user_id) satisfied_users
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_satisfied_requests > 0
                            ),
                            u_raters1 as (
                            SELECT
-                           count(*) u_raters_1star
+                           count(DISTINCT user_id) u_raters_1star
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_professionals_1star_rated > 0
                            ),
                            u_raters2 as (
                            SELECT
-                           count(*) u_raters_2stars
+                           count(DISTINCT user_id) u_raters_2stars
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_professionals_2star_rated > 0
                            ),
                            u_raters3 as (
                            SELECT
-                           count(*) u_raters_3stars
+                           count(DISTINCT user_id) u_raters_3stars
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_professionals_3star_rated > 0
                            ),
                            u_raters4 as (
                            SELECT
-                           count(*) u_raters_4stars
+                           count(DISTINCT user_id) u_raters_4stars
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_professionals_4star_rated > 0
                            ),
                            u_raters5 as (
                            SELECT
-                           count(*) u_raters_5stars
+                           count(DISTINCT user_id) u_raters_5stars
                            FROM odl_global_verticals.vert_services_fixly_user_l3_city
                            WHERE qty_professionals_5star_rated > 0
                            ),
                            p_raters1 as (
                            SELECT
-                           count(*) p_raters_1star
+                           count(DISTINCT professional_id) p_raters_1star
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_users_rated_1star > 0
                            ),
                            p_raters2 as (
                            SELECT
-                           count(*) p_raters_2stars
+                           count(DISTINCT professional_id) p_raters_2stars
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_users_rated_2star > 0
                            ),
                            p_raters3 as (
                            SELECT
-                           count(*) p_raters_3stars
+                           count(DISTINCT professional_id) p_raters_3stars
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_users_rated_3star > 0
                            ),
                            p_raters4 as (
                            SELECT
-                           count(*) p_raters_4stars
+                           count(DISTINCT professional_id) p_raters_4stars
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_users_rated_4star > 0
                            ),
                            p_raters5 as (
                            SELECT
-                           count(*) p_raters_5stars
+                           count(DISTINCT professional_id) p_raters_5stars
                            FROM odl_global_verticals.vert_services_fixly_prof_l3_city
                            WHERE qty_users_rated_5star > 0
+                           ),
+                           p_raters4or5 as(
+                           SELECT
+                           count(DISTINCT professional_id) p_raters_4or5stars
+                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+                           WHERE qty_users_rated_5star > 0 OR qty_users_rated_4star > 0
+                           ),
+                           u_raters4or5 as(
+                           SELECT
+                           count(DISTINCT user_id) u_raters_4or5stars
+                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
+                           WHERE qty_professionals_5star_rated > 0 OR qty_professionals_4star_rated > 0
                            )
                            SELECT *
                            FROM
-                           req_table,pro_table,user_table,answered,satisfied,active_pros,approved_pros,
-                           u_raters1,u_raters2,u_raters3,u_raters4,u_raters5,
-                           p_raters1,p_raters2,p_raters3,p_raters4,p_raters5")
+                           req_table,pro_table,user_table,answered,satisfied,active_users,active_pros,approved_pros,
+                           u_raters1,u_raters2,u_raters3,u_raters4,u_raters5,u_raters4or5,
+                           p_raters1,p_raters2,p_raters3,p_raters4,p_raters5,p_raters4or5")
 
 df_globalDB <- dbFetch(df_globalDB)
 
+df_categoriesDB <- dbSendQuery(conn_chandra,
+                               "select category_l1_desc, category_l2_desc, count(distinct professional_id)
+from odl_global_verticals.vert_services_fixly_prof_l3_city
+group by category_l1_desc, category_l2_desc")
 
-  # getting the boxes
-month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
+df_categoriesDB <- dbFetch(df_categoriesDB)
 
+df_citiesDB <- dbSendQuery(conn_chandra,
+                           "select city_desc, count(distinct professional_id)
+from odl_global_verticals.vert_services_fixly_prof_l3_city
+                           group by city_desc")
 
-box_mau <- df_mau$users[df_mau$yearmonth == month]
-box_bounce_rate <- paste0(round(sum(df_traffic$bounces) / sum(df_traffic$sessions)*100,2),'%')
-box_stickiness <- paste0(round(mean((df_traffic$dau[df_traffic$yearmonth == month] / box_mau)*100),2),'%')
-
+df_citiesDB <- dbFetch(df_citiesDB)
 dbDisconnect(conn_chandra)
+
+### adding columns in tables
+df_monthlyDB$yearmonth <- substr(gsub('-','',df_monthlyDB$date),0,6)
+df_dailyDB$yearmonth <- substr(gsub('-','',df_dailyDB$date),0,6)
+df_dailyDB$bounce_rate <- round((df_dailyDB$bounces / df_dailyDB$sessions)*100, 2)
+df_dailyDB <- merge(df_dailyDB,df_monthlyDB[,c('yearmonth','users')], by = 'yearmonth')
+df_dailyDB <- rename(df_dailyDB, c('users.x'='dau','users.y'='mau'))
+df_dailyDB$stickiness <- round((df_dailyDB$dau / df_dailyDB$mau)*100, 2)
+
+### getting the boxes
+month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
+Sys.setlocale("LC_TIME", "C")
+current_month <- months(as.Date(Sys.time()))
+dash <- '-'
+
+#common boxes
+box_mau <- df_monthlyDB$users[df_monthlyDB$date == month]
+box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 2),'%')
+box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 2),'%')
+
+# professionals - boxes
+sum_p_raters <- rowSums(df_globalDB[1,c('p_raters_1star','p_raters_2stars','p_raters_3stars','p_raters_4stars','p_raters_5stars')])
+sum_p_rates <- df_globalDB[1,c('p_raters_1star')] + (2*df_globalDB[1,c('p_raters_2stars')]) + (3*df_globalDB[1,c('p_raters_3stars')]) + (4*df_globalDB[1,c('p_raters_4stars')]) + (5*df_globalDB[1,c('p_raters_5stars')])
+box_registered_pros <- df_globalDB[1,c('nb_pros')]
+box_registered_pros_mau <- paste0(round(df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month], 2),'%')
+box_quotes <- df_globalDB[1,c('quotes')]
+box_approved_quotes <- df_globalDB[1,c('approved_quotes')]
+box_approved_quotes_per_active <- box_approved_quotes / df_globalDB[1,c('active_pros')]
+box_bounces_payment <- 0
+box_avg_nb_quotes <- box_quotes / box_approved_quotes
+box_rated_pros <- df_globalDB[1,c('p_raters_4or5stars')]
+box_avg_p_rating <- sum_p_rates / sum_p_raters
+
+# professionals - category
+df_l1cat <- aggregate(df_categoriesDB$count, by = list(category=df_categoriesDB$category_l1_desc), FUN = sum)
+
+# biznes
+catL2_Biznes <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Biznes'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Biznes']
+)
+htmlCatL2Bizness <- paste0('<div>',as.character(htmlTable(catL2_Biznes)),'</div>')
+htmlCatL2Bizness <- gsub('\n','',htmlCatL2Bizness)
+
+# dom i buro
+catL2_domIburo <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Dom i biuro'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Dom i biuro']
+)
+htmlCatL2domIburo <- paste0('<div>',as.character(htmlTable(catL2_domIburo)),'</div>')
+htmlCatL2domIburo <- gsub('\n','',htmlCatL2domIburo)
+
+# edukacja
+catL2_edukacja <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Edukacja'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Edukacja']
+)
+htmlCatL2edukacja <- paste0('<div>',as.character(htmlTable(catL2_edukacja)),'</div>')
+htmlCatL2edukacja <- gsub('\n','',htmlCatL2edukacja)
+
+# pozostale
+catL2_pozostale <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Pozostale'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Pozostale']
+)
+htmlCatL2pozostale <- paste0('<div>',as.character(htmlTable(catL2_pozostale)),'</div>')
+htmlCatL2pozostale <- gsub('\n','',htmlCatL2pozostale)
+
+# zdrowie i uroda
+catL2_zdrowieIuroda <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Zdrowie i Uroda'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Zdrowie i Uroda']
+)
+htmlCatL2zdrowieIuroda <- paste0('<div>',as.character(htmlTable(catL2_zdrowieIuroda)),'</div>')
+htmlCatL2zdrowieIuroda <- gsub('\n','',htmlCatL2zdrowieIuroda)
+
+# motoryacja
+catL2_motoryacja <- data.frame(
+  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Motoryacja'],
+  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Motoryacja']
+)
+htmlCatL2motoryacja <- paste0('<div>',as.character(htmlTable(catL2_motoryacja)),'</div>')
+htmlCatL2motoryacja <- gsub('\n','',htmlCatL2motoryacja)
+
+# merge tables
+df_l1cat_assignHtml <- data.frame(
+  category = c('Biznes','Dom i biuro','Edukacja','Pozostale','Zdrowie i Uroda','Motoryzacja'),
+  x.html.tooltip = c(htmlCatL2Bizness,htmlCatL2domIburo,htmlCatL2edukacja,htmlCatL2pozostale,htmlCatL2zdrowieIuroda,htmlCatL2motoryacja)
+)
+catL1_chart <- merge(df_l1cat_assignHtml,df_l1cat, by = 'category')
+
+# users
+sum_u_raters <- rowSums(df_globalDB[1,c('u_raters_1star','u_raters_2stars','u_raters_3stars','u_raters_4stars','u_raters_5stars')])
+sum_u_rates <- df_globalDB[1,c('u_raters_1star')] + (2*df_globalDB[1,c('u_raters_2stars')]) + (3*df_globalDB[1,c('u_raters_3stars')]) + (4*df_globalDB[1,c('u_raters_4stars')]) + (5*df_globalDB[1,c('u_raters_5stars')])
+box_active_users <- 0
+box_nb_requests <- df_globalDB[1,c('total_requests')]
+box_posting_users <- df_globalDB[1,c('active_users')]
+box_users_w_x_requests <- 0
+box_satisfied_users <- df_globalDB[1,c('satisfied_users')]
+box_total_request <- 0
+box_rated_users <- 0
+box_avg_u_rating <- sum_u_rates / sum_u_raters

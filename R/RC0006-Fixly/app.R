@@ -7,6 +7,7 @@ library(treemap)
 library(DT)
 library(shinyjs)
 library(googleVis)
+library(htmlTable)
 
 #source the components of the app
 source(file="data/data.R")
