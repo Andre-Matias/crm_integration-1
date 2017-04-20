@@ -11,17 +11,17 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value/>
+        <default_value>Cars</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>CATEGORY_TABLE</name>
-        <default_value/>
+        <default_value>200</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value/>
+        <default_value>Latam</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -908,7 +908,7 @@
     <limit>0</limit>
     <IsInFields>Y</IsInFields>
     <IsAFile>N</IsAFile>
-    <valueField>result</valueField>
+    <valueField/>
     <shortFileFieldName/>
     <pathFieldName/>
     <hiddenFieldName/>
@@ -1016,7 +1016,7 @@
         <replace_string>REPLACE</replace_string>
         <replace_by_string/>
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string>id</replace_field_by_string>
+        <replace_field_by_string>order_id</replace_field_by_string>
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
       </field>
@@ -1186,8 +1186,32 @@
         <precision>-1</precision>
       </field>
       <field>
-        <name>id_1</name>
+        <name>order_id</name>
         <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>deal_id</name>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>id</name>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -1524,7 +1548,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>SELECT&#xd;&#xa;	id&#xd;&#xa;FROM&#xd;&#xa;	globalverticals.rdl_basecrm.stg_d_base_orders_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;&#x3b;&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;	id as order_id, deal_id&#xd;&#xa;FROM&#xd;&#xa;	globalverticals.rdl_basecrm.stg_d_base_orders_&#x24;&#x7b;CATEGORY_TABLE&#x7d;_&#x24;&#x7b;COUNTRY&#x7d;&#x3b;&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
