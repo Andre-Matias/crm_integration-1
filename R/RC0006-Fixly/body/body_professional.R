@@ -60,11 +60,12 @@ tab_main_professionals_line_evolution <- fluidRow(
                  ,width = 8
                  ,htmlOutput("percentOfActiveUsersOnboardingProf")
                ),
-               infoBoxOutput("percentOfActiveUsersOnboardingBoxProf", width = 4)
+               infoBoxOutput("percentOfActiveUsersOnboardingBoxProf", width = 4),
+               infoBoxOutput("bouncesRegistrationPage", width = 4)
              ),
              fluidRow(
                box(
-                 title = "Registered Professionals Per Category"
+                 title = "Registered Professionals by Category"
                  ,status = "primary"
                  ,solidHeader = FALSE 
                  ,collapsible = FALSE
@@ -72,7 +73,7 @@ tab_main_professionals_line_evolution <- fluidRow(
                  ,htmlOutput("registeredUsersPerCategory")
                ),
                box(
-                 title = "Registered Professionals Per City"
+                 title = "Registered Professionals by City"
                  ,status = "primary"
                  ,solidHeader = FALSE 
                  ,collapsible = FALSE
@@ -158,7 +159,7 @@ server_professional <- function(input, output, session) {
   output$bouncePaymentBoxProf <- renderValueBox({
     valueBox(
       dash
-      ,"Bounces on Payment Form"
+      ,"Bounce Rate on Payment Form"
       ,icon = icon("thumbs-down")
       ,color = "green")
   })
@@ -233,9 +234,19 @@ server_professional <- function(input, output, session) {
   # value box percentage of registered pros
   output$percentOfActiveUsersOnboardingBoxProf <- renderValueBox({
     infoBox(
-      "Registered professionals / (MAU * (1 - Bounce rate))"
+      "Registered professionals over Entering Users"
       ,formatC(box_registered_pros_mau, format="d", big.mark=',')
       ,icon = icon("wrench")
+      ,color = "green"
+    )
+  })
+  
+  # additional box
+  output$bouncesRegistrationPage <- renderValueBox({
+    infoBox(
+      "Bounce Rate on Registration Page"
+      ,formatC('0%', format="d", big.mark=',')
+      ,icon = icon("thumbs-down")
       ,color = "green"
     )
   })
@@ -315,7 +326,7 @@ server_professional <- function(input, output, session) {
     chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'dau', options = list(
       legend = 'none',
       backgroundColor = "{fill:'transparent'}",
-      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}, format: '#'}",
       hAxis = "{gridlines:{color: 'transparent'}}",
       colors = "['#0D737B']"
     ))
@@ -326,7 +337,7 @@ server_professional <- function(input, output, session) {
     chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'bounce_rate', options = list(
       legend = 'none',
       backgroundColor = "{fill:'transparent'}",
-      vAxis = "{gridlines:{color: '#ECF0F5'}}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}, format: 'percent'}",
       hAxis = "{gridlines:{color: 'transparent'}}",
       colors = "['#00A65A']"
     ))

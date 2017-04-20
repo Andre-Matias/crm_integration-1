@@ -429,7 +429,7 @@ dbDisconnect(conn_chandra)
 ### adding columns in tables
 df_monthlyDB$yearmonth <- substr(gsub('-','',df_monthlyDB$date),0,6)
 df_dailyDB$yearmonth <- substr(gsub('-','',df_dailyDB$date),0,6)
-df_dailyDB$bounce_rate <- round((df_dailyDB$bounces / df_dailyDB$sessions)*100, 2)
+df_dailyDB$bounce_rate <- round((df_dailyDB$bounces / df_dailyDB$sessions), 2)
 df_dailyDB <- merge(df_dailyDB,df_monthlyDB[,c('yearmonth','users')], by = 'yearmonth')
 df_dailyDB <- rename(df_dailyDB, c('users.x'='dau','users.y'='mau'))
 df_dailyDB$stickiness <- round((df_dailyDB$dau / df_dailyDB$mau)*100, 2)
@@ -442,14 +442,14 @@ dash <- '-'
 
 #common boxes
 box_mau <- df_monthlyDB$users[df_monthlyDB$date == month]
-box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 2),'%')
-box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 2),'%')
+box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 1),'%')
+box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 1),'%')
 
 # professionals - boxes
 sum_p_raters <- rowSums(df_globalDB[1,c('p_raters_1star','p_raters_2stars','p_raters_3stars','p_raters_4stars','p_raters_5stars')])
 sum_p_rates <- df_globalDB[1,c('p_raters_1star')] + (2*df_globalDB[1,c('p_raters_2stars')]) + (3*df_globalDB[1,c('p_raters_3stars')]) + (4*df_globalDB[1,c('p_raters_4stars')]) + (5*df_globalDB[1,c('p_raters_5stars')])
 box_registered_pros <- df_globalDB[1,c('nb_pros')]
-box_registered_pros_mau <- paste0(round(df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month], 2),'%')
+box_registered_pros_mau <- paste0(round(df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month], 1),'%')
 box_quotes <- df_globalDB[1,c('quotes')]
 box_approved_quotes <- df_globalDB[1,c('approved_quotes')]
 box_approved_quotes_per_active <- box_approved_quotes / df_globalDB[1,c('active_pros')]
