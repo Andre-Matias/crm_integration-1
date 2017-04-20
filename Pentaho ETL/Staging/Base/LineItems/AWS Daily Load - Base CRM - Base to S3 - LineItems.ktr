@@ -908,7 +908,7 @@
     <limit>0</limit>
     <IsInFields>Y</IsInFields>
     <IsAFile>N</IsAFile>
-    <valueField/>
+    <valueField>result</valueField>
     <shortFileFieldName/>
     <pathFieldName/>
     <hiddenFieldName/>
