@@ -490,7 +490,7 @@
     <footer>N</footer>
     <format>DOS</format>
     <compression>GZip</compression>
-    <encoding/>
+    <encoding>UTF-8</encoding>
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>

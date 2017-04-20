@@ -496,7 +496,7 @@
     <footer>N</footer>
     <format>DOS</format>
     <compression>GZip</compression>
-    <encoding>windows-1252</encoding>
+    <encoding>UTF-8</encoding>
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>
@@ -538,38 +538,6 @@
     </step>
 
   <step>
-    <name>users</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, email&#xd;&#xa;, &#x22;password&#x22;&#xd;&#xa;, regexp_replace&#x28;permissions, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as permissions&#xd;&#xa;, last_login&#xd;&#xa;, first_name&#xd;&#xa;, last_name&#xd;&#xa;, email_verified&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, userable_id&#xd;&#xa;, userable_type&#xd;&#xa;, phone&#xd;&#xa;, address&#xd;&#xa;, city_id&#xd;&#xa;, zip_code&#xd;&#xa;, region_id&#xd;&#xa;, district_id&#xd;&#xa;, country_id&#xd;&#xa;, guest&#xd;&#xa;, profile_completed&#xd;&#xa;, linked_accounts&#xd;&#xa;, verifications&#xd;&#xa;, avatar_url&#xd;&#xa;, slug&#xd;&#xa;, cover_url&#xd;&#xa;, settings&#xd;&#xa;, last_activity&#xd;&#xa;, privacy&#xd;&#xa;, facebook_id&#xd;&#xa;, radius&#xd;&#xa;FROM users&#xd;&#xa;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>280</xloc>
-      <yloc>181</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
     <name>select</name>
     <type>SelectValues</type>
     <description/>
@@ -606,6 +574,38 @@
     <GUI>
       <xloc>336</xloc>
       <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>users</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, email&#xd;&#xa;, &#x22;password&#x22;&#xd;&#xa;, regexp_replace&#x28;permissions, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as permissions&#xd;&#xa;, last_login&#xd;&#xa;, first_name&#xd;&#xa;, last_name&#xd;&#xa;, email_verified&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, userable_id&#xd;&#xa;, userable_type&#xd;&#xa;, phone&#xd;&#xa;, address&#xd;&#xa;, city_id&#xd;&#xa;, zip_code&#xd;&#xa;, region_id&#xd;&#xa;, district_id&#xd;&#xa;, country_id&#xd;&#xa;, guest&#xd;&#xa;, profile_completed&#xd;&#xa;, linked_accounts&#xd;&#xa;, verifications&#xd;&#xa;, avatar_url&#xd;&#xa;, slug&#xd;&#xa;, cover_url&#xd;&#xa;, settings&#xd;&#xa;, last_activity&#xd;&#xa;, privacy&#xd;&#xa;, facebook_id&#xd;&#xa;, radius&#xd;&#xa;FROM users&#xd;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>280</xloc>
+      <yloc>181</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
