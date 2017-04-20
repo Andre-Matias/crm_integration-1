@@ -438,7 +438,7 @@
   </notepads>
   <connection>
     <name>Services Vertical Poland</name>
-    <server>fix-staging-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <server>fix-stg-prm-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
@@ -559,6 +559,21 @@
         <grouping_symbol/>
         <currency_symbol/>
         <storage_type/>
+      </meta>      <meta>        <name>name</name>
+        <rename>name</rename>
+        <type>String</type>
+        <length>255</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
       </meta>    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
@@ -585,7 +600,7 @@
       <schema_name/>
     </partitioning>
     <connection>Services Vertical Poland</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, &#x22;name&#x22;&#xd;&#xa;, slug&#xd;&#xa;, regexp_replace&#x28;description, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as description&#xd;&#xa;, image_url&#xd;&#xa;, &#x22;order&#x22;&#xd;&#xa;, parent_id&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, dfp_id&#xd;&#xa;FROM main_categories&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, replace&#x28;regexp_replace&#x28;&#x22;name&#x22;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29;, &#x27;&#x142;&#x27;, &#x27;l&#x27;&#x29; as name&#xd;&#xa;, slug&#xd;&#xa;, regexp_replace&#x28;description, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as description&#xd;&#xa;, image_url&#xd;&#xa;, &#x22;order&#x22;&#xd;&#xa;, parent_id&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, dfp_id&#xd;&#xa;FROM main_categories&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
