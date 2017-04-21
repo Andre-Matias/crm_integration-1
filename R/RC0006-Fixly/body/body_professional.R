@@ -356,22 +356,20 @@ server_professional <- function(input, output, session) {
   })
   
   output$registeredUsersPerCategory <- renderGvis({
-    chart <- gvisBarChart(catL1_chart, xvar = 'category', yvar = c('x','x.html.tooltip'), options=list(
+    chart <- gvisBarChart(chart_prosPerL1cat, xvar = 'l1cat', yvar = c('count','count.html.tooltip'), options=list(
       legend = 'none',
-      tooltip="{isHtml:'true',trigger:'selection'}"
+      tooltip="{isHtml:'true',trigger:'selection'}",
+      chartArea= "{left:100}"
       ))
     chart
   })
   
   output$registeredUsersPerCity <- renderGvis({
-    chart <- gvisColumnChart(df_citiesDB, xvar = 'city_desc', yvar = 'count', options = list(
-      legend = 'none',
-      backgroundColor = "{fill:'transparent'}",
-      vAxis = "{gridlines:{color: 'transparent'}}",
-      hAxis = "{gridlines:{color: 'transparent'}}",
-      colors = "['#F39B11']"
+    chart <- gvisGeoChart(df_citiesDB, locationvar = 'city_desc', colorvar = 'count',options=list(
+      region = 'PL',
+      displayMode='markers'
     ))
-    chart
+    plot(chart)
   })
   
   output$sticknessOnboardingProf <- renderGvis({

@@ -1,5 +1,4 @@
 library("reshape2")
-
 library("RPostgreSQL")
 
 drv <- dbDriver("PostgreSQL")
@@ -411,19 +410,26 @@ df_globalDB <- dbSendQuery(conn_chandra,
 
 df_globalDB <- dbFetch(df_globalDB)
 
-df_categoriesDB <- dbSendQuery(conn_chandra,
-                               "select category_l1_desc, category_l2_desc, count(distinct professional_id)
+# getting the numbers per categories & cities
+df_l1_categoriesDB <- dbSendQuery(conn_chandra,
+"select category_l1_id l1id, category_l1_desc l1cat, count(DISTINCT professional_id)
 from odl_global_verticals.vert_services_fixly_prof_l3_city
-group by category_l1_desc, category_l2_desc")
+GROUP BY category_l1_id, category_l1_desc")
+df_l1_categoriesDB <- dbFetch(df_l1_categoriesDB)
 
-df_categoriesDB <- dbFetch(df_categoriesDB)
+df_l1_l2_categoriesDB <- dbSendQuery(conn_chandra,
+"select category_l1_id l1id, category_l1_desc l1cat, category_l2_desc l2cat, count(distinct professional_id)
+from odl_global_verticals.vert_services_fixly_prof_l3_city
+group by category_l1_id,category_l1_desc, category_l2_desc")
+df_l1_l2_categoriesDB <- dbFetch(df_l1_l2_categoriesDB)
 
 df_citiesDB <- dbSendQuery(conn_chandra,
-                           "select city_desc, count(distinct professional_id)
+"select city_desc, count(distinct professional_id)
 from odl_global_verticals.vert_services_fixly_prof_l3_city
-                           group by city_desc")
-
+group by city_desc")
 df_citiesDB <- dbFetch(df_citiesDB)
+
+# disconnect chandra
 dbDisconnect(conn_chandra)
 
 ### adding columns in tables
@@ -459,62 +465,62 @@ box_rated_pros <- df_globalDB[1,c('p_raters_4or5stars')]
 box_avg_p_rating <- sum_p_rates / sum_p_raters
 
 # professionals - category
-df_l1cat <- aggregate(df_categoriesDB$count, by = list(category=df_categoriesDB$category_l1_desc), FUN = sum)
 
 # biznes
 catL2_Biznes <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Biznes'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Biznes']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 10],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 10]
 )
 htmlCatL2Bizness <- paste0('<div>',as.character(htmlTable(catL2_Biznes)),'</div>')
 htmlCatL2Bizness <- gsub('\n','',htmlCatL2Bizness)
 
 # dom i buro
 catL2_domIburo <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Dom i biuro'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Dom i biuro']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 1],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 1]
 )
 htmlCatL2domIburo <- paste0('<div>',as.character(htmlTable(catL2_domIburo)),'</div>')
 htmlCatL2domIburo <- gsub('\n','',htmlCatL2domIburo)
 
 # edukacja
 catL2_edukacja <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Edukacja'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Edukacja']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 7],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 7]
 )
 htmlCatL2edukacja <- paste0('<div>',as.character(htmlTable(catL2_edukacja)),'</div>')
 htmlCatL2edukacja <- gsub('\n','',htmlCatL2edukacja)
 
 # pozostale
 catL2_pozostale <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Pozostale'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Pozostale']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 5],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 5]
 )
 htmlCatL2pozostale <- paste0('<div>',as.character(htmlTable(catL2_pozostale)),'</div>')
 htmlCatL2pozostale <- gsub('\n','',htmlCatL2pozostale)
 
 # zdrowie i uroda
 catL2_zdrowieIuroda <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Zdrowie i Uroda'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Zdrowie i Uroda']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 6],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 6]
 )
 htmlCatL2zdrowieIuroda <- paste0('<div>',as.character(htmlTable(catL2_zdrowieIuroda)),'</div>')
 htmlCatL2zdrowieIuroda <- gsub('\n','',htmlCatL2zdrowieIuroda)
 
 # motoryacja
 catL2_motoryacja <- data.frame(
-  l2_cat = df_categoriesDB$category_l2_desc[df_categoriesDB$category_l1_desc == 'Motoryacja'],
-  count = df_categoriesDB$count[df_categoriesDB$category_l1_desc == 'Motoryacja']
+  l2cat = df_l1_l2_categoriesDB$l2cat[df_l1_l2_categoriesDB$l1id == 9],
+  count = df_l1_l2_categoriesDB$count[df_l1_l2_categoriesDB$l1id == 9]
 )
 htmlCatL2motoryacja <- paste0('<div>',as.character(htmlTable(catL2_motoryacja)),'</div>')
 htmlCatL2motoryacja <- gsub('\n','',htmlCatL2motoryacja)
 
 # merge tables
 df_l1cat_assignHtml <- data.frame(
-  category = c('Biznes','Dom i biuro','Edukacja','Pozostale','Zdrowie i Uroda','Motoryzacja'),
-  x.html.tooltip = c(htmlCatL2Bizness,htmlCatL2domIburo,htmlCatL2edukacja,htmlCatL2pozostale,htmlCatL2zdrowieIuroda,htmlCatL2motoryacja)
+  l1id = c(10,1,7,5,6,9),
+  count.html.tooltip = c(htmlCatL2Bizness,htmlCatL2domIburo,htmlCatL2edukacja,htmlCatL2pozostale,htmlCatL2zdrowieIuroda,htmlCatL2motoryacja)
 )
-catL1_chart <- merge(df_l1cat_assignHtml,df_l1cat, by = 'category')
+df_l1cat_dictDB <- 
+chart_prosPerL1cat <- merge(df_l1_categoriesDB,df_l1cat_assignHtml, by = 'l1id')
 
 # users
 sum_u_raters <- rowSums(df_globalDB[1,c('u_raters_1star','u_raters_2stars','u_raters_3stars','u_raters_4stars','u_raters_5stars')])
