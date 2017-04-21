@@ -926,7 +926,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-<send_true_to>Text file output</send_true_to>
+<send_true_to>Parse Deals</send_true_to>
 <send_false_to>Filter leads</send_false_to>
     <compare>
 <condition>
