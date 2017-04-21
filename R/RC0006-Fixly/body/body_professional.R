@@ -367,9 +367,12 @@ server_professional <- function(input, output, session) {
   output$registeredUsersPerCity <- renderGvis({
     chart <- gvisGeoChart(df_citiesDB, locationvar = 'city_desc', colorvar = 'count',options=list(
       region = 'PL',
-      displayMode='markers'
+      displayMode='markers',
+      resolution= 'provinces',
+      colorAxis="{colors:['#F39C12','#00A65A']}",
+      backgroundColor='#4D9EB2'
     ))
-    plot(chart)
+    chart
   })
   
   output$sticknessOnboardingProf <- renderGvis({
