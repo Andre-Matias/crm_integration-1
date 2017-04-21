@@ -161,252 +161,261 @@ LEFT JOIN registered_users ON trackers.date = registered_users.registration_date
 df_dailyDB <- dbFetch(df_dailyDB)
 
 df_monthlyDB <- dbSendQuery(conn_chandra,
-                            "with sums as (
+"with sums as (
   SELECT
-                            to_char(date_posted, 'YYYYMM') monthyear,
-                            count(DISTINCT user_id) active_users,
-                            count(*) as nb_requests,
-                            avg(rating_professional) average_pro_rating
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            GROUP BY monthyear
+to_char(date_posted, 'YYYYMM') monthyear,
+count(DISTINCT user_id) active_users,
+count(*) as nb_requests,
+avg(rating_professional) average_pro_rating
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+GROUP BY monthyear
 ),
-                            satisfied_req as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYYMM') monthyear,
-                            count(DISTINCT user_id) satisfied_users,
-                            count(*) satisfied_requests
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE date_satisfied IS NOT NULL
-                            GROUP BY monthyear
-                            ),
-                            answ_users as (
-                            SELECT
-                            to_char(date_first_reply, 'YYYYMM') monthyear,
-                            count(DISTINCT user_id) answered_users
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            WHERE qty_answers > 0
-                            GROUP BY monthyear
-                            ),
-                            u_avg_rating as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYYMM') monthyear,
-                            avg(rating_professional) avg_user_rating
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            GROUP BY monthyear
-                            ),
-                            p_avg_rating as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYYMM') monthyear,
-                            avg(rating_user) avg_pro_rating
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            GROUP BY monthyear
-                            ),
-                            p_raters as (
-                            SELECT
-                            to_char(date_satisfied, 'YYYYMM') monthyear,
-                            count(DISTINCT case when rating_user = 1 then user_id else null end) p_raters_1stars,
-                            count(DISTINCT case when rating_user = 2 then user_id else null end) p_raters_2stars,
-                            count(DISTINCT case when rating_user = 3 then user_id else null end) p_raters_3stars,
-                            count(DISTINCT case when rating_user = 4 then user_id else null end) p_raters_4stars,
-                            count(DISTINCT case when rating_user = 5 then user_id else null end) p_raters_5stars
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            GROUP BY monthyear
-                            ),
-                            u_raters as(
-                            SELECT
-                            to_char(date_satisfied, 'YYYYMM') monthyear,
-                            count(DISTINCT case when rating_professional = 1 then user_id else null end) u_raters_1stars,
-                            count(DISTINCT case when rating_professional = 2 then user_id else null end) u_raters_2stars,
-                            count(DISTINCT case when rating_professional = 3 then user_id else null end) u_raters_3stars,
-                            count(DISTINCT case when rating_professional = 4 then user_id else null end) u_raters_4stars,
-                            count(DISTINCT case when rating_professional = 5 then user_id else null end) u_raters_5stars
-                            FROM odl_global_verticals.vert_services_fixly_requests_l3_city
-                            GROUP BY monthyear
-                            ),
-                            traffic_m as (
-                            SELECT
-                            left(yearmonth,4)+right(yearmonth,2) date,
-                            users
-                            FROM rdl_vertical_services.trackers_monthly_traffic
-                            WHERE tracker = 'ga'
-                            ),
-                            traffic_d as (
-                            select to_char(date, 'YYYYMM') monthyear,
-                            sum(bounces)*1.0/sum(sessions) * 100 bounce_rate,
-                            avg(users) avg_dau
-                            FROM rdl_vertical_services.trackers_general_traffic
-                            where tracker='ga'
-                            group by to_char(date, 'YYYYMM')
-                            ),
-                            active_profs as (
-                            select to_char(registration_date, 'YYYYMM') monthyear,
-                            count(distinct professional_id) registered_professionals
-                            from odl_global_verticals.vert_services_fixly_prof_l3_city
-                            group by to_char(registration_date, 'YYYYMM')
-                            )
-                            SELECT
-                            a.date,
-                            a.users,
-                            b.satisfied_users,
-                            b.satisfied_requests,
-                            c.answered_users,
-                            d.avg_user_rating,
-                            e.avg_pro_rating,
-                            f.active_users,
-                            f.nb_requests,
-                            f.average_pro_rating,
-                            sum(actp.registered_professionals) over(order by a.date rows unbounded preceding) registered_professionals,
-                            (sum(actp.registered_professionals) over(order by a.date rows unbounded preceding)*1.0) / a.users * 100 registered_professionals_mau,
-                            br.bounce_rate,
-                            br.avg_dau*1.0/a.users*100 stickiness,
-                            pr.p_raters_1stars,
-                            pr.p_raters_2stars,
-                            pr.p_raters_3stars,
-                            pr.p_raters_4stars,
-                            pr.p_raters_5stars,
-                            ur.u_raters_1stars,
-                            ur.u_raters_2stars,
-                            ur.u_raters_3stars,
-                            ur.u_raters_4stars,
-                            ur.u_raters_5stars
-                            FROM traffic_m a
-                            LEFT JOIN satisfied_req b ON a.date = b.monthyear
-                            LEFT JOIN answ_users c ON a.date = c.monthyear
-                            LEFT JOIN u_avg_rating d ON a.date = d.monthyear
-                            LEFT JOIN p_avg_rating e ON a.date = e.monthyear
-                            LEFT JOIN sums f ON a.date = f.monthyear
-                            LEFT JOIN active_profs actp ON a.date = actp.monthyear
-                            LEFT JOIN traffic_d br ON a.date = br.monthyear
-                            LEFT JOIN p_raters pr ON a.date = pr.monthyear
-                            LEFT JOIN u_raters ur ON a.date = ur.monthyear
-                            ORDER BY a.date ASC")
+satisfied_req as (
+SELECT
+to_char(date_satisfied, 'YYYYMM') monthyear,
+count(DISTINCT user_id) satisfied_users,
+count(*) satisfied_requests
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+WHERE date_satisfied IS NOT NULL
+GROUP BY monthyear
+),
+answ_users as (
+SELECT
+to_char(date_first_reply, 'YYYYMM') monthyear,
+count(DISTINCT user_id) answered_users
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+WHERE qty_answers > 0
+GROUP BY monthyear
+),
+u_avg_rating as (
+SELECT
+to_char(date_satisfied, 'YYYYMM') monthyear,
+avg(rating_professional) avg_user_rating
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+GROUP BY monthyear
+),
+p_avg_rating as (
+SELECT
+to_char(date_satisfied, 'YYYYMM') monthyear,
+avg(rating_user) avg_pro_rating
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+GROUP BY monthyear
+),
+p_raters as (
+SELECT
+to_char(date_satisfied, 'YYYYMM') monthyear,
+count(DISTINCT case when rating_user = 1 then user_id else null end) p_raters_1stars,
+count(DISTINCT case when rating_user = 2 then user_id else null end) p_raters_2stars,
+count(DISTINCT case when rating_user = 3 then user_id else null end) p_raters_3stars,
+count(DISTINCT case when rating_user = 4 then user_id else null end) p_raters_4stars,
+count(DISTINCT case when rating_user = 5 then user_id else null end) p_raters_5stars
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+GROUP BY monthyear
+),
+u_raters as(
+SELECT
+to_char(date_satisfied, 'YYYYMM') monthyear,
+count(DISTINCT case when rating_professional = 1 then user_id else null end) u_raters_1stars,
+count(DISTINCT case when rating_professional = 2 then user_id else null end) u_raters_2stars,
+count(DISTINCT case when rating_professional = 3 then user_id else null end) u_raters_3stars,
+count(DISTINCT case when rating_professional = 4 then user_id else null end) u_raters_4stars,
+count(DISTINCT case when rating_professional = 5 then user_id else null end) u_raters_5stars
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city
+GROUP BY monthyear
+),
+traffic_m as (
+SELECT
+left(yearmonth,4)+right(yearmonth,2) date,
+users
+FROM rdl_vertical_services.trackers_monthly_traffic
+WHERE tracker = 'ga'
+),
+traffic_d as (
+select to_char(date, 'YYYYMM') monthyear,
+sum(bounces)*1.0/sum(sessions) * 100 bounce_rate,
+avg(users) avg_dau
+FROM rdl_vertical_services.trackers_general_traffic
+where tracker='ga'
+group by to_char(date, 'YYYYMM')
+),
+active_profs as (
+select to_char(registration_date, 'YYYYMM') monthyear,
+count(distinct professional_id) registered_professionals
+from odl_global_verticals.vert_services_fixly_prof_l3_city
+group by to_char(registration_date, 'YYYYMM')
+),
+exits_registration as (
+SELECT to_char(date, 'YYYYMM') monthyear,
+avg(exitrate) exitrate
+FROM rdl_vertical_services.trackers_exits_traffic
+WHERE exitpagepath = '/rejestracja/wykonawca' AND tracker = 'ga' AND exitrate IS NOT NULL
+GROUP BY monthyear
+)
+SELECT
+a.date,
+a.users,
+b.satisfied_users,
+b.satisfied_requests,
+c.answered_users,
+d.avg_user_rating,
+e.avg_pro_rating,
+f.active_users,
+f.nb_requests,
+f.average_pro_rating,
+sum(actp.registered_professionals) over(order by a.date rows unbounded preceding) registered_professionals,
+(sum(actp.registered_professionals) over(order by a.date rows unbounded preceding)*1.0) / a.users * 100 registered_professionals_mau,
+br.bounce_rate,
+br.avg_dau*1.0/a.users*100 stickiness,
+pr.p_raters_1stars,
+pr.p_raters_2stars,
+pr.p_raters_3stars,
+pr.p_raters_4stars,
+pr.p_raters_5stars,
+ur.u_raters_1stars,
+ur.u_raters_2stars,
+ur.u_raters_3stars,
+ur.u_raters_4stars,
+ur.u_raters_5stars,
+er.exitrate
+FROM traffic_m a
+LEFT JOIN satisfied_req b ON a.date = b.monthyear
+LEFT JOIN answ_users c ON a.date = c.monthyear
+LEFT JOIN u_avg_rating d ON a.date = d.monthyear
+LEFT JOIN p_avg_rating e ON a.date = e.monthyear
+LEFT JOIN sums f ON a.date = f.monthyear
+LEFT JOIN active_profs actp ON a.date = actp.monthyear
+LEFT JOIN traffic_d br ON a.date = br.monthyear
+LEFT JOIN p_raters pr ON a.date = pr.monthyear
+LEFT JOIN u_raters ur ON a.date = ur.monthyear
+LEFT JOIN exits_registration er ON a.date = er.monthyear
+ORDER BY a.date ASC")
 df_monthlyDB <- dbFetch(df_monthlyDB)
 
 df_globalDB <- dbSendQuery(conn_chandra,
-                           "with req_table as (
+"with req_table as (
   SELECT
-                           count(*) total_requests,
-                           avg(rating_professional) u_average_rating,
-                           avg(rating_user) p_average_rating
-                           FROM odl_global_verticals.vert_services_fixly_requests_l3_city),
-                           pro_table as (
-                           SELECT
-                           sum(qty_quotes) quotes,
-                           sum(qty_approved_quotes) approved_quotes,
-                           count(DISTINCT professional_id) nb_pros
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city),
-                           active_pros as (
-                           SELECT
-                           count(DISTINCT professional_id) active_pros
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_quotes > 0
-                           ),
-                           approved_pros as (
-                           SELECT
-                           count(DISTINCT professional_id) approved_pros
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_approved_quotes > 0
-                           ),
-                           user_table as(
-                           SELECT
-                           sum(qty_answered_requests) answered_requests,
-                           sum(qty_satisfied_requests) satisfied_requests
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city),
-                           active_users as (
-                           SELECT
-                           count(DISTINCT user_id) active_users
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_requests > 0
-                           ),
-                           answered as (
-                           SELECT
-                           count(DISTINCT user_id) answered_users
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_answered_requests > 0
-                           ),
-                           satisfied as (
-                           SELECT
-                           count(DISTINCT user_id) satisfied_users
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_satisfied_requests > 0
-                           ),
-                           u_raters1 as (
-                           SELECT
-                           count(DISTINCT user_id) u_raters_1star
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_1star_rated > 0
-                           ),
-                           u_raters2 as (
-                           SELECT
-                           count(DISTINCT user_id) u_raters_2stars
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_2star_rated > 0
-                           ),
-                           u_raters3 as (
-                           SELECT
-                           count(DISTINCT user_id) u_raters_3stars
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_3star_rated > 0
-                           ),
-                           u_raters4 as (
-                           SELECT
-                           count(DISTINCT user_id) u_raters_4stars
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_4star_rated > 0
-                           ),
-                           u_raters5 as (
-                           SELECT
-                           count(DISTINCT user_id) u_raters_5stars
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_5star_rated > 0
-                           ),
-                           p_raters1 as (
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_1star
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_1star > 0
-                           ),
-                           p_raters2 as (
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_2stars
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_2star > 0
-                           ),
-                           p_raters3 as (
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_3stars
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_3star > 0
-                           ),
-                           p_raters4 as (
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_4stars
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_4star > 0
-                           ),
-                           p_raters5 as (
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_5stars
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_5star > 0
-                           ),
-                           p_raters4or5 as(
-                           SELECT
-                           count(DISTINCT professional_id) p_raters_4or5stars
-                           FROM odl_global_verticals.vert_services_fixly_prof_l3_city
-                           WHERE qty_users_rated_5star > 0 OR qty_users_rated_4star > 0
-                           ),
-                           u_raters4or5 as(
-                           SELECT
-                           count(DISTINCT user_id) u_raters_4or5stars
-                           FROM odl_global_verticals.vert_services_fixly_user_l3_city
-                           WHERE qty_professionals_5star_rated > 0 OR qty_professionals_4star_rated > 0
-                           )
-                           SELECT *
-                           FROM
-                           req_table,pro_table,user_table,answered,satisfied,active_users,active_pros,approved_pros,
-                           u_raters1,u_raters2,u_raters3,u_raters4,u_raters5,u_raters4or5,
-                           p_raters1,p_raters2,p_raters3,p_raters4,p_raters5,p_raters4or5")
+count(*) total_requests,
+avg(rating_professional) u_average_rating,
+avg(rating_user) p_average_rating
+FROM odl_global_verticals.vert_services_fixly_requests_l3_city),
+pro_table as (
+SELECT
+sum(qty_quotes) quotes,
+sum(qty_approved_quotes) approved_quotes,
+count(DISTINCT professional_id) nb_pros
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city),
+active_pros as (
+SELECT
+count(DISTINCT professional_id) active_pros
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_quotes > 0
+),
+approved_pros as (
+SELECT
+count(DISTINCT professional_id) approved_pros
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_approved_quotes > 0
+),
+user_table as(
+SELECT
+sum(qty_answered_requests) answered_requests,
+sum(qty_satisfied_requests) satisfied_requests
+FROM odl_global_verticals.vert_services_fixly_user_l3_city),
+active_users as (
+SELECT
+count(DISTINCT user_id) active_users
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_requests > 0
+),
+answered as (
+SELECT
+count(DISTINCT user_id) answered_users
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_answered_requests > 0
+),
+satisfied as (
+SELECT
+count(DISTINCT user_id) satisfied_users
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_satisfied_requests > 0
+),
+u_raters1 as (
+SELECT
+count(DISTINCT user_id) u_raters_1star
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_1star_rated > 0
+),
+u_raters2 as (
+SELECT
+count(DISTINCT user_id) u_raters_2stars
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_2star_rated > 0
+),
+u_raters3 as (
+SELECT
+count(DISTINCT user_id) u_raters_3stars
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_3star_rated > 0
+),
+u_raters4 as (
+SELECT
+count(DISTINCT user_id) u_raters_4stars
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_4star_rated > 0
+),
+u_raters5 as (
+SELECT
+count(DISTINCT user_id) u_raters_5stars
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_5star_rated > 0
+),
+p_raters1 as (
+SELECT
+count(DISTINCT professional_id) p_raters_1star
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_1star > 0
+),
+p_raters2 as (
+SELECT
+count(DISTINCT professional_id) p_raters_2stars
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_2star > 0
+),
+p_raters3 as (
+SELECT
+count(DISTINCT professional_id) p_raters_3stars
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_3star > 0
+),
+p_raters4 as (
+SELECT
+count(DISTINCT professional_id) p_raters_4stars
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_4star > 0
+),
+p_raters5 as (
+SELECT
+count(DISTINCT professional_id) p_raters_5stars
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_5star > 0
+),
+p_raters4or5 as(
+SELECT
+count(DISTINCT professional_id) p_raters_4or5stars
+FROM odl_global_verticals.vert_services_fixly_prof_l3_city
+WHERE qty_users_rated_5star > 0 OR qty_users_rated_4star > 0
+),
+u_raters4or5 as(
+SELECT
+count(DISTINCT user_id) u_raters_4or5stars
+FROM odl_global_verticals.vert_services_fixly_user_l3_city
+WHERE qty_professionals_5star_rated > 0 OR qty_professionals_4star_rated > 0
+)
+SELECT *
+FROM
+req_table,pro_table,user_table,answered,satisfied,active_users,active_pros,approved_pros,
+u_raters1,u_raters2,u_raters3,u_raters4,u_raters5,u_raters4or5,
+p_raters1,p_raters2,p_raters3,p_raters4,p_raters5,p_raters4or5")
 
 df_globalDB <- dbFetch(df_globalDB)
 
@@ -428,6 +437,8 @@ df_citiesDB <- dbSendQuery(conn_chandra,
 from odl_global_verticals.vert_services_fixly_prof_l3_city
 group by city_desc")
 df_citiesDB <- dbFetch(df_citiesDB)
+
+
 
 # disconnect chandra
 dbDisconnect(conn_chandra)
@@ -463,6 +474,7 @@ box_bounces_payment <- 0
 box_avg_nb_quotes <- box_quotes / box_approved_quotes
 box_rated_pros <- df_globalDB[1,c('p_raters_4or5stars')]
 box_avg_p_rating <- sum_p_rates / sum_p_raters
+box_registration_bounce_rate <- paste0(round(df_monthlyDB$exitrate[df_monthlyDB$date == month], 1), '%')
 
 # professionals - category
 

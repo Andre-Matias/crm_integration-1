@@ -241,11 +241,11 @@ server_professional <- function(input, output, session) {
     )
   })
   
-  # additional box
+  # value box on bouces on registration page
   output$bouncesRegistrationPage <- renderValueBox({
     infoBox(
       "Bounce Rate on Registration Page"
-      ,formatC('0%', format="d", big.mark=',')
+      ,formatC(box_registration_bounce_rate, format="d", big.mark=',')
       ,icon = icon("thumbs-down")
       ,color = "green"
     )
@@ -359,7 +359,8 @@ server_professional <- function(input, output, session) {
     chart <- gvisBarChart(chart_prosPerL1cat, xvar = 'l1cat', yvar = c('count','count.html.tooltip'), options=list(
       legend = 'none',
       tooltip="{isHtml:'true',trigger:'selection'}",
-      chartArea= "{left:100}"
+      chartArea= "{left:150}",
+      height=347
       ))
     chart
   })
