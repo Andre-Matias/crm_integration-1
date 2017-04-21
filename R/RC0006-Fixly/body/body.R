@@ -9,6 +9,9 @@ body <- dashboardBody(
   tags$head(
     tags$link(rel = 'stylesheet', type = 'text/css', href='style.css')
   ),
+  #add google maps js
+  tags$head(tags$script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBIECL9yUPvqs3WUzMHC-GI1vDTMkt649c&callback=initMap')),
+  #tabs
   div(style = 'overflow-y: scroll; overflow-x: hidden',
       tabItems(
         tab_dashboard,
