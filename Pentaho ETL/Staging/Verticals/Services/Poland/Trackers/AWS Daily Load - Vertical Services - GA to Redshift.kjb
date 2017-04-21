@@ -379,6 +379,9 @@
             <parameter>            <name>DATE_PATH</name>
             <stream_name>DATE_PATH</stream_name>
             <value/>
+            </parameter>            <parameter>            <name>DATE</name>
+            <stream_name>DATE</stream_name>
+            <value/>
             </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -510,7 +513,7 @@
       <to>AWS Daily Load - Vertical Services - GA - MAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -522,6 +525,15 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>AWS Daily Load - Vertical Services - S3 to Redshift</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>

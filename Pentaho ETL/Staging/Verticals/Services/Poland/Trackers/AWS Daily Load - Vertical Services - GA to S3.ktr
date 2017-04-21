@@ -651,10 +651,10 @@
     <profileTableId/>
     <customTableId>ga&#x3a;147296603</customTableId>
     <useCustomTableId>Y</useCustomTableId>
-    <startDate>&#x24;&#x7b;DATE&#x7d;</startDate>
-    <endDate>&#x24;&#x7b;DATE&#x7d;</endDate>
+    <startDate>2017-04-20</startDate>
+    <endDate>2017-04-20</endDate>
     <dimensions>ga&#x3a;date,ga&#x3a;exitPagePath</dimensions>
-    <metrics>ga&#x3a;exits</metrics>
+    <metrics>ga&#x3a;exits,ga&#x3a;exitRate</metrics>
     <filters/>
     <sort/>
     <useSegment>Y</useSegment>
@@ -684,6 +684,13 @@
         <outField>ga&#x3a;exits</outField>
         <type>Integer</type>
         <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;exitRate</feedField>
+        <outField>ga&#x3a;exitRate</outField>
+        <type>Number</type>
+        <conversionMask>&#x23;.&#x23;&#x3b;-&#x23;.&#x23;</conversionMask>
       </feedField>
     <cluster_schema/>
     <remotesteps>
@@ -802,6 +809,66 @@
       <splitevery>0</splitevery>
     </file>
     <fields>
+      <field>
+        <name>ga&#x3a;date</name>
+        <type>Date</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>ga&#x3a;exitPagePath</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>ga&#x3a;exits</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>tracker</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>ga&#x3a;exitRate</name>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
     </fields>
       <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
       <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>

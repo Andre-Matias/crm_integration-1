@@ -331,7 +331,7 @@
       <name>MP General</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY rdl_vertical_services.trackers_general_traffic FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;MP&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;general.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS &#xd;&#xa;ESCAPE&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;</sql>
+      <sql>DELETE FROM rdl_vertical_services.trackers_general_traffic WHERE date &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and tracker &#x3d; &#x27;mp&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_vertical_services.trackers_general_traffic FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;MP&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;general.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS &#xd;&#xa;ESCAPE&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
@@ -377,7 +377,7 @@
       <name>MP Exits</name>
       <description/>
       <type>SQL</type>
-      <sql>COPY rdl_vertical_services.trackers_exits_traffic FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;MP&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;exits.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS &#xd;&#xa;ESCAPE&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;</sql>
+      <sql>DELETE FROM globalverticals.rdl_vertical_services.trackers_exits_traffic WHERE date &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and tracker &#x3d; &#x27;mp&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_vertical_services.trackers_exits_traffic FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;MP&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;exits.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS &#xd;&#xa;ESCAPE&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
