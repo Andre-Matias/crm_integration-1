@@ -77,6 +77,7 @@ dbClearResult(dbListResults(conn_chandra)[[1]])
 res <- dbSendQuery(conn_chandra, "select bucket,
                              count(distinct user_id)
                              from odl_global_verticals.vert_services_fixly_buckets_segment
+                             where email is not null
                              group by bucket ")
 
 totalUsersPerBucket <-dbFetch(res)
@@ -87,7 +88,7 @@ dbClearResult(dbListResults(conn_chandra)[[1]])
 
 res <- dbSendQuery(conn_chandra, "
                                 with users as(
-                                  select count(DISTINCT user_id) total_users from odl_global_verticals.vert_services_fixly_buckets_segment
+                                  select count(DISTINCT user_id) total_users from odl_global_verticals.vert_services_fixly_buckets_segment where email is not null
                                 ),
                                 buckets as (
                                     SELECT
