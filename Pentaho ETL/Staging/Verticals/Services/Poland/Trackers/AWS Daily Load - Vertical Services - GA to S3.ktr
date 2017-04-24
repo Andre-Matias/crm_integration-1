@@ -651,8 +651,8 @@
     <profileTableId/>
     <customTableId>ga&#x3a;147296603</customTableId>
     <useCustomTableId>Y</useCustomTableId>
-    <startDate>2017-04-20</startDate>
-    <endDate>2017-04-20</endDate>
+    <startDate>&#x24;&#x7b;DATE&#x7d;</startDate>
+    <endDate>&#x24;&#x7b;DATE&#x7d;</endDate>
     <dimensions>ga&#x3a;date,ga&#x3a;exitPagePath</dimensions>
     <metrics>ga&#x3a;exits,ga&#x3a;exitRate</metrics>
     <filters/>
