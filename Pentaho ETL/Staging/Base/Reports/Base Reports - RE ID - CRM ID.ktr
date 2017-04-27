@@ -1610,7 +1610,7 @@
     <fields>
       <field>
         <name>crm_id</name>
-        <path>&#x24;..Atlastock ID</path>
+        <path>&#x24;..&#x5b;&#x27;Atlastock ID&#x27;&#x5d;</path>
         <type>Integer</type>
         <format/>
         <currency/>
