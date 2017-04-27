@@ -336,7 +336,7 @@
         <pass_all_parameters>Y</pass_all_parameters>
         <parameter>
           <name>DATE</name>
-          <stream_name>LAT_WEEK</stream_name>
+          <stream_name>LAST_WEEK</stream_name>
           <value/>
         </parameter>
       </parameters>
