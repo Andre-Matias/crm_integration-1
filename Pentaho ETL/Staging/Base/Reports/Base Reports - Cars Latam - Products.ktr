@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Base Reports - Cars IN - Products</name>
+    <name>Base Reports - Cars Latam - Products</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>DATE</name>
-        <default_value>2017-04-17</default_value>
+        <default_value/>
         <description/>
       </parameter>
     </parameters>
@@ -620,9 +620,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2016&#x2f;09&#x2f;12 17&#x3a;06&#x3a;20.913</created_date>
+    <created_date>2016&#x2f;09&#x2f;15 16&#x3a;45&#x3a;15.054</created_date>
     <modified_user>PT_etl_dev</modified_user>
-    <modified_date>2016&#x2f;09&#x2f;20 17&#x3a;10&#x3a;46.231</modified_date>
+    <modified_date>2016&#x2f;09&#x2f;20 18&#x3a;54&#x3a;12.803</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -655,6 +655,11 @@
   </connection>
   <order>
     <hop>
+      <from>Table input</from>
+      <to>Add constants</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>Add constants</from>
       <to>Concat Fields</to>
       <enabled>Y</enabled>
@@ -662,11 +667,6 @@
     <hop>
       <from>Concat Fields</from>
       <to>Replace in string</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Table input</from>
-      <to>Add constants</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -713,8 +713,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>250</xloc>
-      <yloc>48</yloc>
+      <xloc>221</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -800,8 +800,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>350</xloc>
-      <yloc>47</yloc>
+      <xloc>321</xloc>
+      <yloc>95</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -838,8 +838,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>441</xloc>
-      <yloc>46</yloc>
+      <xloc>412</xloc>
+      <yloc>94</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -878,8 +878,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>513</xloc>
-      <yloc>87</yloc>
+      <xloc>484</xloc>
+      <yloc>135</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -896,7 +896,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>select id ,case qty_products when 0 then FALSE else TRUE end as product from &#xa;&#x28;&#xa;SELECT&#xa;	deals.id, coalesce&#x28;sum&#x28;products.quantity&#x29;,0&#x29; qty_products &#xa;FROM&#xa;	&#x28;select a.id,a.updated_at,a.stage_id from &#xa;			rdl_basecrm.stg_d_base_deals_200_356 a&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as inserted_date from rdl_basecrm.stg_d_base_deals_200_356 group by 1&#x29; b&#xa;			on &#x28;a.inserted_date&#x3d;b.inserted_date and a.id&#x3d;b.id&#x29; &#xa;			where last_stage_change_at between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;&#xa;			&#x29; deals&#xa;inner join &#xa;		rdl_basecrm.str_d_base_stages_200_356 stages&#xa;on deals.stage_id &#x3d; stages.id&#xa;left join&#xa;	rdl_basecrm.stg_d_base_line_items_200_356 products&#xa;on deals.id &#x3d; products.deal_id	&#xa;where &#xa;stages.name in &#x28;&#x27;Signed-Up&#x27;,&#x27;Verified&#x27;,&#x27;Activated&#x27;&#x29;&#xa;group by deals.id&#xa;&#x29;</sql>
+    <sql>select id ,case qty_products when 0 then FALSE else TRUE end as product from &#xa;&#x28;&#xa;SELECT&#xa;	deals.id, coalesce&#x28;sum&#x28;products.quantity&#x29;,0&#x29; qty_products &#xa;FROM&#xa;	&#x28;select a.id,a.updated_at,a.stage_id from &#xa;			rdl_basecrm.stg_d_base_deals_200_latam a&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as inserted_date from rdl_basecrm.stg_d_base_deals_200_latam group by 1&#x29; b&#xa;			on &#x28;a.inserted_date&#x3d;b.inserted_date and a.id&#x3d;b.id&#x29; &#xa;			where last_stage_change_at between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;&#xa;			&#x29; deals&#xa;inner join &#xa;		rdl_basecrm.str_d_base_stages_200_latam stages&#xa;on deals.stage_id &#x3d; stages.id&#xa;left join&#xa;	rdl_basecrm.stg_d_base_line_items_200_latam products&#xa;on deals.id &#x3d; products.deal_id	&#xa;where &#xa;stages.name in &#x28;&#x27;Pre-Venta&#x27;,&#x27;Venta Conciliada&#x27;,&#x27;Activo&#x27;&#x29;&#xa;group by deals.id&#xa;&#x29;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -910,8 +910,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>128</xloc>
-      <yloc>112</yloc>
+      <xloc>100</xloc>
+      <yloc>98</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -941,7 +941,7 @@
     <appendLines>N</appendLines>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;IN&#x2f;Base_Stockars_IN_Report_Products_&#x24;&#x7b;DATE&#x7d;.xls</name>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;AR&#x2f;Base_Stockars_Latam_Report_Products_&#x24;&#x7b;DATE&#x7d;.xls</name>
       <extention>xls</extention>
       <do_not_open_newfile_init>N</do_not_open_newfile_init>
       <split>N</split>
@@ -1000,8 +1000,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>640</xloc>
-      <yloc>112</yloc>
+      <xloc>608</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

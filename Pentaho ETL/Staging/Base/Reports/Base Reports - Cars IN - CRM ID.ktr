@@ -1687,7 +1687,7 @@
       <SpecifyFormat>N</SpecifyFormat>
       <date_time_format/>
       <sheetname>Sheet1</sheetname>
-      <autosizecolums>N</autosizecolums>
+      <autosizecolums>Y</autosizecolums>
       <nullisblank>N</nullisblank>
       <protect_sheet>N</protect_sheet>
       <password>Encrypted </password>
