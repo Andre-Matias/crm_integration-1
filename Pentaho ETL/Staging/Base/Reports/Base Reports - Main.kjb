@@ -468,8 +468,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>368</yloc>
+      <xloc>496</xloc>
+      <yloc>576</yloc>
     </entry>
     <entry>
       <name>Base Reports - Cars IN - Products</name>
@@ -791,6 +791,40 @@
       <xloc>816</xloc>
       <yloc>368</yloc>
     </entry>
+    <entry>
+      <name>Base Reports - NoCompany</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;Base Reports - NoCompany.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>DATE</name>
+            <stream_name>LAST_WEEK</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>192</xloc>
+      <yloc>528</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -893,8 +927,8 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>Base Reports - RE Latam - Products</from>
-      <to>Success</to>
+      <from>Base Reports - RE ID - CRM ID</from>
+      <to>Base Reports - Cars IN - Products Ratio</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -902,8 +936,17 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>Base Reports - RE ID - CRM ID</from>
-      <to>Base Reports - Cars IN - Products Ratio</to>
+      <from>Base Reports - RE Latam - Products</from>
+      <to>Base Reports - NoCompany</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Base Reports - NoCompany</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

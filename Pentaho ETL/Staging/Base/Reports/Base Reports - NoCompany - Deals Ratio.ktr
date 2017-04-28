@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Base Reports - RE Latam - Products Ratio</name>
+    <name>Base Reports - NoCompany - Deals Ratio</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -10,7 +10,27 @@
     <directory>&#x2f;</directory>
     <parameters>
       <parameter>
+        <name>COUNTRY_ID</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>COUNTRY_NAME</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
         <name>DATE</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>PLATFORM_ID</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>PLATFORM_NAME</name>
         <default_value/>
         <description/>
       </parameter>
@@ -429,13 +449,200 @@
     <partitionschemas>
     </partitionschemas>
     <slaveservers>
+      <slaveserver>
+        <name>DIS</name>
+        <hostname>localhost</hostname>
+        <port>9080</port>
+        <webAppName/>
+        <username>joe</username>
+<password>Encrypted 2be98afc86aa7f2e4bb18bd63c99dbdde</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>DM_Pentaho_Prod_AWS</name>
+        <hostname>54.68.184.111</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7d3c5ba09b97fdb9bf683</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Desarrollo</name>
+        <hostname>Dev-dw.olx.com.ar</hostname>
+        <port>9080</port>
+        <webAppName/>
+        <username>cluster</username>
+<password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Desarrollo - ODS</name>
+        <hostname>172.16.100.150</hostname>
+        <port>3306</port>
+        <webAppName/>
+        <username>olx_pentaho</username>
+<password>Encrypted 2be98afc86aa7f2e4bb10ab40df9a978b</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>OLX</name>
+        <hostname>pentaho.olx.com.ar</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>OLX_Dev</name>
+        <hostname>pentaho-dev.olx.com</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>OLX_Prod</name>
+        <hostname>pentaho.olx.com</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>OLX_Prod_Dev</name>
+        <hostname>pentaho-dev.olx.com</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>OLX_Test</name>
+        <hostname>pentaho-testing.olx.com</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Pentaho_AWS</name>
+        <hostname>pentaho-new.onap.io</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>PL_etl_dev</username>
+<password>Encrypted 2be98afc86aa7ca87a81f9e5c87b6aacc</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Pentaho_AWS_IN</name>
+        <hostname>pentaho-new.onap.io</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>IN_etl_dev</username>
+<password>Encrypted 2be98afc86aa7f2d7fb30807b8ab6aacc</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Pentaho_AWS_Leo</name>
+        <hostname>10.5.0.118</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>IN_etl_dev</username>
+<password>Encrypted 2be98afc86aa7f2d7fb30807b8ab6aacc</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Pentaho_AWS_ar</name>
+        <hostname>pentaho-new.onap.io</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>EM_etl_dev</username>
+<password>Encrypted 2be98afc86ae2bf929111a45b86b6aacc</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Remoto</name>
+        <hostname>srvl026</hostname>
+        <port>8088</port>
+        <webAppName/>
+        <username>pentaho</username>
+<password>Encrypted 2be98afc86aa78281a50daf78d1c3fd89</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>Remoto_test</name>
+        <hostname>srvl020</hostname>
+        <port>9080</port>
+        <webAppName>&#x2f;pentaho-di&#x2f;kettle</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>Y</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>pajaro</name>
+        <hostname>192.168.1.50</hostname>
+        <port>9080</port>
+        <webAppName>pentaho-di</webAppName>
+        <username>admin</username>
+<password>Encrypted 2be98afc86aa7f2e4cb79bd75dd80aace</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
+      <slaveserver>
+        <name>replica-olx-ads-server</name>
+        <hostname>replica-olx-ads-server</hostname>
+        <port>3306</port>
+        <webAppName/>
+        <username>pentaho_dev</username>
+<password>Encrypted 2be98afc86aa7d6878631f727cac0829f</password>        <proxy_hostname/>
+        <proxy_port/>
+        <non_proxy_hosts/>
+        <master>N</master>
+        <sslMode>N</sslMode>      </slaveserver>
     </slaveservers>
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;04&#x2f;28 11&#x3a;54&#x3a;47.943</created_date>
-    <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;04&#x2f;28 11&#x3a;54&#x3a;47.943</modified_date>
+    <created_date>2016&#x2f;09&#x2f;22 18&#x3a;10&#x3a;40.996</created_date>
+    <modified_user>PT_etl_dev</modified_user>
+    <modified_date>2016&#x2f;10&#x2f;10 17&#x3a;38&#x3a;02.208</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -468,45 +675,13 @@
   </connection>
   <order>
     <hop>
-      <from>Table input 2</from>
-      <to>Write Ratio tab</to>
+      <from>Table input</from>
+      <to>Microsoft Excel Writer</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Table input 2</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Chandra Redshift</connection>
-    <sql>select product as has_product,count&#x28;&#x2a;&#x29;,ratio_to_report&#x28;count&#x28;&#x2a;&#x29;&#x29; over &#x28;partition by 1&#x29; from &#xa;&#x28;select id ,case qty_products when 0 then FALSE else TRUE end as product from &#xa;&#x28;&#xa;SELECT&#xa;	deals.id, coalesce&#x28;sum&#x28;products.quantity&#x29;,0&#x29; qty_products &#xa;FROM&#xa;	&#x28;select a.id,a.updated_at,a.stage_id from &#xa;			rdl_basecrm.stg_d_base_deals_201_latam a&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as inserted_date from rdl_basecrm.stg_d_base_deals_201_latam group by 1&#x29; b&#xa;			on &#x28;a.inserted_date&#x3d;b.inserted_date and a.id&#x3d;b.id&#x29; &#xa;			where last_stage_change_at between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;&#xa;			&#x29; deals&#xa;inner join &#xa;		rdl_basecrm.str_d_base_stages_201_latam stages&#xa;on deals.stage_id &#x3d; stages.id&#xa;left join&#xa;	rdl_basecrm.stg_d_base_line_items_201_latam products&#xa;on deals.id &#x3d; products.deal_id	&#xa;where &#xa;stages.name in &#x28;&#x27;Pre-Venta&#x27;,&#x27;Venta Conciliada&#x27;,&#x27;Activo&#x27;&#x29;&#xa;group by deals.id&#xa;&#x29;&#xa;&#x29;group by 1</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>208</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Write Ratio tab</name>
+    <name>Microsoft Excel Writer</name>
     <type>TypeExitExcelWriterStep</type>
     <description/>
     <distribute>Y</distribute>
@@ -530,15 +705,15 @@
     <appendLines>N</appendLines>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;Latam&#x2f;Base_Atlastock_Latam_Report_Products_&#x24;&#x7b;DATE&#x7d;.xls</name>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;&#x24;&#x7b;COUNTRY_NAME&#x7d;&#x2f;Base_&#x24;&#x7b;PLATFORM_NAME&#x7d;_Report_NoCompany_&#x24;&#x7b;DATE&#x7d;.xls</name>
       <extention>xls</extention>
       <do_not_open_newfile_init>N</do_not_open_newfile_init>
       <split>N</split>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <SpecifyFormat>Y</SpecifyFormat>
+      <SpecifyFormat>N</SpecifyFormat>
       <date_time_format/>
-      <sheetname>Ratio</sheetname>
+      <sheetname>Deals Ratios</sheetname>
       <autosizecolums>N</autosizecolums>
       <stream_data>N</stream_data>
       <protect_sheet>N</protect_sheet>
@@ -557,7 +732,7 @@
     </template>
     <fields>
       <field>
-        <name>has_product</name>
+        <name>has_company</name>
         <type>Boolean</type>
         <format/>
         <title/>
@@ -589,8 +764,40 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>304</xloc>
-      <yloc>192</yloc>
+      <xloc>224</xloc>
+      <yloc>80</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Table input</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Chandra Redshift</connection>
+    <sql>SELECT&#xa;	case organization_id is not null when true then true else false end has_company,ratio_to_report&#x28;count&#x28;&#x2a;&#x29;&#x29; over &#x28;partition by 1&#x29;			&#xa;FROM&#xa;	rdl_basecrm.stg_d_base_deals_&#x24;&#x7b;PLATFORM_ID&#x7d;_&#x24;&#x7b;COUNTRY_ID&#x7d;						&#xa;	where date&#x28;created_at&#x29; between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;						&#xa;	group by 1 				</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>99</xloc>
+      <yloc>75</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

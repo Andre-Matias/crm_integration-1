@@ -1677,7 +1677,7 @@
     <append>N</append>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;AR&#x2f;Base_Stockars_AR_Report_CRM_ID_&#x24;&#x7b;DATE&#x7d;</name>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;Latam&#x2f;Base_Stockars_Latam_Report_CRM_ID_&#x24;&#x7b;DATE&#x7d;</name>
       <extention>xls</extention>
       <do_not_open_newfile_init>N</do_not_open_newfile_init>
       <create_parent_folder>Y</create_parent_folder>
@@ -1767,8 +1767,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>2835</xloc>
-      <yloc>413</yloc>
+      <xloc>2832</xloc>
+      <yloc>400</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

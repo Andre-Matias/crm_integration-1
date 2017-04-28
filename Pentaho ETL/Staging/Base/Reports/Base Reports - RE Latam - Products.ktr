@@ -941,7 +941,7 @@
     <appendLines>N</appendLines>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;AR&#x2f;Base_Atlastock_Latam_Report_Products_&#x24;&#x7b;DATE&#x7d;.xls</name>
+      <name>&#x2f;&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;&#x24;&#x7b;DATE&#x7d;&#x2f;Latam&#x2f;Base_Atlastock_Latam_Report_Products_&#x24;&#x7b;DATE&#x7d;.xls</name>
       <extention>xls</extention>
       <do_not_open_newfile_init>N</do_not_open_newfile_init>
       <split>N</split>
