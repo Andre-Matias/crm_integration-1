@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>DATE</name>
-        <default_value/>
+        <default_value>2017-04-17</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -730,11 +730,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Json Input</from>
-      <to>Sort rows</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Sort rows</from>
       <to>Merge Join</to>
       <enabled>Y</enabled>
@@ -942,6 +937,21 @@
     <hop>
       <from>String operations</from>
       <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Json Input</from>
+      <to>Merge Join 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table input</from>
+      <to>Merge Join 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge Join 3</from>
+      <to>Sort rows</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -1484,8 +1494,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>257</xloc>
-      <yloc>110</yloc>
+      <xloc>128</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2650,7 +2660,7 @@
     <name>Table input</name>
     <type>TableInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -2658,7 +2668,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>SELECT&#xa;	last_stage_change_at, id,name as stage, custom_fields,base_name,base_email,base_phone,base_mobile,&#xa;	LISTAGG&#x28;base_platform,&#x27;,&#x27;&#x29; LIKE &#x27;&#x25;CRM&#x25;&#x27; as crm,&#xa;	LISTAGG&#x28;base_platform,&#x27;,&#x27;&#x29; LIKE &#x27;&#x25;OLX&#x25;&#x27; as olx,&#xa;	false as cond_1,&#xa;	false as cond_2,&#xa;	false as cond_3,&#xa;	false as cond_4,&#xa;	false as cond_5,&#xa;	false as invalid,&#xa;	&#x27;Valid&#x27; as descriptive_tags&#xa;FROM &#x28;&#xa;	SELECT&#xa;		a.last_stage_change_at,&#xa;		a.id,&#xa;		b.name,&#xa;		a.custom_fields as custom_fields,&#xa;		lower&#x28;d.name&#x29; as base_name,&#xa;		d.email as base_email,&#xa;		d.phone as base_phone,&#xa;		d.mobile as base_mobile,&#xa;		case c.platform_id&#xa;		when 1 then &#x27;OLX&#x27;&#xa;		when 200 then &#x27;CRM&#x27;&#xa;		else &#x27;unknown&#x27; &#xa;		end as base_platform&#xa;		FROM&#xa;			&#x28;select &#xa;				a.last_stage_change_at,&#xa;				a.stage_id,&#xa;				a.id,&#xa;				a.contact_id,&#xa;				a.custom_fields&#xa;			from &#xa;				rdl_basecrm.stg_d_base_deals_200_356 a&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as inserted_date from rdl_basecrm.stg_d_base_deals_200_356 group by 1&#x29; b&#xa;			on &#x28;a.inserted_date&#x3d;b.inserted_date and a.id&#x3d;b.id&#x29;&#x29; a&#xa;		inner join &#xa;			rdl_basecrm.str_d_base_stages_200_356 b&#xa;		on a.stage_id &#x3d; b.id&#xa;		left join&#xa;			rdl_basecrm.stg_d_base_line_items_200_356 c&#xa;		on a.id&#x3d;c.deal_id&#xa;		left join &#xa;		&#x28;select &#xa;			aux1.id,aux1.name,aux1.email,aux1.phone,aux1.mobile&#xa;			from &#xa;				rdl_basecrm.stg_d_base_contacts_200_356 aux1	&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as last_insert_date from rdl_basecrm.stg_d_base_contacts_200_356 group by 1&#x29; aux2 &#xa;			on &#xa;			&#x28;aux1.id&#x3d;aux2.id and aux1.inserted_date&#x3d;aux2.last_insert_date&#x29;&#xa;		&#x29; d --gets the most recent event for each contact&#xa;		on a.contact_id&#x3d;d.id		&#xa;		where &#xa;		a.last_stage_change_at between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;&#xa;		and&#xa;		 b.name in &#x28;&#x27;Signed-Up&#x27;,&#x27;Verified&#x27;,&#x27;Activated&#x27;&#x29;&#xa;	&#x29;&#xa;GROUP BY 1,2,3,4,5,6,7,8&#x3b;</sql>
+    <sql>SELECT&#xa;	last_stage_change_at, id,name as stage, custom_fields,base_name,base_email,base_phone,base_mobile,&#xa;	LISTAGG&#x28;base_platform,&#x27;,&#x27;&#x29; LIKE &#x27;&#x25;CRM&#x25;&#x27; as crm,&#xa;	LISTAGG&#x28;base_platform,&#x27;,&#x27;&#x29; LIKE &#x27;&#x25;OLX&#x25;&#x27; as olx,&#xa;	false as cond_1,&#xa;	false as cond_2,&#xa;	false as cond_3,&#xa;	false as cond_4,&#xa;	false as cond_5,&#xa;	false as invalid,&#xa;	&#x27;Valid&#x27; as descriptive_tags&#xa;FROM &#x28;&#xa;	SELECT&#xa;		a.last_stage_change_at,&#xa;		a.id,&#xa;		b.name,&#xa;		a.custom_fields as custom_fields,&#xa;		lower&#x28;d.name&#x29; as base_name,&#xa;		d.email as base_email,&#xa;		d.phone as base_phone,&#xa;		d.mobile as base_mobile,&#xa;		case c.platform_id&#xa;		when 1 then &#x27;OLX&#x27;&#xa;		when 200 then &#x27;CRM&#x27;&#xa;		else &#x27;unknown&#x27; &#xa;		end as base_platform&#xa;		FROM&#xa;			&#x28;select &#xa;				a.last_stage_change_at,&#xa;				a.stage_id,&#xa;				a.id,&#xa;				a.contact_id,&#xa;				a.custom_fields&#xa;			from &#xa;				rdl_basecrm.stg_d_base_deals_200_356 a&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as inserted_date from rdl_basecrm.stg_d_base_deals_200_356 group by 1&#x29; b&#xa;			on &#x28;a.inserted_date&#x3d;b.inserted_date and a.id&#x3d;b.id&#x29;&#x29; a&#xa;		inner join &#xa;			rdl_basecrm.str_d_base_stages_200_356 b&#xa;		on a.stage_id &#x3d; b.id&#xa;		left join&#xa;			rdl_basecrm.stg_d_base_line_items_200_356 c&#xa;		on a.id&#x3d;c.deal_id&#xa;		left join &#xa;		&#x28;select &#xa;			aux1.id,aux1.name,aux1.email,aux1.phone,aux1.mobile&#xa;			from &#xa;				rdl_basecrm.stg_d_base_contacts_200_356 aux1	&#xa;			inner join&#xa;				&#x28;select id,max&#x28;inserted_date&#x29; as last_insert_date from rdl_basecrm.stg_d_base_contacts_200_356 group by 1&#x29; aux2 &#xa;			on &#xa;			&#x28;aux1.id&#x3d;aux2.id and aux1.inserted_date&#x3d;aux2.last_insert_date&#x29;&#xa;		&#x29; d --gets the most recent event for each contact&#xa;		on a.contact_id&#x3d;d.id		&#xa;		where &#xa;		a.last_stage_change_at between &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and DATEADD&#x28;day,6,&#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#x29;&#xa;		and&#xa;		 b.name in &#x28;&#x27;Signed-Up&#x27;,&#x27;Verified&#x27;,&#x27;Activated&#x27;&#x29;&#xa;	&#x29;&#xa;GROUP BY 1,2,3,4,5,6,7,8 order by 2 asc&#x3b;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -2672,8 +2682,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>142</xloc>
-      <yloc>110</yloc>
+      <xloc>48</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -3061,6 +3071,40 @@
     <GUI>
       <xloc>2192</xloc>
       <yloc>403</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Merge Join 3</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+<join_type>LEFT OUTER</join_type>
+<step1>Table input</step1>
+<step2>Json Input</step2>
+    <keys_1>
+      <key>id</key>
+    </keys_1>
+    <keys_2>
+      <key>id</key>
+    </keys_2>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
