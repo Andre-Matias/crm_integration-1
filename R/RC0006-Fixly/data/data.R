@@ -233,7 +233,9 @@ WHERE tracker = 'ga'
 ),
 traffic_d as (
 select to_char(date, 'YYYYMM') monthyear,
-sum(bounces)*1.0/sum(sessions) * 100 bounce_rate,
+CASE WHEN sum(sessions)=0 THEN 0
+ELSE sum(bounces)*1.0/sum(sessions) * 100
+END as bounce_rate,
 avg(users) avg_dau
 FROM rdl_vertical_services.trackers_general_traffic
 where tracker='ga'
@@ -264,9 +266,13 @@ f.active_users,
 f.nb_requests,
 f.average_pro_rating,
 sum(actp.registered_professionals) over(order by a.date rows unbounded preceding) registered_professionals,
-(sum(actp.registered_professionals) over(order by a.date rows unbounded preceding)*1.0) / a.users * 100 registered_professionals_mau,
+CASE WHEN a.users=0 THEN 0
+           ELSE (sum(actp.registered_professionals) over(order by a.date rows unbounded preceding)*1.0) / a.users * 100 
+END as registered_professionals_mau,
 br.bounce_rate,
-br.avg_dau*1.0/a.users*100 stickiness,
+CASE WHEN a.users=0 THEN 0
+           ELSE br.avg_dau*1.0/a.users*100 
+END as stickiness,
 pr.p_raters_1stars,
 pr.p_raters_2stars,
 pr.p_raters_3stars,
