@@ -706,7 +706,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
+      <xloc>80</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
