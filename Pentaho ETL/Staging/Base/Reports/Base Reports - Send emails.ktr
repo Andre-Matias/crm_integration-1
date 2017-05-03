@@ -541,7 +541,7 @@
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name/>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;email_report.conf</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
