@@ -1086,7 +1086,7 @@
         <currency/>
         <decimal/>
         <group/>
-        <nullif>&#x2f;Reports&#x2f;Base&#x2f;</nullif>
+        <nullif>&#x2f;home&#x2f;ubuntu&#x2f;Reports&#x2f;Base&#x2f;</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
