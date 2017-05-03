@@ -1057,7 +1057,7 @@
     <fields>
       <field>
         <name>subject</name>
-        <type/>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -1069,7 +1069,7 @@
       </field>
       <field>
         <name>text</name>
-        <type/>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -1081,7 +1081,7 @@
       </field>
       <field>
         <name>path</name>
-        <type/>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -1093,7 +1093,7 @@
       </field>
       <field>
         <name>aux</name>
-        <type/>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
