@@ -932,11 +932,11 @@
       <include_date>N</include_date>
       <include_subfolders>N</include_subfolders>
       <zipFilenameDynamic>N</zipFilenameDynamic>
-      <isFilenameDynamic>N</isFilenameDynamic>
+      <isFilenameDynamic>Y</isFilenameDynamic>
       <attachContentFromField>N</attachContentFromField>
       <attachContentField/>
       <attachContentFileNameField/>
-      <dynamicFieldname/>
+      <dynamicFieldname>filepath</dynamicFieldname>
       <dynamicWildcard/>
       <dynamicZipFilename/>
       <sourcefilefoldername/>
@@ -999,11 +999,11 @@
       <include_date>N</include_date>
       <include_subfolders>N</include_subfolders>
       <zipFilenameDynamic>N</zipFilenameDynamic>
-      <isFilenameDynamic>N</isFilenameDynamic>
+      <isFilenameDynamic>Y</isFilenameDynamic>
       <attachContentFromField>N</attachContentFromField>
       <attachContentField/>
       <attachContentFileNameField/>
-      <dynamicFieldname/>
+      <dynamicFieldname>filepath</dynamicFieldname>
       <dynamicWildcard/>
       <dynamicZipFilename/>
       <sourcefilefoldername/>
