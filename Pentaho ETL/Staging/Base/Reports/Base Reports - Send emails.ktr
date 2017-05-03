@@ -1255,8 +1255,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
+    <separator/>
+    <enclosure/>
     <enclosure_forced>N</enclosure_forced>
     <enclosure_fix_disabled>N</enclosure_fix_disabled>
     <header>N</header>
@@ -1350,7 +1350,7 @@
     </fields>
     <ConcatFields>
 <targetFieldName>filepath</targetFieldName>
-<targetFieldLength>0</targetFieldLength>
+<targetFieldLength>10000</targetFieldLength>
 <removeSelectedFields>N</removeSelectedFields>
     </ConcatFields>
     <cluster_schema/>
