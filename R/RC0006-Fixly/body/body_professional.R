@@ -345,6 +345,15 @@ server_professional <- function(input, output, session) {
   })
   
   output$percentOfActiveUsersOnboardingProf <- renderGvis({
+    i<- 2
+    while (i < nrow(df_dailyDB)+1) {
+      #look up stuff using data from the row
+      #write stuff to the file
+      if(df_dailyDB[i,7]==0){
+        df_dailyDB[i,7] <- df_dailyDB[i-1,7]
+      }
+      i<- i+1
+    }
     chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'registered_professionals', options = list(
       legend = 'none',
       backgroundColor = "{fill:'transparent'}",

@@ -459,21 +459,48 @@ df_dailyDB <- rename(df_dailyDB, c('users.x'='dau','users.y'='mau'))
 df_dailyDB$stickiness <- round((df_dailyDB$dau / df_dailyDB$mau)*100, 2)
 
 ### getting the boxes
-month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
+day <- substr(gsub('-','', as.character(Sys.Date()-1)),7,8)
+if(day > 05){
+  monthprevious <- NULL
+  month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
+}else{
+  monthprevious <- substr(gsub('-','', as.character(Sys.Date()-5)),0,6)
+  month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
+}
+
 Sys.setlocale("LC_TIME", "C")
 current_month <- months(as.Date(Sys.time()))
 dash <- '-'
 
 #common boxes
-box_mau <- df_monthlyDB$users[df_monthlyDB$date == month]
-box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 1),'%')
-box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 1),'%')
+box_mau <- df_monthlyDB$users[df_monthlyDB$date == monthprevious] + df_monthlyDB$users[df_monthlyDB$date == month]
+if(is.null(monthprevious)){
+  box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 1),'%')
+  box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 1),'%')
+}else{
+  box_bounce_rate <- paste0(round((df_monthlyDB$bounce_rate[df_monthlyDB$date == month]+
+                                     df_monthlyDB$bounce_rate[df_monthlyDB$date == monthprevious])/2, 1),'%')
+  box_stickiness <- paste0(round((df_monthlyDB$stickiness[df_monthlyDB$date == month]+
+                                    df_monthlyDB$stickiness[df_monthlyDB$date == monthprevious])/2, 1),'%')
+}
+
 
 # professionals - boxes
 sum_p_raters <- rowSums(df_globalDB[1,c('p_raters_1star','p_raters_2stars','p_raters_3stars','p_raters_4stars','p_raters_5stars')])
 sum_p_rates <- df_globalDB[1,c('p_raters_1star')] + (2*df_globalDB[1,c('p_raters_2stars')]) + (3*df_globalDB[1,c('p_raters_3stars')]) + (4*df_globalDB[1,c('p_raters_4stars')]) + (5*df_globalDB[1,c('p_raters_5stars')])
 box_registered_pros <- df_globalDB[1,c('nb_pros')]
-box_registered_pros_mau <- paste0(round(df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month], 1),'%')
+
+if(is.null(monthprevious)){
+  box_registered_pros_mau <- paste0(round(df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month], 1),'%')
+    box_registration_bounce_rate <- paste0(round(df_monthlyDB$exitrate[df_monthlyDB$date == month], 1), '%')
+}else{
+  box_registered_pros_mau <- paste0(round((df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == month]+
+                                             df_monthlyDB$registered_professionals_mau[df_monthlyDB$date == monthprevious])/2, 1),'%')
+  
+  box_registration_bounce_rate <- paste0(round((df_monthlyDB$exitrate[df_monthlyDB$date == month]+
+                                                  df_monthlyDB$exitrate[df_monthlyDB$date == monthprevious])/2, 1), '%')
+}
+
 box_quotes <- df_globalDB[1,c('quotes')]
 box_approved_quotes <- df_globalDB[1,c('approved_quotes')]
 box_approved_quotes_per_active <- box_approved_quotes / df_globalDB[1,c('active_pros')]
@@ -481,7 +508,6 @@ box_bounces_payment <- 0
 box_avg_nb_quotes <- box_quotes / box_approved_quotes
 box_rated_pros <- df_globalDB[1,c('p_raters_4or5stars')]
 box_avg_p_rating <- sum_p_rates / sum_p_raters
-box_registration_bounce_rate <- paste0(round(df_monthlyDB$exitrate[df_monthlyDB$date == month], 1), '%')
 
 # professionals - category
 
