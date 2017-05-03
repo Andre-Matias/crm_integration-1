@@ -731,7 +731,7 @@
       <replyToAddresses>REPLYTO</replyToAddresses>
       <replyto>REPLYTO</replyto>
       <replytoname>SENDERNAME</replytoname>
-      <subject>title</subject>
+      <subject>subject_date</subject>
       <include_date>N</include_date>
       <include_subfolders>N</include_subfolders>
       <zipFilenameDynamic>N</zipFilenameDynamic>
@@ -928,7 +928,7 @@
       <replyToAddresses>REPLYTO</replyToAddresses>
       <replyto>REPLYTO</replyto>
       <replytoname>SENDERNAME</replytoname>
-      <subject>title</subject>
+      <subject>subject_date</subject>
       <include_date>N</include_date>
       <include_subfolders>N</include_subfolders>
       <zipFilenameDynamic>N</zipFilenameDynamic>
@@ -995,7 +995,7 @@
       <replyToAddresses>REPLYTO</replyToAddresses>
       <replyto>REPLYTO</replyto>
       <replytoname>SENDERNAME</replytoname>
-      <subject>title</subject>
+      <subject>subject_date</subject>
       <include_date>N</include_date>
       <include_subfolders>N</include_subfolders>
       <zipFilenameDynamic>N</zipFilenameDynamic>
