@@ -10,44 +10,49 @@ conn_chandra <- dbConnect(drv, host="gv-chandra.ckwrimb1igb1.us-west-2.redshift.
                      password="Pyrate4life")
 
 res <- dbSendQuery(conn_chandra, "select
-                        name_en as Service,
-                        new_id as CATEGORYID,
-                        name_en as CATEGORY,
-                        sum(case when BUCKET='GOLD' then 1 else 0 end)  as \"gold olx\",
-                        20 as \"gold olx and fixly\",
-                        sum(case when BUCKET='SILVER' then 1 else 0 end) as \"silver olx\",
-                        0 as \"silver olx and fixly\",
-                        sum(case when BUCKET='BRONZE' then 1 else 0 end) \"bronze olx\",
-                        500 as \"bronze olx and fixly\",
-                        sum(1) \"total olx\",
-                        500 as \"total olx and fixly\"
-                    from odl_global_verticals.vert_services_fixly_buckets_segment b
-                      join md_category_english c
-                        on b.category_id=c.id
-                    where email is not null
-                    group by c.new_id, name_en ;
+                                      name_en as Service,
+                                     new_id as CATEGORYID,
+                                     name_en as CATEGORY,
+                                     sum(case when BUCKET='GOLD' then 1 else 0 end)  as \"gold olx\",
+                                     count(distinct case when BUCKET='GOLD' then u.email else null end) as \"gold olx and fixly\",
+                                     sum(case when BUCKET='SILVER' then 1 else 0 end) as \"silver olx\",
+                                     count(distinct case when BUCKET='SILVER' then u.email else null end) as \"silver olx and fixly\",
+                                     sum(case when BUCKET='BRONZE' then 1 else 0 end) \"bronze olx\",
+                                     count(distinct case when BUCKET='BRONZE' then u.email else null end) as \"bronze olx and fixly\",
+                                     sum(1) \"total olx\",
+                                     count(distinct u.email) as \"total olx and fixly\"
+                                     from odl_global_verticals.vert_services_fixly_buckets_segment b
+                                     join md_category_english c
+                                     on b.category_id=c.id
+                                     left join rdl_vertical_services.fixpl_users u
+                                     on b.email=u.email
+                                     where b.email is not null
+                                     group by c.new_id, name_en
+                                     order by 1
                    ")
 df_teste <-dbFetch(res)
 df_teste <- data.frame(df_teste, stringsAsFactors=FALSE)
 dbClearResult(dbListResults(conn_chandra)[[1]])
 
 res <- dbSendQuery(conn_chandra, "select
-                                    user_id as \"User Id\",
-                                    email as \"E-mail\",
-                                    phone as \"Phone\",
-                                    c.new_id as categoryid,
-                                    name_en as \"Category\",
-                                    sum(nnls) as \"NNL 6 Months\",
-                                    sum(active_ads) as \"Active Ads\",
-                                    sum(reve1m) as \"Revenue 1 Month\",
-                                    sum(reve1m) as \"Revenue 6 Months\",
-                                    b.bucket,
-                                    'FALSE' as Onboarded
-                                  from odl_global_verticals.vert_services_fixly_buckets_segment b
-                                    join md_category_english c
-                                      on b.category_id=c.id
-                                  where email is not null
-                                  group by  user_id, email, phone, c.new_id, name_en, b.bucket ")
+                                  user_id as \"User Id\",
+                                 b.email as \"E-mail\",
+                                 b.phone as \"Phone\",
+                                 c.new_id as categoryid,
+                                 name_en as \"Category\",
+                                 sum(nnls) as \"NNL 6 Months\",
+                                 sum(active_ads) as \"Active Ads\",
+                                 sum(reve1m) as \"Revenue 1 Month\",
+                                 sum(reve1m) as \"Revenue 6 Months\",
+                                 b.bucket,
+                                 case when u.email is not null then 'TRUE' else 'FALSE' end as Onboarded
+                                 from odl_global_verticals.vert_services_fixly_buckets_segment b
+                                 join md_category_english c
+                                 on b.category_id=c.id
+                                 left join rdl_vertical_services.fixpl_users u
+                                 on b.email=u.email
+                                 where b.email is not null
+                                 group by  user_id, b.email,u.email, b.phone, c.new_id, name_en, b.bucket ")
 df_prof_bucket <-dbFetch(res)
 df_prof_bucket <- data.frame(df_prof_bucket, stringsAsFactors=FALSE)
 dbClearResult(dbListResults(conn_chandra)[[1]])
@@ -65,7 +70,6 @@ res <- dbSendQuery(conn_chandra, "
                                    on b.category_id=c.id
                                    left join rdl_vertical_services.fixpl_users u
                                    on b.email=u.email
-                                   or (b.category_id=131 and b.bucket='GOLD')
                                    group by  b.bucket, c.new_id, c.name_en,trunc(created_at))
                                    select bucket, categoryid, category, isnull(created_at, trunc(getdate())) created_at, n_reg, sum(n_reg) over (partition by bucket, category, categoryid order by created_at rows unbounded preceding)
                                    from registration
