@@ -40,6 +40,14 @@ tab_main_professionals_line_evolution <- fluidRow(
                ,collapsible = FALSE
                ,width = 12
                ,htmlOutput("mauOnboardingProf")
+             ),
+             box(
+               title = "Sessions"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("mauOnboardingProfSessions")
              )),
     tabPanel(title="Bounce Rate",id="bounceRateIdProf",value='bounceRateValProf',
              box(
@@ -332,6 +340,19 @@ server_professional <- function(input, output, session) {
     ))
     chart
   })
+  
+  output$mauOnboardingProfSessions <- renderGvis({
+    chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'sessions', options = list(
+      legend = 'none',
+      backgroundColor = "{fill:'transparent'}",
+      vAxis = "{gridlines:{color: '#ECF0F5'}, format: '#'}",
+      hAxis = "{gridlines:{color: 'transparent'}}",
+      colors = "['#0D737B']"
+    ))
+    chart
+  })
+  
+  
   
   output$bounceRateOnboardingProf <- renderGvis({
     chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'bounce_rate', options = list(
