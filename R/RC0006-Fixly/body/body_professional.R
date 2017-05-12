@@ -386,7 +386,7 @@ server_professional <- function(input, output, session) {
   })
   
   output$registeredUsersPerCategory <- renderGvis({
-    chart <- gvisBarChart(chart_prosPerL1cat, xvar = 'l1cat', yvar = c('count','count.html.tooltip'), options=list(
+    chart <- gvisBarChart(chart_prosPerL1cat, xvar = 'l1cat', yvar = c('count','count.html.tooltip', 'count.annotation'), options=list(
       legend = 'none',
       tooltip="{isHtml:'true',trigger:'selection'}",
       chartArea= "{left:150}",
