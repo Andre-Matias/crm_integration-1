@@ -437,8 +437,8 @@
   <notepads>
   </notepads>
   <connection>
-    <name>Services Vertical Poland</name>
-    <server>fix-stg-prm-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <name>Fixly Poland Production</name>
+    <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
@@ -548,7 +548,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Services Vertical Poland</connection>
+    <connection>Fixly Poland Production</connection>
     <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, &#x22;to&#x22;&#xd;&#xa;, subject&#xd;&#xa;, regexp_replace&#x28;content, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as content&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;FROM email_log&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>

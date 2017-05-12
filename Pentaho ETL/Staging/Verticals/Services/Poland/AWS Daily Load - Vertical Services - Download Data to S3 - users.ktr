@@ -437,8 +437,8 @@
   <notepads>
   </notepads>
   <connection>
-    <name>Services Vertical Poland</name>
-    <server>fix-stg-prm-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
+    <name>Fixly Poland Production</name>
+    <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
@@ -589,7 +589,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Services Vertical Poland</connection>
+    <connection>Fixly Poland Production</connection>
     <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, email&#xd;&#xa;, &#x22;password&#x22;&#xd;&#xa;, regexp_replace&#x28;permissions, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as permissions&#xd;&#xa;, last_login&#xd;&#xa;, first_name&#xd;&#xa;, last_name&#xd;&#xa;, email_verified&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, userable_id&#xd;&#xa;, userable_type&#xd;&#xa;, phone&#xd;&#xa;, address&#xd;&#xa;, city_id&#xd;&#xa;, zip_code&#xd;&#xa;, region_id&#xd;&#xa;, district_id&#xd;&#xa;, country_id&#xd;&#xa;, guest&#xd;&#xa;, profile_completed&#xd;&#xa;, linked_accounts&#xd;&#xa;, verifications&#xd;&#xa;, avatar_url&#xd;&#xa;, slug&#xd;&#xa;, cover_url&#xd;&#xa;, settings&#xd;&#xa;, last_activity&#xd;&#xa;, privacy&#xd;&#xa;, facebook_id&#xd;&#xa;, radius&#xd;&#xa;FROM users&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
