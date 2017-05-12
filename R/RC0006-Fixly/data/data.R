@@ -466,11 +466,10 @@ df_dailyDB$stickiness <- round((df_dailyDB$dau / df_dailyDB$mau)*100, 2)
 day <- substr(gsub('-','', as.character(Sys.Date()-1)),7,8)
 if(as.numeric(day) > 5){
   month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
-  box_mau <- df_monthlyDB$users[df_monthlyDB$date == month]
+  monthprevious <- NULL
 }else{
   monthprevious <- substr(gsub('-','', as.character(Sys.Date()-5)),0,6)
   month <- substr(gsub('-','', as.character(Sys.Date()-1)),0,6)
-  box_mau <- df_monthlyDB$users[df_monthlyDB$date == monthprevious] + df_monthlyDB$users[df_monthlyDB$date == month]
 }
 
 Sys.setlocale("LC_TIME", "C")
@@ -479,9 +478,11 @@ dash <- '-'
 
 #common boxes
 if(is.null(monthprevious)){
+  box_mau <- df_monthlyDB$users[df_monthlyDB$date == month]
   box_bounce_rate <- paste0(round(df_monthlyDB$bounce_rate[df_monthlyDB$date == month], 1),'%')
   box_stickiness <- paste0(round(df_monthlyDB$stickiness[df_monthlyDB$date == month], 1),'%')
 }else{
+  box_mau <- df_monthlyDB$users[df_monthlyDB$date == monthprevious] + df_monthlyDB$users[df_monthlyDB$date == month]
   box_bounce_rate <- paste0(round((df_monthlyDB$bounce_rate[df_monthlyDB$date == month]+
                                      df_monthlyDB$bounce_rate[df_monthlyDB$date == monthprevious])/2, 1),'%')
   box_stickiness <- paste0(round((df_monthlyDB$stickiness[df_monthlyDB$date == month]+
