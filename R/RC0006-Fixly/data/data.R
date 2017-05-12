@@ -153,14 +153,14 @@ select registration_date,
 from active_profs actp
 ORDER BY registration_date ASC)
 SELECT
-  trackers.date,
+  isnull(trackers.date,registered_users.registration_date) date,
   trackers.users,
   trackers.bounces,
   trackers.pageviews,
   trackers.sessions,
   ISNULL(registered_users.registered_professionals, 0) registered_professionals
 FROM trackers
-LEFT JOIN registered_users ON trackers.date = registered_users.registration_date
+FULL JOIN registered_users ON trackers.date = registered_users.registration_date
                           ORDER BY date ASC")
 
 df_dailyDB <- dbFetch(df_dailyDB)
@@ -571,6 +571,7 @@ df_l1cat_assignHtml <- data.frame(
 )
 df_l1cat_dictDB <- 
 chart_prosPerL1cat <- merge(df_l1_categoriesDB,df_l1cat_assignHtml, by = 'l1id')
+chart_prosPerL1cat$count.annotation <- chart_prosPerL1cat$count
 
 # users
 sum_u_raters <- rowSums(df_globalDB[1,c('u_raters_1star','u_raters_2stars','u_raters_3stars','u_raters_4stars','u_raters_5stars')])
