@@ -25,7 +25,7 @@ res <- dbSendQuery(conn_chandra, "select
                                      join md_category_english c
                                      on b.category_id=c.id
                                      left join rdl_vertical_services.fixpl_users u
-                                     on b.email=u.email
+                                     on b.email=u.email and u.email_verified=TRUE
                                      where b.email is not null
                                      group by c.new_id, name_en
                                      order by 1
@@ -50,7 +50,7 @@ res <- dbSendQuery(conn_chandra, "select
                                  join md_category_english c
                                  on b.category_id=c.id
                                  left join rdl_vertical_services.fixpl_users u
-                                 on b.email=u.email
+                                 on b.email=u.email and u.email_verified=TRUE
                                  where b.email is not null
                                  group by  user_id, b.email,u.email, b.phone, c.new_id, name_en, b.bucket ")
 df_prof_bucket <-dbFetch(res)
@@ -69,7 +69,7 @@ res <- dbSendQuery(conn_chandra, "
                                    join public.md_category_english c
                                    on b.category_id=c.id
                                    left join rdl_vertical_services.fixpl_users u
-                                   on b.email=u.email
+                                   on b.email=u.email and u.email_verified=TRUE
                                    group by  b.bucket, c.new_id, c.name_en,trunc(created_at))
                                    select bucket, categoryid, category, isnull(created_at, trunc(getdate())) created_at, n_reg, sum(n_reg) over (partition by bucket, category, categoryid order by created_at rows unbounded preceding)
                                    from registration

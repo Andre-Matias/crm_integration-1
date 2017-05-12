@@ -68,6 +68,7 @@ tab_main_professionals_line_evolution <- fluidRow(
                  ,width = 8
                  ,htmlOutput("percentOfActiveUsersOnboardingProf")
                ),
+               infoBoxOutput("infoProfRegistrationBox", width = 4),
                infoBoxOutput("percentOfActiveUsersOnboardingBoxProf", width = 4),
                infoBoxOutput("bouncesRegistrationPage", width = 4)
              ),
@@ -237,12 +238,21 @@ server_professional <- function(input, output, session) {
       ,color = "yellow")
   })
   
-  
+  # value box info about registered pros
+  output$infoProfRegistrationBox <- renderValueBox({
+    infoBox(
+      "",
+      "Registered Profissionals Definition:"
+      ,"Professionals who registered on Fixly.pl, have their e-mail verified and at least one service offering"
+      ,icon = icon("info")
+      ,color = "green"
+    )
+  })
   
   # value box percentage of registered pros
   output$percentOfActiveUsersOnboardingBoxProf <- renderValueBox({
     infoBox(
-      "Registered professionals over Entering Users"
+      "Registered professionals / Entering Users"
       ,formatC(box_registered_pros_mau, format="d", big.mark=',')
       ,icon = icon("wrench")
       ,color = "green"
