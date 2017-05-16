@@ -439,7 +439,7 @@
   <connection>
     <name>Fixly Poland Production</name>
     <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
-    <type>POSTGRESQL</type>
+    <type>REDSHIFT</type>
     <access>Native</access>
     <database>fixdb</database>
     <port>5432</port>
@@ -449,6 +449,7 @@
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
+      <attribute><code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code><attribute>true</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
@@ -479,7 +480,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;id&#xd;&#xa;, regexp_replace&#x28;details, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, offer_quote_limit&#xd;&#xa;, company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;id&#xd;&#xa;, regexp_replace&#x28;details, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, null&#xd;&#xa;, offer_quote_limit&#xd;&#xa;, company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -494,7 +495,7 @@
     </remotesteps>
     <GUI>
       <xloc>160</xloc>
-      <yloc>144</yloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
