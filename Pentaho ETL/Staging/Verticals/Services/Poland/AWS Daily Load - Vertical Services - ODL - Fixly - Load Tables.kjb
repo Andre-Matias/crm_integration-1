@@ -313,7 +313,7 @@
    <shared_objects_file/>
   <entries>
     <entry>
-      <name>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; report segmentation</name>
+      <name>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; OLD</name>
       <description/>
       <type>SQL</type>
       <sql>drop table if EXISTS  temporal&#x3b;&#xd;&#xa;&#xd;&#xa;CREATE TEMP TABLE temporal&#xd;&#xa;&#x28;&#xd;&#xa;	 user_id BIGINT   ENCODE MOSTLY32&#xd;&#xa;	,email VARCHAR&#x28;255&#x29;   ENCODE TEXT32K&#xd;&#xa;  ,category_id integer    ENCODE MOSTLY16&#xd;&#xa;  ,phone VARCHAR&#x28;255&#x29;   ENCODE TEXT32K&#xd;&#xa;	,nnls BIGINT   ENCODE MOSTLY32&#xd;&#xa;	,active_ads BIGINT   ENCODE MOSTLY32&#xd;&#xa;	,vas1m BIGINT   ENCODE MOSTLY32&#xd;&#xa;	,vas6m BIGINT   ENCODE MOSTLY32&#xd;&#xa;	,reve1m NUMERIC&#x28;38,2&#x29;   ENCODE MOSTLY32&#xd;&#xa;	,reve6m NUMERIC&#x28;38,2&#x29;   ENCODE MOSTLY32&#xd;&#xa;	,bucket VARCHAR&#x28;8&#x29;   ENCODE TEXT32K&#xd;&#xa;	,date_6m date ENCODE DELTA&#xd;&#xa;	,date_1m date   ENCODE DELTA&#xd;&#xa;	,inserted_date   date ENCODE DELTA&#xd;&#xa;&#x29;&#xd;&#xa;DISTSTYLE KEY&#xd;&#xa;DISTKEY &#x28;user_id&#x29;&#xd;&#xa;SORTKEY &#x28;user_id, email&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;insert into    temporal&#xd;&#xa;with ads AS&#xd;&#xa;&#x28;&#xd;&#xa;    SELECT &#x2a;&#xd;&#xa;    FROM rdl_triton_livesync.cee_olxpl_ads ads&#xd;&#xa;    WHERE ads.livesync_dbname &#x3d; &#x27;olxpl&#x27;&#xd;&#xa;          AND net_ad_counted &#x3d; 1&#xd;&#xa;          AND category_id IN &#x28;619, 131, 133, &#x2f;&#x2a;168,&#x2a;&#x2f; 179, 297, 300, 306, 314, 354, 356, 368, &#x2f;&#x2a;375,&#x2a;&#x2f; 522, 523, 625, 713, 741&#x29;&#xd;&#xa;          AND &#x28;trunc&#x28;created_at_first&#x29; &#x3e;&#x3d;  current_date -180&#xd;&#xa;              OR status &#x3d; &#x27;active&#x27;&#x29;&#xd;&#xa;          AND NOT &#x28;category_id &#x3d; 131 AND &#x28;&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;P__YCZK&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;GOT_WKA&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;PO_YCZANIE&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;KREDYT&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;P__YCZKI&#x25;&#x27;&#xd;&#xa;           &#x29;&#x29;&#xd;&#xa;&#x29;,&#xd;&#xa;users AS -- users who have posted in services category within last 6 months union ---&#x3e; users who have at least 1 active ad in services category&#xd;&#xa;&#x28;select user_id, email, category_id, max&#x28;ads.phone&#x29; as max_phone&#xd;&#xa;  from ads&#xd;&#xa;    join rdl_triton_livesync.cee_olxpl_users usr&#xd;&#xa;      on ads.user_id&#x3d;usr.id&#xd;&#xa;    group by user_id, email, category_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- users checked&#xd;&#xa;nnls as -- numbers of nnls posted in services category within last 6 months&#xd;&#xa;&#x28;&#xd;&#xa;      select a1.user_id,&#xd;&#xa;        a1.category_id,&#xd;&#xa;        count&#x28;distinct a1.id&#x29; nnls&#xd;&#xa;      from ads a1&#xd;&#xa;      where a1.net_ad_counted&#x3d;1 and trunc&#x28;created_at_first&#x29; &#x3e;&#x3d;  current_date -180&#xd;&#xa;      group by a1.user_id,a1.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- nnl checked&#xd;&#xa;active_ads as  --  number of active ads in services category&#xd;&#xa;&#x28;  select a1.user_id,&#xd;&#xa;     a1.category_id,&#xd;&#xa;     count&#x28;distinct a1.id&#x29; active_ads&#xd;&#xa;   from ads a1&#xd;&#xa;   where status&#x3d;&#x27;active&#x27;&#xd;&#xa;   group by a1.user_id,a1.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- active ads , checked&#xd;&#xa;vas1m as -- number of vas bought within last 1 month&#xd;&#xa;&#x28;   select&#xd;&#xa;      a1.id_user,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      count&#x28;&#x2a;&#x29; vas1m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;      join ads a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;   where a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;     and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;     and a1.price&#x3c;0&#xd;&#xa;     and a1.date &#x3e;&#x3d;  current_date -30&#xd;&#xa;group by a1.id_user,a3.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;vas6m as -- number of vas bought within last 6 months&#xd;&#xa;&#x28;   select&#xd;&#xa;      a1.id_user,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      count&#x28;&#x2a;&#x29; vas6m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;      join ads a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;where     a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;      and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;      and a1.price&#x3c;0&#xd;&#xa;      and trunc&#x28;a1.date&#x29;&#x3e;&#x3d; current_date -180&#xd;&#xa;group by a1.id_user, a3.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;reve1m as -- revenue gross last month&#xd;&#xa;&#x28;     select&#xd;&#xa;        a1.id_user,&#xd;&#xa;        a3.category_id,&#xd;&#xa;        sum&#x28;a1.price&#x29;&#x2a;-1 reve1m&#xd;&#xa;      from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;        join ads a3&#xd;&#xa;          on a1.id_ad&#x3d;a3.id&#xd;&#xa;      where&#xd;&#xa;        a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;        and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;        and a1.price&#x3c;0&#xd;&#xa;        and trunc&#x28;a1.date&#x29;&#x3e;&#x3d;  current_date - 30&#xd;&#xa;group by a1.id_user, a3.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;&#xd;&#xa;reve6m as -- revenue gross last 6 months&#xd;&#xa;&#x28;   select a1.id_user,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      sum&#x28;a1.price&#x29;&#x2a;-1 reve6m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;      join ads  a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;     where a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;     and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;     and a1.price&#x3c;0&#xd;&#xa;     and trunc&#x28;a1.date&#x29; &#x3e;&#x3d; current_date -180&#xd;&#xa;group by a1.id_user, a3.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;&#xd;&#xa;usrs as &#x28;&#xd;&#xa;  SELECT a1.user_id, a1.email, a1.category_id, a1.max_phone,&#xd;&#xa;    coalesce&#x28;a2.nnls, 0&#x29; nnls,&#xd;&#xa;    coalesce&#x28;a3.active_ads, 0&#x29; active_ads,&#xd;&#xa;    coalesce&#x28;a4.vas1m, 0&#x29; vas1m,&#xd;&#xa;    coalesce&#x28;a5.vas6m,0&#x29; vas6m,&#xd;&#xa;    coalesce&#x28;reve1m, 0&#x29; reve1m,&#xd;&#xa;    coalesce&#x28;reve6m, 0&#x29; reve6m&#xd;&#xa;  from users a1&#xd;&#xa;  left join nnls a2 on a1.user_id&#x3d;a2.user_id and a1.category_id&#x3d;a2.category_id&#xd;&#xa;  left join active_ads a3 on a1.user_id&#x3d;a3.user_id and a1.category_id&#x3d;a3.category_id&#xd;&#xa;  left join vas1m a4 on a1.user_id&#x3d;a4.id_user and a1.category_id&#x3d;a4.category_id&#xd;&#xa;  left join vas6m a5 on a1.user_id&#x3d;a5.id_user and a1.category_id&#x3d;a5.category_id&#xd;&#xa;  left join reve1m a6 on a1.user_id&#x3d;a6.id_user and a1.category_id&#x3d;a6.category_id&#xd;&#xa;  left join reve6m a7 on a1.user_id&#x3d;a7.id_user and a1.category_id&#x3d;a7.category_id&#xd;&#xa;&#x29;,&#xd;&#xa;&#xd;&#xa;bckts as &#x28;&#xd;&#xa;  select u.user_id,&#xd;&#xa;    case when sum&#x28;active_ads&#x29;&#x3e;1 and sum&#x28;vas1m&#x29;&#x3e;&#x3d;1 then &#x27;GOLD&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3d;1 and sum&#x28;vas1m&#x29;&#x3e;&#x3d;1 then &#x27;SILVER&#x27;&#xd;&#xa;      when &#x28;sum&#x28;active_ads&#x29;&#x3e;&#x3d;1 and sum&#x28;vas1m&#x29;&#x3d;0 and sum&#x28;vas6m&#x29;&#x3e;&#x3d;1&#x29; OR &#x28;sum&#x28;active_ads&#x29;&#x3d;0 and  sum&#x28;vas6m&#x29;&#x3e;&#x3d;1&#x29; then &#x27;BRONZE&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3e;&#x3d;1 and sum&#x28;vas6m&#x29;&#x3d;0 then &#x27;TIN&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3d;0 and sum&#x28;vas6m&#x29;&#x3d;0 then &#x27;DROP-OFF&#x27;&#xd;&#xa;    end as bucket&#xd;&#xa;  from usrs u&#xd;&#xa;  group by u.user_id&#x29;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;select u.&#x2a;, b.bucket, current_date-180 date_6m, current_date-30 as date_1m, current_date as inserted_date&#xd;&#xa;  from bckts b&#xd;&#xa;    join usrs u&#xd;&#xa;      on b.user_id &#x3d; u.user_id&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;truncate table odl_global_verticals.vert_services_fixly_buckets_segment&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;insert into    odl_global_verticals.vert_services_fixly_buckets_segment&#xd;&#xa;&#x28;select &#x2a; from temporal&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;drop table if EXISTS  temporal&#x3b;</sql>
@@ -325,8 +325,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>320</yloc>
+      <xloc>224</xloc>
+      <yloc>528</yloc>
     </entry>
     <entry>
       <name>SQL vert_services_fixly_prof_l3_city &#x3a;&#x3a; report professionals</name>
@@ -341,8 +341,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>544</xloc>
-      <yloc>160</yloc>
+      <xloc>464</xloc>
+      <yloc>208</yloc>
     </entry>
     <entry>
       <name>SQL - vert_services_fixly_user_l3_city &#x3a;&#x3a; report users</name>
@@ -357,8 +357,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>832</xloc>
-      <yloc>320</yloc>
+      <xloc>672</xloc>
+      <yloc>464</yloc>
     </entry>
     <entry>
       <name>START</name>
@@ -377,7 +377,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>128</xloc>
+      <xloc>80</xloc>
       <yloc>224</yloc>
     </entry>
     <entry>
@@ -393,8 +393,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1088</xloc>
-      <yloc>176</yloc>
+      <xloc>928</xloc>
+      <yloc>208</yloc>
     </entry>
     <entry>
       <name>waiting1</name>
@@ -405,8 +405,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>464</xloc>
-      <yloc>272</yloc>
+      <xloc>400</xloc>
+      <yloc>448</yloc>
     </entry>
     <entry>
       <name>waiting2</name>
@@ -417,8 +417,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>688</xloc>
-      <yloc>240</yloc>
+      <xloc>544</xloc>
+      <yloc>304</yloc>
     </entry>
     <entry>
       <name>waiting3</name>
@@ -429,8 +429,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>976</xloc>
-      <yloc>240</yloc>
+      <xloc>816</xloc>
+      <yloc>320</yloc>
     </entry>
     <entry>
       <name>&#xc9;xito</name>
@@ -455,26 +455,42 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>928</xloc>
-      <yloc>576</yloc>
+      <xloc>1072</xloc>
+      <yloc>336</yloc>
+    </entry>
+    <entry>
+      <name>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; WITH CITY TABLE</name>
+      <description/>
+      <type>SQL</type>
+      <sql>drop table if EXISTS  temporal&#x3b;&#xd;&#xa;CREATE TEMP TABLE temporal&#xd;&#xa;&#x28;&#xd;&#xa;     user_id BIGINT   ENCODE MOSTLY32&#xd;&#xa;    ,email VARCHAR&#x28;255&#x29;   ENCODE TEXT32K&#xd;&#xa;    ,category_id integer    ENCODE MOSTLY16&#xd;&#xa;    ,city_id integer    ENCODE MOSTLY16&#xd;&#xa;    ,phone VARCHAR&#x28;255&#x29;   ENCODE TEXT32K&#xd;&#xa;    ,nnls BIGINT   ENCODE MOSTLY32&#xd;&#xa;    ,active_ads BIGINT   ENCODE MOSTLY32&#xd;&#xa;    ,vas1m BIGINT   ENCODE MOSTLY32&#xd;&#xa;    ,vas6m BIGINT   ENCODE MOSTLY32&#xd;&#xa;    ,reve1m NUMERIC&#x28;38,2&#x29;   ENCODE MOSTLY32&#xd;&#xa;    ,reve6m NUMERIC&#x28;38,2&#x29;   ENCODE MOSTLY32&#xd;&#xa;    ,bucket VARCHAR&#x28;8&#x29;   ENCODE TEXT32K&#xd;&#xa;    ,date_6m date ENCODE DELTA&#xd;&#xa;    ,date_1m date   ENCODE DELTA&#xd;&#xa;    ,inserted_date   date ENCODE DELTA&#xd;&#xa;&#x29;&#xd;&#xa;DISTSTYLE KEY&#xd;&#xa;DISTKEY &#x28;user_id&#x29;&#xd;&#xa;SORTKEY &#x28;user_id, email&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;insert into    temporal&#xd;&#xa;with ads AS&#xd;&#xa;&#x28;&#xd;&#xa;    SELECT &#x2a;&#xd;&#xa;    FROM rdl_triton_livesync.cee_olxpl_ads ads&#xd;&#xa;    WHERE ads.livesync_dbname &#x3d; &#x27;olxpl&#x27;&#xd;&#xa;          AND net_ad_counted &#x3d; 1&#xd;&#xa;          AND category_id IN &#x28;619, 131, 133, &#x2f;&#x2a;168,&#x2a;&#x2f; 179, 297, 300, 306, 314, 354, 356, 368, &#x2f;&#x2a;375,&#x2a;&#x2f; 522, 523, 625, 713, 741&#x29;&#xd;&#xa;          AND &#x28;trunc&#x28;created_at_first&#x29; &#x3e;&#x3d;  current_date -180&#xd;&#xa;              OR status &#x3d; &#x27;active&#x27;&#x29;&#xd;&#xa;          AND NOT &#x28;category_id &#x3d; 131 AND &#x28;&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;P__YCZK&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;GOT_WKA&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;PO_YCZANIE&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;KREDYT&#x25;&#x27; OR&#xd;&#xa;            upper&#x28;title&#x29; LIKE &#x27;&#x25;P__YCZKI&#x25;&#x27;&#xd;&#xa;           &#x29;&#x29;&#xd;&#xa;&#x29;,&#xd;&#xa;users AS -- users who have posted in services category within last 6 months union ---&#x3e; users who have at least 1 active ad in services category&#xd;&#xa;&#x28;&#xd;&#xa;  select user_id, email, category_id, city_id, max&#x28;ads.phone&#x29; as max_phone&#xd;&#xa;  from ads&#xd;&#xa;    join rdl_triton_livesync.cee_olxpl_users usr&#xd;&#xa;      on ads.user_id&#x3d;usr.id&#xd;&#xa;    group by user_id, email, category_id, city_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- users checked&#xd;&#xa;nnls as -- numbers of nnls posted in services category within last 6 months&#xd;&#xa;&#x28;&#xd;&#xa;      select a1.user_id,&#xd;&#xa;        a1.category_id,&#xd;&#xa;        a1.city_id,&#xd;&#xa;        count&#x28;distinct a1.id&#x29; nnls&#xd;&#xa;      from ads a1&#xd;&#xa;      where a1.net_ad_counted&#x3d;1 and trunc&#x28;created_at_first&#x29; &#x3e;&#x3d;  current_date -180&#xd;&#xa;      group by a1.user_id,a1.category_id, a1.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- nnl checked&#xd;&#xa;active_ads as  --  number of active ads in services category&#xd;&#xa;&#x28;  select a1.user_id,&#xd;&#xa;     a1.category_id,&#xd;&#xa;     a1.city_id,&#xd;&#xa;     count&#x28;distinct a1.id&#x29; active_ads&#xd;&#xa;   from ads a1&#xd;&#xa;   where status&#x3d;&#x27;active&#x27;&#xd;&#xa;   group by a1.user_id,a1.category_id, a1.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;-- active ads , checked&#xd;&#xa;vas1m as -- number of vas bought within last 1 month&#xd;&#xa;&#x28;   select&#xd;&#xa;      a3.user_id,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      a3.city_id,&#xd;&#xa;      count&#x28;&#x2a;&#x29; vas1m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;      join ads a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;   where a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;     and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;     and a1.price&#x3c;0&#xd;&#xa;     and a1.date &#x3e;&#x3d;  current_date -30&#xd;&#xa;group by a3.user_id,a3.category_id, a3.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;vas6m as -- number of vas bought within last 6 months&#xd;&#xa;&#x28;   select&#xd;&#xa;      a3.user_id,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      a3.city_id,&#xd;&#xa;      count&#x28;&#x2a;&#x29; vas6m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;      join ads a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;where     a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;      and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;      and a1.price&#x3c;0&#xd;&#xa;      and trunc&#x28;a1.date&#x29;&#x3e;&#x3d; current_date -180&#xd;&#xa;group by a3.user_id, a3.category_id, a3.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;reve1m as -- revenue gross last month&#xd;&#xa;&#x28;     select&#xd;&#xa;        a3.user_id,&#xd;&#xa;        a3.category_id,&#xd;&#xa;        a3.city_id,&#xd;&#xa;        sum&#x28;a1.price&#x29;&#x2a;-1 reve1m&#xd;&#xa;        from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;        join ads a3&#xd;&#xa;        on a1.id_ad&#x3d;a3.id&#xd;&#xa;      where&#xd;&#xa;        a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;        and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;        and a1.price&#x3c;0&#xd;&#xa;        and trunc&#x28;a1.date&#x29;&#x3e;&#x3d;  current_date - 30&#xd;&#xa;group by a3.user_id, a3.category_id, a3.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;reve6m as -- revenue gross last 6 months&#xd;&#xa;&#x28;   select a3.user_id,&#xd;&#xa;      a3.category_id,&#xd;&#xa;      a3.city_id,&#xd;&#xa;      sum&#x28;a1.price&#x29;&#x2a;-1 reve6m&#xd;&#xa;    from rdl_triton_livesync.cee_olxpl_paidads_user_payments a1&#xd;&#xa;         join ads  a3&#xd;&#xa;         on a1.id_ad&#x3d;a3.id&#xd;&#xa;     where a1.livesync_dbname&#x3d;&#x27;olxpl&#x27;&#xd;&#xa;     and a1.id_index in &#x28;3,4,99,101&#x29;&#xd;&#xa;     and a1.price&#x3c;0&#xd;&#xa;     and trunc&#x28;a1.date&#x29; &#x3e;&#x3d; current_date -180&#xd;&#xa;group by a3.user_id, a3.category_id, a3.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;usrs as &#x28;&#xd;&#xa;  SELECT a1.user_id, a1.email, a1.category_id, a1.city_id, a1.max_phone,&#xd;&#xa;    coalesce&#x28;a2.nnls, 0&#x29; nnls,&#xd;&#xa;    coalesce&#x28;a3.active_ads, 0&#x29; active_ads,&#xd;&#xa;    coalesce&#x28;a4.vas1m, 0&#x29; vas1m,&#xd;&#xa;    coalesce&#x28;a5.vas6m,0&#x29; vas6m,&#xd;&#xa;    coalesce&#x28;reve1m, 0&#x29; reve1m,&#xd;&#xa;    coalesce&#x28;reve6m, 0&#x29; reve6m&#xd;&#xa;  from users a1&#xd;&#xa;  left join nnls a2       on a1.user_id&#x3d;a2.user_id and a1.category_id&#x3d;a2.category_id and a1.city_id&#x3d;a2.city_id&#xd;&#xa;  left join active_ads a3 on a1.user_id&#x3d;a3.user_id and a1.category_id&#x3d;a3.category_id and a1.city_id&#x3d;a3.city_id&#xd;&#xa;  left join vas1m a4      on a1.user_id&#x3d;a4.user_id and a1.category_id&#x3d;a4.category_id and a1.city_id&#x3d;a4.city_id&#xd;&#xa;  left join vas6m a5      on a1.user_id&#x3d;a5.user_id and a1.category_id&#x3d;a5.category_id and a1.city_id&#x3d;a5.city_id&#xd;&#xa;  left join reve1m a6     on a1.user_id&#x3d;a6.user_id and a1.category_id&#x3d;a6.category_id and a1.city_id&#x3d;a6.city_id&#xd;&#xa;  left join reve6m a7     on a1.user_id&#x3d;a7.user_id and a1.category_id&#x3d;a7.category_id and a1.city_id&#x3d;a7.city_id&#xd;&#xa;&#x29;,&#xd;&#xa;bckts as &#x28;&#xd;&#xa;  select u.user_id,&#xd;&#xa;    case when sum&#x28;active_ads&#x29;&#x3e;1 and sum&#x28;vas1m&#x29;&#x3e;&#x3d;1 then &#x27;GOLD&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3d;1 and sum&#x28;vas1m&#x29;&#x3e;&#x3d;1 then &#x27;SILVER&#x27;&#xd;&#xa;      when &#x28;sum&#x28;active_ads&#x29;&#x3e;&#x3d;1 and sum&#x28;vas1m&#x29;&#x3d;0 and sum&#x28;vas6m&#x29;&#x3e;&#x3d;1&#x29; OR &#x28;sum&#x28;active_ads&#x29;&#x3d;0 and  sum&#x28;vas6m&#x29;&#x3e;&#x3d;1&#x29; then &#x27;BRONZE&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3e;&#x3d;1 and sum&#x28;vas6m&#x29;&#x3d;0 then &#x27;TIN&#x27;&#xd;&#xa;      when sum&#x28;active_ads&#x29;&#x3d;0 and sum&#x28;vas6m&#x29;&#x3d;0 then &#x27;DROP-OFF&#x27;&#xd;&#xa;    end as bucket&#xd;&#xa;  from usrs u&#xd;&#xa;  group by u.user_id&#x29;&#xd;&#xa;&#xd;&#xa;select u.&#x2a;, b.bucket, current_date-180 date_6m, current_date-30 as date_1m, current_date as inserted_date&#xd;&#xa;  from bckts b&#xd;&#xa;    join usrs u&#xd;&#xa;      on b.user_id &#x3d; u.user_id&#x3b;&#xd;&#xa;&#xd;&#xa;truncate table odl_global_verticals.vert_services_fixly_buckets_segment&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;insert into    odl_global_verticals.vert_services_fixly_buckets_segment&#xd;&#xa;&#x28;select &#x2a; from temporal&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;drop table if EXISTS  temporal&#x3b;</sql>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>Chandra Redshift</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>256</xloc>
+      <yloc>320</yloc>
     </entry>
   </entries>
   <hops>
     <hop>
       <from>START</from>
-      <to>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; report segmentation</to>
+      <to>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; OLD</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; report segmentation</from>
+      <from>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; OLD</from>
       <to>waiting1</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -483,7 +499,7 @@
       <to>SQL vert_services_fixly_prof_l3_city &#x3a;&#x3a; report professionals</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -533,13 +549,31 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
+      <from>START</from>
+      <to>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; WITH CITY TABLE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; WITH CITY TABLE</from>
+      <to>SQL vert_services_fixly_prof_l3_city &#x3a;&#x3a; report professionals</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
       <from>log and delta - segmentation process</from>
       <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
