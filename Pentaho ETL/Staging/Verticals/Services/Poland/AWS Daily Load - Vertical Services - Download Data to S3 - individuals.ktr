@@ -438,7 +438,7 @@
   <connection>
     <name>Fixly Poland Production</name>
     <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
-    <type>REDSHIFT</type>
+    <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
     <port>5432</port>
@@ -448,7 +448,6 @@
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
-      <attribute><code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code><attribute>true</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
