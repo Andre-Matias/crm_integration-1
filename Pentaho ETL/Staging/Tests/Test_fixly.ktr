@@ -479,7 +479,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;id&#xd;&#xa;, regexp_replace&#x28;details, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;--, null as info&#xd;&#xa;, offer_quote_limit&#xd;&#xa;, company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;id&#xd;&#xa;, regexp_replace&#x28;details, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;, offer_quote_limit&#xd;&#xa;, company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
