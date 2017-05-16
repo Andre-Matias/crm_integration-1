@@ -437,8 +437,8 @@
   <notepads>
   </notepads>
   <connection>
-    <name>Fixly Poland Production</name>
-    <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
+    <name>Services Vertical Poland</name>
+    <server>fix-stg-prm-fixdb-bi-repl-public.c9mpw06cdmrg.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>fixdb</database>
@@ -599,9 +599,9 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, title&#xd;&#xa;-- , regexp_replace&#x28;description, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as description&#xd;&#xa;,&#x27;&#x27; as description&#xd;&#xa;, &#x22;action&#x22;&#xd;&#xa;, channel&#xd;&#xa;--  , regexp_replace&#x28;template, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as template&#xd;&#xa;, &#x27;&#x27; as template&#xd;&#xa;, user_show&#xd;&#xa;, active&#xd;&#xa;, subject&#xd;&#xa;, action_text&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM n_s_events&#xd;&#xa;</sql>
-    <limit>0</limit>
+    <connection>Services Vertical Poland</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, title&#xd;&#xa;-- , regexp_replace&#x28;description, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as description&#xd;&#xa;,&#x27;&#x27; as description&#xd;&#xa;, &#x22;action&#x22;&#xd;&#xa;, channel&#xd;&#xa;--  , regexp_replace&#x28;template, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as template&#xd;&#xa;, &#x27;&#x27; as template&#xd;&#xa;, user_show&#xd;&#xa;, active&#xd;&#xa;, subject&#xd;&#xa;, action_text&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM n_s_events</sql>
+    <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>N</variables_active>
