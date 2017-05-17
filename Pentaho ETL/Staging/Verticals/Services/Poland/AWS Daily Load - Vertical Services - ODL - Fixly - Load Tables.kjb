@@ -325,8 +325,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>528</yloc>
+      <xloc>272</xloc>
+      <yloc>704</yloc>
     </entry>
     <entry>
       <name>SQL vert_services_fixly_prof_l3_city &#x3a;&#x3a; report professionals</name>
@@ -357,8 +357,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>672</xloc>
-      <yloc>464</yloc>
+      <xloc>752</xloc>
+      <yloc>528</yloc>
     </entry>
     <entry>
       <name>START</name>
@@ -378,7 +378,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>80</xloc>
-      <yloc>224</yloc>
+      <yloc>208</yloc>
     </entry>
     <entry>
       <name>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request</name>
@@ -393,8 +393,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>928</xloc>
-      <yloc>208</yloc>
+      <xloc>992</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>waiting1</name>
@@ -405,8 +405,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>400</xloc>
-      <yloc>448</yloc>
+      <xloc>448</xloc>
+      <yloc>464</yloc>
     </entry>
     <entry>
       <name>waiting2</name>
@@ -429,7 +429,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>816</xloc>
+      <xloc>896</xloc>
       <yloc>320</yloc>
     </entry>
     <entry>
@@ -440,7 +440,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1408</xloc>
-      <yloc>576</yloc>
+      <yloc>464</yloc>
     </entry>
     <entry>
       <name>log and delta - segmentation process</name>
@@ -455,8 +455,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1072</xloc>
-      <yloc>336</yloc>
+      <xloc>1168</xloc>
+      <yloc>304</yloc>
     </entry>
     <entry>
       <name>SQL vert_services_fixly_buckets_segment &#x3a;&#x3a; WITH CITY TABLE</name>
@@ -472,7 +472,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>256</xloc>
-      <yloc>320</yloc>
+      <yloc>528</yloc>
     </entry>
   </entries>
   <hops>
