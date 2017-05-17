@@ -324,8 +324,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>176</yloc>
+      <xloc>464</xloc>
+      <yloc>128</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -367,7 +367,7 @@
       <jobname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
+      <exec_per_row>Y</exec_per_row>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
@@ -381,11 +381,17 @@
       <create_parent_folder>N</create_parent_folder>
       <pass_export>N</pass_export>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
+            <parameter>            <name>DATE_FROM</name>
+            <stream_name/>
+            <value>&#x24;&#x7b;DATE_FROM&#x7d;</value>
+            </parameter>            <parameter>            <name>DATE_TO</name>
+            <stream_name/>
+            <value>&#x24;&#x7b;DATE_TO&#x7d;</value>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>752</xloc>
+      <xloc>736</xloc>
       <yloc>288</yloc>
     </entry>
     <entry>
@@ -443,7 +449,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>464</xloc>
-      <yloc>432</yloc>
+      <yloc>448</yloc>
     </entry>
   </entries>
   <hops>
@@ -499,7 +505,7 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
