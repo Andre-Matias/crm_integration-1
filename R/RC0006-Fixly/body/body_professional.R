@@ -91,6 +91,16 @@ tab_main_professionals_line_evolution <- fluidRow(
                )
              )),
     
+    tabPanel(title="Registered Professionals (with e-mail validated)",id="emailValidationProf",value='emailValidationProf',
+             box(
+               title = "From Sessions to E-mail Validation Funnel"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("emailValidationProfBox")
+             )),
+    
     tabPanel(title="Stickiness",id="sticknessIdProf",value='sticknessValProf',
              box(
                title = "Daily Stickiness"
@@ -100,26 +110,6 @@ tab_main_professionals_line_evolution <- fluidRow(
                ,width = 12
                ,htmlOutput("sticknessOnboardingProf")
              ))
-    # tabPanel(title="Bounce Payment",id="bouncePaymentIdProf",value='bouncePaymentValProf',
-    #          htmlOutput("bouncePaymentOnboardingProf")),
-    # 
-    # tabPanel(title="Quotes",id="quotesIdProf",value='quotesValProf',
-    #          htmlOutput("quotesOnboardingProf")),
-    # 
-    # tabPanel(title="Approved Quotes Per Active",id="ApprovedQuotesPerActiveIdProf",value='ApprovedQuotesPerActiveValProf',
-    #          htmlOutput("ApprovedQuotesPerActiveOnboardingProf")),
-    # 
-    # tabPanel(title="Approved Quotes",id="ApprovedQuotesIdProf",value='ApprovedQuotesValProf',
-    #          htmlOutput("ApprovedQuotesOnboardingProf")),
-    # 
-    # tabPanel(title="Average Number of Quotes",id="avgNumberOfQuotesIdProf",value='avgNumberOfQuotesValProf',
-    #          htmlOutput("avgNumberOfQuotesOnboardingProf")),
-    # 
-    # tabPanel(title="Rated Professionals X Stars",id="ratedProfessionalsXStarsIdProf",value='ratedProfessionalsXStarsValProf',
-    #          htmlOutput("ratedProfessionalsXStarsOnboardingProf")),
-    # 
-    # tabPanel(title="Average Rating Users",id="avgRatingUsersIdProf",value='avgRatingUsersValProf',
-    #          htmlOutput("avgRatingUsersOnboardingProf"))
   )
 )
 
@@ -410,11 +400,23 @@ server_professional <- function(input, output, session) {
       region = 'PL',
       displayMode='markers',
       resolution= 'provinces',
+      width="100%",
       colorAxis="{colors:['#F39C12','#00A65A']}",
       backgroundColor='#4D9EB2'
     ))
     chart
   })
+  
+  output$emailValidationProfBox <- renderGvis({
+    chart <- gvisBarChart(df_funnel, xvar = 'description', yvar = c('value','value.html.tooltip','value.annotation'), options=list(
+      legend = 'none',
+      tooltip="{isHtml:'true',trigger:'selection'}",
+      chartArea= "{left:150}",
+      height=347
+    ))
+    chart
+  })
+  
   
   output$sticknessOnboardingProf <- renderGvis({
     chart <- gvisLineChart(df_dailyDB, xvar = 'date', yvar = 'stickiness', options = list(
