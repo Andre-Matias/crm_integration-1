@@ -494,7 +494,7 @@ df_funnel$description <- df_funnel$value
 
 df_funnel[df_funnel$variable=="sessions",]$description <- 'Sessions'
 df_funnel[df_funnel$variable=="registered",]$description <- 'Successful registered'
-df_funnel[df_funnel$variable=="service",]$description <- 'One service offerd'
+df_funnel[df_funnel$variable=="service",]$description <- 'One service offered'
 df_funnel[df_funnel$variable=="email",]$description <- 'E-mail verified'
 
 df_funnel[df_funnel$variable=="sessions",]$value.html.tooltip <- 'Number of sessions tracked with Google Analytics for the current month'
