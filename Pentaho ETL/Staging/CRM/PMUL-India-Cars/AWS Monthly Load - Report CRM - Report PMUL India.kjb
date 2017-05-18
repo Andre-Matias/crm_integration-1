@@ -320,6 +320,11 @@
       <logging_remote_work>N</logging_remote_work>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>DATE_FROM</name>
+          <stream_name/>
+          <value>&#x24;&#x7b;DATE_FROM&#x7d;</value>
+        </parameter>
       </parameters>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -334,8 +339,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1216</xloc>
-      <yloc>288</yloc>
+      <xloc>848</xloc>
+      <yloc>512</yloc>
     </entry>
     <entry>
       <name>START</name>
@@ -403,13 +408,13 @@
       <variablename>&#x24;&#x7b;DATE_FROM&#x7d;</variablename>
       <fieldtype>string</fieldtype>
       <mask/>
-      <comparevalue/>
+      <comparevalue>-</comparevalue>
       <minvalue/>
       <maxvalue/>
-      <successcondition>equal</successcondition>
+      <successcondition>contains</successcondition>
       <successnumbercondition>equal</successnumbercondition>
       <successbooleancondition>false</successbooleancondition>
-      <successwhenvarset>Y</successwhenvarset>
+      <successwhenvarset>N</successwhenvarset>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
@@ -451,23 +456,40 @@
       <xloc>464</xloc>
       <yloc>448</yloc>
     </entry>
+    <entry>
+      <name>LOG1</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <logmessage>GET VARIABLES FROM CONSOLE&#xd;&#xa;&#xd;&#xa;&#x24;&#x7b;DATE_FROM&#x7d;&#xd;&#xa;&#x24;&#x7b;DATE_TO&#x7d;&#xd;&#xa;&#x24;&#x7b;MONTH_FROM&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>208</yloc>
+    </entry>
+    <entry>
+      <name>LOG2</name>
+      <description/>
+      <type>WRITE_TO_LOG</type>
+      <logmessage>AUTOMATIC DATES&#xd;&#xa;&#xd;&#xa;&#x24;&#x7b;DATE_FROM&#x7d;&#xd;&#xa;&#x24;&#x7b;DATE_TO&#x7d;&#xd;&#xa;&#x24;&#x7b;MONTH_FROM&#x7d;</logmessage>
+      <loglevel>Basic</loglevel>
+      <logsubject/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>368</yloc>
+    </entry>
   </entries>
   <hops>
-    <hop>
-      <from>AWS Monthly Load - Report CRM - get Month-Date</from>
-      <to>AWS Monthly Load - Report CRM - Report PMUL India Subprocess</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
     <hop>
       <from>AWS Monthly Load - Report CRM - Report PMUL India Subprocess</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -499,8 +521,53 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>AWS Monthly Load - Report CRM - Automatic Month-Date</from>
+      <from>AWS Monthly Load - Report CRM - get Month-Date</from>
+      <to>LOG1</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>LOG1</from>
       <to>AWS Monthly Load - Report CRM - Report PMUL India Subprocess</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>AWS Monthly Load - Report CRM - Automatic Month-Date</from>
+      <to>LOG2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>LOG2</from>
+      <to>AWS Monthly Load - Report CRM - Report PMUL India Subprocess</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>LOG1</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>LOG2</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

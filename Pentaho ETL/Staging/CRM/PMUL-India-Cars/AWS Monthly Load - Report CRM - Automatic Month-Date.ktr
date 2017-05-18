@@ -493,6 +493,10 @@
         <name>DATE_TO</name>
         <type>this month start</type>
         </field>
+      <field>
+        <name>date_to_transform</name>
+        <type>last month start</type>
+        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
@@ -541,6 +545,21 @@
         <length>-2</length>
         <precision>-2</precision>
         <conversion_mask>yyyy-MM-dd HH&#x3a;mm&#x3a;ss.SSS</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>date_to_transform</name>
+        <rename>MONTH_FROM</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM</conversion_mask>
         <date_format_lenient>false</date_format_lenient>
         <date_format_locale/>
         <date_format_timezone/>
