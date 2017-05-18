@@ -479,12 +479,12 @@
   <order>
     <hop>
       <from>sql - stockars india</from>
-      <to>Hadoop File Output</to>
+      <to>complete with the bucket name</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Hadoop File Output</name>
+    <name>complete with the bucket name</name>
     <type>HadoopFileOutputPlugin</type>
     <description/>
     <distribute>Y</distribute>
