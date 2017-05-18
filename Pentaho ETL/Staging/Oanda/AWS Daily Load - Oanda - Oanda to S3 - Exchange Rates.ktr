@@ -10,13 +10,28 @@
     <directory>&#x2f;</directory>
     <parameters>
       <parameter>
+        <name>CURR_FROM</name>
+        <default_value>USD</default_value>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>CURR_TO</name>
+        <default_value>INR</default_value>
+        <description/>
+      </parameter>
+      <parameter>
         <name>DATE</name>
         <default_value/>
         <description/>
       </parameter>
       <parameter>
-        <name>INSTRUMENT</name>
-        <default_value>EUR_USD</default_value>
+        <name>DATE_PATH</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>DATE_TO</name>
+        <default_value/>
         <description/>
       </parameter>
     </parameters>
@@ -438,18 +453,33 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;05&#x2f;08 10&#x3a;51&#x3a;26.781</created_date>
+    <created_date>2017&#x2f;05&#x2f;15 17&#x3a;46&#x3a;28.121</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;05&#x2f;08 10&#x3a;51&#x3a;26.781</modified_date>
-    <key_for_session_key/>
+    <modified_date>2017&#x2f;05&#x2f;15 17&#x3a;46&#x3a;28.121</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <order>
     <hop>
-      <from>HTTP Client</from>
-      <to>JSON Input 2</to>
+      <from>Add constants</from>
+      <to>HTTP Client</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Generate Rows</from>
+      <to>Get Variables</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JSON Input</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>S3 File Output</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -458,36 +488,246 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>JSON Input 2</from>
-      <to>Merge Join</to>
+      <from>Get Variables</from>
+      <to>Write to log</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>JSON Input</from>
-      <to>Merge Join</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Merge Join</from>
-      <to>Replace in string</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Replace in string</from>
-      <to>S3 File Output</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Text file input</from>
+      <from>Write to log</from>
       <to>Add constants</to>
       <enabled>Y</enabled>
     </hop>
-    <hop>
-      <from>Add constants</from>
-      <to>HTTP Client</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
+  <step>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>widget</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>source</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>OANDA</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>display</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>absolute</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>adjustment</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>0</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>data_range</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>c</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>period</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>daily</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>price</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>bid</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>view</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>table</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>352</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Generate Rows</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+    </fields>
+    <limit>1</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>80</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Get Variables</name>
+    <type>GetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>quote_currency</name>
+        <variable>&#x24;&#x7b;CURR_FROM&#x7d;</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>base_currency_0</name>
+        <variable>&#x24;&#x7b;CURR_TO&#x7d;</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>start_date</name>
+        <variable>&#x24;&#x7b;DATE&#x7d;</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>end_date</name>
+        <variable>&#x24;&#x7b;DATE&#x7d;</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>192</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
   <step>
     <name>HTTP Client</name>
     <type>HTTP</type>
@@ -499,7 +739,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <url>https&#x3a;&#x2f;&#x2f;api-fxpractice.oanda.com&#x2f;v3&#x2f;instruments&#x2f;&#x24;&#x7b;INSTRUMENT&#x7d;&#x2f;candles</url>
+    <url>https&#x3a;&#x2f;&#x2f;www.oanda.com&#x2f;fx-for-business&#x2f;historical-rates&#x2f;api&#x2f;update&#x2f;</url>
     <urlInField>N</urlInField>
     <urlField/>
     <encoding>UTF-8</encoding>
@@ -512,29 +752,57 @@
     <closeIdleConnectionsTime>-1</closeIdleConnectionsTime>
     <lookup>
       <arg>
-        <name>granularity</name>
-        <parameter>granularity</parameter>
+        <name>adjustment</name>
+        <parameter>adjustment</parameter>
+      </arg>
+      <arg>
+        <name>base_currency_0</name>
+        <parameter>base_currency_0</parameter>
+      </arg>
+      <arg>
+        <name>data_range</name>
+        <parameter>data_range</parameter>
+      </arg>
+      <arg>
+        <name>display</name>
+        <parameter>display</parameter>
+      </arg>
+      <arg>
+        <name>end_date</name>
+        <parameter>end_date</parameter>
+      </arg>
+      <arg>
+        <name>period</name>
+        <parameter>period</parameter>
       </arg>
       <arg>
         <name>price</name>
         <parameter>price</parameter>
       </arg>
       <arg>
-        <name>from</name>
-        <parameter>from</parameter>
+        <name>quote_currency</name>
+        <parameter>quote_currency</parameter>
       </arg>
-      <header>
-        <name>token</name>
-        <parameter>Authorization</parameter>
-      </header>
-      <header>
-        <name>json</name>
-        <parameter>Accept</parameter>
-      </header>
+      <arg>
+        <name>source</name>
+        <parameter>source</parameter>
+      </arg>
+      <arg>
+        <name>start_date</name>
+        <parameter>start_date</parameter>
+      </arg>
+      <arg>
+        <name>view</name>
+        <parameter>view</parameter>
+      </arg>
+      <arg>
+        <name>widget</name>
+        <parameter>widget</parameter>
+      </arg>
     </lookup>
     <result>
       <name>result</name>
-      <code/>
+      <code>code</code>
       <response_time/>
       <response_header/>
     </result>
@@ -546,8 +814,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>144</yloc>
+      <xloc>448</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -583,9 +851,9 @@
     <fields>
       <field>
         <name>timestamp</name>
-        <path>&#x24;..candles.&#x2a;.time</path>
-        <type>String</type>
-        <format/>
+        <path>&#x24;.widget.&#x2a;.data.&#x5b;&#x2a;&#x5d;&#x5b;0&#x5d;</path>
+        <type>Number</type>
+        <format>&#x23;</format>
         <currency/>
         <decimal/>
         <group/>
@@ -595,34 +863,8 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>bid</name>
-        <path>&#x24;..candles.&#x2a;.bid.c</path>
-        <type>None</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>ask</name>
-        <path>&#x24;..candles.&#x2a;.ask.c</path>
-        <type>None</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>mid</name>
-        <path>&#x24;..candles.&#x2a;.mid.c</path>
+        <name>rate</name>
+        <path>&#x24;.widget.&#x2a;.data.&#x5b;&#x2a;&#x5d;&#x5b;1&#x5d;</path>
         <type>None</type>
         <format/>
         <currency/>
@@ -654,158 +896,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>JSON Input 2</name>
-    <type>JsonInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <include>N</include>
-    <include_field/>
-    <rownum>N</rownum>
-    <addresultfile>N</addresultfile>
-    <readurl>N</readurl>
-    <removeSourceField>N</removeSourceField>
-    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
-    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
-    <ignoreMissingPath>N</ignoreMissingPath>
-    <rownum_field/>
-    <file>
-      <name/>
-      <filemask/>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
-    </file>
-    <fields>
-      <field>
-        <name>instruments</name>
-        <path>&#x24;..instrument</path>
-        <type>None</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-    </fields>
-    <limit>0</limit>
-    <IsInFields>Y</IsInFields>
-    <IsAFile>N</IsAFile>
-    <valueField>result</valueField>
-    <shortFileFieldName/>
-    <pathFieldName/>
-    <hiddenFieldName/>
-    <lastModificationTimeFieldName/>
-    <uriNameFieldName/>
-    <rootUriNameFieldName/>
-    <extensionFieldName/>
-    <sizeFieldName/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>432</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Merge Join</name>
-    <type>MergeJoin</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-<join_type>RIGHT OUTER</join_type>
-<step1>JSON Input 2</step1>
-<step2>JSON Input</step2>
-    <keys_1>
-    </keys_1>
-    <keys_2>
-    </keys_2>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>528</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Replace in string</name>
-    <type>ReplaceString</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <in_stream_name>timestamp</in_stream_name>
-        <out_stream_name/>
-        <use_regex>no</use_regex>
-        <replace_string>T</replace_string>
-        <replace_by_string> </replace_by_string>
-        <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
-        <whole_word>no</whole_word>
-        <case_sensitive>no</case_sensitive>
-      </field>
-      <field>
-        <in_stream_name>timestamp</in_stream_name>
-        <out_stream_name/>
-        <use_regex>no</use_regex>
-        <replace_string>Z</replace_string>
-        <replace_by_string/>
-        <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
-        <whole_word>no</whole_word>
-        <case_sensitive>no</case_sensitive>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>608</xloc>
-      <yloc>144</yloc>
+      <xloc>576</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -835,16 +927,16 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;oanda&#x2f;&#x24;&#x7b;INSTRUMENT&#x7d;&#x2f;data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;oanda&#x2f;&#x24;&#x7b;CURR_FROM&#x7d;_&#x24;&#x7b;CURR_TO&#x7d;&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
-      <extention>json</extention>
+      <extention>csv</extention>
       <append>N</append>
       <split>N</split>
       <haspartno>N</haspartno>
-      <add_date>Y</add_date>
-      <add_time>Y</add_time>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
       <date_time_format>yyyy-MM-dd HH&#x3a;mm&#x3a;ss</date_time_format>
       <add_to_result_filenames>Y</add_to_result_filenames>
@@ -854,7 +946,7 @@
     </file>
     <fields>
       <field>
-        <name>timestamp</name>
+        <name>date_human</name>
         <type>String</type>
         <format/>
         <currency/>
@@ -866,44 +958,32 @@
         <precision>-1</precision>
       </field>
       <field>
-        <name>instruments</name>
-        <type>None</type>
+        <name>quote_currency</name>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
         <group/>
         <nullif/>
         <trim_type>none</trim_type>
-        <length>-1</length>
+        <length>3</length>
         <precision>-1</precision>
       </field>
       <field>
-        <name>bid</name>
-        <type>None</type>
+        <name>base_currency_0</name>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
         <group/>
         <nullif/>
         <trim_type>none</trim_type>
-        <length>-1</length>
+        <length>3</length>
         <precision>-1</precision>
       </field>
       <field>
-        <name>ask</name>
-        <type>None</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mid</name>
-        <type>None</type>
+        <name>rate</name>
+        <type>String</type>
         <format/>
         <currency/>
         <decimal/>
@@ -924,15 +1004,15 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
-      <yloc>144</yloc>
+      <xloc>784</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Text file input</name>
-    <type>TextFileInput</type>
+    <name>Select values</name>
+    <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -941,101 +1021,23 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <accept_filenames>N</accept_filenames>
-    <passing_through_fields>N</passing_through_fields>
-    <accept_field/>
-    <accept_stepname/>
-    <separator>&#x3b;</separator>
-    <enclosure/>
-    <enclosure_breaks>N</enclosure_breaks>
-    <escapechar/>
-    <header>Y</header>
-    <nr_headerlines>1</nr_headerlines>
-    <footer>N</footer>
-    <nr_footerlines>1</nr_footerlines>
-    <line_wrapped>N</line_wrapped>
-    <nr_wraps>1</nr_wraps>
-    <layout_paged>N</layout_paged>
-    <nr_lines_per_page>80</nr_lines_per_page>
-    <nr_lines_doc_header>0</nr_lines_doc_header>
-    <noempty>Y</noempty>
-    <include>N</include>
-    <include_field/>
-    <rownum>N</rownum>
-    <rownumByFile>N</rownumByFile>
-    <rownum_field/>
-    <format>Unix</format>
-    <encoding/>
-    <add_to_result_filenames>Y</add_to_result_filenames>
-    <file>
-      <name>&#x2f;home&#x2f;ubuntu&#x2f;conf&#x2f;exchange_rate.conf</name>
-      <filemask/>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
-      <type>Fixed</type>
-      <compression>None</compression>
-    </file>
-    <filters>
-    </filters>
-    <fields>
-      <field>
-        <name>token</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>accountid</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-    </fields>
-    <limit>0</limit>
-    <error_ignored>N</error_ignored>
-    <skip_bad_files>N</skip_bad_files>
-    <file_error_field/>
-    <file_error_message_field/>
-    <error_line_skipped>N</error_line_skipped>
-    <error_count_field/>
-    <error_fields_field/>
-    <error_text_field/>
-    <bad_line_files_destination_directory/>
-    <bad_line_files_extension>warning</bad_line_files_extension>
-    <error_line_files_destination_directory/>
-    <error_line_files_extension>error</error_line_files_extension>
-    <line_number_files_destination_directory/>
-    <line_number_files_extension>line</line_number_files_extension>
-    <date_format_lenient>Y</date_format_lenient>
-    <date_format_locale>en_US</date_format_locale>
-    <shortFileFieldName/>
-    <pathFieldName/>
-    <hiddenFieldName/>
-    <lastModificationTimeFieldName/>
-    <uriNameFieldName/>
-    <rootUriNameFieldName/>
-    <extensionFieldName/>
-    <sizeFieldName/>
-    <cluster_schema/>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>timestamp</name>
+        <rename>date_human</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM-dd</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
       </input>
@@ -1043,15 +1045,15 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
-      <yloc>144</yloc>
+      <xloc>672</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Add constants</name>
-    <type>Constant</type>
+    <name>Write to log</name>
+    <type>WriteToLog</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1060,80 +1062,13 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <limitRows>N</limitRows>
+      <limitRowsNumber>0</limitRowsNumber>
+      <logmessage/>
     <fields>
-      <field>
-        <name>json</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>application&#x2f;json</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>instruments</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>USD_EUR</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>from</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>2016-01-01T00&#x3a;00&#x3a;00.000000000Z</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>to</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>2017-04-05T00&#x3a;00&#x3a;00.000000000Z</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>granularity</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>D</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>price</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>BAM</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
+      </fields>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -1142,8 +1077,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>144</yloc>
+      <xloc>272</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
