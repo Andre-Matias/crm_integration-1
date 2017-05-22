@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Monthly Load - Report CRM - Source to S3 Subprocess</name>
+    <name>AWS Daily Load - Real Estate ID - NNL</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -10,18 +10,23 @@
     <directory>&#x2f;</directory>
     <parameters>
       <parameter>
-        <name>DATE_FROM</name>
-        <default_value>2017-04-01</default_value>
+        <name>CATEGORY</name>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
-        <name>DATE_TO</name>
-        <default_value>2017-04-30</default_value>
+        <name>COUNTRY</name>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
-        <name>MONTH_FROM</name>
-        <default_value>2017-04</default_value>
+        <name>DATE</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>DATE_PATH</name>
+        <default_value/>
         <description/>
       </parameter>
     </parameters>
@@ -443,21 +448,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;05&#x2f;18 10&#x3a;49&#x3a;12.201</created_date>
+    <created_date>2017&#x2f;05&#x2f;18 17&#x3a;48&#x3a;10.561</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;05&#x2f;18 10&#x3a;49&#x3a;12.201</modified_date>
+    <modified_date>2017&#x2f;05&#x2f;18 17&#x3a;48&#x3a;10.561</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>Stockars IN</name>
+    <name>Storia ID</name>
     <server>127.0.0.1</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>crm_cars_in</database>
-    <port>53302</port>
+    <database>realestate_id</database>
+    <port>53304</port>
     <username>biuser</username>
     <password>Encrypted 2be98afc86aa7f2e49829b9558bc5a1e2</password>
     <servername/>
@@ -469,7 +474,7 @@
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>53302</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>53304</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
@@ -480,16 +485,21 @@
   </connection>
   <order>
     <hop>
-      <from>sql - stockars india</from>
-      <to>complete with the bucket name</to>
+      <from>Select values</from>
+      <to>S3 File Output 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table input</from>
+      <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>complete with the bucket name</name>
-    <type>HadoopFileOutputPlugin</type>
+    <name>S3 File Output 2</name>
+    <type>S3FileOutputPlugin</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -497,32 +507,31 @@
       <schema_name/>
     </partitioning>
     <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
+    <enclosure/>
     <enclosure_forced>N</enclosure_forced>
     <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
+    <header>N</header>
     <footer>N</footer>
     <format>DOS</format>
-    <compression>None</compression>
+    <compression>GZip</compression>
     <encoding/>
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name/>
-      <source_configuration_name/>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;NNL&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>csv</extention>
       <append>N</append>
       <split>N</split>
       <haspartno>N</haspartno>
       <add_date>N</add_date>
       <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
+      <date_time_format>yyyy-MM-dd HH&#x3a;mm&#x3a;ss</date_time_format>
       <add_to_result_filenames>Y</add_to_result_filenames>
       <pad>N</pad>
       <fast_dump>N</fast_dump>
@@ -530,6 +539,8 @@
     </file>
     <fields>
     </fields>
+      <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
+      <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -538,14 +549,55 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>640</xloc>
-      <yloc>224</yloc>
+      <xloc>480</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>sql - stockars india</name>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>day</name>
+        <rename>day</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM-dd</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>352</xloc>
+      <yloc>160</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Table input</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -555,8 +607,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Stockars IN</connection>
-    <sql>SELECT &#x27;&#x24;&#x7b;MONTH_FROM&#x7d;&#x27; AS  month_id, COUNT&#x28;DISTINCT buyer&#x29; as PMUL&#xd;&#xa;FROM crm_cars_in.&#x60;package_subscription&#x60; ps&#xd;&#xa;INNER JOIN crm_cars_in.&#x60;package&#x60; p ON ps.package_id &#x3d; p.id&#xd;&#xa;INNER JOIN crm_cars_in.&#x60;user&#x60; u ON u.&#x60;id_user&#x60; &#x3d; ps.&#x60;buyer&#x60;&#xd;&#xa;WHERE ps.STATUS &#x3d; 1&#xd;&#xa;AND &#x28; LOWER&#x28;p.&#x60;name&#x60;&#x29; LIKE &#x27;&#x25;retail&#x25;&#x27;&#x29;&#xd;&#xa;AND  &#x28; CAST&#x28; SUBSTR&#x28;p.&#x60;name&#x60;, LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3, LOCATE&#x28; &#x27;_&#x27;,p.name,LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3&#x29;-LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29; -3 &#x29; AS UNSIGNED&#x29; &#x3e; 0&#xd;&#xa;OR p.&#x60;name&#x60; LIKE &#x27;&#x25;Corporate Stockars &#x3a; Paid package&#x27;&#xd;&#xa;&#x29;&#xd;&#xa;AND NOT&#x28; u.&#x60;email&#x60; LIKE &#x27;&#x25;olx.com&#x27; OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.com&#x27;&#xd;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.in&#x27;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;fixeads.com&#x27;&#xd;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;dispostable.com&#x27;&#xd;&#xa;&#x29;&#xd;&#xa;AND NOT&#x28;&#x28;ps.end_date &#x3c;&#x3d; &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27;&#x29; &#x7c; &#x28;ps.start_date &#x3e; &#x27;&#x24;&#x7b;DATE_TO&#x7d;&#x27;&#x29;&#x29;&#xd;&#xa;GROUP BY 1</sql>
+    <connection>Storia ID</connection>
+    <sql>select &#xa;date&#x28;created_at_first&#x29; as day,&#xa;360 as country_id,&#xa;2 as category_id,&#xa;count&#x28;distinct id&#x29; as NNL&#xa;from ads &#xa;where &#xa;net_ad_counted &#x3d; 1&#xa;and &#xa;date&#x28;created_at_first&#x29; &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#xa;group by 1,2,3&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -570,8 +622,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
-      <yloc>224</yloc>
+      <xloc>224</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
