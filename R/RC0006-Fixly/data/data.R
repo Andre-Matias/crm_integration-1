@@ -34,25 +34,28 @@ df_teste <-dbFetch(res)
 df_teste <- data.frame(df_teste, stringsAsFactors=FALSE)
 dbClearResult(dbListResults(conn_chandra)[[1]])
 
-res <- dbSendQuery(conn_chandra, "select
-                                  user_id as \"User Id\",
-                                 b.email as \"E-mail\",
-                                 b.phone as \"Phone\",
-                                 c.new_id as categoryid,
-                                 name_en as \"Category\",
-                                 sum(nnls) as \"NNL 6 Months\",
-                                 sum(active_ads) as \"Active Ads\",
-                                 sum(reve1m) as \"Revenue 1 Month\",
-                                 sum(reve1m) as \"Revenue 6 Months\",
-                                 b.bucket,
-                                 case when u.email is not null then 'TRUE' else 'FALSE' end as Onboarded
-                                 from odl_global_verticals.vert_services_fixly_buckets_segment b
-                                 join md_category_english c
-                                 on b.category_id=c.id
-                                 left join rdl_vertical_services.fixpl_users u
-                                 on b.email=u.email and u.email_verified=TRUE
-                                 where b.email is not null
-                                 group by  user_id, b.email,u.email, b.phone, c.new_id, name_en, b.bucket ")
+res <- dbSendQuery(conn_chandra, "select 
+                                    user_id as \"User Id\",
+                                     b.email as \"E-mail\",
+                                     b.phone as \"Phone\",
+                                     c.new_id as categoryid,
+                                     name_en as \"Category\",
+                                     ct.name_pl as \"City\",
+                                     sum(nnls) as \"NNL 6 Months\",
+                                     sum(active_ads) as \"Active Ads\",
+                                     sum(reve1m) as \"Revenue 1 Month\",
+                                     sum(reve1m) as \"Revenue 6 Months\",
+                                     b.bucket,
+                                     case when u.email is not null then 'TRUE' else 'FALSE' end as Onboarded
+                                     from odl_global_verticals.vert_services_fixly_buckets_segment b
+                                     join md_category_english c
+                                     on b.category_id=c.id
+                                     left join rdl_vertical_services.fixpl_users u
+                                     on b.email=u.email and u.email_verified=TRUE
+                                     left join rdl_triton_livesync.cee_olxpl_cities ct
+                                     on b.city_id=ct.id
+                                     where b.email is not null
+                                     group by  user_id, b.email,u.email, b.phone, c.new_id, name_en, ct.name_pl ,b.bucket")
 df_prof_bucket <-dbFetch(res)
 df_prof_bucket <- data.frame(df_prof_bucket, stringsAsFactors=FALSE)
 dbClearResult(dbListResults(conn_chandra)[[1]])
@@ -132,6 +135,19 @@ df_desc$Definition <- c("More than 1 active ad and at least 1 VAS purchase withi
                          "At least 1 active ad and 0 payments within last 6 month",
                          "Zero ads active, zero payments within last 6 months, and at least 1 ad added within last 6 months")
 
+res <- dbSendQuery(conn_chandra, "select
+                   replace(c.name_pl,'Łódź', 'Lodz') city_desc,
+                   count(distinct user_id) total_users,
+                   count(distinct u.email) users,
+                   s.bucket
+                   from odl_global_verticals.vert_services_fixly_buckets_segment s
+                   left join rdl_vertical_services.fixpl_users u
+                   on s.email=u.email and u.email_verified=TRUE
+                   left join rdl_triton_livesync.cee_olxpl_cities c --cee_olxpl_cities c
+                   on s.city_id=c.id
+                   group by c.name_pl, s.bucket")
+
+df_cities_buckets <-dbFetch(res)
 
 ### data from trackers ###
   # getting the tables
@@ -449,7 +465,42 @@ from odl_global_verticals.vert_services_fixly_prof_l3_city
 group by city_desc")
 df_citiesDB <- dbFetch(df_citiesDB)
 
+df_funnel <- dbSendQuery(conn_chandra,"
+                         with sessions as (
+                           select sum(sessions) sessions from
+                           rdl_vertical_services.trackers_general_traffic
+                           where tracker='ga' and
+                           date_trunc('month',date)=date_trunc('month',CURRENT_DATE)
+                         ),
+                         users as (
+                           select
+                           count(distinct p.id) \"registered\",
+                           count(distinct S.user_id) \"service\",
+                           count(distinct case when email_verified=true then p.id else null end) \"email\"
+                           from rdl_vertical_services.fixpl_users p
+                           left JOIN rdl_vertical_services.fixpl_services
+                           AS S ON S.user_id = P.id
+                           where date_trunc('month',p.created_at)=date_trunc('month',CURRENT_DATE)
+                         )
+                           select *
+                           from
+                           sessions, users
+")
+df_funnel <- dbFetch(df_funnel)
+df_funnel <- melt(df_funnel)
+df_funnel$value.annotation <- df_funnel$value
+df_funnel$value.html.tooltip <- df_funnel$value
+df_funnel$description <- df_funnel$value
 
+df_funnel[df_funnel$variable=="sessions",]$description <- 'Sessions'
+df_funnel[df_funnel$variable=="registered",]$description <- 'Successful registered'
+df_funnel[df_funnel$variable=="service",]$description <- 'One service offered'
+df_funnel[df_funnel$variable=="email",]$description <- 'E-mail verified'
+
+df_funnel[df_funnel$variable=="sessions",]$value.html.tooltip <- 'Number of sessions tracked with Google Analytics for the current month'
+df_funnel[df_funnel$variable=="registered",]$value.html.tooltip <- 'Professionals who successfully completed a registration in Fixly'
+df_funnel[df_funnel$variable=="service",]$value.html.tooltip <- 'Professionals who successfully completed a registration in Fixly and are offering at least one service'
+df_funnel[df_funnel$variable=="email",]$value.html.tooltip <- 'Professionals who successfully completed a registration in Fixly, are offering at least one service and have their e-mail verified / confirmed'
 
 # disconnect chandra
 dbDisconnect(conn_chandra)
@@ -459,7 +510,7 @@ df_monthlyDB$yearmonth <- substr(gsub('-','',df_monthlyDB$date),0,6)
 df_dailyDB$yearmonth <- substr(gsub('-','',df_dailyDB$date),0,6)
 df_dailyDB$bounce_rate <- round((df_dailyDB$bounces / df_dailyDB$sessions), 2)
 df_dailyDB <- merge(df_dailyDB,df_monthlyDB[,c('yearmonth','users')], by = 'yearmonth')
-df_dailyDB <- rename(df_dailyDB, c('users.x'='dau','users.y'='mau'))
+df_dailyDB <- plyr::rename(df_dailyDB, c('users.x'='dau','users.y'='mau'))
 df_dailyDB$stickiness <- round((df_dailyDB$dau / df_dailyDB$mau)*100, 2)
 
 ### getting the boxes

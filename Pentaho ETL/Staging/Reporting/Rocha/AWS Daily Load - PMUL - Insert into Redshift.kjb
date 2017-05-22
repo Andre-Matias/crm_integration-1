@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>AWS Daily Load - Vertical Services - S3 to Redshift - Load tables</name>
+  <name>AWS Daily Load - PMUL - Insert into Redshift</name>
   <description/>
   <extended_description/>
   <job_version/>
   <job_status>0</job_status>
   <directory>&#x2f;</directory>
   <created_user>-</created_user>
-  <created_date>2017&#x2f;03&#x2f;28 10&#x3a;21&#x3a;15.006</created_date>
+  <created_date>2017&#x2f;05&#x2f;19 14&#x3a;56&#x3a;26.761</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2017&#x2f;03&#x2f;28 10&#x3a;21&#x3a;15.006</modified_date>
+  <modified_date>2017&#x2f;05&#x2f;19 14&#x3a;56&#x3a;26.761</modified_date>
     <parameters>
       <parameter>
-        <name>S3_NAME</name>
+        <name>CATEGORY</name>
         <default_value/>
         <description/>
       </parameter>
       <parameter>
-        <name>TABLE_NAME</name>
+        <name>COUNTRY</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>MONTH_DATE</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>MONTH_PATH</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>WEEK_DATE</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>WEEK_PATH</name>
         <default_value/>
         <description/>
       </parameter>
@@ -339,14 +359,14 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>176</yloc>
+      <xloc>144</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
-      <name>SQL</name>
+      <name>SQL Week</name>
       <description/>
       <type>SQL</type>
-      <sql>truncate table rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d;&#x3b;&#xd;&#xa;&#xd;&#xa;COPY rdl_vertical_services.fixpl_&#x24;&#x7b;S3_NAME&#x7d; FROM &#x27;s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;&#x24;&#x7b;S3_NAME&#x7d;-data.txt.gz&#x27;&#xd;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xd;&#xa;GZIP  &#xd;&#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xd;&#xa;REMOVEQUOTES&#xd;&#xa;ACCEPTINVCHARS&#xd;&#xa;TIMEFORMAT &#x27;auto&#x27;&#xd;&#xa;DATEFORMAT &#x27;auto&#x27;&#xd;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#xd;&#xa;TRUNCATECOLUMNS&#xd;&#xa;TRIMBLANKS&#x3b;&#xd;&#xa;</sql>
+      <sql>delete from reporting.rocha_metric_w_pmul where date &#x3d; &#x27;&#x24;&#x7b;WEEK_DATE&#x7d;&#x27;&#x3b;&#xa;&#xa;&#xa;COPY reporting.rocha_metric_w_pmul FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PMUL&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;week&#x2f;&#x24;&#x7b;WEEK_PATH&#x7d;&#x2f;data.csv.gz&#x27;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xa;GZIP  &#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xa;ACCEPTINVCHARS &#xa;ESCAPE&#xa;TIMEFORMAT &#x27;auto&#x27;&#xa;DATEFORMAT &#x27;auto&#x27;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
@@ -355,8 +375,24 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>160</yloc>
+      <xloc>304</xloc>
+      <yloc>192</yloc>
+    </entry>
+    <entry>
+      <name>SQL Month</name>
+      <description/>
+      <type>SQL</type>
+      <sql>delete from reporting.rocha_metric_m_pmul where date &#x3d; &#x27;&#x24;&#x7b;MONTH_DATE&#x7d;&#x27;&#x3b;&#xa;&#xa;&#xa;COPY reporting.rocha_metric_m_pmul FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PMUL&#x2f;&#x24;&#x7b;COUNTRY&#x7d;&#x2f;&#x24;&#x7b;CATEGORY&#x7d;&#x2f;month&#x2f;&#x24;&#x7b;MONTH_PATH&#x7d;&#x2f;data.csv.gz&#x27;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27; &#xa;GZIP  &#xa;DELIMITER &#x27;&#x3b;&#x27;  &#xa;ACCEPTINVCHARS &#xa;ESCAPE&#xa;TIMEFORMAT &#x27;auto&#x27;&#xa;DATEFORMAT &#x27;auto&#x27;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>Chandra Redshift</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>480</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -365,49 +401,14 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>576</xloc>
-      <yloc>176</yloc>
-    </entry>
-    <entry>
-      <name>Write To Log</name>
-      <description/>
-      <type>WRITE_TO_LOG</type>
-      <logmessage>Trying &#x24;&#x7b;TABLE_NAME&#x7d;</logmessage>
-      <loglevel>Basic</loglevel>
-      <logsubject/>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>176</yloc>
-    </entry>
-    <entry>
-      <name>Write To Log 2</name>
-      <description/>
-      <type>WRITE_TO_LOG</type>
-      <logmessage>ERROR HERE&#x3a; &#x24;&#x7b;TABLE_NAME&#x7d;</logmessage>
-      <loglevel>Basic</loglevel>
-      <logsubject/>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>496</xloc>
-      <yloc>288</yloc>
+      <xloc>688</xloc>
+      <yloc>192</yloc>
     </entry>
   </entries>
   <hops>
     <hop>
-      <from>SQL</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
       <from>START</from>
-      <to>Write To Log</to>
+      <to>SQL Week</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -415,21 +416,21 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Write To Log</from>
-      <to>SQL</to>
+      <from>SQL Week</from>
+      <to>SQL Month</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>SQL</from>
-      <to>Write To Log 2</to>
+      <from>SQL Month</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
+      <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
   </hops>

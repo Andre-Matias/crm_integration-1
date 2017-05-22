@@ -19,11 +19,11 @@ tab_main <-fluidRow(
   
   # second box for sales by year and region bar
   ,box(
-    title = "Professional Users by Bucket (OLX.pl)"
+    title = "Professional Users by Top 10 Cities (Overlap OLX.pl and Fixly.pl)"
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
-    ,plotOutput("MainHeatMap", height = "300px")
+    ,htmlOutput("MainHeatMap", height = "300px")
   )
 )
 
@@ -83,9 +83,16 @@ tab_gold_table <-fluidRow(
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
-    , width = 12
     ,div(style="display:inline-block;", downloadButton('downloadGoldProf', 'Download'), style="float:right")
     ,dataTableOutput(outputId = "goldProfTable"))
+  # box for map (cities)
+  ,box(
+    title = "Professional Users by Top 10 Cities (Overlap OLX.pl and Fixly.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    ,htmlOutput("GoldCityMap", height = "300px")
+  )
 )
 
 ##################################################################
@@ -121,9 +128,16 @@ tab_silver_table <-fluidRow(
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
-    , width = 12
     ,div(style="display:inline-block;", downloadButton('downloadSilverProf', 'Download'), style="float:right")
     ,dataTableOutput(outputId = "silverProfTable")
+  )  
+  # box for map (cities)
+  ,box(
+    title = "Professional Users by Top 10 Cities (Overlap OLX.pl and Fixly.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    ,htmlOutput("SilverCityMap", height = "300px")
   )
 )
 
@@ -161,9 +175,16 @@ tab_bronze_table <- fluidRow(
     ,status = "primary"
     ,solidHeader = TRUE
     ,collapsible = TRUE
-    , width = 12
     ,div(style="display:inline-block;", downloadButton('downloadBronzeProf', 'Download'), style="float:right")
     ,dataTableOutput(outputId = "bronzeProfTable")
+  )  
+  # box for map (cities)
+  ,box(
+    title = "Professional Users by Top 10 Cities (Overlap OLX.pl and Fixly.pl)"
+    ,status = "primary"
+    ,solidHeader = TRUE
+    ,collapsible = TRUE
+    ,htmlOutput("BronzeCityMap", height = "300px")
   )
 )
 
@@ -214,17 +235,33 @@ server_overlap = function(input, output) {
                                  )
                                  )))
     )
+
+  #OLD HEAT MAP  
+  # output$MainHeatMap <- renderPlot({
+  #   treemap(totalUsersPerBucket, #Your data frame object
+  #           index="label",  #A list of your categorical variables
+  #           vSize = "count",  #This is your quantitative variable
+  #           type="index", #Type sets the organization and color scheme of your treemap
+  #           palette = "BuPu",  #Select your color palette from the RColorBrewer presets or make your own.
+  #           title="", #Customize your title
+  #           fontsize.title = 14 #Change the font size of the title
+  #   )
+  # })
   
-  output$MainHeatMap <- renderPlot({
-    treemap(totalUsersPerBucket, #Your data frame object
-            index="label",  #A list of your categorical variables
-            vSize = "count",  #This is your quantitative variable
-            type="index", #Type sets the organization and color scheme of your treemap
-            palette = "BuPu",  #Select your color palette from the RColorBrewer presets or make your own.
-            title="", #Customize your title
-            fontsize.title = 14 #Change the font size of the title
-    )
-  })
+  output$MainHeatMap <-  renderGvis({
+    chart <- gvisGeoChart(head(arrange(aggregate(x=df_cities_buckets[c("users", "total_users")], 
+                                                        by=df_cities_buckets["city_desc"], FUN = sum),
+                                              desc(total_users)), n = 10), 
+                            locationvar = 'city_desc', colorvar = 'users', sizevar = 'users',options=list(
+                              region = 'PL',
+                              displayMode='markers',
+                              resolution= 'provinces',
+                              width="100%",
+                              colorAxis="{colors:['#66CC99','#6699cc']}",
+                              backgroundColor='#FFFFFF'
+                            ))
+      chart
+    })
   
   # fluid row Gold, graph 1: sales by region quarter bar graph
   totalProf <- subset(df_unpvot, variable %in% c("total.olx","total.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
@@ -277,6 +314,18 @@ server_overlap = function(input, output) {
       scale_x_date(date_labels = "%b %d")
   })
   
+  output$GoldCityMap <- renderGvis({
+    chart <- gvisGeoChart(head(arrange(subset(df_cities_buckets, bucket == "GOLD"),desc(total_users)), n = 10), 
+                          locationvar = 'city_desc', colorvar = 'users', sizevar = 'users',options=list(
+                            region = 'PL',
+                            displayMode='markers',
+                            resolution= 'provinces',
+                            width="100%",
+                            colorAxis="{colors:['#66CC99','#6699cc']}",
+                            backgroundColor='#FFFFFF'
+                          ))
+    chart
+  })
   
   # # fluid row Silver, graph 2: sales be region current/prior year
   silverProf <- subset(df_unpvot, variable %in% c("silver.olx","silver.olx.and.fixly"), select = c(service,categoryid,category,variable,value))
@@ -311,6 +360,19 @@ server_overlap = function(input, output) {
       ylab("# Registered Professional Users") +
       xlab("Registration Date") +
       scale_x_date(date_labels = "%b %d")
+  })
+  
+  output$SilverCityMap <- renderGvis({
+    chart <- gvisGeoChart(head(arrange(subset(df_cities_buckets, bucket == "SILVER"),desc(total_users)), n = 10), 
+                          locationvar = 'city_desc', colorvar = 'users', sizevar = 'users',options=list(
+                            region = 'PL',
+                            displayMode='markers',
+                            resolution= 'provinces',
+                            width="100%",
+                            colorAxis="{colors:['#66CC99','#6699cc']}",
+                            backgroundColor='#FFFFFF'
+                          ))
+    chart
   })
   
   
@@ -349,6 +411,18 @@ server_overlap = function(input, output) {
       scale_x_date(date_labels = "%b %d")
   })
   
+  output$BronzeCityMap <- renderGvis({
+    chart <- gvisGeoChart(head(arrange(subset(df_cities_buckets, bucket == "BRONZE"),desc(total_users)), n = 10), 
+                          locationvar = 'city_desc', colorvar = 'users', sizevar = 'users',options=list(
+                            region = 'PL',
+                            displayMode='markers',
+                            resolution= 'provinces',
+                            width="100%",
+                            colorAxis="{colors:['#66CC99','#6699cc']}",
+                            backgroundColor='#FFFFFF'
+                          ))
+    chart
+  })
   
   # # download buttons
   output$downloadTotalProf <- downloadHandler(
@@ -385,10 +459,10 @@ server_overlap = function(input, output) {
   }
   
   # # tables with professionals data
-  output$goldProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
-  output$silverProfTable <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
-  output$bronzeProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,4,10)))))
-  output$totalProfTable  <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=3, columnDefs = list(list(visible=FALSE, targets=c(0,3,4,6,9,10)))))
+  output$goldProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotGold_click)) & df_prof_bucket$bucket=="GOLD",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,1,3,4,7,10,11)))))
+  output$silverProfTable <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotSilver_click)) & df_prof_bucket$bucket=="SILVER",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,1,3,4,7,10,11)))))
+  output$bronzeProfTable   <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotBronze_click)) & df_prof_bucket$bucket=="BRONZE",]), options = list(pageLength=5, columnDefs = list(list(visible=FALSE, targets=c(0,1,3,4,7,10,11)))))
+  output$totalProfTable  <- renderDataTable(as.data.frame(df_prof_bucket[df_prof_bucket$categoryid == as.numeric(x_Numeric(input$plotTotal_click)),]), options = list(pageLength=3, columnDefs = list(list(visible=FALSE, targets=c(0,1,3,4,7,10,11)))))
   
   # # labels with info
   output$globalInfo = renderText("Please click on the bar chart to filter the professionals additional data")
