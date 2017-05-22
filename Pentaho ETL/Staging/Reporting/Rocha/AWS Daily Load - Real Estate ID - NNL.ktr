@@ -608,7 +608,7 @@
       <schema_name/>
     </partitioning>
     <connection>Storia ID</connection>
-    <sql>select &#xa;date&#x28;created_at_first&#x29; as day,&#xa;360 as country_id,&#xa;2 as category_id,&#xa;count&#x28;&#x2a;&#x29; as NNL&#xa;from ads &#xa;where &#xa;net_ad_counted &#x3d; 1&#xa;and &#xa;date&#x28;created_at_first&#x29; &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#xa;group by 1,2,3&#xa;</sql>
+    <sql>select &#xa;date&#x28;created_at_first&#x29; as day,&#xa;360 as country_id,&#xa;2 as category_id,&#xa;count&#x28;distinct id&#x29; as NNL&#xa;from ads &#xa;where &#xa;net_ad_counted &#x3d; 1&#xa;and &#xa;date&#x28;created_at_first&#x29; &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27;&#xa;group by 1,2,3&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
