@@ -131,10 +131,10 @@ ui <- navbarPage(
   tabPanel('Stradia Ar Table', dataTableOutput('ex1')),
   tabPanel('Stradia Co Dup Graph', plotOutput("duplicatesPlot2")),   
   tabPanel('Stradia Co Table', dataTableOutput('ex2')),
-  tabPanel('Stradia Ec Dup Graph', plotOutput("duplicatesPlot3")),   
-  tabPanel('Stradia Ec Table', dataTableOutput('ex3')),
-  tabPanel('Stradia Pe Dup Graph', plotOutput("duplicatesPlot4")),   
-  tabPanel('Stradia Pe Table', dataTableOutput('ex4'))
+  tabPanel('Stradia Pe Dup Graph', plotOutput("duplicatesPlot3")),   
+  tabPanel('Stradia Pe Table', dataTableOutput('ex3')),
+  tabPanel('Stradia Ec Dup Graph', plotOutput("duplicatesPlot4")),   
+  tabPanel('Stradia Ec Table', dataTableOutput('ex4'))
   
              )
 
