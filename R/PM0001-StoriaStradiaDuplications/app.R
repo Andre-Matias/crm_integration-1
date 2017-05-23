@@ -116,7 +116,7 @@ ui <- navbarPage(
              h5("To find ad duplicates we use the following variables for Storia: 
                 Same user id, same city id, same category id, same price and title similarity with at least 70%.
                 For Stradia we use the following variables:
-                Same user id, same brand, same model, same year, same mileage, same price and same Variant."),
+                Same user id, same brand, same model, same year, same fuel and same Variant."),
              br(),
              h5("In Storia and Stradia dup graph tabs we have a plot with the relation between active ads and ad duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With this we can have an overall perspective regarding the evolution of duplicates."), 
