@@ -44,7 +44,7 @@ server <- function(input, output) {
       geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 470000)) + 
+      coord_cartesian(ylim = c(30000, 500000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -61,7 +61,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 42000)) + 
+      coord_cartesian(ylim = c(0, 50000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -116,7 +116,7 @@ ui <- navbarPage(
              h5("To find ad duplicates we use the following variables for Storia: 
                 Same user id, same city id, same category id, same price and title similarity with at least 70%.
                 For Stradia we use the following variables:
-                Same user id, same brand, same model, same year, same mileage, same price and same fuel (rounded off)."),
+                Same user id, same brand, same model, same year, same mileage, same price and same Variant."),
              br(),
              h5("In Storia and Stradia dup graph tabs we have a plot with the relation between active ads and ad duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With this we can have an overall perspective regarding the evolution of duplicates."), 
