@@ -476,11 +476,11 @@ df_funnel <- dbSendQuery(conn_chandra,"
                            select
                            count(distinct p.id) \"registered\",
                            count(distinct S.user_id) \"service\",
-                           count(distinct case when email_verified=true then p.id else null end) \"email\"
+                           count(distinct case when email_verified=true then S.user_id else null end) \"email\"
                            from rdl_vertical_services.fixpl_users p
                            left JOIN rdl_vertical_services.fixpl_services
                            AS S ON S.user_id = P.id
-                           where date_trunc('month',p.created_at)=date_trunc('month',CURRENT_DATE)
+                           where date_trunc('month',p.created_at)<=date_trunc('month',CURRENT_DATE)
                          )
                            select *
                            from
