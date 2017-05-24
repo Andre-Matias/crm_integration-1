@@ -987,6 +987,9 @@
       <field>
         <name>uuid</name>
         </field>
+      <field>
+        <name>link</name>
+        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
