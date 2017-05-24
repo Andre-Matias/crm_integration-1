@@ -67,14 +67,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 2: DAU
   output$dauBox <- renderValueBox({
-        valueBox("57 380", "DAU",
+        valueBox("79 694", "DAU",
            icon = icon("user"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: Active ads
   output$adsBox <- renderValueBox({
-    valueBox("305 531",
+    valueBox("302 565",
              "Active Ads",
              icon = icon("building-o"),
              color = "aqua")
@@ -82,7 +82,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 3: Revenue
   output$revenueBox <- renderValueBox({
-    valueBox("2 233",
+    valueBox("10 112",
              "Revenue",
              icon = icon("money"),
              color = "olive")
@@ -90,7 +90,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: Replies
   output$repliesBox <- renderValueBox({
-    valueBox("2 821",
+    valueBox("3 459",
              "Replies",
              icon = icon("reply"),
              color = "purple")
@@ -142,7 +142,8 @@ output$dauOnboarding <- renderGvis({
 output$activeadsOnboarding <- renderGvis({
   ads <- gvisAreaChart(Activeads, 
                        xvar = 'Date', yvar = 'Active ads', options = list(
-                         legend = 'none',
+                         legend = 'none', vAxes="[{viewWindowMode:'explicit',
+			                    viewWindow:{min:0, max:370000}}]",
                          backgroundColor = "{fill:'transparent'}",
                          colors = "['#66ccff']"
                        ))              

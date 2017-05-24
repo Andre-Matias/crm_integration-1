@@ -1,7 +1,7 @@
 # for the dashboard header, enter a title of "Global Sales Overview"
 ddm_notifications <-dropdownMenu(type = "notifications",
                                  notificationItem(
-                                   text = paste("Data last updated on ", "2017-05-22", "14:37"),
+                                   text = paste("Data last updated on ", "2017-05-24", "10:00"),
                                    icon("clock-o"),
                                    status = "success"
                                  )
