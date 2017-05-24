@@ -116,7 +116,7 @@ ui <- navbarPage(
              h5("This report provides data about ad duplications and deleted for Stradia Latam (Argentina, Colombia, Peru and Ecuador) based on some variables."),
              br(),
              h5("To find ad duplicates we use the following variables: 
-                Same user id, same brand, same model, same year and same fuel."),
+                Same user id, same brand, same model, same year, same fuel and mileage."),
              br(),
              h5("We have the plots with the relation between active ads and ad duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With this we can have an overall perspective regarding the evolution of duplicates."), 
