@@ -990,6 +990,9 @@
       <field>
         <name>link</name>
         </field>
+      <field>
+        <name>result</name>
+        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
