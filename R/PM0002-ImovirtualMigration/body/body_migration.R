@@ -8,7 +8,9 @@ useShinyjs(),
      valueBoxOutput("dauBox", width = 3),
      valueBoxOutput("adsBox", width = 3),
      valueBoxOutput("revenueBox", width = 3),
-     valueBoxOutput("repliesBox", width = 3))
+     valueBoxOutput("repliesBox", width = 3), 
+     valueBoxOutput("nnlBox", width = 3), 
+     valueBoxOutput("listersBox", width = 3))
   
  
 
@@ -51,7 +53,26 @@ tab_main_users_line_evolution <- fluidRow(
                ,collapsible = FALSE
                ,width = 12
                ,htmlOutput("repliesOnboarding")
+             )), 
+    tabPanel(title="NNL",id="nnlId",value='nnlVal',
+             box(
+               title = "NNL"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("nnlOnboarding")
+             )), 
+    tabPanel(title="Listers",id="listersId",value='listersVal',
+             box(
+               title = "Listers"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("listersOnboarding")
              ))
+    
     
   )
   )
@@ -96,7 +117,22 @@ server_migration <- function(input, output, session) {
              color = "purple")
   })
   
-
+  # fluid row 1, kpi 5: NNL
+  output$nnlBox <- renderValueBox({
+    valueBox("3 459",
+             "NNL",
+             icon = icon("sign-in"),
+             color = "maroon")
+  })
+  
+  # fluid row 1, kpi 6: Listers 
+  output$listersBox <- renderValueBox({
+    valueBox("3 459",
+             "Active Listers",
+             icon = icon("users"),
+             color = "blue")
+  })
+  
 
 #    on click
 #    # # on click of a tab1 valuebox
@@ -123,6 +159,19 @@ shinyjs::onclick('repliesBox',expr={
   updateTabsetPanel(session, "navbar", 'repliesVal')
 })
 
+#  # # on click of a tab1 valuebox
+shinyjs::onclick('nnlBox',expr={
+  # move to tab2
+  updateTabsetPanel(session, "navbar", 'nnlVal')
+})
+
+#  # # on click of a tab1 valuebox
+shinyjs::onclick('listersBox',expr={
+  # move to tab2
+  updateTabsetPanel(session, "navbar", 'listersVal')
+})
+
+
 
 #user plot 
 
@@ -142,8 +191,9 @@ output$dauOnboarding <- renderGvis({
 output$activeadsOnboarding <- renderGvis({
   ads <- gvisAreaChart(Activeads, 
                        xvar = 'Date', yvar = 'Active ads', options = list(
-                         legend = 'none', vAxes="[{viewWindowMode:'explicit',
-			                    viewWindow:{min:0, max:370000}}]",
+                         legend = 'none', 
+#vAxes="[{viewWindowMode:'explicit',
+#viewWindow:{min:0, max:370000}}]",
                          backgroundColor = "{fill:'transparent'}",
                          colors = "['#66ccff']"
                        ))              
@@ -174,12 +224,33 @@ output$repliesOnboarding <- renderGvis({
   replies
 })
 
+output$nnlOnboarding <- renderGvis({
+  nnl <- gvisAreaChart(NNL, 
+                           xvar = 'Date', yvar = 'NNL', options = list(
+                             legend = 'none',
+                             backgroundColor = "{fill:'transparent'}",
+                             colors = "['#990066']"
+                           ))              
+  nnl
+})
+
+output$listersOnboarding <- renderGvis({
+  listers <- gvisAreaChart(Activelisters, 
+                           xvar = 'Date', yvar = 'Active listers', options = list(
+                             legend = 'none',
+                             backgroundColor = "{fill:'transparent'}",
+                             colors = "['#336699']"
+                           ))              
+  listers
+})
+
+
+
 }
 
 
 
-#336633
-#663366
+
 
 
 
