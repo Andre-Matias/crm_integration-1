@@ -601,6 +601,18 @@
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
       </field>
+      <field>
+        <name>contentType</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>application&#x2f;json&#x3b; charset&#x3d;UTF-8</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
     </fields>
     <cluster_schema/>
     <remotesteps>
@@ -787,6 +799,10 @@
       <arg>
         <name>uuid</name>
         <parameter>X-Basecrm-Device-UUID</parameter>
+        <header>Y</header>        </arg>
+      <arg>
+        <name>contentType</name>
+        <parameter>Content-Type</parameter>
         <header>Y</header>        </arg>
       </lookup>
     <result>
