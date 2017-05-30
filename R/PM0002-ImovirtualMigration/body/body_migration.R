@@ -10,7 +10,9 @@ useShinyjs(),
      valueBoxOutput("revenueBox", width = 3),
      valueBoxOutput("repliesBox", width = 3), 
      valueBoxOutput("nnlBox", width = 3), 
-     valueBoxOutput("listersBox", width = 3))
+     valueBoxOutput("listersBox", width = 3),
+     valueBoxOutput("replieshourBox", width = 3),
+     valueBoxOutput("nnlhourBox", width = 3))
   
  
 
@@ -71,7 +73,27 @@ tab_main_users_line_evolution <- fluidRow(
                ,collapsible = FALSE
                ,width = 12
                ,htmlOutput("listersOnboarding")
+             )), 
+    tabPanel(title="Replies by Hour",id="replieshourId",value='replieshourVal',
+             box(
+               title = "Replies by Hour"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("replieshourOnboarding")
+             )),
+    
+    tabPanel(title="NNL by Hour",id="nnlhourId",value='nnlhourVal',
+             box(
+               title = "NNL by Hour"
+               ,status = "primary"
+               ,solidHeader = FALSE 
+               ,collapsible = FALSE
+               ,width = 12
+               ,htmlOutput("nnlhourOnboarding")
              ))
+    
     
     
   )
@@ -133,6 +155,18 @@ server_migration <- function(input, output, session) {
              color = "blue")
   })
   
+  # fluid row 1, kpi 7: Replies by Hour
+  output$replieshourBox <- renderValueBox({
+    valueBox("","Replies by Hour",
+             color = "purple")
+  })
+  
+  # fluid row 1, kpi 7: NNL by Hour
+  output$nnlhourBox <- renderValueBox({
+    valueBox("","NNL by Hour",
+             color = "maroon")
+  })
+  
 
 #    on click
 #    # # on click of a tab1 valuebox
@@ -169,6 +203,18 @@ shinyjs::onclick('nnlBox',expr={
 shinyjs::onclick('listersBox',expr={
   # move to tab2
   updateTabsetPanel(session, "navbar", 'listersVal')
+})
+
+#  # # on click of a tab1 valuebox
+shinyjs::onclick('replieshourBox',expr={
+  # move to tab2
+  updateTabsetPanel(session, "navbar", 'replieshourVal')
+})
+
+#  # # on click of a tab1 valuebox
+shinyjs::onclick('nnlhourBox',expr={
+  # move to tab2
+  updateTabsetPanel(session, "navbar", 'nnlhourVal')
 })
 
 
@@ -215,7 +261,7 @@ output$revenueOnboarding <- renderGvis({
 #Replies plot
 
 output$repliesOnboarding <- renderGvis({
-  replies <- gvisAreaChart(Imorepliesold, 
+  replies <- gvisAreaChart(Imoreplies, 
                            xvar = 'Date', yvar = 'Replies', options = list(
                              legend = 'none',
                              backgroundColor = "{fill:'transparent'}",
@@ -242,6 +288,26 @@ output$listersOnboarding <- renderGvis({
                              colors = "['#336699']"
                            ))              
   listers
+})
+
+output$replieshourOnboarding <- renderGvis({
+  replieshour <- gvisAreaChart(Replieshourold, 
+                           xvar = 'Date', yvar = 'Replies', options = list(
+                             legend = 'none',
+                             backgroundColor = "{fill:'transparent'}",
+                             colors = "['#663366']"
+                           ))              
+  replieshour
+})
+
+output$nnlhourOnboarding <- renderGvis({
+nnlhour <- gvisAreaChart(NNLhourold, 
+                               xvar = 'Date', yvar = 'NNL', options = list(
+                                 legend = 'none',
+                                 backgroundColor = "{fill:'transparent'}",
+                                 colors = "['#990066']"
+                               ))              
+ nnlhour
 })
 
 
