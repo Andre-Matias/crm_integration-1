@@ -291,7 +291,7 @@ output$listersOnboarding <- renderGvis({
 })
 
 output$replieshourOnboarding <- renderGvis({
-  replieshour <- gvisAreaChart(Replieshourold, 
+  replieshour <- gvisAreaChart(Replieshour, 
                            xvar = 'Date', yvar = 'Replies', options = list(
                              legend = 'none',
                              backgroundColor = "{fill:'transparent'}",
@@ -301,7 +301,7 @@ output$replieshourOnboarding <- renderGvis({
 })
 
 output$nnlhourOnboarding <- renderGvis({
-nnlhour <- gvisAreaChart(NNLhourold, 
+nnlhour <- gvisAreaChart(NNLhour, 
                                xvar = 'Date', yvar = 'NNL', options = list(
                                  legend = 'none',
                                  backgroundColor = "{fill:'transparent'}",
