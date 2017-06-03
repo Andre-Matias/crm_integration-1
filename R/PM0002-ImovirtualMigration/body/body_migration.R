@@ -249,7 +249,7 @@ output$activeadsOnboarding <- renderGvis({
 #revenue plot 
 
 output$revenueOnboarding <- renderGvis({
-  revenue <- gvisAreaChart(Imorevenueold, 
+  revenue <- gvisAreaChart(Imorevenue, 
                            xvar = 'Date', yvar = 'Revenue', options = list(
                              legend = 'none',
                              backgroundColor = "{fill:'transparent'}",
