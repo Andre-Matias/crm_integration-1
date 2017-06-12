@@ -1466,6 +1466,61 @@
       <xloc>944</xloc>
       <yloc>80</yloc>
     </entry>
+    <entry>
+      <name>Cars PT - PMUL - Insert into Redshift</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - PMUL - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>MONTH_DATE</name>
+            <stream_name>first_day_of_month</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>MONTH_PATH</name>
+            <stream_name>month_path</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>WEEK_DATE</name>
+            <stream_name>first_day_of_week</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>WEEK_PATH</name>
+            <stream_name>week_path</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>COUNTRY</name>
+            <stream_name/>
+            <value>PT</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>COUNTRY_ID</name>
+            <stream_name/>
+            <value>620</value>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>864</xloc>
+      <yloc>256</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -1640,15 +1695,6 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>RE RO - PMUL - Insert into Redshift</from>
-      <to>Cars IN - NNL</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>RE RO - PPU Month</from>
       <to>Cars PT - PPU Month</to>
       <from_nr>0</from_nr>
@@ -1660,6 +1706,24 @@
     <hop>
       <from>Cars PT - PPU Month</from>
       <to>Cars IN - PMUL - Insert into Redshift</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>RE RO - PMUL - Insert into Redshift</from>
+      <to>Cars PT - PMUL - Insert into Redshift</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Cars PT - PMUL - Insert into Redshift</from>
+      <to>Cars IN - NNL</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

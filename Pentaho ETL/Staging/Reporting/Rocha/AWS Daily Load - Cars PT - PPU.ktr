@@ -11,27 +11,27 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value/>
+        <default_value>JUN</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>AGGTYPE</name>
-        <default_value/>
+        <default_value>month</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value/>
+        <default_value>2017-06-01</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value/>
+        <default_value>2017-06-11</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value/>
+        <default_value>2017&#x2f;06&#x2f;01</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -549,7 +549,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>448</xloc>
+      <xloc>432</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -581,7 +581,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>288</xloc>
+      <xloc>224</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
