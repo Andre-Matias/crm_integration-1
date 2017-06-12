@@ -364,8 +364,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>512</yloc>
+      <xloc>352</xloc>
+      <yloc>432</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -429,8 +429,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>512</xloc>
-      <yloc>512</yloc>
+      <xloc>528</xloc>
+      <yloc>432</yloc>
     </entry>
     <entry>
       <name>Get Dates</name>
@@ -639,8 +639,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>352</yloc>
+      <xloc>368</xloc>
+      <yloc>256</yloc>
     </entry>
     <entry>
       <name>Cars IN - NNL - Insert into Redshift</name>
@@ -689,7 +689,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>336</xloc>
-      <yloc>624</yloc>
+      <yloc>576</yloc>
     </entry>
     <entry>
       <name>Real Estates ID - NNL - Insert into Redshift 2</name>
@@ -738,7 +738,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>624</yloc>
+      <yloc>576</yloc>
     </entry>
     <entry>
       <name>Stradia IN - MAU</name>
@@ -1020,8 +1020,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>656</xloc>
-      <yloc>512</yloc>
+      <xloc>672</xloc>
+      <yloc>432</yloc>
     </entry>
     <entry>
       <name>Cars RO - NNL - Insert into Redshift</name>
@@ -1070,7 +1070,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>720</xloc>
-      <yloc>624</yloc>
+      <yloc>576</yloc>
     </entry>
     <entry>
       <name>Real Estate RO - NNL</name>
@@ -1124,8 +1124,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>800</xloc>
-      <yloc>512</yloc>
+      <xloc>816</xloc>
+      <yloc>432</yloc>
     </entry>
     <entry>
       <name>Cars RO - NNL - Insert into Redshift 2</name>
@@ -1174,7 +1174,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>912</xloc>
-      <yloc>624</yloc>
+      <yloc>576</yloc>
     </entry>
     <entry>
       <name>Cars RO - PPU Month</name>
@@ -1348,8 +1348,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>512</xloc>
-      <yloc>352</yloc>
+      <xloc>544</xloc>
+      <yloc>256</yloc>
     </entry>
     <entry>
       <name>RE RO - PMUL - Insert into Redshift</name>
@@ -1403,8 +1403,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>672</xloc>
-      <yloc>352</yloc>
+      <xloc>704</xloc>
+      <yloc>256</yloc>
     </entry>
     <entry>
       <name>Cars PT - PPU Month</name>
