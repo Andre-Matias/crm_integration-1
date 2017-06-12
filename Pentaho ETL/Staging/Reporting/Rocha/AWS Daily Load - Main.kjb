@@ -1416,7 +1416,7 @@
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
+      <exec_per_row>Y</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
@@ -1434,6 +1434,31 @@
       <logging_remote_work>N</logging_remote_work>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>AGG</name>
+          <stream_name>month_name</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>AGGTYPE</name>
+          <stream_name/>
+          <value>month</value>
+        </parameter>
+        <parameter>
+          <name>DATE_FROM</name>
+          <stream_name>first_day_of_month</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_TO</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>PATH</name>
+          <stream_name>month_path</stream_name>
+          <value/>
+        </parameter>
       </parameters>
       <parallel>N</parallel>
       <draw>Y</draw>
