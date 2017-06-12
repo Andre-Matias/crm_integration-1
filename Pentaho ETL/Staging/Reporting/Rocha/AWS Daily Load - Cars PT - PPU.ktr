@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Cars RO - PPU</name>
+    <name>AWS Daily Load - Cars PT - PPU</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -11,27 +11,27 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value>MAY</default_value>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
         <name>AGGTYPE</name>
-        <default_value>month</default_value>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value>2017-05-01</default_value>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value>2017-05-31</default_value>
+        <default_value/>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value>2017&#x2f;05&#x2f;01</default_value>
+        <default_value/>
         <description/>
       </parameter>
     </parameters>
@@ -453,21 +453,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;05&#x2f;29 10&#x3a;44&#x3a;06.716</created_date>
+    <created_date>2017&#x2f;06&#x2f;12 11&#x3a;39&#x3a;08.663</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;05&#x2f;29 10&#x3a;44&#x3a;06.716</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
+    <modified_date>2017&#x2f;06&#x2f;12 11&#x3a;39&#x3a;08.663</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>Autovit RO</name>
+    <name>Standvirtual PT</name>
     <server>127.0.0.1</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>autovitro</database>
-    <port>53315</port>
+    <database>carspt</database>
+    <port>53308</port>
     <username>bi_team_pt</username>
     <password>Encrypted 2be98afc86aa7f2e4a910fb4ac8c19bf8</password>
     <servername/>
@@ -479,7 +479,7 @@
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>53315</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>53308</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
@@ -520,7 +520,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PPU&#x2f;RO&#x2f;Cars&#x2f;&#x24;&#x7b;AGGTYPE&#x7d;&#x2f;&#x24;&#x7b;PATH&#x7d;&#x2f;data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PPU&#x2f;PT&#x2f;Cars&#x2f;&#x24;&#x7b;AGGTYPE&#x7d;&#x2f;&#x24;&#x7b;PATH&#x7d;&#x2f;data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -550,7 +550,7 @@
     </remotesteps>
     <GUI>
       <xloc>448</xloc>
-      <yloc>224</yloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -566,8 +566,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Autovit RO</connection>
-    <sql>select &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,642,1, count&#x28;distinct ub.id&#x29; as cnt&#xa;from autovitro.fk_invoices fi&#xa;  inner join&#xa;  autovitro.users_business ub&#xa;on ub.id &#x3d; fi.user_id&#xa;where fi.created_at between &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d;&#x27;&#xa;and fi.gross_amount_cents &#x3e; 0&#xa;and ub.id not in &#x28;521225,521223,521213,521215,522479,&#xa;522495,24280,419691,522665,18964,1030125,522513,&#xa;1057085,1058565,1066171,1285659,1285679,829479,&#xa;17628&#x29;&#xa;and not &#x28;ub.email like &#x22;&#x25;&#x40;autovit&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;sunfra.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;olx.&#x25;&#x22; &#xa;or ub.email like &#x22;&#x25;&#x40;tablica.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;fixeads.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;otomoto.&#x25;&#x22; &#xa;or ub.email like &#x22;&#x25;&#x40;otodom.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;slando.&#x25;&#x22; &#x29;&#xa;group by 1&#xa;order by 1 asc&#x3b;&#xa;&#xa;&#xa;</sql>
+    <connection>Standvirtual PT</connection>
+    <sql>&#xa;SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,620,1, COUNT&#x28;DISTINCT user_id&#x29; ppu&#xa;FROM carspt.payment_session ps&#xa;INNER JOIN carspt.payment_basket pb ON ps.id&#x3d;pb.session_id&#xa;INNER JOIN carspt.users u ON pb.user_id&#x3d;u.id&#xa;INNER JOIN carspt.paidads_indexes pi ON pb.index_id&#x3d;pi.id&#xa;INNER JOIN forbi.dim_product p ON pi.code&#x3d;p.product_id&#xa;WHERE ps.status&#x3d;&#x27;finished&#x27;&#xa;AND provider NOT IN&#x28;&#x27;admin&#x27;,&#x27;volume&#x27;&#x29;&#xa;AND last_status_date between &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d;&#x27;&#xa;AND is_business&#x3d;1 AND is_revenue&#x3d;&#x27;Y&#x27;&#xa;GROUP BY 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -582,7 +582,7 @@
     </remotesteps>
     <GUI>
       <xloc>288</xloc>
-      <yloc>224</yloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
