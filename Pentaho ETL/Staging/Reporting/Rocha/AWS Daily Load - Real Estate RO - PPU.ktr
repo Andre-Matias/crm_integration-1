@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Cars IN - PMUL</name>
+    <name>AWS Daily Load - Real Estate RO - PPU</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -453,23 +453,23 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;05&#x2f;18 16&#x3a;44&#x3a;53.691</created_date>
+    <created_date>2017&#x2f;06&#x2f;07 17&#x3a;14&#x3a;55.393</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;05&#x2f;18 16&#x3a;44&#x3a;53.691</modified_date>
+    <modified_date>2017&#x2f;06&#x2f;07 17&#x3a;14&#x3a;55.393</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>Stockars IN</name>
+    <name>Storia RO</name>
     <server>127.0.0.1</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>crm_cars_in</database>
-    <port>53302</port>
-    <username>biuser</username>
-    <password>Encrypted 2be98afc86aa7f2e49829b9558bc5a1e2</password>
+    <database>storiaro</database>
+    <port>53314</port>
+    <username>bi_team_pt</username>
+    <password>Encrypted 2be98afc86aa7f2e4a910fb4ac8c19bf8</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -479,7 +479,7 @@
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>53302</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>53314</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
@@ -520,7 +520,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PPU&#x2f;IN&#x2f;Cars&#x2f;&#x24;&#x7b;AGGTYPE&#x7d;&#x2f;&#x24;&#x7b;PATH&#x7d;&#x2f;data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;rocha_report&#x2f;PPU&#x2f;RO&#x2f;RE&#x2f;&#x24;&#x7b;AGGTYPE&#x7d;&#x2f;&#x24;&#x7b;PATH&#x7d;&#x2f;data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -549,8 +549,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
-      <yloc>176</yloc>
+      <xloc>416</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -566,8 +566,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Stockars IN</connection>
-    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as date,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,356,1, COUNT&#x28;DISTINCT buyer&#x29;&#xa;FROM crm_cars_in.&#x60;package_subscription&#x60; ps&#xa;INNER JOIN crm_cars_in.&#x60;package&#x60; p ON ps.package_id &#x3d; p.id&#xa;INNER JOIN crm_cars_in.&#x60;user&#x60; u ON u.&#x60;id_user&#x60; &#x3d; ps.&#x60;buyer&#x60;&#xa;WHERE ps.STATUS &#x3d; 1&#xa;AND &#x28; LOWER&#x28;p.&#x60;name&#x60;&#x29; LIKE &#x27;&#x25;retail&#x25;&#x27;&#x29;&#xa;AND  &#x28; CAST&#x28; SUBSTR&#x28;p.&#x60;name&#x60;, LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3, LOCATE&#x28; &#x27;_&#x27;,p.name,LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3&#x29;-LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29; -3 &#x29; AS UNSIGNED&#x29; &#x3e; 0&#xa;&#x29;&#xa;AND NOT&#x28; u.&#x60;email&#x60; LIKE &#x27;&#x25;olx.com&#x27; OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.in&#x27;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;fixeads.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;dispostable.com&#x27;&#xa;&#x29;&#xa;AND NOT&#x28;&#x28;ps.end_date &#x3c;&#x3d; &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27;&#x29; &#x7c; &#x28;ps.start_date &#x3e;&#x3d; &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#x29;&#x29;&#xa;GROUP BY 1&#xa;&#xa;</sql>
+    <connection>Storia RO</connection>
+    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,642,2,&#xa;COUNT&#x28;DISTINCT id_user&#x29;&#xa;FROM storiaro.paidads_user_payments pup&#xa;INNER JOIN storiaro.users u ON pup.id_user &#x3d; u.id&#xa;WHERE u.is_business &#x3d; 1 AND pup.date BETWEEN &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; AND &#x27;&#x24;&#x7b;DATE_TO&#x7d;&#x27; AND payment_provider NOT IN &#x28;&#x27;admin&#x27;&#x29; AND u.id not in &#x28;4, 198, 12794, 23058, 25112, 25130&#x29;&#xa;GROUP BY 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -581,8 +581,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>176</yloc>
+      <xloc>256</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
