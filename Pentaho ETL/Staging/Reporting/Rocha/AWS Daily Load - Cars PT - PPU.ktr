@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value>JUN</default_value>
+        <default_value>FEB</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -21,17 +21,17 @@
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value>2017-06-01</default_value>
+        <default_value>2017-02-01</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value>2017-06-11</default_value>
+        <default_value>2017-02-31</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value>2017&#x2f;06&#x2f;01</default_value>
+        <default_value>2017&#x2f;02&#x2f;01</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -567,7 +567,7 @@
       <schema_name/>
     </partitioning>
     <connection>Standvirtual PT</connection>
-    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,620,1, COUNT&#x28;DISTINCT user_id&#x29; ppu&#xa;FROM carspt.payment_session ps&#xa;INNER JOIN carspt.payment_basket pb ON ps.id&#x3d;pb.session_id&#xa;INNER JOIN carspt.users u ON pb.user_id&#x3d;u.id&#xa;INNER JOIN carspt.paidads_indexes pi ON pb.index_id&#x3d;pi.id&#xa;INNER JOIN forbi.dim_product p ON pi.code&#x3d;p.product_id&#xa;WHERE ps.status&#x3d;&#x27;finished&#x27;&#xa;AND provider NOT IN&#x28;&#x27;admin&#x27;,&#x27;volume&#x27;&#x29;&#xa;AND last_status_date between &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d;&#x27;&#xa;AND is_business&#x3d;1 AND is_revenue&#x3d;&#x27;Y&#x27;&#xa;GROUP BY 1</sql>
+    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,620,1, COUNT&#x28;DISTINCT user_id&#x29; ppu&#xa;FROM carspt.payment_session ps&#xa;INNER JOIN carspt.payment_basket pb ON ps.id&#x3d;pb.session_id&#xa;INNER JOIN carspt.users u ON pb.user_id&#x3d;u.id&#xa;INNER JOIN carspt.paidads_indexes pi ON pb.index_id&#x3d;pi.id&#xa;INNER JOIN forbi.dim_product p ON pi.code&#x3d;p.product_id&#xa;WHERE ps.status&#x3d;&#x27;finished&#x27;&#xa;AND provider NOT IN&#x28;&#x27;admin&#x27;,&#x27;volume&#x27;&#x29;&#xa;AND last_status_date between &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#xa;AND is_business&#x3d;1 AND is_revenue&#x3d;&#x27;Y&#x27;&#xa;GROUP BY 1&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
