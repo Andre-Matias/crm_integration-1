@@ -365,8 +365,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>640</xloc>
-      <yloc>192</yloc>
+      <xloc>944</xloc>
+      <yloc>160</yloc>
     </entry>
     <entry>
       <name>Write To Log</name>
@@ -391,8 +391,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>512</xloc>
-      <yloc>352</yloc>
+      <xloc>544</xloc>
+      <yloc>304</yloc>
     </entry>
     <entry>
       <name>Correo fail</name>
@@ -404,7 +404,7 @@
       <destinationCc/>
       <destinationBCc/>
       <replyto/>
-      <replytoname/>
+      <replytoname>florencia.amonsky&#x40;olx.com</replytoname>
       <subject>Fixly - Fail &#x3a; &#x24;&#x7b;S3_NAME&#x7d;</subject>
       <include_date>N</include_date>
       <contact_person/>
@@ -431,8 +431,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>240</yloc>
+      <xloc>384</xloc>
+      <yloc>272</yloc>
     </entry>
     <entry>
       <name>Correo ok</name>
@@ -444,7 +444,7 @@
       <destinationCc/>
       <destinationBCc/>
       <replyto/>
-      <replytoname/>
+      <replytoname>florencia.amonsky&#x40;olx.com</replytoname>
       <subject>Fixly - Ok&#x3a; &#x24;&#x7b;S3_NAME&#x7d;</subject>
       <include_date>N</include_date>
       <contact_person/>
@@ -454,7 +454,7 @@
       <zip_files>N</zip_files>
       <zip_name/>
       <use_auth>Y</use_auth>
-      <use_secure_auth>N</use_secure_auth>
+      <use_secure_auth>Y</use_secure_auth>
       <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
       <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
       <only_comment>N</only_comment>
@@ -508,7 +508,7 @@
       <to>Correo fail</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -517,7 +517,7 @@
       <to>Write To Log 2</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -526,7 +526,34 @@
       <to>Correo ok</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Write To Log 2</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Correo ok</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>SQL</from>
+      <to>Write To Log 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
