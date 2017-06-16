@@ -467,6 +467,16 @@
       <to>S3 File Output 2</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Google Analytics 3</from>
+      <to>Add constants 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Add constants 3</from>
+      <to>S3 File Output 3</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
     <name>Add constants</name>
@@ -882,6 +892,206 @@
     <GUI>
       <xloc>368</xloc>
       <yloc>192</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Google Analytics 3</name>
+    <type>TypeExitGoogleAnalyticsInputStep</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <oauthServiceAccount>717032672419-compute&#x40;developer.gserviceaccount.com</oauthServiceAccount>
+    <appName>Services PL</appName>
+    <oauthKeyFile>&#x2f;home&#x2f;ubuntu&#x2f;GA&#x2f;Services PL-a6067feca0a0.p12</oauthKeyFile>
+    <profileName/>
+    <profileTableId/>
+    <customTableId>ga&#x3a;147296603</customTableId>
+    <useCustomTableId>Y</useCustomTableId>
+    <startDate>&#x24;&#x7b;DATE&#x7d;</startDate>
+    <endDate>&#x24;&#x7b;DATE&#x7d;</endDate>
+    <dimensions>ga&#x3a;date,ga&#x3a;channelGrouping,ga&#x3a;deviceCategory</dimensions>
+    <metrics>ga&#x3a;users,ga&#x3a;sessions,ga&#x3a;bounces,ga&#x3a;pageviews,ga&#x3a;sessionDuration</metrics>
+    <filters/>
+    <sort/>
+    <useSegment>Y</useSegment>
+    <useCustomSegment>N</useCustomSegment>
+    <customSegment/>
+    <segmentId>gaid&#x3a;&#x3a;-1</segmentId>
+    <segmentName>All Visits</segmentName>
+    <samplingLevel>DEFAULT</samplingLevel>
+    <rowLimit>0</rowLimit>
+      <feedField>
+        <feedFieldType>Dimension</feedFieldType>
+        <feedField>ga&#x3a;date</feedField>
+        <outField>ga&#x3a;date</outField>
+        <type>Date</type>
+        <conversionMask>yyyyMMdd</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Dimension</feedFieldType>
+        <feedField>ga&#x3a;channelGrouping</feedField>
+        <outField>ga&#x3a;channelGrouping</outField>
+        <type>String</type>
+        <conversionMask/>
+      </feedField>
+      <feedField>
+        <feedFieldType>Dimension</feedFieldType>
+        <feedField>ga&#x3a;deviceCategory</feedField>
+        <outField>ga&#x3a;deviceCategory</outField>
+        <type>String</type>
+        <conversionMask/>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;users</feedField>
+        <outField>ga&#x3a;users</outField>
+        <type>Integer</type>
+        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;sessions</feedField>
+        <outField>ga&#x3a;sessions</outField>
+        <type>Integer</type>
+        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;bounces</feedField>
+        <outField>ga&#x3a;bounces</outField>
+        <type>Integer</type>
+        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;pageviews</feedField>
+        <outField>ga&#x3a;pageviews</outField>
+        <type>Integer</type>
+        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+      <feedField>
+        <feedFieldType>Metric</feedFieldType>
+        <feedField>ga&#x3a;sessionDuration</feedField>
+        <outField>ga&#x3a;sessionDuration</outField>
+        <type>Integer</type>
+        <conversionMask>&#x23;&#x3b;-&#x23;</conversionMask>
+      </feedField>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>160</xloc>
+      <yloc>304</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Add constants 3</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>tracker</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>ga</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>304</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>S3 File Output 3</name>
+    <type>S3FileOutputPlugin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>&#x3b;</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>N</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>GZip</compression>
+    <encoding/>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>s3&#x3a;&#x2f;&#x2f;s3&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;GA&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;general_channel_device</name>
+      <is_command>N</is_command>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>txt</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+    </fields>
+      <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
+      <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>304</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

@@ -365,8 +365,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>704</xloc>
-      <yloc>160</yloc>
+      <xloc>832</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>GA Exits</name>
@@ -383,6 +383,22 @@
       <nr>0</nr>
       <xloc>576</xloc>
       <yloc>112</yloc>
+    </entry>
+    <entry>
+      <name>GA General Channel Device</name>
+      <description/>
+      <type>SQL</type>
+      <sql>DELETE FROM rdl_vertical_services.trackers_general_traffic_channel_device WHERE date &#x3d; &#x27;&#x24;&#x7b;DATE&#x7d;&#x27; and tracker &#x3d; &#x27;ga&#x27;&#x3b;&#xd;&#xa;&#xa;COPY rdl_vertical_services.trackers_general_traffic_channel_device FROM &#x27;s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland&#x2f;trackers&#x2f;GA&#x2f;&#x24;&#x7b;DATE_PATH&#x7d;&#x2f;general_channel_device.txt.gz&#x27;&#xa;CREDENTIALS &#x27;aws_access_key_id&#x3d;AKIAJ64EPWTWUB3XAQTA&#x3b;aws_secret_access_key&#x3d;iYeanVlgMvHKsSk5ipSMTLMEzx&#x2b;kVEo8VoDfQvWs&#x27;&#xa;GZIP&#xa;DELIMITER &#x27;&#x3b;&#x27;&#xa;REMOVEQUOTES&#xa;ACCEPTINVCHARS&#xa;ESCAPE&#xa;TIMEFORMAT &#x27;auto&#x27;&#xa;DATEFORMAT &#x27;auto&#x27;&#xa;NULL AS &#x27;&#x5c;000&#x27;&#x3b;&#xa;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>Chandra Redshift</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>688</xloc>
+      <yloc>144</yloc>
     </entry>
   </entries>
   <hops>
@@ -406,6 +422,15 @@
     </hop>
     <hop>
       <from>GA Exits</from>
+      <to>GA General Channel Device</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>GA General Channel Device</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
