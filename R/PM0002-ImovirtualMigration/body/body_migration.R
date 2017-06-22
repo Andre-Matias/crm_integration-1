@@ -110,14 +110,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 2: DAU
   output$dauBox <- renderValueBox({
-        valueBox("65 440", "DAU",
+        valueBox("64 341", "DAU",
            icon = icon("user"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: Active ads
   output$adsBox <- renderValueBox({
-    valueBox("297 311",
+    valueBox("298 195",
              "Active Ads",
              icon = icon("building-o"),
              color = "aqua")
@@ -125,7 +125,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 3: Revenue
   output$revenueBox <- renderValueBox({
-    valueBox("12 293",
+    valueBox("14 080",
              "Revenue",
              icon = icon("money"),
              color = "olive")
@@ -133,7 +133,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: Replies
   output$repliesBox <- renderValueBox({
-    valueBox("3 677",
+    valueBox("3 475",
              "Replies",
              icon = icon("reply"),
              color = "purple")
@@ -141,7 +141,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 5: NNL
   output$nnlBox <- renderValueBox({
-    valueBox("2 063",
+    valueBox("2 098",
              "NNL",
              icon = icon("sign-in"),
              color = "maroon")
@@ -149,7 +149,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 6: Listers 
   output$listersBox <- renderValueBox({
-    valueBox("3 341",
+    valueBox("3 346",
              "Active Listers",
              icon = icon("users"),
              color = "blue")
