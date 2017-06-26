@@ -11,27 +11,27 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value/>
+        <default_value>JUN</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>AGGTYPE</name>
-        <default_value/>
+        <default_value>month</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value/>
+        <default_value>2017-06-01</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value/>
+        <default_value>2017-06-21</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value/>
+        <default_value>2017&#x2f;06&#x2f;01</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -567,7 +567,7 @@
       <schema_name/>
     </partitioning>
     <connection>Stockars IN</connection>
-    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as date,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,356,1, COUNT&#x28;DISTINCT buyer&#x29;&#xa;FROM crm_cars_in.&#x60;package_subscription&#x60; ps&#xa;INNER JOIN crm_cars_in.&#x60;package&#x60; p ON ps.package_id &#x3d; p.id&#xa;INNER JOIN crm_cars_in.&#x60;user&#x60; u ON u.&#x60;id_user&#x60; &#x3d; ps.&#x60;buyer&#x60;&#xa;WHERE ps.STATUS &#x3d; 1&#xa;AND &#x28; LOWER&#x28;p.&#x60;name&#x60;&#x29; LIKE &#x27;&#x25;retail&#x25;&#x27;&#x29;&#xa;AND  &#x28; CAST&#x28; SUBSTR&#x28;p.&#x60;name&#x60;, LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3, LOCATE&#x28; &#x27;_&#x27;,p.name,LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3&#x29;-LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29; -3 &#x29; AS UNSIGNED&#x29; &#x3e; 0&#xa;&#x29;&#xa;AND NOT&#x28; u.&#x60;email&#x60; LIKE &#x27;&#x25;olx.com&#x27; OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.in&#x27;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;fixeads.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;dispostable.com&#x27;&#xa;&#x29;&#xa;AND NOT&#x28;&#x28;ps.end_date &#x3c;&#x3d; &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27;&#x29; &#x7c; &#x28;ps.start_date &#x3e;&#x3d; &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#x29;&#x29;&#xa;GROUP BY 1&#xa;&#xa;</sql>
+    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as date,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,356,1, COUNT&#x28;DISTINCT buyer&#x29;&#xa;FROM crm_cars_in.&#x60;package_subscription&#x60; ps&#xa;INNER JOIN crm_cars_in.&#x60;package&#x60; p ON ps.package_id &#x3d; p.id&#xa;INNER JOIN crm_cars_in.&#x60;user&#x60; u ON u.&#x60;id_user&#x60; &#x3d; ps.&#x60;buyer&#x60;&#xa;WHERE ps.STATUS &#x3d; 1&#xa;AND &#x28; LOWER&#x28;p.&#x60;name&#x60;&#x29; LIKE &#x27;&#x25;retail&#x25;&#x27;&#x29;&#xa;AND  &#x28; CAST&#x28; SUBSTR&#x28;p.&#x60;name&#x60;, LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3, LOCATE&#x28; &#x27;_&#x27;,p.name,LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29;&#x2b;3&#x29;-LOCATE&#x28;&#x27;Rs_&#x27;,p.&#x60;name&#x60; &#x29; -3 &#x29; AS UNSIGNED&#x29; &#x3e; 0&#xa;&#x29;&#xa;AND NOT&#x28; u.&#x60;email&#x60; LIKE &#x27;&#x25;olx.com&#x27; OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;sunfra.in&#x27;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;fixeads.com&#x27;&#xa;	OR u.&#x60;email&#x60; LIKE &#x27;&#x25;dispostable.com&#x27;&#xa;&#x29;&#xa;AND NOT&#x28;&#x28;ps.end_date &#x3c;&#x3d; &#x27;&#x24;&#x7b;DATE_TO&#x7d; 00&#x3a;00&#x3a;00&#x27;&#x29; &#x7c; &#x28;ps.start_date &#x3e;&#x3d; &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#x29;&#x29;&#xa;GROUP BY 1&#xa;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

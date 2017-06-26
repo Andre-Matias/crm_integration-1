@@ -31,6 +31,3 @@ print(data)
 
 cur.close()
 conn.close()
-
-
-raise ValueError('Error START PANICKING!!!!')

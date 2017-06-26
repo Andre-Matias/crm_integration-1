@@ -375,7 +375,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1232</xloc>
-      <yloc>720</yloc>
+      <yloc>848</yloc>
     </entry>
     <entry>
       <name>Real Estate ID - NNL</name>
@@ -628,8 +628,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>368</xloc>
-      <yloc>576</yloc>
+      <xloc>352</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>Real Estates ID - NNL - Insert into Redshift 2</name>
@@ -677,8 +677,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>592</xloc>
-      <yloc>576</yloc>
+      <xloc>576</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>Stradia IN - MAU</name>
@@ -743,7 +743,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>336</xloc>
-      <yloc>720</yloc>
+      <yloc>848</yloc>
     </entry>
     <entry>
       <name>Storia ID - MAU</name>
@@ -808,7 +808,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>512</xloc>
-      <yloc>720</yloc>
+      <yloc>848</yloc>
     </entry>
     <entry>
       <name>Cars IN - MAU - Insert into Redshift</name>
@@ -857,7 +857,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>704</xloc>
-      <yloc>720</yloc>
+      <yloc>848</yloc>
     </entry>
     <entry>
       <name>RE ID - MAU - Insert into Redshift</name>
@@ -906,7 +906,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>912</xloc>
-      <yloc>720</yloc>
+      <yloc>848</yloc>
     </entry>
     <entry>
       <name>Cars RO - NNL</name>
@@ -1009,8 +1009,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>752</xloc>
-      <yloc>576</yloc>
+      <xloc>736</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>Real Estate RO - NNL</name>
@@ -1113,8 +1113,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>896</xloc>
-      <yloc>576</yloc>
+      <xloc>880</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>Cars RO - PPU Month</name>
@@ -1562,8 +1562,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>576</yloc>
+      <xloc>1024</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>RE PT - NNL</name>
@@ -1666,8 +1666,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1232</xloc>
-      <yloc>576</yloc>
+      <xloc>1216</xloc>
+      <yloc>608</yloc>
     </entry>
     <entry>
       <name>Excel revenue</name>
@@ -1699,6 +1699,422 @@
       <nr>0</nr>
       <xloc>256</xloc>
       <yloc>32</yloc>
+    </entry>
+    <entry>
+      <name>Cars AR - NNL</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Cars AR - NNL.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>CATEGORY</name>
+          <stream_name/>
+          <value>Cars</value>
+        </parameter>
+        <parameter>
+          <name>COUNTRY</name>
+          <stream_name/>
+          <value>AR</value>
+        </parameter>
+        <parameter>
+          <name>DATE</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_PATH</name>
+          <stream_name>yesterday_path</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1216</xloc>
+      <yloc>432</yloc>
+    </entry>
+    <entry>
+      <name>Cars PE - NNL</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Cars PE - NNL.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>CATEGORY</name>
+          <stream_name/>
+          <value>Cars</value>
+        </parameter>
+        <parameter>
+          <name>COUNTRY</name>
+          <stream_name/>
+          <value>PE</value>
+        </parameter>
+        <parameter>
+          <name>DATE</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_PATH</name>
+          <stream_name>yesterday_path</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>432</yloc>
+    </entry>
+    <entry>
+      <name>Cars CO - NNL</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Cars CO - NNL.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>CATEGORY</name>
+          <stream_name/>
+          <value>Cars</value>
+        </parameter>
+        <parameter>
+          <name>COUNTRY</name>
+          <stream_name/>
+          <value>CO</value>
+        </parameter>
+        <parameter>
+          <name>DATE</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_PATH</name>
+          <stream_name>yesterday_path</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1408</xloc>
+      <yloc>432</yloc>
+    </entry>
+    <entry>
+      <name>Cars EC - NNL</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Cars EC - NNL.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>CATEGORY</name>
+          <stream_name/>
+          <value>Cars</value>
+        </parameter>
+        <parameter>
+          <name>COUNTRY</name>
+          <stream_name/>
+          <value>EC</value>
+        </parameter>
+        <parameter>
+          <name>DATE</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_PATH</name>
+          <stream_name>yesterday_path</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1504</xloc>
+      <yloc>432</yloc>
+    </entry>
+    <entry>
+      <name>Cars RE - NNL - Insert into Redshift 2</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - NNL - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>COUNTRY</name>
+            <stream_name/>
+            <value>AR</value>
+            </parameter>            <parameter>            <name>COUNTRY_ID</name>
+            <stream_name/>
+            <value>32</value>
+            </parameter>            <parameter>            <name>DATE</name>
+            <stream_name>yesterday</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>DATE_PATH</name>
+            <stream_name>yesterday_path</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1328</xloc>
+      <yloc>608</yloc>
+    </entry>
+    <entry>
+      <name>Cars RE - NNL - Insert into Redshift 3</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - NNL - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>COUNTRY</name>
+            <stream_name/>
+            <value>PE</value>
+            </parameter>            <parameter>            <name>COUNTRY_ID</name>
+            <stream_name/>
+            <value>604</value>
+            </parameter>            <parameter>            <name>DATE</name>
+            <stream_name>yesterday</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>DATE_PATH</name>
+            <stream_name>yesterday_path</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1424</xloc>
+      <yloc>608</yloc>
+    </entry>
+    <entry>
+      <name>Cars RE - NNL - Insert into Redshift 4</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - NNL - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>COUNTRY</name>
+            <stream_name/>
+            <value>CO</value>
+            </parameter>            <parameter>            <name>COUNTRY_ID</name>
+            <stream_name/>
+            <value>170</value>
+            </parameter>            <parameter>            <name>DATE</name>
+            <stream_name>yesterday</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>DATE_PATH</name>
+            <stream_name>yesterday_path</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1520</xloc>
+      <yloc>608</yloc>
+    </entry>
+    <entry>
+      <name>Cars RE - NNL - Insert into Redshift 5</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - NNL - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>COUNTRY</name>
+            <stream_name/>
+            <value>EC</value>
+            </parameter>            <parameter>            <name>COUNTRY_ID</name>
+            <stream_name/>
+            <value>218</value>
+            </parameter>            <parameter>            <name>DATE</name>
+            <stream_name>yesterday</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>DATE_PATH</name>
+            <stream_name>yesterday_path</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1600</xloc>
+      <yloc>608</yloc>
     </entry>
   </entries>
   <hops>
@@ -1892,26 +2308,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>RE PT - NNL</from>
-      <to>Cars IN - NNL - Insert into Redshift</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
       <from>Cars PT - NNL - Insert into Redshift</from>
       <to>Cars RE - NNL - Insert into Redshift</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Cars RE - NNL - Insert into Redshift</from>
-      <to>Stradia IN - MAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1944,6 +2342,96 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>RE PT - NNL</from>
+      <to>Cars AR - NNL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars AR - NNL</from>
+      <to>Cars PE - NNL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars PE - NNL</from>
+      <to>Cars CO - NNL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars CO - NNL</from>
+      <to>Cars EC - NNL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars EC - NNL</from>
+      <to>Cars IN - NNL - Insert into Redshift</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars RE - NNL - Insert into Redshift</from>
+      <to>Cars RE - NNL - Insert into Redshift 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars RE - NNL - Insert into Redshift 2</from>
+      <to>Cars RE - NNL - Insert into Redshift 3</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars RE - NNL - Insert into Redshift 3</from>
+      <to>Cars RE - NNL - Insert into Redshift 4</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars RE - NNL - Insert into Redshift 4</from>
+      <to>Cars RE - NNL - Insert into Redshift 5</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars RE - NNL - Insert into Redshift 5</from>
+      <to>Stradia IN - MAU</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
