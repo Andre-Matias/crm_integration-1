@@ -506,7 +506,7 @@
     <encoding>UTF-8</encoding>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;Users&#x2f;miguelchin&#x2f;Desktop&#x2f;revenue_metadata</name>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;revenue&#x2f;revenue_metadata</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
