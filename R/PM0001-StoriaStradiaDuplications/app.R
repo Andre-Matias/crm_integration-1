@@ -44,9 +44,9 @@ server <- function(input, output) {
       geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 500000)) + 
+      coord_cartesian(ylim = c(30000, 560000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
+      geom_text(aes(y= Ads,label = Ads, vjust=0,angle=90)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
       ggtitle("Active Ads vs Active Duplicates by Day") +
       theme(plot.title = element_text(lineheight=.8, face="bold"))
@@ -61,7 +61,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 50000)) + 
+      coord_cartesian(ylim = c(0, 53000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
