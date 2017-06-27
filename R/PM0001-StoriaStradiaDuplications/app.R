@@ -77,8 +77,8 @@ server <- function(input, output) {
       geom_line(aes(y = dfstoriadel1$"Deleted 3 Days %",group = 1, color = "Deleted 3 Days %")) +
       geom_line(aes(y = dfstoriadel1$"Deleted 1 Day %", group = 1, color = "Deleted 1 Day %")) +
       scale_colour_manual("", values=c("Deleted 3 Days %" = "blue","Deleted 7 Days %" = "orange","Deleted 1 Day %" = "brown")) +
-      geom_text(aes(y= dfstoriadel1$"Deleted 7 Days %",label = percent(dfstoriadel1$"Deleted 7 Days %"), vjust=1)) + 
-      geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=1)) + 
+      geom_text(aes(y= dfstoriadel1$"Deleted 7 Days %",label = percent(dfstoriadel1$"Deleted 7 Days %"), vjust=-1)) + 
+      geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=2)) + 
       geom_text(aes(y= dfstoriadel1$"Deleted 1 Day %",label = percent(dfstoriadel1$"Deleted 1 Day %"), vjust=1)) + 
       ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.01),labels=percent) + 
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
