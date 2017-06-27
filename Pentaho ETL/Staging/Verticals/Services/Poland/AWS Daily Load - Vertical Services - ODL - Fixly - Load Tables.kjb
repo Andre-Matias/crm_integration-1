@@ -365,7 +365,7 @@
       <yloc>48</yloc>
     </entry>
     <entry>
-      <name>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request</name>
+      <name>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request old</name>
       <description/>
       <type>SQL</type>
       <sql>-- report 3&#xd;&#xa;drop table if EXISTS temporal1&#x3b;&#xd;&#xa;&#xd;&#xa;CREATE TEMP table  temporal1 &#x28;&#xd;&#xa;request_id  INTEGER ENCODE DELTA32K,&#xd;&#xa;user_id INTEGER ENCODE DELTA32K,&#xd;&#xa;email VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l1_id INTEGER ENCODE DELTA32K,&#xd;&#xa;category_l2_id INTEGER ENCODE DELTA32K,&#xd;&#xa;category_l3_id INTEGER ENCODE DELTA32K,&#xd;&#xa;country_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;region_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;district_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;city_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;&#xd;&#xa;category_l1_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l2_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l3_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;&#xd;&#xa;country_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;region_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;district_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;city_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;&#xd;&#xa;date_posted         DATE ENCODE DELTA,&#xd;&#xa;date_first_reply       DATE ENCODE DELTA,&#xd;&#xa;date_last_reply         DATE ENCODE DELTA,&#xd;&#xa;date_satisfied         DATE ENCODE DELTA,&#xd;&#xa;value_of_deal    NUMERIC&#x28;20,5&#x29;   ENCODE delta32k,&#xd;&#xa;qty_answers          INTEGER ENCODE DELTA32K,&#xd;&#xa;qty_messages  INTEGER ENCODE DELTA32K,&#xd;&#xa;rating_user  INTEGER ENCODE DELTA32K,&#xd;&#xa;rating_professional  INTEGER ENCODE ,&#xd;&#xa;inserted_date DATE ENCODE DELTA&#xd;&#xa;&#x29;&#xd;&#xa;DISTSTYLE KEY&#xd;&#xa;DISTKEY &#x28;request_id&#x29;&#xd;&#xa;SORTKEY &#x28;request_id, user_id, category_l3_id, city_id&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;insert into temporal1&#xd;&#xa;SELECT&#xd;&#xa;  SR.id                                                     AS &#x22;request_id&#x22;,&#xd;&#xa;  SR.user_id                                                AS &#x22;user_id&#x22;,&#xd;&#xa;  U.email                                                   AS &#x22;email&#x22;,&#xd;&#xa;&#xd;&#xa;  L1.id                                                     AS &#x22;category_l1_id&#x22;,&#xd;&#xa;  L2.id                                                     AS &#x22;category_l2_id&#x22;,&#xd;&#xa;  L3.id                                                     AS &#x22;category_l3_id&#x22;,&#xd;&#xa;&#xd;&#xa;  CE.id                                                     AS &#x22;country_id&#x22;,&#xd;&#xa;  R.id                                                      AS &#x22;region_id&#x22;,&#xd;&#xa;  D.id                                                      AS &#x22;district_id&#x22;,&#xd;&#xa;  C.id                                                      AS &#x22;city_id&#x22;,&#xd;&#xa;&#xd;&#xa;  L1.name                                                   AS &#x22;category_l1_desc&#x22;,&#xd;&#xa;  L2.name                                                   AS &#x22;category_l2_desc&#x22;,&#xd;&#xa;  L3.name                                                   AS &#x22;category_l3_desc&#x22;,&#xd;&#xa;&#xd;&#xa;  CE.name                                                     AS &#x22;country_desc&#x22;,&#xd;&#xa;  R.name                                                      AS &#x22;region_desc&#x22;,&#xd;&#xa;  D.name                                                      AS &#x22;district_desc&#x22;,&#xd;&#xa;  C.name                                                      AS &#x22;city_desc&#x22;,&#xd;&#xa;&#xd;&#xa;  SR.created_at                                             AS &#x22;date_posted&#x22;,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MIN&#x28;SRM.created_at&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages AS SRM ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS &#x22;date_first_reply&#x22;,&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MAX&#x28;SRM.created_at&#x29;&#xd;&#xa;    FROM          rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN  rdl_vertical_services.fixpl_service_request_messages AS SRM ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS &#x22;date_last_reply&#x22;,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MAX&#x28;SR2.updated_at&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_service_requests AS SR2&#xd;&#xa;    WHERE SR2.id &#x3d; SR.id AND SR2.status &#x3d; &#x27;finished&#x27;&#xd;&#xa;  &#x29; AS &#x22;date_satisfied&#x22;, -- This is inaccurate &#x28;there is no &#x22;status&#x22; tracking table for service requests in the system&#x29;&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;&#xd;&#xa;    SELECT sum&#x28;O.price&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_offers AS O&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_conversations AS SRC ON O.conversation_id &#x3d; SRC.id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;    AND O.offer_accepted &#x3d; TRUE&#xd;&#xa;  &#x29; AS &#x22;value_of_deal&#x22;,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa; SELECT COUNT&#x28;distinct SRM.id&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages      AS SRM   ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;      inner join rdl_vertical_services.fixpl_users                         AS CCC   ON CCC.id&#x3d;SRM.from_id and trim&#x28;CCC.userable_type&#x29;&#x3c;&#x3e;&#x27;&#x27;&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS &#x22;qty_answers&#x22;,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT COUNT&#x28;distinct SRM.id&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages      AS SRM   ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS &#x22;qty_messages&#x22;,&#xd;&#xa;-- is only one, just in case i put max&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT max&#x28;F.value&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_feedback AS F&#xd;&#xa;    WHERE F.service_request_id &#x3d; SR.id AND F.to_id &#x3d; SR.user_id&#xd;&#xa;  &#x29; AS &#x22;rating_user&#x22;,&#xd;&#xa;-- same...is only one, just in case i put max&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT max&#x28;F.value&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_feedback AS F&#xd;&#xa;    WHERE F.service_request_id &#x3d; SR.id AND F.from_id &#x3d; SR.user_id&#xd;&#xa;  &#x29; AS &#x22;rating_professional&#x22;,&#xd;&#xa;current_date as inserted_date&#xd;&#xa;FROM         rdl_vertical_services.fixpl_service_requests   AS SR&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_categories         AS L3 ON L3.id &#x3d; SR.category_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_top_categories     AS L2 ON L2.id &#x3d; L3.parent_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_main_categories    AS L1 ON L1.id &#x3d; L2.parent_id&#xd;&#xa;  inner JOIN rdl_vertical_services.fixpl_users              AS U  ON U.id &#x3d; SR.user_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_cities             AS C  ON C.id &#x3d; U.city_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_districts          AS D  ON D.id &#x3d; C.district_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_regions            AS R  ON R.id &#x3d; C.region_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_country_entities   AS CE ON CE.id &#x3d; C.entity_id&#xd;&#xa;&#xd;&#xa;GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,inserted_date&#xd;&#xa;ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18&#x3b;&#xd;&#xa;&#xd;&#xa;truncate table odl_global_verticals.vert_services_fixly_requests_l3_city&#x3b;&#xd;&#xa;insert INTO    odl_global_verticals.vert_services_fixly_requests_l3_city &#x28;select &#x2a; from temporal1&#x29;&#x3b;</sql>
@@ -377,8 +377,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>992</xloc>
-      <yloc>192</yloc>
+      <xloc>976</xloc>
+      <yloc>176</yloc>
     </entry>
     <entry>
       <name>waiting2</name>
@@ -401,8 +401,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>896</xloc>
-      <yloc>320</yloc>
+      <xloc>848</xloc>
+      <yloc>432</yloc>
     </entry>
     <entry>
       <name>&#xc9;xito</name>
@@ -478,6 +478,22 @@
       <xloc>1408</xloc>
       <yloc>352</yloc>
     </entry>
+    <entry>
+      <name>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request v2</name>
+      <description/>
+      <type>SQL</type>
+      <sql>-- report 3&#xd;&#xa;drop table if EXISTS temporal1&#x3b;&#xd;&#xa;&#xd;&#xa;CREATE TEMP table  temporal1 &#x28;&#xd;&#xa;request_id  INTEGER ENCODE DELTA32K,&#xd;&#xa;user_id INTEGER ENCODE DELTA32K,&#xd;&#xa;email VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l1_id INTEGER ENCODE DELTA32K,&#xd;&#xa;category_l2_id INTEGER ENCODE DELTA32K,&#xd;&#xa;category_l3_id INTEGER ENCODE DELTA32K,&#xd;&#xa;country_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;region_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;district_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;city_id    INTEGER ENCODE DELTA32K,&#xd;&#xa;&#xd;&#xa;category_l1_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l2_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;category_l3_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;&#xd;&#xa;country_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;region_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;district_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;city_desc  VARCHAR&#x28;200&#x29; ENCODE TEXT32K,&#xd;&#xa;date_posted         DATE ENCODE DELTA,&#xd;&#xa;&#xd;&#xa;  sr_status varchar&#x28;100&#x29;        encode lzo,&#xd;&#xa;  sr_latitud DOUBLE PRECISION,&#xd;&#xa;  sr_longitud  DOUBLE PRECISION,&#xd;&#xa;  sr_city_customer varchar&#x28;100&#x29; encode lzo,&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;date_first_reply       DATE ENCODE DELTA,&#xd;&#xa;date_last_reply         DATE ENCODE DELTA,&#xd;&#xa;date_satisfied         DATE ENCODE DELTA,&#xd;&#xa;value_of_deal    NUMERIC&#x28;20,5&#x29;   ENCODE delta32k,&#xd;&#xa;qty_answers          INTEGER ENCODE DELTA32K,&#xd;&#xa;qty_messages  INTEGER ENCODE DELTA32K,&#xd;&#xa;rating_user  INTEGER ENCODE DELTA32K,&#xd;&#xa;rating_professional  INTEGER ENCODE ,&#xd;&#xa;inserted_date DATE ENCODE DELTA&#xd;&#xa;&#x29;&#xd;&#xa;DISTSTYLE KEY&#xd;&#xa;DISTKEY &#x28;request_id&#x29;&#xd;&#xa;SORTKEY &#x28;request_id, user_id, category_l3_id, city_id&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;-- select &#x2a; from temporal1&#xd;&#xa;&#xd;&#xa;insert into temporal1&#xd;&#xa;SELECT&#xd;&#xa;  SR.id                                                     AS request_id,&#xd;&#xa;  SR.user_id                                                AS user_id,&#xd;&#xa;  U.email                                                   AS email,&#xd;&#xa;&#xd;&#xa;  L1.id                                                     AS category_l1_id,&#xd;&#xa;  L2.id                                                     AS category_l2_id,&#xd;&#xa;  L3.id                                                     AS category_l3_id,&#xd;&#xa;&#xd;&#xa;  CE.id                                                     AS country_id,&#xd;&#xa;  R.id                                                      AS region_id,&#xd;&#xa;  D.id                                                      AS district_id,&#xd;&#xa;  C.id                                                      AS city_id,&#xd;&#xa;&#xd;&#xa;  L1.name                                                   AS category_l1_desc,&#xd;&#xa;  L2.name                                                   AS category_l2_desc,&#xd;&#xa;  L3.name                                                   AS category_l3_desc,&#xd;&#xa;&#xd;&#xa;  CE.name                                                     AS country_desc,&#xd;&#xa;  R.name                                                      AS region_desc,&#xd;&#xa;  D.name                                                      AS district_desc,&#xd;&#xa;  C.name                                                      AS city_desc,&#xd;&#xa;&#xd;&#xa;  SR.created_at                                             AS date_posted,&#xd;&#xa;&#xd;&#xa;  sr.status as sr_status,&#xd;&#xa;  sr.lat as sr_lat,&#xd;&#xa;  sr.lon as sr_lon,&#xd;&#xa;  split_part&#x28;sr.address,&#x27;,&#x27;,1&#x29; as sr_city_customer,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MIN&#x28;SRM.created_at&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages AS SRM ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS date_first_reply,&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MAX&#x28;SRM.created_at&#x29;&#xd;&#xa;    FROM          rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN  rdl_vertical_services.fixpl_service_request_messages AS SRM ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS date_last_reply,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT MAX&#x28;SR2.updated_at&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_service_requests AS SR2&#xd;&#xa;    WHERE SR2.id &#x3d; SR.id AND SR2.status &#x3d; &#x27;finished&#x27;&#xd;&#xa;  &#x29; AS date_satisfied, -- This is inaccurate &#x28;there is no status tracking table for service requests in the system&#x29;&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;&#xd;&#xa;    SELECT sum&#x28;O.price&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_offers AS O&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_conversations AS SRC ON O.conversation_id &#x3d; SRC.id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;    AND O.offer_accepted &#x3d; TRUE&#xd;&#xa;  &#x29; AS value_of_deal,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa; SELECT COUNT&#x28;distinct SRM.id&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages      AS SRM   ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;      inner join rdl_vertical_services.fixpl_users                         AS CCC   ON CCC.id&#x3d;SRM.from_id and trim&#x28;CCC.userable_type&#x29;&#x3c;&#x3e;&#x27;&#x27;&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS qty_answers,&#xd;&#xa;&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT COUNT&#x28;distinct SRM.id&#x29;&#xd;&#xa;    FROM         rdl_vertical_services.fixpl_service_request_conversations AS SRC&#xd;&#xa;      INNER JOIN rdl_vertical_services.fixpl_service_request_messages      AS SRM   ON SRC.id &#x3d; SRM.conversation_id&#xd;&#xa;    WHERE SRC.service_request_id &#x3d; SR.id&#xd;&#xa;  &#x29; AS qty_messages,&#xd;&#xa;-- is only one, just in case i put max&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT max&#x28;F.value&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_feedback AS F&#xd;&#xa;    WHERE F.service_request_id &#x3d; SR.id AND F.to_id &#x3d; SR.user_id&#xd;&#xa;  &#x29; AS rating_user,&#xd;&#xa;-- same...is only one, just in case i put max&#xd;&#xa;  &#x28;&#xd;&#xa;    SELECT max&#x28;F.value&#x29;&#xd;&#xa;    FROM rdl_vertical_services.fixpl_feedback AS F&#xd;&#xa;    WHERE F.service_request_id &#x3d; SR.id AND F.from_id &#x3d; SR.user_id&#xd;&#xa;  &#x29; AS rating_professional,&#xd;&#xa;current_date as inserted_date&#xd;&#xa;FROM         rdl_vertical_services.fixpl_service_requests   AS SR&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_categories         AS L3 ON L3.id &#x3d; SR.category_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_top_categories     AS L2 ON L2.id &#x3d; L3.parent_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_main_categories    AS L1 ON L1.id &#x3d; L2.parent_id&#xd;&#xa;  inner JOIN rdl_vertical_services.fixpl_users              AS U  ON U.id &#x3d; SR.user_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_cities             AS C  ON C.id &#x3d; U.city_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_districts          AS D  ON D.id &#x3d; C.district_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_regions            AS R  ON R.id &#x3d; C.region_id&#xd;&#xa;  left  JOIN rdl_vertical_services.fixpl_country_entities   AS CE ON CE.id &#x3d; C.entity_id&#xd;&#xa;&#xd;&#xa;GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,&#xd;&#xa;  sr.status,&#xd;&#xa;  sr.lat,&#xd;&#xa;  sr.lon,&#xd;&#xa;  split_part&#x28;sr.address,&#x27;,&#x27;,1&#x29;,&#xd;&#xa;  inserted_date&#xd;&#xa;ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;truncate table odl_global_verticals.vert_services_fixly_requests_l3_city&#x3b;&#xd;&#xa;insert INTO    odl_global_verticals.vert_services_fixly_requests_l3_city &#x28;select &#x2a; from temporal1&#x29;&#x3b;</sql>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>Chandra Redshift</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>992</xloc>
+      <yloc>304</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -509,10 +525,10 @@
     </hop>
     <hop>
       <from>waiting3</from>
-      <to>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request</to>
+      <to>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request old</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -544,11 +560,11 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request</from>
+      <from>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request old</from>
       <to>fixly accumulated - quotes -status users V2</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -568,6 +584,24 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>waiting3</from>
+      <to>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request v2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>SQL -  vert_services_fixly_request_l3_city &#x3a;&#x3a; report request v2</from>
+      <to>fixly accumulated - quotes -status users V2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
   </hops>
