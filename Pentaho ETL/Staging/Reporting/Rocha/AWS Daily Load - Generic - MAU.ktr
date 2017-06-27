@@ -456,7 +456,7 @@
     <created_date>2017&#x2f;06&#x2f;27 11&#x3a;34&#x3a;23.740</created_date>
     <modified_user>-</modified_user>
     <modified_date>2017&#x2f;06&#x2f;27 11&#x3a;34&#x3a;23.740</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -503,11 +503,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Replace in string</from>
-      <to>HTTP Client</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Get Variables</from>
       <to>Replace in string</to>
       <enabled>Y</enabled>
@@ -515,6 +510,16 @@
     <hop>
       <from>JSON Input</from>
       <to>Delete</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Replace in string</from>
+      <to>Write to log</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Write to log</from>
+      <to>HTTP Client</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -573,7 +578,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>784</xloc>
+      <xloc>864</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -764,7 +769,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>528</xloc>
+      <xloc>608</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -859,7 +864,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>640</xloc>
+      <xloc>720</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -976,7 +981,51 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>912</xloc>
+      <xloc>992</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>Write to log</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <limitRows>N</limitRows>
+      <limitRowsNumber>0</limitRowsNumber>
+      <logmessage/>
+    <fields>
+      <field>
+        <name>first_date</name>
+        </field>
+      <field>
+        <name>date</name>
+        </field>
+      <field>
+        <name>category_id</name>
+        </field>
+      <field>
+        <name>country_id</name>
+        </field>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>512</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
