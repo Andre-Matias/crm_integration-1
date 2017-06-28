@@ -505,7 +505,7 @@
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;home&#x2f;ubuntu&#x2f;conf&#x2f;mixpanel.csv&#xa;File&#x2f;Directory	Wildcard &#x28;RegExp&#x29;	Exclude wildcard	Required	Include subfolders&#xa;&#x2f;Users&#x2f;miguelchin&#x2f;Desktop&#x2f;Mixpanel			N	N&#xa;Mixpanel</name>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;conf&#x2f;mixpanel.csv</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>Y</file_required>
