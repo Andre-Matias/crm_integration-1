@@ -1913,10 +1913,10 @@
       <pass_export>N</pass_export>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
             <parameter>            <name>DATE</name>
-            <stream_name>first_day_of_month</stream_name>
+            <stream_name>yesterday</stream_name>
             <value/>
             </parameter>            <parameter>            <name>FIRST_DAY</name>
-            <stream_name>yesterday</stream_name>
+            <stream_name>first_day_of_month</stream_name>
             <value/>
             </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
       <parallel>N</parallel>
