@@ -1925,6 +1925,124 @@
       <xloc>608</xloc>
       <yloc>832</yloc>
     </entry>
+    <entry>
+      <name>LATAM PT - PPU month</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Cars LATAM - PPU.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>AGG</name>
+          <stream_name>month_name</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>AGGTYPE</name>
+          <stream_name/>
+          <value>month</value>
+        </parameter>
+        <parameter>
+          <name>CATEGORY</name>
+          <stream_name/>
+          <value>Cars</value>
+        </parameter>
+        <parameter>
+          <name>CATEGORY_ID</name>
+          <stream_name/>
+          <value>1</value>
+        </parameter>
+        <parameter>
+          <name>DATE_FROM</name>
+          <stream_name>first_day_of_month</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_TO</name>
+          <stream_name>yesterday</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>PATH</name>
+          <stream_name>month_path</stream_name>
+          <value/>
+        </parameter>
+        <parameter>
+          <name>DATE_FROM_PREV</name>
+          <stream_name>first_day_of_previous_month</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>960</xloc>
+      <yloc>128</yloc>
+    </entry>
+    <entry>
+      <name>PPU LATAM</name>
+      <description/>
+      <type>JOB</type>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - PPU LATAM - Insert into Redshift.kjb</filename>
+      <jobname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+            <parameter>            <name>CATEGORY</name>
+            <stream_name/>
+            <value>Cars</value>
+            </parameter>            <parameter>            <name>CATEGORY_ID</name>
+            <stream_name/>
+            <value>1</value>
+            </parameter>            <parameter>            <name>MONTH_DATE</name>
+            <stream_name>first_day_of_month</stream_name>
+            <value/>
+            </parameter>            <parameter>            <name>MONTH_PATH</name>
+            <stream_name>month_path</stream_name>
+            <value/>
+            </parameter>      </parameters>      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>272</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -2027,26 +2145,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Cars PT - PPU Month</from>
-      <to>Cars IN - PMUL - Insert into Redshift</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
       <from>RE RO - PMUL - Insert into Redshift</from>
       <to>Cars PT - PMUL - Insert into Redshift</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Cars PT - PMUL - Insert into Redshift</from>
-      <to>Cars IN - NNL</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2113,8 +2213,8 @@
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
     <hop>
       <from>RE PT - NNL</from>
@@ -2214,6 +2314,42 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Cars PT - PPU Month</from>
+      <to>LATAM PT - PPU month</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>LATAM PT - PPU month</from>
+      <to>Cars IN - PMUL - Insert into Redshift</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cars PT - PMUL - Insert into Redshift</from>
+      <to>PPU LATAM</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>PPU LATAM</from>
+      <to>Cars IN - NNL</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
