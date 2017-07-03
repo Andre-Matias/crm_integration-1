@@ -585,7 +585,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, conversation_id&#xd;&#xa;, from_id&#xd;&#xa;, to_id&#xd;&#xa;, regexp_replace&#x28;message, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as message&#xd;&#xa;-- , message&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM service_request_messages&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, conversation_id&#xd;&#xa;, from_id&#xd;&#xa;, to_id&#xd;&#xa;-- , regexp_replace&#x28;message, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as message&#xd;&#xa; ,&#x27;&#x27; AS  message&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM service_request_messages&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
