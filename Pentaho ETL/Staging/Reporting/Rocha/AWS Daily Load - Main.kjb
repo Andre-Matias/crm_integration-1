@@ -1889,7 +1889,7 @@
       <yloc>608</yloc>
     </entry>
     <entry>
-      <name>Mixpanel MAU</name>
+      <name>Mixpanel Active Users</name>
       <description/>
       <type>JOB</type>
       <specification_method>filename</specification_method>
@@ -2299,7 +2299,7 @@
     </hop>
     <hop>
       <from>Cars RE - NNL - Insert into Redshift 5</from>
-      <to>Mixpanel MAU</to>
+      <to>Mixpanel Active Users</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2352,7 +2352,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Mixpanel MAU</from>
+      <from>Mixpanel Active Users</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
