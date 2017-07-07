@@ -2078,7 +2078,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>816</xloc>
-      <yloc>832</yloc>
+      <yloc>880</yloc>
     </entry>
     <entry>
       <name>Mixpanel DAU</name>
@@ -2421,7 +2421,7 @@
       <to>Mixpanel WAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -2430,7 +2430,7 @@
       <to>Mixpanel DAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -2455,6 +2455,15 @@
     <hop>
       <from>Get Dates</from>
       <to>Mixpanel MAU</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Mixpanel MAU</from>
+      <to>Mixpanel DAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
