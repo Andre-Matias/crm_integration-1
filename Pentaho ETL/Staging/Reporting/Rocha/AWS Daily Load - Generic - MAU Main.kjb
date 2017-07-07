@@ -463,7 +463,7 @@
       <type>TRANS</type>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>&#x2f;Users&#x2f;miguelchin&#x2f;Repos&#x2f;verticals-bi&#x2f;Pentaho ETL&#x2f;Staging&#x2f;Reporting&#x2f;Rocha&#x2f;AWS Daily Load - Generic - WAU.ktr</filename>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - WAU.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -558,7 +558,7 @@
       <type>TRANS</type>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>&#x2f;Users&#x2f;miguelchin&#x2f;Repos&#x2f;verticals-bi&#x2f;Pentaho ETL&#x2f;Staging&#x2f;Reporting&#x2f;Rocha&#x2f;AWS Daily Load - Generic - DAU.ktr</filename>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - DAU.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>

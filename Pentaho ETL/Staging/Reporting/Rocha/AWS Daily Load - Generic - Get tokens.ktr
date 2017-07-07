@@ -510,11 +510,6 @@
       <exclude_filemask/>
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
-      <name>&#x2f;Users&#x2f;miguelchin&#x2f;Desktop&#x2f;Mixpanel</name>
-      <filemask/>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
       <type>CSV</type>
       <compression>None</compression>
     </file>
