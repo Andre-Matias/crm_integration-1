@@ -642,7 +642,7 @@
     <accept_stepname/>
     <file>
       <name>&#x2f;home&#x2f;ubuntu&#x2f;revenue&#x2f;</name>
-      <filemask>.&#x2a;&#x5c;.xls</filemask>
+      <filemask>.&#x2a;&#x5c;.xlsx</filemask>
       <exclude_filemask/>
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
