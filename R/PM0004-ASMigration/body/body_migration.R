@@ -180,7 +180,7 @@ output$avgSessionOnboarding <- renderGvis({
 ### NNL 
 
 output$nnlOnboarding <- renderGvis({
-  nnl <- gvisAreaChart(NNL, 
+  nnl <- gvisAreaChart(NNLatlas, 
                            xvar = 'Date', yvar = 'NNL', options = list(
                              legend = 'none',
                              backgroundColor = "{fill:'transparent'}",
