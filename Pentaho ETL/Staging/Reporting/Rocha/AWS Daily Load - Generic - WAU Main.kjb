@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>AWS Daily Load - Generic - MAU Main</name>
+  <name>AWS Daily Load - Generic - WAU Main</name>
   <description/>
   <extended_description/>
   <job_version/>
   <job_status>0</job_status>
   <directory>&#x2f;</directory>
   <created_user>-</created_user>
-  <created_date>2017&#x2f;06&#x2f;27 17&#x3a;44&#x3a;55.140</created_date>
+  <created_date>2017&#x2f;07&#x2f;07 14&#x3a;51&#x3a;07.734</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2017&#x2f;06&#x2f;27 17&#x3a;44&#x3a;55.140</modified_date>
+  <modified_date>2017&#x2f;07&#x2f;07 14&#x3a;51&#x3a;07.734</modified_date>
     <parameters>
       <parameter>
         <name>DATE</name>
@@ -314,8 +314,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>176</xloc>
-      <yloc>144</yloc>
+      <xloc>240</xloc>
+      <yloc>187</yloc>
     </entry>
     <entry>
       <name>Get tokens</name>
@@ -349,16 +349,16 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>288</xloc>
-      <yloc>144</yloc>
+      <xloc>352</xloc>
+      <yloc>187</yloc>
     </entry>
     <entry>
-      <name>Get Mixpanel MAU</name>
+      <name>Get mixpanel WAU</name>
       <description/>
       <type>TRANS</type>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - MAU.ktr</filename>
+      <filename>&#x2f;Users&#x2f;miguelchin&#x2f;Repos&#x2f;verticals-bi&#x2f;Pentaho ETL&#x2f;Staging&#x2f;Reporting&#x2f;Rocha&#x2f;AWS Daily Load - Generic - WAU.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -409,8 +409,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>416</xloc>
-      <yloc>144</yloc>
+      <xloc>480</xloc>
+      <yloc>176</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -419,198 +419,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1008</xloc>
-      <yloc>144</yloc>
-    </entry>
-    <entry>
-      <name>Get tokens 2</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - Get tokens.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>544</xloc>
-      <yloc>144</yloc>
-    </entry>
-    <entry>
-      <name>Get mixpanel WAU</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - WAU.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>Y</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-        <parameter>
-          <name>CATEGORY_ID</name>
-          <stream_name>category_id</stream_name>
-          <value/>
-        </parameter>
-        <parameter>
-          <name>COUNTRY_ID</name>
-          <stream_name>country_id</stream_name>
-          <value/>
-        </parameter>
-        <parameter>
-          <name>DATE</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;DATE&#x7d;</value>
-        </parameter>
-        <parameter>
-          <name>FIRST_DAY</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;FIRST_DAY&#x7d;</value>
-        </parameter>
-        <parameter>
-          <name>TOKEN</name>
-          <stream_name>token</stream_name>
-          <value/>
-        </parameter>
-      </parameters>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>656</xloc>
-      <yloc>144</yloc>
-    </entry>
-    <entry>
-      <name>Get tokens 3</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - Get tokens.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>768</xloc>
-      <yloc>144</yloc>
-    </entry>
-    <entry>
-      <name>Get DAU</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Generic - DAU.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>Y</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-        <parameter>
-          <name>CATEGORY_ID</name>
-          <stream_name>category_id</stream_name>
-          <value/>
-        </parameter>
-        <parameter>
-          <name>COUNTRY_ID</name>
-          <stream_name>country_id</stream_name>
-          <value/>
-        </parameter>
-        <parameter>
-          <name>DATE</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;DATE&#x7d;</value>
-        </parameter>
-        <parameter>
-          <name>FIRST_DAY</name>
-          <stream_name/>
-          <value>&#x24;&#x7b;FIRST_DAY&#x7d;</value>
-        </parameter>
-        <parameter>
-          <name>TOKEN</name>
-          <stream_name>token</stream_name>
-          <value/>
-        </parameter>
-      </parameters>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>880</xloc>
-      <yloc>144</yloc>
+      <xloc>592</xloc>
+      <yloc>192</yloc>
     </entry>
   </entries>
   <hops>
@@ -625,57 +435,21 @@
     </hop>
     <hop>
       <from>Get tokens</from>
-      <to>Get Mixpanel MAU</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Get Mixpanel MAU</from>
-      <to>Get tokens 2</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Get tokens 2</from>
       <to>Get mixpanel WAU</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>Get mixpanel WAU</from>
-      <to>Get tokens 3</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Get tokens 3</from>
-      <to>Get DAU</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Get DAU</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>

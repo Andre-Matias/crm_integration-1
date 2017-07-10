@@ -508,7 +508,7 @@
       <name>&#x2f;home&#x2f;ubuntu&#x2f;conf&#x2f;mixpanel.csv</name>
       <filemask/>
       <exclude_filemask/>
-      <file_required>Y</file_required>
+      <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
       <type>CSV</type>
       <compression>None</compression>
