@@ -79,14 +79,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: DAU
   output$dauBox <- renderValueBox({
-        valueBox("743", "DAU",
+        valueBox("1 378", "DAU",
            icon = icon("user"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: Avegare Session 
   output$AvgSeBox <- renderValueBox({
-    valueBox("21:14m", "Average Session",
+    valueBox("23:40m", "Average Session",
              icon = icon("clock-o"),
              color = "blue")
   })
@@ -94,7 +94,7 @@ server_migration <- function(input, output, session) {
 
   # fluid row 1, kpi 5: NNL
   output$nnlBox <- renderValueBox({
-    valueBox("373",
+    valueBox("2 080",
              "NNL",
              icon = icon("sign-in"),
              color = "maroon")
