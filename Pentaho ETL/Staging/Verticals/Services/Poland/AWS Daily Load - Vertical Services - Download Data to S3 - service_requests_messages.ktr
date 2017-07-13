@@ -462,7 +462,7 @@
   </connection>
   <order>
     <hop>
-      <from>service_requests_messages</from>
+      <from>service_request_messages</from>
       <to>selec</to>
       <enabled>Y</enabled>
     </hop>
@@ -497,7 +497,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;service_requests_messages-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;service_request_messages-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
@@ -574,7 +574,7 @@
     </step>
 
   <step>
-    <name>service_requests_messages</name>
+    <name>service_request_messages</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -585,7 +585,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, conversation_id&#xd;&#xa;, from_id&#xd;&#xa;, to_id&#xd;&#xa;, regexp_replace&#x28;message, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as message&#xd;&#xa;-- , message&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM service_request_messages&#xd;&#xa;</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, conversation_id&#xd;&#xa;, from_id&#xd;&#xa;, to_id&#xd;&#xa;-- , regexp_replace&#x28;message, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as message&#xd;&#xa; ,&#x27;&#x27; AS  message&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM service_request_messages&#xd;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
