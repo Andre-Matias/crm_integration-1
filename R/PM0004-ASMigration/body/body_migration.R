@@ -94,7 +94,7 @@ server_migration <- function(input, output, session) {
 
   # fluid row 1, kpi 5: NNL
   output$nnlBox <- renderValueBox({
-    valueBox("1 256",
+    valueBox("1 208",
              "NNL",
              icon = icon("sign-in"),
              color = "maroon")
