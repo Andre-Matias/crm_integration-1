@@ -125,7 +125,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 3: Revenue
   output$revenueBox <- renderValueBox({
-    valueBox("20 445",
+    valueBox("11 121",
              "Revenue",
              icon = icon("money"),
              color = "olive")
