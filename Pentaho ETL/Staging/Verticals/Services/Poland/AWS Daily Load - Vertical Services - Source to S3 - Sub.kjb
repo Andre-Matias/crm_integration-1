@@ -314,8 +314,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>80</xloc>
-      <yloc>32</yloc>
+      <xloc>32</xloc>
+      <yloc>304</yloc>
     </entry>
     <entry>
       <name>generic process - download by table</name>
@@ -1923,15 +1923,6 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>LOG 2</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
       <from>LOG 2</from>
       <to>feedback</to>
       <from_nr>0</from_nr>
@@ -2001,6 +1992,15 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>LOG 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
   </hops>
