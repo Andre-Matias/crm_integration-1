@@ -329,7 +329,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>176</xloc>
-      <yloc>304</yloc>
+      <yloc>416</yloc>
     </entry>
     <entry>
       <name>Success</name>
@@ -410,8 +410,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>144</yloc>
+      <xloc>368</xloc>
+      <yloc>80</yloc>
     </entry>
     <entry>
       <name>Check Db connections</name>
@@ -441,6 +441,52 @@
       <xloc>864</xloc>
       <yloc>224</yloc>
     </entry>
+    <entry>
+      <name>copy to OLD</name>
+      <description/>
+      <type>SHELL</type>
+      <filename/>
+      <work_directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <set_append_logfile>N</set_append_logfile>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>aws s3 cp s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;new&#x2f; s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;old&#x2f; --recursive</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>208</xloc>
+      <yloc>272</yloc>
+    </entry>
+    <entry>
+      <name>remove</name>
+      <description/>
+      <type>SHELL</type>
+      <filename/>
+      <work_directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <set_append_logfile>N</set_append_logfile>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>aws s3 rm s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;new&#x2f; --recursive</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>288</xloc>
+      <yloc>176</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -450,15 +496,6 @@
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>START</from>
-      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
@@ -487,6 +524,33 @@
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>copy to OLD</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>copy to OLD</from>
+      <to>remove</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>remove</from>
+      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>

@@ -562,7 +562,7 @@
       <schema_name/>
     </partitioning>
     <connection>Otodom UA</connection>
-    <sql>SELECT&#xa;&#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,804,2&#xa;COUNT&#x28;DISTINCT user_id&#x29;&#xa;FROM otodomua.ads&#xa;WHERE status &#x3d; &#x27;active&#x27;</sql>
+    <sql>SELECT&#xa;&#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,804,2,&#xa;COUNT&#x28;DISTINCT user_id&#x29;&#xa;FROM otodomua.ads&#xa;WHERE status &#x3d; &#x27;active&#x27;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
