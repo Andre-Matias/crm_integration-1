@@ -410,8 +410,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>368</xloc>
-      <yloc>80</yloc>
+      <xloc>336</xloc>
+      <yloc>96</yloc>
     </entry>
     <entry>
       <name>Check Db connections</name>
@@ -484,8 +484,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>288</xloc>
-      <yloc>176</yloc>
+      <xloc>304</xloc>
+      <yloc>192</yloc>
     </entry>
   </entries>
   <hops>
