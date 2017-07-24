@@ -44,7 +44,7 @@ server <- function(input, output) {
       geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 560000)) + 
+      coord_cartesian(ylim = c(30000, 600000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=0,angle=90)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -61,7 +61,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 53000)) + 
+      coord_cartesian(ylim = c(0, 60000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -78,7 +78,7 @@ server <- function(input, output) {
       geom_line(aes(y = dfstoriadel1$"Deleted 1 Day %", group = 1, color = "Deleted 1 Day %")) +
       scale_colour_manual("", values=c("Deleted 3 Days %" = "blue","Deleted 7 Days %" = "orange","Deleted 1 Day %" = "brown")) +
       geom_text(aes(y= dfstoriadel1$"Deleted 7 Days %",label = percent(dfstoriadel1$"Deleted 7 Days %"), vjust=-1)) + 
-      geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=2)) + 
+      geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=-2)) + 
       geom_text(aes(y= dfstoriadel1$"Deleted 1 Day %",label = percent(dfstoriadel1$"Deleted 1 Day %"), vjust=1)) + 
       ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.01),labels=percent) + 
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
