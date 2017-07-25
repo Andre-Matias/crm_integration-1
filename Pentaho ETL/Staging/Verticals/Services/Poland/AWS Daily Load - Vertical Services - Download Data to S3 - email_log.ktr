@@ -510,8 +510,8 @@
       <append>N</append>
       <split>N</split>
       <haspartno>N</haspartno>
-      <add_date>Y</add_date>
-      <add_time>Y</add_time>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
       <date_time_format/>
       <add_to_result_filenames>N</add_to_result_filenames>

@@ -461,8 +461,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>208</xloc>
-      <yloc>272</yloc>
+      <xloc>96</xloc>
+      <yloc>224</yloc>
     </entry>
     <entry>
       <name>remove</name>
@@ -484,8 +484,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>304</xloc>
-      <yloc>192</yloc>
+      <xloc>160</xloc>
+      <yloc>176</yloc>
     </entry>
   </entries>
   <hops>
