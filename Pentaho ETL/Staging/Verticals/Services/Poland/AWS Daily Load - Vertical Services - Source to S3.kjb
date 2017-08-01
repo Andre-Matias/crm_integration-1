@@ -530,7 +530,7 @@
       <to>copy to OLD</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -539,12 +539,21 @@
       <to>remove</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
       <from>remove</from>
+      <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
       <to>AWS Daily Load - Vertical Services - S3 to Redshift - Get table names</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>

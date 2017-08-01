@@ -996,7 +996,7 @@
       <comparevalue>service_requests</comparevalue>
       <minvalue/>
       <maxvalue/>
-      <successcondition>equal</successcondition>
+      <successcondition>endswith</successcondition>
       <successnumbercondition>equal</successnumbercondition>
       <successbooleancondition>false</successbooleancondition>
       <successwhenvarset>N</successwhenvarset>
