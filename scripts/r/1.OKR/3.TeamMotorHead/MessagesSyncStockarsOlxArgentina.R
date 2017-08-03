@@ -129,7 +129,7 @@ dfStats <-
   summarise(qtyMessagesPoseidon=sum(!is.na(message_id)), qtyMessagesStockars=sum(!is.na(id_message))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
-
+--
 ggplot(dfStats)+
   geom_bar(stat = "identity", aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
   geom_bar(stat = "identity", aes(dayorigin, qtyMessagesStockars), fill="royalblue3")+
