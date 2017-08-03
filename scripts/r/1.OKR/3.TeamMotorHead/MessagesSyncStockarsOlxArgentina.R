@@ -140,7 +140,8 @@ ggplot(dfStats)+
   geom_text(
     aes(dayorigin, qtyMessagesStockars, label=percent(round(var, 2))),
     vjust=-0.5,family = "Andale Mono")+
-  scale_x_date(date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
+  scale_x_date(
+    date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   ggtitle("OLX/Stockars.AR - Quantity of Messages synced")
 
