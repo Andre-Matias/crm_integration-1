@@ -14,7 +14,7 @@ library("scales")
 library("ggplot2")
 library("ggthemes")
 
-# connect to poseidon -------------------------------------------------------
+# connect to poseidon ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
 
 conDB <- 
@@ -131,7 +131,7 @@ dfStats <-
             qtyMessagesStockars=sum(!is.na(id_message))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
-
+--
 ggplot(dfStats)+
   geom_bar(stat = "identity", 
            aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
