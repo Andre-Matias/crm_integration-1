@@ -117,23 +117,31 @@ rawStockarsMessages <- as.data.frame(dfSqlCmd)
 
 df <- 
   rawStockarsPoseidonMessages %>%
-  mutate(message_id=as.character(message_id), dateorigin = as.POSIXct(strptime(dateorigin, "%Y-%m-%d %H:%M:%S"))) %>%
+  mutate(message_id = as.character(message_id), 
+         dateorigin = as.POSIXct(strptime(dateorigin, "%Y-%m-%d %H:%M:%S"))) %>%
   left_join(rawStockarsMessages, by=c("message_id"="external_message_id")) %>%
-  filter(dateorigin>= '2017-01-20 00:00:00') %>%
+  filter(dateorigin >= '2017-01-20 00:00:00') %>%
   arrange(dateorigin)
 
 dfStats <- 
   df %>% 
   mutate(dayorigin=as.Date(dateorigin)) %>% 
   group_by(dayorigin) %>% 
-  summarise(qtyMessagesPoseidon=sum(!is.na(message_id)), qtyMessagesStockars=sum(!is.na(id_message))) %>%
+  summarise(qtyMessagesPoseidon=sum(!is.na(message_id)), 
+            qtyMessagesStockars=sum(!is.na(id_message))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
 
 ggplot(dfStats)+
-  geom_bar(stat = "identity", aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
-  geom_bar(stat = "identity", aes(dayorigin, qtyMessagesStockars), fill="royalblue3")+
-  geom_text(aes(dayorigin, qtyMessagesStockars, label=percent(round(var, 2))), vjust=-0.5,family = "Andale Mono")+
+  geom_bar(stat = "identity", 
+           aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
+  geom_bar(stat = "identity", 
+           aes(dayorigin, qtyMessagesStockars), fill="royalblue3")+
+  geom_text(
+    aes(dayorigin, qtyMessagesStockars, label=percent(round(var, 2))),
+    vjust=-0.5,family = "Andale Mono")+
   scale_x_date(date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   ggtitle("OLX/Stockars.AR - Quantity of Messages synced")
+
+# -----------------------------------------------------------------------------
