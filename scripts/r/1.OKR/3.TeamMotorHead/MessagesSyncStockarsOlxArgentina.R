@@ -14,7 +14,7 @@ library("scales")
 library("ggplot2")
 library("ggthemes")
 
-# connect to poseidon -------------------------------------------------------
+# connect to poseidon ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
 
 conDB <- 
