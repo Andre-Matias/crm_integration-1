@@ -8,6 +8,7 @@ import os
 import sys
 import gzip
 import dateutil.parser
+from datetime import datetime
 
 # Convert timestamps
 def convert_timestamps(data):
@@ -46,9 +47,10 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
+		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = "/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz"
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
-		full_key_name = os.path.join(path, fileName)
+		full_key_name = os.path.join(path+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
