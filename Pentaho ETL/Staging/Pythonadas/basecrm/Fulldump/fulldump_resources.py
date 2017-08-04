@@ -1,4 +1,21 @@
+import basecrm
+import boto
+from boto.s3.key import Key
+from munch import *
+import simplejson as json
+from decimal import *
+import os
+import sys
+import gzip
+import dateutil.parser
 
+# Convert timestamps
+def convert_timestamps(data):
+	for item in data:
+			for k in item:
+				if(k[-3:] == '_at'):
+					item[k] = str(dateutil.parser.parse(item[k]))[:-6]
+	return data				
 
 
 def s3_fulldump_deals(client,keyId,sKeyId)

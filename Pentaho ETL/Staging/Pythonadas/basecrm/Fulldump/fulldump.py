@@ -22,15 +22,6 @@ bucketName = temp[7]
 path = temp[9]
 file.close()
 
-# Convert timestamps
-def convert_timestamps(data):
-	for item in data:
-			for k in item:
-				if(k[-3:] == '_at'):
-					item[k] = str(dateutil.parser.parse(item[k]))[:-6]
-	return data				
-
 #Configure Base API client
 client = basecrm.Client(access_token=access_token_base)
-
 s3_fulldump_deals(client,keyId,sKeyId)
