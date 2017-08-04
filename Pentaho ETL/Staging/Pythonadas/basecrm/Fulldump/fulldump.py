@@ -20,3 +20,4 @@ client = basecrm.Client(access_token=access_token_base)
 
 # Full dumps
 s3_fulldump_deals(client,keyId,sKeyId,bucketName,path)
+s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path)
