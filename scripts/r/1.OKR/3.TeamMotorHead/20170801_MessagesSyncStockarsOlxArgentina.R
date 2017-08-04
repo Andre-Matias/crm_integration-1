@@ -197,12 +197,11 @@ ggplot(dfStatsSyncTime) +
   theme(legend.position="bottom")+
   ggtitle("OLX/Stockars.AR - Syncing Time")
 
-# -----------------------------------------------------------------------------
+# align axis and build final graph --------------------------------------------
 
 gb1 <- ggplot_build(ghQuantityMessagesSynced)
 gb2 <- ggplot_build(ghSyncingTime)
 
-# work out how many y breaks for each plot
 n1 <- length(gb1$layout$panel_params[[1]]$y.labels)
 n2 <- length(gb2$layout$panel_params[[1]]$y.labels)
 
