@@ -24,4 +24,4 @@ file.close()
 
 #Configure Base API client
 client = basecrm.Client(access_token=access_token_base)
-s3_fulldump_deals(client,keyId,sKeyId)
+s3_fulldump_deals(client,keyId,sKeyId,bucketName,path)
