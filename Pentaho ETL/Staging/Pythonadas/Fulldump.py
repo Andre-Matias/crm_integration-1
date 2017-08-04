@@ -9,17 +9,17 @@ import sys
 import gzip
 import dateutil.parser
 
-bucketName="verticals-raw-data"
-path = "/BaseCRM_v3/deals/fulldump"
-conf_file = "configs.txt"
+conf_file = sys.argv[1]
 
 #Get access token and keys
 file = open(conf_file, "r") 
 temp = file.read().splitlines()
 access_token_base = temp[0]
 keyId = temp[1]
-sKeyId= [2]
-
+sKeyId = temp[2]
+bucketName = temp[3]
+path = temp[4]
+file.close()
 
 # Convert timestamps
 def convert_timestamps(data):
@@ -53,8 +53,6 @@ while 1:
 	#Iterate the list of deals
 	for deal_data in data:
 		output.write(json.dumps(deal_data,use_decimal=True)+"\n")
-
-	#output.write(json.dumps(data,use_decimal=True))
 
 	#Close gz file		
 	output.close()
