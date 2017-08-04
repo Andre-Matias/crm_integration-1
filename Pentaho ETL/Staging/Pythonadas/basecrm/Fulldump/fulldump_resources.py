@@ -21,6 +21,7 @@ def convert_timestamps(data):
 
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	
+	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
 
@@ -48,8 +49,10 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		#Upload file to S3
 		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = "/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz"
+		
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
-		full_key_name = os.path.join(path+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+
+		full_key_name = os.path.join(path+"deals/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
@@ -67,6 +70,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 
 def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 	
+	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
 
@@ -94,8 +98,10 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 		#Upload file to S3
 		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = "/home/ubuntu/Reports/contacts_" + str(aux).zfill(10) + ".txt.gz"
+
 		fileName="contacts_" + str(aux).zfill(10) + ".txt.gz"
-		full_key_name = os.path.join(path+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+
+		full_key_name = os.path.join(path+"contacts/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
