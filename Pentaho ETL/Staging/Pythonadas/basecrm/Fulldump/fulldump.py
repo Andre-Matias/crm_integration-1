@@ -1,13 +1,6 @@
 import basecrm
-import boto
-from boto.s3.key import Key
-from munch import *
-import simplejson as json
-from decimal import *
 import os
 import sys
-import gzip
-import dateutil.parser
 from fulldump_resources import *
 
 conf_file = sys.argv[1]
@@ -24,4 +17,6 @@ file.close()
 
 #Configure Base API client
 client = basecrm.Client(access_token=access_token_base)
+
+# Full dumps
 s3_fulldump_deals(client,keyId,sKeyId,bucketName,path)
