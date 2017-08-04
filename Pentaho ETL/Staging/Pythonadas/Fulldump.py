@@ -14,11 +14,11 @@ conf_file = sys.argv[1]
 #Get access token and keys
 file = open(conf_file, "r") 
 temp = file.read().splitlines()
-access_token_base = temp[0]
-keyId = temp[1]
-sKeyId = temp[2]
-bucketName = temp[3]
-path = temp[4]
+access_token_base = temp[1]
+keyId = temp[3]
+sKeyId = temp[5]
+bucketName = temp[7]
+path = temp[9]
 file.close()
 
 # Convert timestamps
