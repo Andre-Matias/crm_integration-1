@@ -996,7 +996,7 @@
       <comparevalue>service_requests</comparevalue>
       <minvalue/>
       <maxvalue/>
-      <successcondition>endswith</successcondition>
+      <successcondition>equal</successcondition>
       <successnumbercondition>equal</successnumbercondition>
       <successbooleancondition>false</successbooleancondition>
       <successwhenvarset>N</successwhenvarset>
@@ -1363,7 +1363,7 @@
       <name>LOG 2</name>
       <description/>
       <type>WRITE_TO_LOG</type>
-      <logmessage>start&#x3a;&#xd;&#xa;&#x24;&#x7b;S3_NAME&#x7d;</logmessage>
+      <logmessage>-------------------------------------------------------------------------------------&#xd;&#xa;-------------------------------------------------------------------------------------&#xd;&#xa;-------------------------------------------------------------------------------------&#xd;&#xa;start&#x3a;&#xd;&#xa;...&#x24;&#x7b;S3_NAME&#x7d;...&#xd;&#xa;-------------------------------------------------------------------------------------&#xd;&#xa;-------------------------------------------------------------------------------------&#xd;&#xa;-------------------------------------------------------------------------------------</logmessage>
       <loglevel>Basic</loglevel>
       <logsubject/>
       <parallel>N</parallel>
