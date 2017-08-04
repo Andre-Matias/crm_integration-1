@@ -50,10 +50,7 @@
   # 201707	339
   # 201708	119
 
-
-# Graph For Revenue -----------------------------------------------------------
-
-# Graph for Paying Professional Users ----------------------------------------- 
+# Bullet Graph function -------------------------------------------------------
 
 bullet.graph <- function(bg.data, bg.title, bg.subtitle, maxgb){
   
@@ -93,32 +90,15 @@ bullet.graph <- function(bg.data, bg.title, bg.subtitle, maxgb){
   
 }
 
-
-df <- data.frame(
-  measure=c("Otomoto.PL", "Autovit.RO", "Standvirtual.PT", "Stradia.IN", "Stradia LATAM", "TOTAL"),
-  high=c(25000, 25000, 25000, 25000, 25000, 25000),
-  mean=c(5000,5000, 5000, 5000, 5000,0),
-  low=c(2500, 2500, 2500, 2500, 2500,0), 
-  target=c(9190, 960, 2669, 2921, 653, 16501),
-  value=c(9497, 938, 2632, 3033, 639, 16678)
-)
-
-#myNumCols <- which(unlist(lapply(df, is.numeric)))
-#df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
-
-df$var <- percent(round(df$value/df$target-1,3))
-
-gh_cars_ppu <- bullet.graph(df, "CARS - Paying Professional Users", "FYTD June/FY18 ", 25000)
-
-
+# Graph For Revenue -----------------------------------------------------------
 
 df <- data.frame(
   measure=c("Otomoto.PL", "Autovit.RO", "Standvirtual.PT", "Stradia.IN", "Stradia LATAM", "TOTAL"),
   high=c(20000, 20000, 20000, 20000, 20000, 20000),
   mean=c(5000,5000, 5000, 5000, 5000,0),
   low=c(2500, 2500, 2500, 2500, 2500,0), 
-  target=c(8238426, 1130731, 1552869, 487623, 561000, 11970649),
-  value=c(9969380, 1458494, 1788792, 513750, 524000, 14254416)
+  target=c(10847964, 1513986, 2066357, 663447, 793000, 0),
+  value=c(13561585, 1955805, 2361115, 0, 0, 0)
 )
 
 df$var <- percent(round(df$value/df$target-1,3))
@@ -127,10 +107,22 @@ df$value <- round(df$value / 1000000, 2)
 df$high <- 20
 
 
-gh_cars_revenue <- bullet.graph(df, "CARS - Revenue", "FYTD June/FY18 - M USD", 20)
+gh_cars_revenue <- bullet.graph(df, "CARS - Revenue", "FYTD July/FY18 - M USD", 20)
 
+# Graph for Paying Professional Users ----------------------------------------- 
 
+df <- data.frame(
+  measure=c("Otomoto.PL", "Autovit.RO", "Standvirtual.PT", "Stradia.IN", "Stradia LATAM", "TOTAL"),
+  high=c(25000, 25000, 25000, 25000, 25000, 25000),
+  mean=c(5000,5000, 5000, 5000, 5000,0),
+  low=c(2500, 2500, 2500, 2500, 2500,0), 
+  target=c(9190, 960, 2709, 3022, 733, 0),
+  value=c(0, 933, 2637, 3097, 339, 0)
+)
 
+#myNumCols <- which(unlist(lapply(df, is.numeric)))
+#df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
 
+df$var <- percent(round(df$value/df$target-1,3))
 
-
+gh_cars_ppu <- bullet.graph(df, "CARS - Paying Professional Users", "FYTD July/FY18 ", 25000)
