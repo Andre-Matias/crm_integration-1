@@ -70,7 +70,7 @@ while 1:
 	k.set_contents_from_filename(localName)
 	
 	#Remove local gz file
-	os.remove(fileName)
+	os.remove(localName)
 	
 	#Next page iterate
 	aux += 1
