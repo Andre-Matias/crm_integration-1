@@ -1,3 +1,6 @@
+# config ----------------------------------------------------------------------
+options(scipen=999)
+
 # load credentials file -------------------------------------------------------
 load("~/credentials.Rdata")
 
@@ -13,6 +16,11 @@ library("tidyr")
 library("scales")
 library("ggplot2")
 library("ggthemes")
+library("fasttime")
+library("forcats")
+library("RColorBrewer")
+library("gridExtra")
+library("grid")
 
 # connect to poseidon ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
@@ -117,21 +125,53 @@ rawStockarsMessages <- as.data.frame(dfSqlCmd)
 
 df <- 
   rawStockarsPoseidonMessages %>%
-  mutate(message_id = as.character(message_id), 
-         dateorigin = as.POSIXct(strptime(dateorigin, "%Y-%m-%d %H:%M:%S"))) %>%
-  left_join(rawStockarsMessages, by=c("message_id"="external_message_id")) %>%
+  mutate(message_id = as.character(message_id)) %>%
+  left_join(rawStockarsMessages, by = c("message_id"="external_message_id")) %>%
+  mutate(dateorigin = fastPOSIXct(dateorigin),
+         message_date = fastPOSIXct(message_date),
+         diffSyncTime = 
+           as.numeric(difftime(sync_date, message_date, units = "mins")),
+         diffSyncIntervals = 
+           cut(diffSyncTime, 
+               breaks = c(0, 0.08333333, 1, 30, 60, 120, 240, 480, 1440, Inf),
+               dig.lab=10)
+  ) %>%
   filter(dateorigin >= '2017-01-20 00:00:00') %>%
   arrange(dateorigin)
 
 dfStats <- 
   df %>% 
-  mutate(dayorigin=as.Date(dateorigin)) %>% 
-  group_by(dayorigin) %>% 
-  summarise(qtyMessagesPoseidon=sum(!is.na(message_id)), 
-            qtyMessagesStockars=sum(!is.na(id_message))) %>%
+  mutate(dayorigin = as.Date(dateorigin)) %>%
+  group_by(dayorigin) %>%
+  summarise(qtyMessagesPoseidon = sum(!is.na(message_id)), 
+            qtyMessagesStockars = sum(!is.na(id_message))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
 
+
+dfStatsSyncTime <- 
+  df %>% 
+  mutate(dayorigin = as.Date(dateorigin),
+         diffSyncIntervals = fct_recode(diffSyncIntervals,
+                                        "< 5 secs"      = "(0,0.08333333]",
+                                        "< 1 min"       = "(0.08333333,1]",
+                                        "1 - 30 min"    = "(1,30]",
+                                        "30 - 60 min"   = "(30,60]",
+                                        "1 - 2 hours"   = "(60,120]",
+                                        "2 - 4 hours"   = "(120,240]",
+                                        "4 - 8 hours"   = "(240,480]",
+                                        "8 - 24 hours"  = "(480,1440]",
+                                        "> 24 hours"    = "(1440,Inf]"
+                                        )
+         ) %>%
+  group_by(dayorigin, diffSyncIntervals) %>%
+  summarise(qtyByCut = sum(!is.na(diffSyncIntervals))) %>%
+  mutate(perByCut = qtyByCut / sum(qtyByCut)) %>%
+  filter(dayorigin > as.Date(Sys.time())-17,
+         !is.na(diffSyncIntervals)
+  )
+
+ghQuantityMessagesSynced <-
 ggplot(dfStats)+
   geom_bar(stat = "identity", 
            aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
@@ -145,4 +185,38 @@ ggplot(dfStats)+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   ggtitle("OLX/Stockars.AR - Quantity of Messages synced")
 
+ghSyncingTime <- 
+ggplot(dfStatsSyncTime) + 
+  geom_bar(stat="identity", aes(x=dayorigin, y=perByCut, fill=diffSyncIntervals))+
+  scale_x_date(
+    date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
+  scale_y_continuous(labels = percent)+
+  scale_fill_brewer(palette = "RdYlGn", type="seq", direction = -1, drop=FALSE,
+                    guide = guide_legend(title = "Sync Intervals"))+
+  theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
+  theme(legend.position="bottom")+
+  ggtitle("OLX/Stockars.AR - Syncing Time")
+
 # -----------------------------------------------------------------------------
+
+final <- 
+arrangeGrob(
+  ghQuantityMessagesSynced,
+  ghSyncingTime
+)
+
+
+gb1 <- ggplot_build(ghQuantityMessagesSynced)
+gb2 <- ggplot_build(ghSyncingTime)
+
+# work out how many y breaks for each plot
+n1 <- length(gb1$layout$panel_params[[1]]$y.labels)
+n2 <- length(gb2$layout$panel_params[[1]]$y.labels)
+
+
+gA <- ggplot_gtable(gb1)
+gB <- ggplot_gtable(gb2)
+
+
+g <- rbind(gA, gB)
+
