@@ -46,7 +46,7 @@ while 1:
 
 	#Write on local gz file
 	print("Writing file #" + str(aux))	
-	output = gzip.open("/home/ubuntu/temp/latam_deals_" + str(aux).zfill(10) + ".txt.gz", 'wb')
+	output = gzip.open("/home/ubuntu/Reports/latam_deals_" + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 	data = convert_timestamps(data)
 
@@ -59,7 +59,7 @@ while 1:
 
 	#Upload file to S3
 	print("Uploading to S3")
-	localName = "/home/ubuntu/temp/latam_deals_" + str(aux).zfill(10) + ".txt.gz"
+	localName = "/home/ubuntu/Reports/latam_deals_" + str(aux).zfill(10) + ".txt.gz"
 	fileName="latam_deals_" + str(aux).zfill(10) + ".txt.gz"
 	full_key_name = os.path.join(path, fileName)
 	conn = boto.connect_s3(keyId,sKeyId)
