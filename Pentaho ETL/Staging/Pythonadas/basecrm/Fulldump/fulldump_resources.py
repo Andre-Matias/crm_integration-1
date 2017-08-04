@@ -24,6 +24,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
+	name = "/home/ubuntu/Reports/deals_"
 
 	while 1:
 		
@@ -35,7 +36,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open("/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		data = convert_timestamps(data)
 
@@ -48,7 +49,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 
 		#Upload file to S3
 		str(datetime.now().strftime('%Y/%m/%d'))
-		localName = "/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz"
+		localName = name + str(aux).zfill(10) + ".txt.gz"
 		
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
 
@@ -73,7 +74,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-
+	name = "/home/ubuntu/Reports/contacts_"
 	while 1:
 		
 		data = client.contacts.list(page = aux, per_page = 100)
@@ -84,7 +85,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open("/home/ubuntu/Reports/contacts_" + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		data = convert_timestamps(data)
 
@@ -97,7 +98,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 
 		#Upload file to S3
 		str(datetime.now().strftime('%Y/%m/%d'))
-		localName = "/home/ubuntu/Reports/contacts_" + str(aux).zfill(10) + ".txt.gz"
+		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="contacts_" + str(aux).zfill(10) + ".txt.gz"
 
