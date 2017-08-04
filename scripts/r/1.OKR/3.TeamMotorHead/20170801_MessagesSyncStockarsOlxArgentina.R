@@ -199,13 +199,6 @@ ggplot(dfStatsSyncTime) +
 
 # -----------------------------------------------------------------------------
 
-final <- 
-arrangeGrob(
-  ghQuantityMessagesSynced,
-  ghSyncingTime
-)
-
-
 gb1 <- ggplot_build(ghQuantityMessagesSynced)
 gb2 <- ggplot_build(ghSyncingTime)
 
