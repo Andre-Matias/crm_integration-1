@@ -1,0 +1,28 @@
+{
+	"jsonpaths": [
+		"$['id']",
+		"$['last_activity_at']",
+		"$['contact_id']",
+		"$['source_id']",
+		"$['estimated_close_date']",
+		"$['dropbox_email']",
+		"$['creator_id']",
+		"$['loss_reason_id']",
+		"$['associated_contacts']",
+		"$['currency']",
+		"$['updated_at']",
+		"$['organization_id']",
+		"$['last_stage_change_at']",		
+		"$['name']",
+		"$['owner_id']",
+		"$['value']",
+		"$['created_at']",
+		"$['hot']",
+		"$['last_stage_change_by_id']",
+		"$['stage_id']",
+		"$['custom_fields']",		
+		"$['tags']"
+    ]
+}
+
+
