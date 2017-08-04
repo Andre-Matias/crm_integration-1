@@ -25,16 +25,15 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	aux = 1
 
 	while 1:
-
-		print("Downloading page #" + str(aux))
 		
 		data = client.deals.list(page = aux, per_page = 100)
 
 		if len(data) > 0: empty = False
-		else: return 1
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
 
 		#Write on local gz file
-		print("Writing file #" + str(aux))	
 		output = gzip.open("/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		data = convert_timestamps(data)
@@ -47,9 +46,8 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		print("Uploading to S3")
 		localName = "/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz"
-		fileName="latam_deals_" + str(aux).zfill(10) + ".txt.gz"
+		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
 		full_key_name = os.path.join(path, fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
