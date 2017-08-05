@@ -8,6 +8,7 @@ import os
 import sys
 import gzip
 import dateutil.parser
+from datetime import datetime
 
 # Convert timestamps
 def convert_timestamps(data):
@@ -20,9 +21,10 @@ def convert_timestamps(data):
 
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	
-
+	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
+	name = "/home/ubuntu/Reports/deals_"
 
 	while 1:
 		
@@ -34,7 +36,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open("/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		data = convert_timestamps(data)
 
@@ -46,9 +48,12 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		localName = "/home/ubuntu/Reports/deals_" + str(aux).zfill(10) + ".txt.gz"
+		str(datetime.now().strftime('%Y/%m/%d'))
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+		
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
-		full_key_name = os.path.join(path, fileName)
+
+		full_key_name = os.path.join(path+"deals/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
@@ -63,3 +68,50 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		aux += 1
 
 
+
+def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
+	
+	print("Getting contacts data")
+	#Iterate for everypage returned by the API
+	aux = 1
+	name = "/home/ubuntu/Reports/contacts_"
+	while 1:
+		
+		data = client.contacts.list(page = aux, per_page = 100)
+
+		if len(data) > 0: empty = False
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
+
+		#Write on local gz file
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		data = convert_timestamps(data)
+
+		#Iterate the list of deals
+		for contact_data in data:
+			output.write(json.dumps(contact_data,use_decimal=True)+"\n")
+
+		#Close gz file		
+		output.close()
+
+		#Upload file to S3
+		str(datetime.now().strftime('%Y/%m/%d'))
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+
+		fileName="contacts_" + str(aux).zfill(10) + ".txt.gz"
+
+		full_key_name = os.path.join(path+"contacts/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName)
+		
+		#Remove local gz file
+		os.remove(localName)
+		
+		#Next page iterate
+		aux += 1
