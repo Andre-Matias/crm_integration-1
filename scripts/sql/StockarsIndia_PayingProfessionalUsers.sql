@@ -15,6 +15,6 @@ AND NOT( u.`email` LIKE '%olx.com'
          OR u.`email` LIKE '%fixeads.com'
          OR u.`email` LIKE '%dispostable.com'
 )
-AND NOT(ps.end_date <= '2017-07-31 00:00:00'
+AND NOT(ps.end_date <= '2017-07-30 00:00:00'
         OR ps.start_date >= '2017-07-31 23:59:59'))
 GROUP BY 1;
