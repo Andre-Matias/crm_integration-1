@@ -36,4 +36,4 @@ s3_fulldump_sources(client,keyId,sKeyId,bucketName,path)
 
 s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path)
 s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path)
-s3_fulldump_calls_outcome(access_token_base,keyId,sKeyId,bucketName,path)
+s3_fulldump_calls_outcomes(access_token_base,keyId,sKeyId,bucketName,path)
