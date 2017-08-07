@@ -14,7 +14,7 @@ from datetime import datetime
 def convert_timestamps(data):
 	for item in data:
 			for k in item:
-				if(k[-3:] == '_at'):
+				if(k[-3:] == '_at' and type(item[k]) is unicode)):
 					item[k] = str(dateutil.parser.parse(item[k]))[:-6]
 	return data				
 
