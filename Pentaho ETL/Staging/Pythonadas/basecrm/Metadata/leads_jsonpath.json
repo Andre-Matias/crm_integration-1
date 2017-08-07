@@ -1,0 +1,31 @@
+{
+	"jsonpaths": [
+		"$['id']",
+		"$['first_name']",
+		"$['last_name']",
+		"$['owner_id']",
+		"$['source_id']",
+		"$['created_at']",
+		"$['updated_at']",
+		"$['twitter']",
+		"$['phone']",
+		"$['mobile']",
+		"$['facebook']",
+		"$['email']",
+		"$['title']",
+		"$['skype']",
+		"$['linkedin']",
+		"$['description']",
+		"$['industry']",
+		"$['fax']",
+		"$['website']",
+		"$['address']",
+		"$['status']",
+		"$['creator_id']",
+		"$['organization_name']",
+		"$['custom_fields']",
+		"$['tags']"
+    ]
+}
+
+
