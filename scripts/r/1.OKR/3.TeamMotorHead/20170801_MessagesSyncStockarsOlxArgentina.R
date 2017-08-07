@@ -133,7 +133,7 @@ df <-
            as.numeric(difftime(sync_date, message_date, units = "mins")),
          diffSyncIntervals = 
            cut(diffSyncTime, 
-               breaks = c(0, 0.08333333, 1, 30, 60, 120, 240, 480, 1440, Inf),
+               breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
                dig.lab=10)
   ) %>%
   filter(dateorigin >= '2017-01-20 00:00:00') %>%
@@ -153,15 +153,12 @@ dfStatsSyncTime <-
   df %>% 
   mutate(dayorigin = as.Date(dateorigin),
          diffSyncIntervals = fct_recode(diffSyncIntervals,
-                                        "< 5 secs"      = "(0,0.08333333]",
-                                        "< 1 min"       = "(0.08333333,1]",
-                                        "1 - 30 min"    = "(1,30]",
-                                        "30 - 60 min"   = "(30,60]",
-                                        "1 - 2 hours"   = "(60,120]",
-                                        "2 - 4 hours"   = "(120,240]",
-                                        "4 - 8 hours"   = "(240,480]",
-                                        "8 - 24 hours"  = "(480,1440]",
-                                        "> 24 hours"    = "(1440,Inf]"
+                                        "< 5 secs"          = "(0,0.08333333]",
+                                        "< 1 min"           = "(0.08333333,1]",
+                                        "1 min - 10 mins"   = "(1,10]",
+                                        "10 mins - 1 hour"  = "(10,60]",
+                                        "1 hour - 4 hours"  = "(60,240]",
+                                        "> 4 hours"         = "(240,Inf]"
                                         )
          ) %>%
   group_by(dayorigin, diffSyncIntervals) %>%
