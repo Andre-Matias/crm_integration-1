@@ -9,6 +9,8 @@ import sys
 import gzip
 import dateutil.parser
 from datetime import datetime
+import requests
+
 
 # Convert timestamps
 def convert_timestamps(data):
@@ -17,7 +19,6 @@ def convert_timestamps(data):
 				if(k[-3:] == '_at' and type(item[k]) is unicode):
 					item[k] = str(dateutil.parser.parse(item[k]))[:-6]
 	return data				
-
 
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	
@@ -48,7 +49,6 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 		
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
@@ -66,8 +66,6 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1
-
-
 
 def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 	
@@ -97,7 +95,6 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="contacts_" + str(aux).zfill(10) + ".txt.gz"
@@ -115,7 +112,6 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1
-
 
 def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 	
@@ -145,7 +141,6 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="leads_" + str(aux).zfill(10) + ".txt.gz"
@@ -163,8 +158,6 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1
-
-
 
 def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 	
@@ -194,7 +187,6 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="users_" + str(aux).zfill(10) + ".txt.gz"
@@ -212,7 +204,6 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1
-
 
 def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 	
@@ -242,7 +233,6 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="stages_" + str(aux).zfill(10) + ".txt.gz"
@@ -260,7 +250,6 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1
-
 
 def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 	
@@ -290,7 +279,6 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="loss_reasons_" + str(aux).zfill(10) + ".txt.gz"
@@ -308,7 +296,6 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1		
-
 
 def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 	
@@ -338,7 +325,6 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="notes_" + str(aux).zfill(10) + ".txt.gz"
@@ -356,7 +342,6 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1			
-
 
 def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 	
@@ -386,7 +371,6 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="pipelines_" + str(aux).zfill(10) + ".txt.gz"
@@ -404,8 +388,6 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1			
-
-
 
 def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 	
@@ -435,7 +417,6 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="sources_" + str(aux).zfill(10) + ".txt.gz"
@@ -453,7 +434,6 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1	
-
 
 def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 	
@@ -483,7 +463,6 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 		output.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="tags_" + str(aux).zfill(10) + ".txt.gz"
@@ -502,3 +481,158 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1							
 
+def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
+	print("Getting orders data")
+	
+	aux = 1
+	name = "/home/ubuntu/Reports/orders_"
+	while 1:
+
+		url = "https://api.getbase.com/v2/orders"
+		response = requests.get(url,
+			params={'per_page': 100,'page': aux},
+			headers={'Authorization':'Bearer {}'.format(token)})
+
+		if response.status_code != 200:
+	            raise Exception('Request failed with {}'
+	                .format(response.status_code))
+	            return 0
+
+		data = response.json()['items']       
+
+		if len(data) > 0: empty = False
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
+
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		for orders_data in data:
+			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
+
+		#Close gz file		
+		output.close()
+
+		#Upload file to S3
+		str(datetime.now().strftime('%Y/%m/%d'))
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+
+		fileName="orders_" + str(aux).zfill(10) + ".txt.gz"
+
+		full_key_name = os.path.join(path+"orders/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName)
+		
+		#Remove local gz file
+		os.remove(localName)
+		
+		#Next page iterate
+		aux += 1		
+
+def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
+	print("Getting calls data")
+	
+	aux = 1
+	name = "/home/ubuntu/Reports/calls_"
+	while 1:
+
+		url = "https://api.getbase.com/v2_beta/calls"
+		response = requests.get(url,
+			params={'per_page': 100,'page': aux},
+			headers={'Authorization':'Bearer {}'.format(token)})
+
+		if response.status_code != 200:
+	            raise Exception('Request failed with {}'
+	                .format(response.status_code))
+	            return 0
+
+		data = response.json()['items']       
+
+		if len(data) > 0: empty = False
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
+
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		for calls_data in data:
+			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
+
+		#Close gz file		
+		output.close()
+
+		#Upload file to S3
+		str(datetime.now().strftime('%Y/%m/%d'))
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+
+		fileName="calls_" + str(aux).zfill(10) + ".txt.gz"
+
+		full_key_name = os.path.join(path+"calls/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName)
+		
+		#Remove local gz file
+		os.remove(localName)
+		
+		#Next page iterate
+		aux += 1		
+
+def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
+	print("Getting call_outcomes data")
+	
+	aux = 1
+	name = "/home/ubuntu/Reports/call_outcomes_"
+	while 1:
+
+		url = "https://api.getbase.com/v2_beta/call_outcomes"
+		response = requests.get(url,
+			params={'per_page': 100,'page': aux},
+			headers={'Authorization':'Bearer {}'.format(token)})
+
+		if response.status_code != 200:
+	            raise Exception('Request failed with {}'
+	                .format(response.status_code))
+	            return 0
+
+		data = response.json()['items']       
+
+		if len(data) > 0: empty = False
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
+
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		for call_outcomes_data in data:
+			output.write(json.dumps(call_outcomes_data,use_decimal=True) + "\n")
+
+		#Close gz file		
+		output.close()
+
+		#Upload file to S3
+		str(datetime.now().strftime('%Y/%m/%d'))
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+
+		fileName="call_outcomes_" + str(aux).zfill(10) + ".txt.gz"
+
+		full_key_name = os.path.join(path+"call_outcomes/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName)
+		
+		#Remove local gz file
+		os.remove(localName)
+		
+		#Next page iterate
+		aux += 1		

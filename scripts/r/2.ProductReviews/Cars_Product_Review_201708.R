@@ -1,3 +1,7 @@
+# Libraries -------------------------------------------------------------------
+library("ggplot2")
+library("scales")
+
 # Revenue ---------------------------------------------------------------------
 
 # Paying Professional Users ---------------------------------------------------
@@ -97,17 +101,18 @@ df <- data.frame(
   high=c(20000, 20000, 20000, 20000, 20000, 20000),
   mean=c(5000,5000, 5000, 5000, 5000,0),
   low=c(2500, 2500, 2500, 2500, 2500,0), 
-  target=c(10847964, 1513986, 2066357, 663447, 793000, 0),
-  value=c(13561585, 1955805, 2361115, 0, 0, 0)
+  target=c(10847964, 1513986, 2066357, 663447, 793000, 15884754),
+  value=c(13561585, 1955805, 2361115, 714917, 753000, 19346422)
 )
+
 
 df$var <- percent(round(df$value/df$target-1,3))
 df$target <- round(df$target / 1000000,2)
 df$value <- round(df$value / 1000000, 2)
-df$high <- 20
+df$high <- 30
 
 
-gh_cars_revenue <- bullet.graph(df, "CARS - Revenue", "FYTD July/FY18 - M USD", 20)
+gh_cars_revenue <- bullet.graph(df, "CARS - Revenue", "FYTD July/FY18 - M USD", 30)
 
 # Graph for Paying Professional Users ----------------------------------------- 
 
@@ -116,12 +121,12 @@ df <- data.frame(
   high=c(25000, 25000, 25000, 25000, 25000, 25000),
   mean=c(5000,5000, 5000, 5000, 5000,0),
   low=c(2500, 2500, 2500, 2500, 2500,0), 
-  target=c(9190, 960, 2709, 3022, 733, 0),
-  value=c(0, 933, 2637, 3097, 339, 0)
+  target=c(9190, 960, 2709, 3022, 733, 16614),
+  value=c(9477, 933, 2637, 3097, 339, 16483)
 )
 
-#myNumCols <- which(unlist(lapply(df, is.numeric)))
-#df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
+myNumCols <- which(unlist(lapply(df, is.numeric)))
+df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
 
 df$var <- percent(round(df$value/df$target-1,3))
 
