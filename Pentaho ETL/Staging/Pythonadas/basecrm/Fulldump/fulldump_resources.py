@@ -18,7 +18,17 @@ def convert_timestamps(data):
 			for k in item:
 				if(k[-3:] == '_at' and type(item[k]) is unicode):
 					item[k] = str(dateutil.parser.parse(item[k]))[:-6]
-	return data				
+	return data			
+
+# Convert timestamps (to use when json has a meta/data layer)
+def convert_timestamps_2(data):
+	for item in data:
+		for j in item:
+			for k in item[j]:
+				if(k[-3:] == '_at' and type(item[j][k]) is unicode):
+					item[j][k] = str(dateutil.parser.parse(item[j][k]))[:-6]
+	return data
+
 
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	
@@ -581,7 +591,7 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 	print("Getting calls data")
 	
 	aux = 1
-	name = "/home/ubuntu/Reports/calls_"
+	name = "calls_"
 	while 1:
 
 		url = "https://api.getbase.com/v2_beta/calls"
@@ -602,8 +612,8 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
-
-		data = convert_timestamps(data)
+		
+		data = convert_timestamps_2(data)
 
 		for calls_data in data:
 			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
