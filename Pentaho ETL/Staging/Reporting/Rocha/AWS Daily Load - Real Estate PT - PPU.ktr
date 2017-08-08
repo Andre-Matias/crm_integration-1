@@ -567,7 +567,7 @@
       <schema_name/>
     </partitioning>
     <connection>Imovirtual</connection>
-    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,620,2, COUNT&#x28;user_id&#x29; PPU&#xa;FROM forbi.bi_imo_fct_revenue&#xa;WHERE date between &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#xa;AND usernature_id &#x3d; 1&#xa;GROUP BY 1&#xa;</sql>
+    <sql>SELECT &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,620,2, COUNT&#x28;user_id&#x29; PPU&#xa;FROM forbi.bi_imo_fct_revenue&#xa;WHERE date between &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#xa;AND usernature_id &#x3c;&#x3e; 0&#xa;AND product_id NOT IN&#x28;&#x27;topupaccountbonus&#x27;,&#x27;removebonus&#x27;,&#x27;removecredits&#x27;&#x29;&#xa;GROUP BY 1&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
