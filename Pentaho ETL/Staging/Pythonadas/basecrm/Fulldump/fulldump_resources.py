@@ -485,7 +485,8 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
 	print("Getting orders data")
 	
 	aux = 1
-	name = "/home/ubuntu/Reports/orders_"
+	name = "orders_"
+	name_line_items = "line_items_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/orders"
@@ -506,18 +507,24 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for orders_data in data:
 			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
+			# Request the line items for this order_id
+			get_order_line_items(orders_data['data']['id'],token,output_line_items)
+		
 
 		#Close gz file		
 		output.close()
+		output_line_items.close()
 
 		#Upload file to S3
-		str(datetime.now().strftime('%Y/%m/%d'))
 		localName = name + str(aux).zfill(10) + ".txt.gz"
+		localName_line_items = name_line_items + str(aux).zfill(10) + ".txt.gz"
 
 		fileName="orders_" + str(aux).zfill(10) + ".txt.gz"
+		fileName_line_items="line_items_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"orders/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
@@ -526,9 +533,46 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
 		k.key=full_key_name
 
 		k.set_contents_from_filename(localName)
+
+
+		full_key_name = os.path.join(path+"line_items/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName_line_items)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName_line_items)
 		
 		#Remove local gz file
 		os.remove(localName)
+		os.remove(localName_line_items)
+
+		#Next page iterate
+		aux += 1		
+
+def get_order_line_items(order_id,token,file):
+
+	aux = 1
+	while 1:
+
+		url = "https://api.getbase.com/v2/orders/" + str(order_id) + "/line_items"
+		response = requests.get(url,
+			params={'per_page': 100,'page': aux},
+			headers={'Authorization':'Bearer {}'.format(token)})
+
+		if response.status_code != 200:
+	            raise Exception('Request failed with {}'
+	                .format(response.status_code))
+	            return 0
+
+		data = response.json()['items']     
+
+		if len(data) > 0: empty = False
+		else:	return 1
+
+		for line_items_data in data:
+			line_items_data['data']['order_id'] = order_id
+			file.write(json.dumps(line_items_data,use_decimal=True) + "\n")
 		
 		#Next page iterate
 		aux += 1		
