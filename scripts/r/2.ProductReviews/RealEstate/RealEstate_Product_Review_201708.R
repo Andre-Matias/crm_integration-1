@@ -64,7 +64,7 @@ df$value <- round(df$value / 1000000, 2)
 df$high <- 30
 
 
-gh_cars_revenue <- bullet.graph(df, "CARS - Revenue", "FYTD July/FY18 - M USD", 30)
+gh_cars_revenue <- bullet.graph(df, "REAL ESTATE - Revenue", "FYTD July/FY18 - M USD", 30)
 
 # Graph for Paying Professional Users ----------------------------------------- 
 
@@ -82,4 +82,4 @@ df <- data.frame(
 
 df$var <- percent(round(df$value/df$target-1,3))
 
-gh_cars_ppu <- bullet.graph(df, "CARS - Paying Professional Users", "FYTD July/FY18 ", 25000)
+gh_cars_ppu <- bullet.graph(df, "REAL ESTATE - Paying Professional Users", "FYTD July/FY18 ", 25000)
