@@ -1,0 +1,20 @@
+{
+	"jsonpaths": [
+		"$['data']['id']",
+		"$['data']['user_id']",
+		"$['data']['phone_number']",
+		"$['data']['missed']",
+		"$['data']['associated_deal_ids']",
+		"$['data']['resource_id']",
+		"$['data']['updated_at']",
+		"$['data']['made_at']",
+		"$['data']['summary']",
+		"$['data']['outcome_id']",
+		"$['data']['duration']",
+		"$['data']['incoming']",
+		"$['data']['recording_url']",
+		"$['data']['resource_type']"
+    ]
+}
+
+

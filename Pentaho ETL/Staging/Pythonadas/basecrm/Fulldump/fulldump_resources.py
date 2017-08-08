@@ -603,6 +603,8 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
+		data = convert_timestamps(data)
+
 		for calls_data in data:
 			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
 
@@ -654,6 +656,8 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		data = convert_timestamps(data)
 
 		for call_outcomes_data in data:
 			output.write(json.dumps(call_outcomes_data,use_decimal=True) + "\n")
