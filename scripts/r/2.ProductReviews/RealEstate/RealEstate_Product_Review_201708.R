@@ -6,54 +6,6 @@ library("scales")
 
 # Paying Professional Users ---------------------------------------------------
 
-# Autovit ---------------------------------------------------------------------
-  # 2016-01	683
-  # 2016-02	768
-  # 2016-03	831
-  # 2016-04	782
-  # 2016-05	830
-  # 2016-06	817
-  # 2016-07	871
-  # 2016-08	868
-  # 2016-09	853
-  # 2016-10	865
-  # 2016-11	880
-  # 2016-12	884
-  # 2017-01	911
-  # 2017-02	937
-  # 2017-03	937
-  # 2017-04	940
-  # 2017-05	971
-  # 2017-06	936
-  # 2017-07	933
-  # 2017-08	242
-
-# Standvirtual ----------------------------------------------------------------
-  # 2017-01-31	2740
-  # 2017-02-28	2677
-  # 2017-03-31	2698
-  # 2017-04-30	2599
-  # 2017-05-31	2681
-  # 2017-06-30	2632
-  # 2017-07-31	2637
-  # 2017-08-31	1496
-
-# India -----------------------------------------------------------------------
-  # 2017-04	2464
-  # 2017-05	2616
-  # 2017-06	2987
-  # 2017-07	3097
-
-# LATAM -----------------------------------------------------------------------
-  # 201701	90
-  # 201702	227
-  # 201703	334
-  # 201704	331
-  # 201705	338
-  # 201706	312
-  # 201707	339
-  # 201708	119
-
 # Bullet Graph function -------------------------------------------------------
 
 bullet.graph <- function(bg.data, bg.title, bg.subtitle, maxgb){
@@ -66,13 +18,13 @@ bullet.graph <- function(bg.data, bg.title, bg.subtitle, maxgb){
   gg <- gg + geom_bar(aes(measure, high),  fill="gray90", stat="identity", width=0.5, alpha=0.2) 
   #gg <- gg + geom_bar(aes(measure, mean),  fill="blue", stat="identity", width=0.5, alpha=0.2) 
   #gg <- gg + geom_bar(aes(measure, target),   fill="gray90", stat="identity", width=0.5)
-  gg <- gg + geom_text(data=bg.data[6,],  aes(measure, maxgb, label="target"), color = "#0570b0", vjust = 3, hjust=1,  family="Andale Mono")
-  gg <- gg + geom_text(data=bg.data[6,], aes(measure, maxgb, label="actual"), color = "#74a9cf", vjust = -2, hjust=1,  family="Andale Mono")
-  gg <- gg + geom_text(aes(measure, target, label=paste0("", target)), color = "#0570b0", vjust = 3, hjust=0.5,  family="Andale Mono")
-  gg <- gg + geom_text(aes(measure, value, label=paste0("",value, "(", var, ")")), color = "#74a9cf", vjust = -2, hjust=0, family="Andale Mono", fontface = "bold")
-  gg <- gg + geom_bar(aes(measure, value), fill="#74a9cf",  stat="identity", width=0.2) 
-  gg <- gg + geom_errorbar(aes(y=target, x=measure, ymin=target, ymax=target), color="#0570b0", width=0.45) 
-  gg <- gg + geom_point(aes(measure, target), colour="#0570b0", size=2.5) 
+  gg <- gg + geom_text(data=bg.data[6,],  aes(measure, maxgb, label="target"), color = "salmon1", vjust = 3, hjust=1,  family="Andale Mono")
+  gg <- gg + geom_text(data=bg.data[6,], aes(measure, maxgb, label="actual"), color = "salmon4", vjust = -2, hjust=1,  family="Andale Mono")
+  gg <- gg + geom_text(aes(measure, target, label=paste0("", target)), color = "salmon1", vjust = 3, hjust=0.5,  family="Andale Mono")
+  gg <- gg + geom_text(aes(measure, value, label=paste0("",value, "(", var, ")")), color = "salmon4", vjust = -2, hjust=0, family="Andale Mono", fontface = "bold")
+  gg <- gg + geom_bar(aes(measure, value), fill="salmon4",  stat="identity", width=0.2) 
+  gg <- gg + geom_errorbar(aes(y=target, x=measure, ymin=target, ymax=target), color="salmon1", width=0.45) 
+  gg <- gg + geom_point(aes(measure, target), colour="salmon1", size=2.5) 
   gg <- gg + scale_y_continuous(breaks=seq(0,maxgb,mid.bg))
   gg <- gg + coord_flip()
   gg <- gg + theme(axis.text.x=element_text(size=8),
@@ -125,8 +77,8 @@ df <- data.frame(
   value=c(9477, 933, 2637, 3097, 339, 16483)
 )
 
-myNumCols <- which(unlist(lapply(df, is.numeric)))
-df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
+#myNumCols <- which(unlist(lapply(df, is.numeric)))
+#df[(nrow(df) + 1), myNumCols] <- colSums(df[, myNumCols], na.rm=TRUE)
 
 df$var <- percent(round(df$value/df$target-1,3))
 
