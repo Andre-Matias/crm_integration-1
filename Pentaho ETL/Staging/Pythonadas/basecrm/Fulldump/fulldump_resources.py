@@ -49,7 +49,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for deal_data in data:
@@ -95,7 +95,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for contact_data in data:
@@ -141,7 +141,7 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for lead_data in data:
@@ -187,7 +187,7 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for user_data in data:
@@ -233,7 +233,7 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for stage_data in data:
@@ -279,7 +279,7 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for loss_reason_data in data:
@@ -325,7 +325,7 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for note_data in data:
@@ -371,7 +371,7 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for pipeline_data in data:
@@ -417,7 +417,7 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for source_data in data:
@@ -463,7 +463,7 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		#Iterate the list of deals
 		for tag_data in data:
@@ -613,7 +613,7 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 		
-		data = convert_timestamps_2(data)
+		#data = convert_timestamps_2(data)
 
 		for calls_data in data:
 			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
@@ -667,7 +667,7 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		data = convert_timestamps(data)
+		#data = convert_timestamps(data)
 
 		for call_outcomes_data in data:
 			output.write(json.dumps(call_outcomes_data,use_decimal=True) + "\n")
