@@ -29,13 +29,11 @@ def getChandraConnection(conf_file):
 	password = temp[9]
 	return psycopg2.connect(dbname=dbname, host=host, port=port, user=user, password=password)
 	
-
 def getS3Keys(conf_file):
 	file = open(conf_file, "r") 
 	temp = file.read().splitlines()
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
 	% {'key': temp[11],'skey': temp[13]}
-
 
 def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,manifest_path,resources,prefix):
 	conn = getChandraConnection(conf_file)
@@ -88,6 +86,7 @@ def truncateResourceTables(conf_file,schema,resources,platform,prefix):
 			}
 		)
 	conn.commit()
+
+	#Close connection
 	cur.close()
 	conn.close()
-

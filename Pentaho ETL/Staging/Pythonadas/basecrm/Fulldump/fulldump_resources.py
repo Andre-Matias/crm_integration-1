@@ -12,7 +12,6 @@ from datetime import datetime
 import requests
 
 
-
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 	
 	print("Getting deals data")
