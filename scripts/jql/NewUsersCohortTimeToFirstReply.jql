@@ -1,0 +1,70 @@
+var params = {
+  from: '2017-05-23',
+  to: '2017-07-05'
+}
+
+function main() {
+  return Events({
+    from_date: params.from,
+    to_date:   params.to,
+    // only select the events we are interested in
+    event_selectors: [{event: 'home', selector: '(properties["business_status"] != "business" and properties["business_status"] != "private")'}, {event: 'reply_phone_show', selector: '(properties["business_status"] != "business" and properties["business_status"] != "private")'}, {event: 'reply_message_sent', selector: '(properties["business_status"] != "business" and properties["business_status"] != "private")'}, {event: 'reply_phone_call', selector: '(properties["business_status"] != "business" and properties["business_status"] != "private")'}, {event: 'reply_phone_sms', selector: '(properties["business_status"] != "business" and properties["business_status"] != "private")'}]
+  })
+  .groupByUser(function(state, events) {
+    // create an object to track the status of each metric
+    state = state || { retention: makeDays(params.to, params.from), first: false, entry: [] };
+    // iterate through each of the events returned
+    for(i=0; i<events.length; i++) {
+      
+      if(events[i].name == 'home') {
+        if(!state.first) {
+          // if we find a home event, add the user to the cohort for that day
+          state.retention[getDay(events[i].time)]['$New Users'] = 1;
+        } else {
+          state.retention[getDay(events[i].time)]['$Returning Users'] = 1;
+        }
+        // record the timestamp of the event so we can attribute the conversion later
+        state.entry.push(events[i].time);
+      } else {
+        // this represents a conversion, iterate through all of the dates the user did 'home'
+        for(j=0; j<state.entry.length; j++) {
+          if(!state.first) {
+            // if this is the first conversion, attribute to the 'First Lead' status
+            state.retention[getDay(state.entry[j])][Math.floor((events[i].time - state.entry[j]) / (60*60*24*1000)) + ' New Users'] = 1;
+          } else {
+            // if this is not the first conversion, attribute to the 'Repeat Lead' status
+            state.retention[getDay(state.entry[j])][Math.floor((events[i].time - state.entry[j]) / (60*60*24*1000)) + ' Returning Users'] = 1;
+          }
+        }
+        // reset the first since we have a conversion
+        state.first = true;
+        // reset the dates for seeing home event since we have a conversion
+        state.entry = [];
+      }
+    }
+    return state;
+  })
+  // grab just the retention metrics per user per day
+  .map(function(item) {
+    return item.value.retention;
+  })
+  // merge the data for each user to get aggregate stats across the site
+  .reduce(mixpanel.reducer.object_merge())
+}
+
+function makeDays(to, from) {
+  var obj = {};
+  var start = new Date(from);
+  var end = new Date(new Date(to).getTime() + 60 * 60 * 24 * 1000);
+  var current = start;
+  var seconds = 1000 * 60 * 60 * 24;
+  while(current < end) {
+    obj[current.toISOString().substring(0,10)] = {};
+    current = new Date(current.getTime() + seconds);
+  }
+  return obj;
+}
+
+function getDay(unix) {
+  return new Date(unix).toISOString().substring(0,10);
+}
