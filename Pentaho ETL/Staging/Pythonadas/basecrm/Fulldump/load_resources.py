@@ -86,7 +86,7 @@ def truncateResourceTables(conf_file,schema,resources,platform,prefix):
 			'prefix': prefix,
 			'schema': schema
 			}
-
+		)
 	conn.commit()
 	cur.close()
 	conn.close()
