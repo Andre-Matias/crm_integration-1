@@ -73,3 +73,20 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,manifest_pat
 	#Close connection
 	cur.close()
 	conn.close()
+
+def truncateResourceTables(conf_file,schema,resources,platform,prefix):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	for resource in resources:
+		cur.execute("TRUNCATE TABLE %(prefix)sstg_d_base_%(resource)s_%(platform)s") 
+			% {
+			'resource':resource,
+			'platform':platform,
+			'prefix': prefix
+			}
+
+	conn.commit()
+	cur.close()
+	conn.close()
+

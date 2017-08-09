@@ -15,6 +15,12 @@ resources = temp[17].split(',')
 file.close()
 
 
+truncateResourceTables(chandra_conf_file,
+	schema,
+	resources,
+	platform,
+	'')
+
 # prefix parameter should be 'sync_' or ''
 loadFromS3toRedshift(chandra_conf_file, 
 	schema,
