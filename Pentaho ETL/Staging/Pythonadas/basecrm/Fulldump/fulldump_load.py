@@ -1,4 +1,5 @@
 from load_resources import *
+import sys
 
 conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
