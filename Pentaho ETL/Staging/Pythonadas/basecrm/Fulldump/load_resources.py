@@ -79,7 +79,7 @@ def truncateResourceTables(conf_file,schema,resources,platform,prefix):
 	cur = conn.cursor()
 
 	for resource in resources:
-		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(platform)s") 
+		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(platform)s" \
 			% {
 			'resource':resource,
 			'platform':platform,
