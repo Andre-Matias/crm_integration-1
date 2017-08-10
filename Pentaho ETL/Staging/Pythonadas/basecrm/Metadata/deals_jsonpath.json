@@ -8,7 +8,6 @@
 		"$['dropbox_email']",
 		"$['creator_id']",
 		"$['loss_reason_id']",
-		"$['associated_contacts']",
 		"$['currency']",
 		"$['updated_at']",
 		"$['organization_id']",
