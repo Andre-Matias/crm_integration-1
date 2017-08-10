@@ -99,11 +99,11 @@ UsersStorandy <- data.frame(get_ga(profileId = idsand, start.date = startdate,
 
 #old DB 
 
-cmd_storia <- 'ssh -i ~/marco_pasin_key biuser@52.74.90.117 -p 10022 -L 10005:172.50.21.59:3306 -N'
+cmd_storia <- 'ssh -i ~/marco_pasin_key biuser@52.74.90.117 -p 10022 -L 10007:172.50.21.59:3306 -N'
 
 system(cmd_storia, wait=FALSE)
 
-conn_storia <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "SPwE57nX", host = "127.0.0.1", port = 10005, dbname = "realestate_id")
+conn_storia <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "SPwE57nX", host = "127.0.0.1", port = 10007, dbname = "realestate_id")
 
 #new DB 
 
