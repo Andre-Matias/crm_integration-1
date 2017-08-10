@@ -554,7 +554,9 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 	
 	aux = 1
 	name = "calls_"
-	while 1:
+
+	# Calls API has a maximum pages of 1000 - https://developers.getbase.com/docs/rest/reference/private/calls
+	while aux <= 1000:
 
 		url = "https://api.getbase.com/v2_beta/calls"
 		response = requests.get(url,
