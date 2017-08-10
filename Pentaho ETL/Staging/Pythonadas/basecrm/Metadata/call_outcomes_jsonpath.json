@@ -1,0 +1,10 @@
+{
+	"jsonpaths": [
+		"$['data']['id']",
+		"$['data']['name']",
+		"$['data']['creator_id']",
+		"$['data']['created_at']",
+		"$['data']['updated_at']"
+    ]
+}
+
