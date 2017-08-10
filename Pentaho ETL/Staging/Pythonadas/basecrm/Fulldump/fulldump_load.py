@@ -4,6 +4,9 @@ import sys
 conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
 
+#Date of the fulldump yyyy/mm/dd format
+fulldump_date = sys.argv[3]
+
 ##################################################
 # Read conf_file
 ##################################################
@@ -36,6 +39,7 @@ loadFromS3toRedshift(chandra_conf_file,
 	platform,
 	bucketName,
 	path_fulldump,
+	fulldump_date,
 	manifest,
 	resources,
 	'')
