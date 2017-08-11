@@ -548,7 +548,6 @@ def get_order_line_items(order_id,token,file):
 			file.write(json.dumps(line_items_data,use_decimal=True) + "\n")
 		
 		#Next page iterate
-		time.sleep(1)
 		aux += 1		
 
 def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
