@@ -442,7 +442,7 @@
       <name>Truncate table</name>
       <description/>
       <type>SQL</type>
-      <sql>TRUNCATE reporting.rocha_metric_m_revenue&#x3b;</sql>
+      <sql>DELETE FROM reporting.rocha_metric_m_revenue where country_id in &#x28;620,616,642&#x29;&#x3b;</sql>
       <useVariableSubstitution>F</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
       <sqlfilename/>
