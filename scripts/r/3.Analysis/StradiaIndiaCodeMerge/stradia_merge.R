@@ -1,10 +1,15 @@
-#load libraries
+#Objective: to analyse the merge impact of Stradia new code implementation
+# we will start with Stradia India
+# we will analyse gross ads, replies, visits and ad page impressions before and after the change (merge was done between 3-4 July 2017)
+# period of analysis: 2017-04-02' to ' 2017-08-05'
+
+#Load libraries
 library("DBI")
 library("RMySQL")
 library("dplyr")
+library("tidyr")
 library("ggplot2")
 library("gridExtra")
-
 
 #Connection to Stradia IN DB --------------------------------------
 
@@ -23,8 +28,9 @@ conDB<- dbConnect(MySQL(),
                   port= 3312,
                   dbname = dbName
 )
-#list tables
-dbListTables(conDB)
+
+# #list tables
+# dbListTables(conDB)
 
 #edit SQL queries
 sql_string_ads<- "
@@ -62,14 +68,12 @@ head(ads)
 #there is no difference between gross vs net, are all 1
 
 
-#GROSS ADS ------------------------------------
+#GROSS ADS -------------------------------------------------
 gross<- ads%>%
             filter(ad_counted %in% c(0,1))%>%   # 0 or 1
             mutate(day=as.Date(dia))%>%
             group_by(day)%>%
             summarise(listings=sum(listings)) 
-# %>%
-# mutate(period=ifelse(test$day<as.Date("2017-07-02"),"before","after"))
 
 #daily chart -- noticed a drop beginning of July and inmediate peak later when ads where eventually exported.
 grossDaily<-  ggplot(data=gross, aes(x=day, y=listings)) + geom_bar(stat="identity",fill="#BEC100") +
@@ -99,10 +103,10 @@ gB <- ggplot_gtable(gb2)
 
 plot(rbind(gA, gB))
 
-# or simply but not aligned: grid.arrange(g1, g2, nrow=2, ncol=1) 
+# or simply,but not aligned: grid.arrange(g1, g2, nrow=2, ncol=1) 
 
 
-#NET ADS ------------------------------------ not doing it for India as it's all the same (no moderation)
+#NET ADS ------------------------------------ noneed for India as it's all net (no moderation)
 # net<- ads%>%
 #   filter(ad_counted %in% c(1))%>% #only 1
 #   mutate(day=as.Date(dia))%>%
@@ -118,7 +122,7 @@ plot(rbind(gA, gB))
 
 
 #REPLIES -------------------------------------
-#will do it only weekly
+#will do it only weekly to remove seasonality
 repliesWeekly<- replies%>%
                   mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
                     ggplot( aes(x=as.Date(week), y=listings)) + geom_bar(stat="identity",fill="#FEC100") +
@@ -136,15 +140,14 @@ repliesWeeklySource<- replies%>%
                           labs(title = "Weekly Replies by Source - Stradia IN", x = "weeks") +
                           facet_wrap(~ source)
 
-# align axis and build final graph -----------
+# align axis and build final graph --
 grid.arrange(repliesWeekly, repliesWeeklySource, nrow=2, ncol=1) 
 
-#Connection to Stradia IN web analytics data --------------------------------------
+
+#Connection to Stradia IN web analytics data -------------------------------------
 #AT Internet until migration 3 July 
 #Mixpanel after migration from 4 July
-#data extracted as csv
-
-mp_visits_desktop<- read.csv("mixpanel_sessions_desktop.csv",sep = ";")
+#data extracted as .csv
 
 #read each AT file, add device column and bind them into "at_visits" data frame
 vec<-c("at_visits_desktop.csv","at_visits_desktop_not_desktop.csv","at_visits_android.csv","at_visits_ios.csv")
@@ -157,13 +160,12 @@ for (i in seq_along(vec) ) {
     at_visits <- rbind(at_visits, read_file)
 }
 
-#read each MIXPANEL file, add device column and bind them into "at_visits" data frame
+#read each MIXPANEL file, add device column and bind them into "mp_visits" data frame
 vec2<-c("mixpanel_sessions_desktop.csv","mixpanel_sessions_rwd.csv","mixpanel_sessions_android.csv","mixpanel_sessions_ios.csv")
 mp_visits <- data.frame()
 for (i in seq_along(vec2) ) {
     read_file<- read.csv(vec2[i],sep = ";") %>%
                   mutate(device=dev[i]) %>% 
-                  
                   select(-value.pv)
     colnames(read_file)<- c("dia","visits","device")
     mp_visits <- rbind(mp_visits, read_file)
@@ -173,7 +175,8 @@ for (i in seq_along(vec2) ) {
 visits<- rbind(at_visits, mp_visits)
 visits<- mutate(visits, dia=as.Date(dia,format = "%d/%m/%Y"))
 
-#VISITS
+#VISITS ------------------------------------------------------------
+
 visitsWeekly<- visits%>%
                 mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
                     ggplot( aes(x=as.Date(week), y=visits)) + geom_bar(stat="identity",fill="#c2c502") +
@@ -194,9 +197,50 @@ visitsWeeklyDevice<- visits%>%
 # align axis and build final graph -----------
 grid.arrange(visitsWeekly, visitsWeeklyDevice, nrow=2, ncol=1) 
 
-#SHOW PHONE
 
+#AD PAGE VIEWS --------------------------------------------------------
 
-#AD VIEWS
-#DOWNLOADS
-#ACTIVE USERS
+#read each AT file
+vec3<-c("at_adpage_desktop.csv","at_adpage_desktop_not_desktop.csv","at_adpage_android.csv","at_adpage_ios.csv")
+dev<-c("desktop","rwd","android","ios")
+at_adpage <- data.frame()
+for (i in seq_along(vec3) ) {
+          read_file<- read.csv(vec3[i],sep = ";") %>%
+                          mutate(device=dev[i]) %>%
+                          select(-Pages)
+                          colnames(read_file)<- c("dia","loads","device")
+            at_adpage <- rbind(at_adpage, read_file)
+}
+
+#read MP file
+mp_adpage<- read.csv("ad_page_mixpanel.csv",sep = ",")
+
+#Convert from wide to long format like AT file
+mp_adpage_l<-gather(mp_adpage,device, loads, rwd:desktop, factor_key = T )
+names(mp_adpage_l)<- c("dia","device","loads")
+
+#rbind before and after periods
+at_adpage$dia<- as.Date(at_adpage$dia,format = "%d/%m/%Y")
+adpage<- rbind(at_adpage, mp_adpage_l)
+
+#Plot!
+adpageWeekly<- adpage%>%
+                mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+                  ggplot( aes(x=as.Date(week), y=loads)) + geom_bar(stat="identity",fill="#ABEBC6") +
+                  geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+                  theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
+                  scale_x_date(date_breaks  ="1 week") +
+                  labs(title = "Weekly Ad Page Views - Stradia IN", x = "weeks")
+
+adpageWeeklyDevice<- adpage%>%
+                      mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+                        ggplot( aes(x=as.Date(week), y=loads)) + geom_bar(stat="identity",fill="#ABEBC6") +
+                        geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+                        theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
+                        scale_x_date(date_breaks  ="1 week") +
+                        labs(title = "Weekly Ad Page Views by Device - Stradia IN", x = "weeks") +
+                        facet_wrap(~device)
+
+# align axis and build final graph -----------
+grid.arrange(adpageWeekly, adpageWeeklyDevice, nrow=2, ncol=1) 
+

@@ -10,6 +10,7 @@ import gzip
 import dateutil.parser
 from datetime import datetime
 import requests
+import time
 
 
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
