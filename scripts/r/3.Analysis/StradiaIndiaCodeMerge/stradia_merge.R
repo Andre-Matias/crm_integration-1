@@ -154,7 +154,7 @@ vec<-c("at_visits_desktop.csv","at_visits_desktop_not_desktop.csv","at_visits_an
 dev<-c("desktop","rwd","android","ios")
 at_visits <- data.frame()
 for (i in seq_along(vec) ) {
-    read_file<- read.csv(vec[i],sep = ";") %>%
+    read_file<- read.csv(paste0("./data/", vec[i]),sep = ";") %>%
                   mutate(device=dev[i])
     colnames(read_file)<- c("dia","visits","device")
     at_visits <- rbind(at_visits, read_file)
@@ -164,7 +164,7 @@ for (i in seq_along(vec) ) {
 vec2<-c("mixpanel_sessions_desktop.csv","mixpanel_sessions_rwd.csv","mixpanel_sessions_android.csv","mixpanel_sessions_ios.csv")
 mp_visits <- data.frame()
 for (i in seq_along(vec2) ) {
-    read_file<- read.csv(vec2[i],sep = ";") %>%
+    read_file<- read.csv(paste0("./data/", vec2[i]),sep = ";") %>%
                   mutate(device=dev[i]) %>% 
                   select(-value.pv)
     colnames(read_file)<- c("dia","visits","device")
@@ -205,7 +205,7 @@ vec3<-c("at_adpage_desktop.csv","at_adpage_desktop_not_desktop.csv","at_adpage_a
 dev<-c("desktop","rwd","android","ios")
 at_adpage <- data.frame()
 for (i in seq_along(vec3) ) {
-          read_file<- read.csv(vec3[i],sep = ";") %>%
+          read_file<- read.csv(paste0("./data/", vec3[i]),sep = ";") %>%
                           mutate(device=dev[i]) %>%
                           select(-Pages)
                           colnames(read_file)<- c("dia","loads","device")
@@ -213,7 +213,7 @@ for (i in seq_along(vec3) ) {
 }
 
 #read MP file
-mp_adpage<- read.csv("ad_page_mixpanel.csv",sep = ",")
+mp_adpage<- read.csv("data/ad_page_mixpanel.csv",sep = ",")
 
 #Convert from wide to long format like AT file
 mp_adpage_l<-gather(mp_adpage,device, loads, rwd:desktop, factor_key = T )
