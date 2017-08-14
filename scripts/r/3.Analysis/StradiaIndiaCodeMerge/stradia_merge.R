@@ -219,7 +219,7 @@ mp_adpage<- read.csv("data/ad_page_mixpanel.csv",sep = ",")
 mp_adpage_l<-gather(mp_adpage,device, loads, rwd:desktop, factor_key = T )
 names(mp_adpage_l)<- c("dia","device","loads")
 
-#rbind before and after periods #
+#rbind before and after periods
 at_adpage$dia<- as.Date(at_adpage$dia,format = "%d/%m/%Y")
 adpage<- rbind(at_adpage, mp_adpage_l)
 
