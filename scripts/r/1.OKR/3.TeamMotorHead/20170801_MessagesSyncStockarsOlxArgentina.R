@@ -130,8 +130,11 @@ df <-
   mutate(dateorigin2 = fastPOSIXct(dateorigin, tz = "UTC"),
          message_date2 = fastPOSIXct(message_date, tz = "UTC"),
          create_date2 = fastPOSIXct(create_date, tz = "UTC"),
+# ERROR: stockars created and sync datetime are not correct (+ 60 minutes)        
          diffSyncTime = 
-           as.numeric(difftime(create_date2, message_date2, tz = "UTC", units = "mins")),
+           as.numeric(
+             difftime(create_date2, message_date2, tz = "UTC", units = "mins")
+             )-60,
          diffSyncIntervals = 
            cut(diffSyncTime, 
                breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
@@ -182,11 +185,13 @@ ghQuantityMessagesSynced <-
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   ggtitle("OLX/Stockars.AR - Quantity of Messages synced") + 
-  geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = 0, family = "Andale Mono", colour="white")
+  geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = 0, 
+            family = "Andale Mono", colour="white")
 
 ghSyncingTime <- 
   ggplot(dfStatsSyncTime) + 
-  geom_bar(stat="identity", aes(x=dayorigin, y=perByCut, fill=diffSyncIntervals))+
+  geom_bar(stat="identity", aes(x=dayorigin, y=perByCut, fill=diffSyncIntervals)
+           )+
   scale_x_date(
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   scale_y_continuous(labels = percent)+
@@ -195,7 +200,8 @@ ghSyncingTime <-
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   theme(legend.position="bottom")+
   ggtitle("OLX/Stockars.AR - Syncing Time") + 
-  geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = 0, family = "Andale Mono")
+  geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars),
+            vjust = 0, family = "Andale Mono")
 
 # align axis and build final graph --------------------------------------------
 
