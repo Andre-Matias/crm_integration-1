@@ -105,7 +105,7 @@ plot(rbind(gA, gB))
 
 # or simply,but not aligned: grid.arrange(g1, g2, nrow=2, ncol=1) 
 
-#compare 4 before the merge vs 4 weeks after
+#compare 4 weeks before the merge vs 4 weeks after
 #and calculate average gross listings per week for the two periods 
 grossCmp<- gross%>%
   mutate(week=cut(day,breaks="week", start.on.monday=FALSE)) %>%
@@ -117,8 +117,8 @@ grossCmp<- gross%>%
   group_by(WeekN) %>%
   summarize(avg_listings_per_week=mean(listings))
 
-# In the 4 weeks that followed the merge, the average gross listings per week increased by 2% compared
-# with the 4 weeks prior to the merge. 
+# In the 4 weeks that followed the merge, the average gross listings per week increased by
+# 2% compared with the 4 weeks prior to the merge. 
 grossCmp[3,2]/grossCmp[1,2] -1
 
 
@@ -216,7 +216,7 @@ visitsWeeklyDevice<- visits%>%
 grid.arrange(visitsWeekly, visitsWeeklyDevice, nrow=2, ncol=1) 
 
 
-#compare 4 before the merge vs 4 weeks after
+#compare 4 weeks before the merge vs 4 weeks after
 #and calculate visits per week for the two periods 
 
 ##total
@@ -230,8 +230,8 @@ visitsCmp<- visits%>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
 
-# In the 4 weeks that followed the merge, the average gross listings per week increased by 2% compared
-# with the 4 weeks prior to the merge. 
+# In the 4 weeks that followed the merge, the average gross listings per week dropped 
+# by 24% compared with the 4 weeks prior to the merge. 
 visitsCmp[3,2]/visitsCmp[1,2] -1
 
 ##desktop
