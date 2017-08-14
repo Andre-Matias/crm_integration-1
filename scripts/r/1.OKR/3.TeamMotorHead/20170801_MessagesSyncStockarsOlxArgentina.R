@@ -185,7 +185,7 @@ ghQuantityMessagesSynced <-
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   ggtitle("OLX/Stockars.AR - Quantity of Messages synced") + 
-  geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = 0, 
+  geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = -0.1, 
             family = "Andale Mono", colour="white")
 
 ghSyncingTime <- 
@@ -201,7 +201,7 @@ ghSyncingTime <-
   theme(legend.position="bottom")+
   ggtitle("OLX/Stockars.AR - Syncing Time") + 
   geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars),
-            vjust = 0, family = "Andale Mono")
+            vjust = -0.1, family = "Andale Mono")
 
 # align axis and build final graph --------------------------------------------
 
