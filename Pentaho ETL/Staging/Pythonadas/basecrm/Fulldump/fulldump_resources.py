@@ -13,7 +13,7 @@ import requests
 import time
 
 
-def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
@@ -34,6 +34,10 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for deal_data in data:
+			deal_data['meta_event_type'] = 'created'
+			deal_data['meta_event_time'] = datetime.now().isoformat()
+			deal_data['country'] = country
+			deal_data['category'] = category
 			output.write(json.dumps(deal_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -58,7 +62,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
@@ -78,6 +82,10 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for contact_data in data:
+			contact_data['meta_event_type'] = 'created'
+			contact_data['meta_event_time'] = datetime.now().isoformat()
+			contact_data['country'] = country
+			contact_data['category'] = category
 			output.write(json.dumps(contact_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -102,7 +110,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting leads data")
 	#Iterate for everypage returned by the API
@@ -122,6 +130,10 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for lead_data in data:
+			lead_data['meta_event_type'] = 'created'
+			lead_data['meta_event_time'] = datetime.now().isoformat()
+			lead_data['country'] = country
+			lead_data['category'] = category
 			output.write(json.dumps(lead_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -146,7 +158,7 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting users data")
 	#Iterate for everypage returned by the API
@@ -166,6 +178,10 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for user_data in data:
+			user_data['meta_event_type'] = 'created'
+			user_data['meta_event_time'] = datetime.now().isoformat()
+			user_data['country'] = country
+			user_data['category'] = category
 			output.write(json.dumps(user_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -190,7 +206,7 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
@@ -210,6 +226,10 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for stage_data in data:
+			stage_data['meta_event_type'] = 'created'
+			stage_data['meta_event_time'] = datetime.now().isoformat()
+			stage_data['country'] = country
+			stage_data['category'] = category
 			output.write(json.dumps(stage_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -234,7 +254,7 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting loss_reasons data")
 	#Iterate for everypage returned by the API
@@ -254,6 +274,10 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for loss_reason_data in data:
+			loss_reason_data['meta_event_type'] = 'created'
+			loss_reason_data['meta_event_time'] = datetime.now().isoformat()
+			loss_reason_data['country'] = country
+			loss_reason_data['category'] = category
 			output.write(json.dumps(loss_reason_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -278,7 +302,7 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1		
 
-def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting notes data")
 	#Iterate for everypage returned by the API
@@ -298,6 +322,10 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for note_data in data:
+			note_data['meta_event_type'] = 'created'
+			note_data['meta_event_time'] = datetime.now().isoformat()
+			note_data['country'] = country
+			note_data['category'] = category
 			output.write(json.dumps(note_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -322,7 +350,7 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1			
 
-def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting pipelines data")
 	#Iterate for everypage returned by the API
@@ -342,6 +370,10 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for pipeline_data in data:
+			pipeline_data['meta_event_type'] = 'created'
+			pipeline_data['meta_event_time'] = datetime.now().isoformat()
+			pipeline_data['country'] = country
+			pipeline_data['category'] = category
 			output.write(json.dumps(pipeline_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -366,7 +398,7 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1			
 
-def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting sources data")
 	#Iterate for everypage returned by the API
@@ -386,6 +418,10 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for source_data in data:
+			source_data['meta_event_type'] = 'created'
+			source_data['meta_event_time'] = datetime.now().isoformat()
+			source_data['country'] = country
+			source_data['category'] = category
 			output.write(json.dumps(source_data,use_decimal=True)+"\n")
 
 		#Close gz file		
@@ -410,7 +446,7 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1	
 
-def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
+def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting tags data")
 	#Iterate for everypage returned by the API
@@ -430,6 +466,10 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 
 		#Iterate the list of deals
 		for tag_data in data:
+			tag_data['meta_event_type'] = 'created'
+			tag_data['meta_event_time'] = datetime.now().isoformat()
+			tag_data['country'] = country
+			tag_data['category'] = category
 			output.write(json.dumps(tag_data,use_decimal=True) + "\n")
 
 		#Close gz file		
@@ -454,7 +494,7 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1							
 
-def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
+def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
 	print("Getting orders data")
 	
 	aux = 1
@@ -483,9 +523,13 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
 		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for orders_data in data:
+			orders_data['meta_event_type'] = 'created'
+			orders_data['meta_event_time'] = datetime.now().isoformat()
+			orders_data['country'] = country
+			orders_data['category'] = category
 			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
 			# Request the line items for this order_id
-			get_order_line_items(orders_data['data']['id'],token,output_line_items)
+			get_order_line_items(orders_data['data']['id'],token,output_line_items,country,category)
 		
 
 		#Close gz file		
@@ -523,7 +567,7 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1		
 
-def get_order_line_items(order_id,token,file):
+def get_order_line_items(order_id,token,file,country,category):
 
 	aux = 1
 	while 1:
@@ -544,13 +588,17 @@ def get_order_line_items(order_id,token,file):
 		else:	return 1
 
 		for line_items_data in data:
+			line_items_data['data']['meta_event_type'] = 'created'
+			line_items_data['data']['meta_event_time'] = datetime.now().isoformat()
+			line_items_data['data']['country'] = country
+			line_items_data['data']['category'] = category
 			line_items_data['data']['order_id'] = order_id
 			file.write(json.dumps(line_items_data,use_decimal=True) + "\n")
 		
 		#Next page iterate
 		aux += 1		
 
-def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
+def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path,country,category):
 	print("Getting calls data")
 	
 	aux = 1
@@ -579,6 +627,10 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for calls_data in data:
+			calls_data['meta_event_type'] = 'created'
+			calls_data['meta_event_time'] = datetime.now().isoformat()
+			calls_data['country'] = country
+			calls_data['category'] = category
 			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
 
 		#Close gz file		
@@ -604,7 +656,7 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path):
 		#Next page iterate
 		aux += 1		
 
-def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
+def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path,country,category):
 	print("Getting call_outcomes data")
 	
 	aux = 1
@@ -631,6 +683,10 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for call_outcomes_data in data:
+			call_outcomes_data['meta_event_type'] = 'created'
+			call_outcomes_data['meta_event_time'] = datetime.now().isoformat()
+			call_outcomes_data['country'] = country
+			call_outcomes_data['category'] = category
 			output.write(json.dumps(call_outcomes_data,use_decimal=True) + "\n")
 
 		#Close gz file		
@@ -657,20 +713,20 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 		aux += 1		
 
  
-def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client):
-	if 'deals' == resource: s3_fulldump_deals(client,keyId,sKeyId,bucketName,path)
-	if 'contacts' == resource: s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path)
-	if 'leads' == resource: s3_fulldump_leads(client,keyId,sKeyId,bucketName,path)
-	if 'users' == resource: s3_fulldump_users(client,keyId,sKeyId,bucketName,path)
-	if 'tags' == resource: s3_fulldump_tags(client,keyId,sKeyId,bucketName,path)
-	if 'orders' == resource: s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path)
-	if 'calls' == resource: s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path)
-	if 'stages' == resource: s3_fulldump_stages(client,keyId,sKeyId,bucketName,path)
-	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path)
-	if 'notes' == resource: s3_fulldump_notes(client,keyId,sKeyId,bucketName,path)
-	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path)
-	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path)
-	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path)
+def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client,country,category):
+	if 'deals' == resource: s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'contacts' == resource: s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'leads' == resource: s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'users' == resource: s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'tags' == resource: s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'orders' == resource: s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path,country,category)
+	if 'calls' == resource: s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path,country,category)
+	if 'stages' == resource: s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'notes' == resource: s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category)
+	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path,country,category)
 
 
 
