@@ -1,7 +1,12 @@
+
 --DROP TABLE "rdl_basecrm"."stg_d_base_contacts_xx_yy";
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"creator_id" INTEGER   ENCODE lzo
 	,"contact_id" INTEGER   ENCODE lzo
 	,"created_at" DATE   ENCODE lzo
@@ -31,15 +36,19 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts_xx_yy"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("created_at", "owner_id")
+SORTKEY ("meta_event_time","created_at", "owner_id")
 ;
 
 
 
 --DROP TABLE "rdl_basecrm"."stg_d_base_deals_xx_yy";
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_deals_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_deals"
 (
-	"id" INT  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INT  ENCODE lzo
 	,"last_activity_at" TIMESTAMP   ENCODE delta
 	,"contact_id" INT   ENCODE lzo
 	,"source_id" INT   ENCODE lzo
@@ -63,14 +72,18 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_deals_xx_yy"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("stage_id", "last_stage_change_at")
+SORTKEY ("meta_event_time","stage_id", "last_stage_change_at")
 ;
 
 
 --DROP TABLE "rdl_basecrm"."stg_d_base_leads_xx_yy";
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_leads_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_leads"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"first_name" VARCHAR(500)   ENCODE lzo
 	,"last_name" VARCHAR(500)   ENCODE lzo
 	,"owner_id" INTEGER   ENCODE lzo
@@ -98,13 +111,17 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_leads_xx_yy"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("created_at","owner_id")
+SORTKEY ("meta_event_time","created_at","owner_id")
 ;
 
-                        
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_users_xx_yy"
+
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_users"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" VARCHAR(100)   ENCODE lzo
 	,"email" VARCHAR(100)   ENCODE lzo
 	,"role" VARCHAR(100)   ENCODE lzo
@@ -115,14 +132,18 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_users_xx_yy"
 	,"deleted_at" TIMESTAMP   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
 
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_stages_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_stages"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" VARCHAR(100)   ENCODE lzo
 	,"position" INTEGER   ENCODE lzo
 	,"category" VARCHAR(100)   ENCODE lzo
@@ -133,12 +154,16 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_stages_xx_yy"
 	,"updated_at" TIMESTAMP   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_calls_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_calls"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"user_id" INTEGER   ENCODE lzo
 	,"phone_number" VARCHAR(100)   ENCODE lzo
 	,"missed" BOOLEAN
@@ -155,64 +180,84 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_calls_xx_yy"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("user_id", "updated_at")
+SORTKEY ("meta_event_time","user_id", "updated_at")
 ;
 
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_call_outcomes_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_call_outcomes"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" varchar(100)   ENCODE lzo
 	,"creator_id" INTEGER   ENCODE lzo
 	,"created_at" TIMESTAMP   ENCODE lzo
 	,"updated_at" TIMESTAMP   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_loss_reasons_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_loss_reasons"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" varchar(100)   ENCODE lzo
 	,"creator_id" INTEGER   ENCODE lzo
 	,"created_at" TIMESTAMP   ENCODE lzo
 	,"updated_at" TIMESTAMP   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_pipelines_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_pipelines"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" varchar(100)   ENCODE lzo
 	,"created_at" TIMESTAMP   ENCODE lzo
 	,"updated_at" TIMESTAMP   ENCODE lzo
 	,"disabled" BOOLEAN
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_sources_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_sources"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" varchar(100)   ENCODE lzo
 	,"created_at" TIMESTAMP   ENCODE lzo
 	,"updated_at" TIMESTAMP   ENCODE lzo
 	,"resource_type" varchar(100)   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
 
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_tags_xx_yy"
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_tags"
 (
-	"id" INTEGER NOT NULL  ENCODE lzo
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
 	,"name" varchar(100)   ENCODE lzo
 	,"creator_id" INTEGER   ENCODE lzo
 	,"created_at" TIMESTAMP   ENCODE lzo
@@ -220,19 +265,6 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_tags_xx_yy"
 	,"resource_type" varchar(100)   ENCODE lzo
 )
 DISTSTYLE ALL
-SORTKEY ("id")
+SORTKEY ("id","meta_event_time")
 ;
 
-
-CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_calls_xx_yy"
-(
-	"id" INTEGER NOT NULL  ENCODE lzo
-	,"phone_number" varchar(100)   ENCODE lzo
-	,"user_id" INTEGER   ENCODE lzo
-	,"missed" TIMESTAMP   ENCODE lzo
-	,"updated_at" TIMESTAMP   ENCODE lzo
-	,"resource_type" varchar(100)   ENCODE lzo
-)
-DISTSTYLE ALL
-SORTKEY ("id")
-;
