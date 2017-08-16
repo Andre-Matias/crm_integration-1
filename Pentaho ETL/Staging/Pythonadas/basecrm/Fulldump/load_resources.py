@@ -46,10 +46,11 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifes
 		cur.execute(
 			getCopySql(
 				schema, \
-				'%(prefix)sstg_d_base_%(resource)s_%(platform)s' \
+				'%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s' \
 					% {
 					'resource':resource,
-					'platform':platform,
+					'category':category,
+					'country':country,
 					 'prefix': prefix},
 				's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
 					% {
@@ -61,7 +62,7 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifes
 					% {
 					'prefix': prefix,
 					'resource':resource,
-					'bucket':bucket,
+					'bucket':bucket_adasdasdad,
 					'manifest_path':manifest_path
 					}, 
 				credentials
@@ -73,15 +74,16 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifes
 	cur.close()
 	conn.close()
 
-def truncateResourceTables(conf_file,schema,resources,platform,prefix):
+def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
 
 	for resource in resources:
-		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(platform)s" \
+		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s" \
 			% {
 			'resource':resource,
-			'platform':platform,
+			'category':category,
+			'country':country,
 			'prefix': prefix,
 			'schema': schema
 			}
