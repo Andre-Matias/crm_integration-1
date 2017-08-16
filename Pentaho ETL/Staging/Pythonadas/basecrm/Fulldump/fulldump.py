@@ -15,6 +15,8 @@ keyId = temp[3]
 sKeyId = temp[5]
 bucketName = temp[7]
 path = temp[9]
+category = temp[15]
+country = temp[17]
 resources = temp[19].split(',')
 file.close()
 
