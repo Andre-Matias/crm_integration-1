@@ -89,14 +89,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: DAU
   output$dauBox <- renderValueBox({
-        valueBox("847", "DAU",
+        valueBox("945", "DAU",
            icon = icon("user"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: DAU by Source
   output$sourceBox <- renderValueBox({
-    valueBox("847","DAU by Source",
+    valueBox("945","DAU by Source",
              icon = icon("users"),
              color = "blue")
   })
@@ -112,7 +112,7 @@ server_migration <- function(input, output, session) {
 
   # fluid row 1, kpi 4: NNL
   output$nnlBox <- renderValueBox({
-    valueBox("3 615 ",
+    valueBox("3 088 ",
              "NNL",
              icon = icon("sign-in"),
              color = "maroon")
@@ -120,7 +120,7 @@ server_migration <- function(input, output, session) {
  
   #  fluid row 1, kpi 5: Active Ads 
  output$activeadsBox <- renderValueBox({
- valueBox("620 554",
+ valueBox("623 263",
         "Active Ads",
          icon = icon("building"),
         color = "teal")
