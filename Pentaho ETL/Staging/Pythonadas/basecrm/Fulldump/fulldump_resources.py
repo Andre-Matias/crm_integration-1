@@ -657,7 +657,7 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 		aux += 1		
 
 
-def mapping_fulldump_methods(resource):
+def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client):
 	method_map = {
 		'deals': s3_fulldump_deals,
 		'contacts': s3_fulldump_contacts,
