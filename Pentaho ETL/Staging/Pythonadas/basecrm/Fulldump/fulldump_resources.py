@@ -655,3 +655,27 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 		
 		#Next page iterate
 		aux += 1		
+
+
+def mapping_fulldump_methods(access_token_base,client,keyId,sKeyId,bucketName,path):
+	method_map = {
+		'deals': s3_fulldump_deals(client,keyId,sKeyId,bucketName,path),
+		'contacts': s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path),
+		'leads': s3_fulldump_leads(client,keyId,sKeyId,bucketName,path),
+		'users': s3_fulldump_users(client,keyId,sKeyId,bucketName,path),
+		'tags': s3_fulldump_tags(client,keyId,sKeyId,bucketName,path),
+		'orders': s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path),
+		'calls': s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path),
+		'stages': s3_fulldump_stages(client,keyId,sKeyId,bucketName,path),
+		'loss_reasons': s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path),
+		'notes': s3_fulldump_notes(client,keyId,sKeyId,bucketName,path),
+		'pipelines': s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path),
+		'sources': s3_fulldump_sources(client,keyId,sKeyId,bucketName,path),
+		'call_outcomes': s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path)
+	}
+
+	return method_map
+
+
+
+
