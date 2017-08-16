@@ -33,42 +33,42 @@ conDB <-
     dbname = "analytics",
     user = userPoseidon,
     password = passPoseidon
-    )
+  )
 
 requestDB <- 
   dbSendQuery(
     conDB,
-        "SELECT A.message_id, B.conversation_id, A.sender_id,
-        A.country_id, A.platform_id, CONVERT(varchar, A.date) as DateOrigin,
-        A.message_text, B.item_id
-        FROM
-        (
-        SELECT *
-        FROM ods_naspers.ft_h_messages
-        WHERE conversation_id IN
-        (
-        SELECT conversation_id
-        FROM ods_naspers.ft_h_conversations
-        WHERE item_id IN
-        (
-        SELECT item_id
-        FROM ods_naspers.ft_h_listing
-        WHERE country_id IN (32, 170, 218, 604)
-        AND category_l2_id = 378
-        AND device_source_id = 27
-        AND platform_id = 1 AND live_id = 1
-        AND time_id >= '2017-01-01 00:00:00'
-        )
-        )
-        AND country_id IN (32) -- 32 Argentina
-        AND MESSAGE_TEXT != 'este producto ya no se encuentra disponible.'
-        
-        )A
-        INNER JOIN 
-        (SELECT item_id, conversation_id FROM ods_naspers.ft_h_conversations) B
-        ON A.conversation_id=B.conversation_id
-        ;"
-      )
+    "SELECT A.message_id, B.conversation_id, A.sender_id,
+    A.country_id, A.platform_id, CONVERT(varchar, A.date) as DateOrigin,
+    A.message_text, B.item_id
+    FROM
+    (
+    SELECT *
+    FROM ods_naspers.ft_h_messages
+    WHERE conversation_id IN
+    (
+    SELECT conversation_id
+    FROM ods_naspers.ft_h_conversations
+    WHERE item_id IN
+    (
+    SELECT item_id
+    FROM ods_naspers.ft_h_listing
+    WHERE country_id IN (32, 170, 218, 604)
+    AND category_l2_id = 378
+    AND device_source_id = 27
+    AND platform_id = 1 AND live_id = 1
+    AND time_id >= '2017-01-01 00:00:00'
+    )
+    )
+    AND country_id IN (32) -- 32 Argentina
+    AND MESSAGE_TEXT != 'este producto ya no se encuentra disponible.'
+    
+    )A
+    INNER JOIN 
+    (SELECT item_id, conversation_id FROM ods_naspers.ft_h_conversations) B
+    ON A.conversation_id=B.conversation_id
+    ;"
+  )
 
 dfRequestDB <- dbFetch(requestDB)
 dbClearResult(dbListResults(conDB)[[1]])
@@ -110,11 +110,11 @@ conDB <-  dbConnect(RMySQL::MySQL(), username = dbUsername,
 
 sqlCmd <- 
   "SELECT * FROM message A 
-  LEFT JOIN
-    (SELECT id_thread, partner_name FROM message_thread) B
-  ON A.id_thread = B.id_thread
-  WHERE message_date >= '2017-01-01';
-  "
+LEFT JOIN
+(SELECT id_thread, partner_name FROM message_thread) B
+ON A.id_thread = B.id_thread
+WHERE message_date >= '2017-01-01';
+"
 
 dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
 
@@ -127,17 +127,21 @@ df <-
   rawStockarsPoseidonMessages %>%
   mutate(message_id = as.character(message_id)) %>%
   left_join(rawStockarsMessages, by = c("message_id"="external_message_id")) %>%
-  mutate(dateorigin = fastPOSIXct(dateorigin),
-         message_date = fastPOSIXct(message_date),
+  mutate(dateorigin2 = fastPOSIXct(dateorigin, tz = "UTC"),
+         message_date2 = fastPOSIXct(message_date, tz = "UTC"),
+         create_date2 = fastPOSIXct(create_date, tz = "UTC"),
+# ERROR: stockars created and sync datetime are not correct (+ 60 minutes)        
          diffSyncTime = 
-           as.numeric(difftime(sync_date, message_date, units = "mins")),
+           as.numeric(
+             difftime(create_date2, message_date2, tz = "UTC", units = "mins")
+             )-60,
          diffSyncIntervals = 
            cut(diffSyncTime, 
                breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
                dig.lab=10)
   ) %>%
-  filter(dateorigin >= '2017-01-20 00:00:00') %>%
-  arrange(dateorigin)
+  filter(dateorigin2 >= '2017-01-20 00:00:00') %>%
+  arrange(dateorigin2)
 
 dfStats <- 
   df %>% 
@@ -159,8 +163,8 @@ dfStatsSyncTime <-
                                         "10 mins - 1 hour"  = "(10,60]",
                                         "1 hour - 4 hours"  = "(60,240]",
                                         "> 4 hours"         = "(240,Inf]"
-                                        )
-         ) %>%
+         )
+  ) %>%
   group_by(dayorigin, diffSyncIntervals) %>%
   summarise(qtyByCut = sum(!is.na(diffSyncIntervals))) %>%
   mutate(perByCut = qtyByCut / sum(qtyByCut)) %>%
@@ -169,7 +173,7 @@ dfStatsSyncTime <-
   )
 
 ghQuantityMessagesSynced <-
-ggplot(dfStats)+
+  ggplot(dfStats)+
   geom_bar(stat = "identity", 
            aes(dayorigin, qtyMessagesPoseidon), fill="#BEC100")+
   geom_bar(stat = "identity", 
@@ -180,11 +184,14 @@ ggplot(dfStats)+
   scale_x_date(
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
-  ggtitle("OLX/Stockars.AR - Quantity of Messages synced")
+  ggtitle("OLX/Stockars.AR - Quantity of Messages synced") + 
+  geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = -0.1, 
+            family = "Andale Mono", colour="white")
 
 ghSyncingTime <- 
-ggplot(dfStatsSyncTime) + 
-  geom_bar(stat="identity", aes(x=dayorigin, y=perByCut, fill=diffSyncIntervals))+
+  ggplot(dfStatsSyncTime) + 
+  geom_bar(stat="identity", aes(x=dayorigin, y=perByCut, fill=diffSyncIntervals)
+           )+
   scale_x_date(
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   scale_y_continuous(labels = percent)+
@@ -192,7 +199,9 @@ ggplot(dfStatsSyncTime) +
                     guide = guide_legend(title = "Sync Intervals"))+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   theme(legend.position="bottom")+
-  ggtitle("OLX/Stockars.AR - Syncing Time")
+  ggtitle("OLX/Stockars.AR - Syncing Time") + 
+  geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars),
+            vjust = -0.1, family = "Andale Mono")
 
 # align axis and build final graph --------------------------------------------
 
@@ -209,3 +218,5 @@ gB <- ggplot_gtable(gb2)
 
 g <- rbind(gA, gB)
 
+           
+           

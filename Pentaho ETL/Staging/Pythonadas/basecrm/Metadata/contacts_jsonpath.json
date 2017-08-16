@@ -1,5 +1,9 @@
 {
 	"jsonpaths": [
+		"$['country']",
+		"$['category']",
+		"$['meta_event_type']",
+		"$['meta_event_time']",
 		"$['id']",
 		"$['creator_id']",
 		"$['contact_id']",

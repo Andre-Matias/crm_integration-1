@@ -83,20 +83,20 @@ tab_main_users_line_evolution <- fluidRow(
 
 tab_migration <- tabItem(tabName = "migration",row_migration,tab_main_users_line_evolution) 
 
-# #############################################################################
+# ##############################################################################
 
 server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: DAU
   output$dauBox <- renderValueBox({
-        valueBox("814", "DAU",
+        valueBox("945", "DAU",
            icon = icon("user"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: DAU by Source
   output$sourceBox <- renderValueBox({
-    valueBox("814","DAU by Source",
+    valueBox("945","DAU by Source",
              icon = icon("users"),
              color = "blue")
   })
@@ -112,15 +112,15 @@ server_migration <- function(input, output, session) {
 
   # fluid row 1, kpi 4: NNL
   output$nnlBox <- renderValueBox({
-    valueBox("3 451",
+    valueBox("3 088 ",
              "NNL",
              icon = icon("sign-in"),
              color = "maroon")
  })
  
-  #  fluid row 1, kpi 5: Activce Ads 
+  #  fluid row 1, kpi 5: Active Ads 
  output$activeadsBox <- renderValueBox({
- valueBox("612 388",
+ valueBox("623 263",
         "Active Ads",
          icon = icon("building"),
         color = "teal")
@@ -128,7 +128,7 @@ server_migration <- function(input, output, session) {
 
   # fluid row 1, kpi 6: Conversion Rate
   output$conversionBox <- renderValueBox({
-    valueBox("0%","Reply Conversion","(by Ad visits)",
+    valueBox("0.2%","Reply Conversion","(by Ad visits)",
              icon = icon("check-circle"),
              color = "olive")
   })

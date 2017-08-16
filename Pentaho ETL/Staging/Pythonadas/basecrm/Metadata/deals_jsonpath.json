@@ -1,5 +1,9 @@
 {
 	"jsonpaths": [
+		"$['country']",
+		"$['category']",
+		"$['meta_event_type']",
+		"$['meta_event_time']",
 		"$['id']",
 		"$['last_activity_at']",
 		"$['contact_id']",
@@ -8,7 +12,6 @@
 		"$['dropbox_email']",
 		"$['creator_id']",
 		"$['loss_reason_id']",
-		"$['associated_contacts']",
 		"$['currency']",
 		"$['updated_at']",
 		"$['organization_id']",
