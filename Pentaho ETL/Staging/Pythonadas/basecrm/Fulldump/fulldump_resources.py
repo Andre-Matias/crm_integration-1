@@ -674,19 +674,19 @@ def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,
 		'call_outcomes': s3_fulldump_call_outcomes
 	}
 	param_map = {
-		'deals': (client,keyId,sKeyId,bucketName,path),
-		'contacts': (client,keyId,sKeyId,bucketName,path),
-		'leads': (client,keyId,sKeyId,bucketName,path),
-		'users': (client,keyId,sKeyId,bucketName,path),
-		'tags': (client,keyId,sKeyId,bucketName,path),
-		'orders': (access_token_base,keyId,sKeyId,bucketName,path),
-		'calls': (access_token_base,keyId,sKeyId,bucketName,path),
-		'stages': (client,keyId,sKeyId,bucketName,path),
-		'loss_reasons': (client,keyId,sKeyId,bucketName,path),
-		'notes': (client,keyId,sKeyId,bucketName,path),
-		'pipelines': (client,keyId,sKeyId,bucketName,path),
-		'sources': (client,keyId,sKeyId,bucketName,path),
-		'call_outcomes': (access_token_base,keyId,sKeyId,bucketName,path)
+		'deals': [client,keyId,sKeyId,bucketName,path],
+		'contacts': [client,keyId,sKeyId,bucketName,path],
+		'leads': [client,keyId,sKeyId,bucketName,path],
+		'users': [client,keyId,sKeyId,bucketName,path],
+		'tags': [client,keyId,sKeyId,bucketName,path],
+		'orders': [access_token_base,keyId,sKeyId,bucketName,path],
+		'calls': [access_token_base,keyId,sKeyId,bucketName,path],
+		'stages': [client,keyId,sKeyId,bucketName,path],
+		'loss_reasons': [client,keyId,sKeyId,bucketName,path],
+		'notes': [client,keyId,sKeyId,bucketName,path],
+		'pipelines': [client,keyId,sKeyId,bucketName,path],
+		'sources': [client,keyId,sKeyId,bucketName,path],
+		'call_outcomes': [access_token_base,keyId,sKeyId,bucketName,path]
 	}
 	return method_map[resource](param_map[resource])
 
