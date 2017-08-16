@@ -26,10 +26,8 @@ client = basecrm.Client(access_token=access_token_base)
 ##################################################
 # Full dumps
 ##################################################
-method_map = mapping_fulldump_methods(access_token_base,client,keyId,sKeyId,bucketName,path)
-
 for resource in resources:
-	method_map[resource]
+	mapping_fulldump_methods(resource)
 
 
 
