@@ -22,14 +22,19 @@ GROUP BY dia, ad_counted
 ;
 
 
--- replies
+-- replies answers 2
+
 SELECT
 DATE(posted) as dia,
-source,
-COUNT(DISTINCT id)
+CASE 
+	WHEN source= 'none' THEN 'desktop'
+  WHEN source= 'apple' THEN 'ios'
+  ELSE source
+END AS device,
+COUNT(DISTINCT id) as answers
 FROM cars_in.answers
-WHERE posted>=  ' 2017-04-01' AND posted<= ' 2017-08-05'
+WHERE posted>=  ' 2017-04-02' AND posted<= ' 2017-08-05'
 AND spam_status IN ('ok', 'probably_ok')
 AND user_id = seller_id AND buyer_id = sender_id AND parent_id = 0
-GROUP BY dia, source
+GROUP BY dia, device
 ;

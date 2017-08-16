@@ -43,22 +43,26 @@ WHERE created_at_first>=  ' 2017-04-02' AND created_at_first<= ' 2017-08-05'
 GROUP BY dia, ad_counted
 ;"
 
-sql_string_replies<- "
--- replies
+sql_string_replies_answers<- "
+-- replies answers
 SELECT
 DATE(posted) as dia,
-source,
-COUNT(DISTINCT id) as listings
+CASE 
+	WHEN source= 'none' THEN 'desktop'
+  WHEN source= 'apple' THEN 'ios'
+  ELSE source
+END AS device,
+COUNT(DISTINCT id) as answers
 FROM cars_in.answers
 WHERE posted>=  ' 2017-04-02' AND posted<= ' 2017-08-05'
 AND spam_status IN ('ok', 'probably_ok')
 AND user_id = seller_id AND buyer_id = sender_id AND parent_id = 0
-GROUP BY dia, source
+GROUP BY dia, device
 ;"
 
 #extract data
 ads <-dbGetQuery(conDB, sql_string_ads)
-replies <-dbGetQuery(conDB, sql_string_replies)
+replies_answers <-dbGetQuery(conDB, sql_string_replies_answers)
 
 #close connection
 dbDisconnect(conDB)
@@ -112,7 +116,7 @@ grossCmp<- gross%>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(listings=sum(listings)) %>%  # it's grouped by week
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 8 weeks before
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_listings_per_week=mean(listings))
@@ -138,30 +142,14 @@ grossCmp[3,2]/grossCmp[1,2] -1
 #       labs(title = "Weekly Gross Listings - Stradia IN")
 
 
-#REPLIES -------------------------------------
-#will do it only weekly to remove seasonality
-repliesWeekly<- replies%>%
-                  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
-                    ggplot( aes(x=as.Date(week), y=listings)) + geom_bar(stat="identity",fill="#FEC100") +
-                    geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
-                    theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
-                    scale_x_date(date_breaks  ="1 week") +
-                    labs(title = "Weekly Replies - Stradia IN", x = "weeks")
-
-repliesWeeklySource<- replies%>%
-                        mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
-                          ggplot( aes(x=as.Date(week), y=listings)) + geom_bar(stat="identity",fill="#FEC100") +
-                          geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
-                          theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
-                          scale_x_date(date_breaks  ="1 week") +
-                          labs(title = "Weekly Replies by Source - Stradia IN", x = "weeks") +
-                          facet_wrap(~ source)
-
-# align axis and build final graph --
-grid.arrange(repliesWeekly, repliesWeeklySource, nrow=2, ncol=1) 
+ 
 
 
-#Connection to Stradia IN web analytics data -------------------------------------
+
+#VISITS ---------------------------------------------------------------------
+
+
+#Connection to Stradia IN web analytics data -----
 #AT Internet until migration 3 July 
 #Mixpanel after migration from 4 July
 #data extracted as .csv
@@ -193,11 +181,11 @@ visits<- rbind(at_visits, mp_visits)
 visits<- mutate(visits, dia=as.Date(dia,format = "%d/%m/%Y"))
 
 
-#VISITS ------------------------------------------------------------
+#Analyse visits-----
 
 visitsWeekly<- visits%>%
                 mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
-                    ggplot( aes(x=as.Date(week), y=visits)) + geom_bar(stat="identity",fill="#c2c502") +
+                    ggplot( aes(x=as.Date(week), y=visits)) + geom_bar(stat="identity",fill="#ECC61F") +
                     geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
                     theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                     scale_x_date(date_breaks  ="1 week") +
@@ -205,16 +193,17 @@ visitsWeekly<- visits%>%
 
 visitsWeeklyDevice<- visits%>%
                       mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
-                        ggplot( aes(x=as.Date(week), y=visits)) + geom_bar(stat="identity",fill="#c2c502") +
+                        ggplot( aes(x=as.Date(week), y=visits)) + geom_bar(stat="identity",fill="#ECC61F") +
                         geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
                         theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                         scale_x_date(date_breaks  ="1 week") +
                         labs(title = "Weekly Visits by Device - Stradia IN", x = "weeks") +
                         facet_wrap(~ device,nrow = 1)
 
-# align axis and build final graph -----------
-grid.arrange(visitsWeekly, visitsWeeklyDevice, nrow=2, ncol=1) 
-
+# # align axis and build final graph
+# grid.arrange(visitsWeekly, visitsWeeklyDevice, nrow=2, ncol=1) 
+plot(visitsWeekly)
+plot(visitsWeeklyDevice)
 
 #compare 4 weeks before the merge vs 4 weeks after
 #and calculate visits per week for the two periods 
@@ -225,23 +214,23 @@ visitsCmp<- visits%>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(visits=sum(visits)) %>%  # it's grouped by week
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 8 weeks before
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
 
-# In the 4 weeks that followed the merge, the average gross listings per week dropped 
+# In the 4 weeks that followed the merge, the average visits per week dropped 
 # by 24% compared with the 4 weeks prior to the merge. 
 visitsCmp[3,2]/visitsCmp[1,2] -1
 
 ##desktop
 visitsCmpDkt<- visits%>%
-  filter(device =="desktop") %>%
+  filter(device =="desktop") %>% #filter only desktop
   mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(visits=sum(visits)) %>%  # it's grouped by week and device
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 8 weeks before
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
@@ -251,12 +240,12 @@ visitsCmpDkt[3,2]/visitsCmpDkt[1,2] -1
 
 ##rwd
 visitsCmpRwd<- visits%>%
-  filter(device =="rwd") %>%
+  filter(device =="rwd") %>%  #filter rwd
   mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(visits=sum(visits)) %>%  # it's grouped by week and device
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 8 weeks before
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
@@ -266,12 +255,12 @@ visitsCmpRwd[3,2]/visitsCmpRwd[1,2] -1
 
 ##ios
 visitsCmpIos<- visits%>%
-  filter(device =="ios") %>%
+  filter(device =="ios") %>%  #filter ios
   mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(visits=sum(visits)) %>%  # it's grouped by week and device
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 8 weeks before
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
@@ -279,7 +268,10 @@ visitsCmpIos<- visits%>%
 # rwd was +30%
 visitsCmpIos[3,2]/visitsCmpIos[1,2] -1
 
+
+
 #AD PAGE VIEWS --------------------------------------------------------
+
 
 #read each AT file
 vec3<-c("at_adpage_desktop.csv","at_adpage_desktop_not_desktop.csv","at_adpage_android.csv","at_adpage_ios.csv")
@@ -320,8 +312,227 @@ adpageWeeklyDevice<- adpage%>%
                         theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
                         scale_x_date(date_breaks  ="1 week") +
                         labs(title = "Weekly Ad Page Views by Device - Stradia IN", x = "weeks") +
-                        facet_wrap(~device)
+                        facet_wrap(~device, nrow = 1)
 
 # align axis and build final graph -----------
 grid.arrange(adpageWeekly, adpageWeeklyDevice, nrow=2, ncol=1) 
 
+plot(adpageWeekly)
+plot(adpageWeeklyDevice)
+
+#join visits with ad page views to calculate adpage_per_visit later
+join_df<- left_join(visits,adpage, by=c("dia","device"))
+
+
+#compare 4 weeks before the merge vs 4 weeks after
+#and calculate adpage per week for the two periods 
+
+##total  
+adpageCmp<- join_df%>%
+  mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(loads=sum(loads)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_loads_per_week=mean(loads))
+
+# In the 4 weeks that followed the merge, the average loads per week increased 
+# by 16% compared with the 4 weeks prior to the merge. 
+adpageCmp[3,2]/adpageCmp[1,2] -1
+
+##total excluding android which is not working  
+adpageCmp<- join_df%>%
+  filter(device !="android") %>%  
+  mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(loads=sum(loads)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_loads_per_week=mean(loads))
+
+# In the 4 weeks that followed the merge, the average loads per week increased 
+# by 16% compared with the 4 weeks prior to the merge. 
+adpageCmp[3,2]/adpageCmp[1,2] -1
+
+##desktop
+adpageCmpDkt<- join_df%>%
+  filter(device =="desktop") %>%  #filter desktop
+  mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(loads=sum(loads)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_loads_per_week=mean(loads))
+
+# desktop +50%
+adpageCmpDkt[3,2]/adpageCmpDkt[1,2] -1
+
+##rwd
+adpageCmpRwd<- join_df%>%
+  filter(device =="rwd") %>%  #filter rwd
+  mutate(week=cut(dia,breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(loads=sum(loads)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_loads_per_week=mean(loads))
+
+# rwd +256%
+adpageCmpRwd[3,2]/adpageCmpRwd[1,2] -1
+
+##now calculate and analyse ad_page_per_visit
+##even if we already know that should have increased overall
+##since visits did not increased that much at least for desktops and rwd
+join_df$adpage_per_visit<- join_df$loads/join_df$visits
+
+adpage_per_visit_WeeklyDevice<- join_df%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%       
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate,device) %>%
+  summarize(loads=sum(loads), visits=sum(visits)) %>%
+  mutate(adpage_per_visit=loads/visits) %>%
+  filter(device !="android")
+
+
+#adpage_per_visit for rwd and desktop almost doubled after the merge.
+ggplot(data=adpage_per_visit_WeeklyDevice, aes(x=weekDate, y=adpage_per_visit)) + 
+    geom_bar(stat="identity",fill="#328366") +
+    geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(hjust = 0.5)) +
+    scale_x_date(date_breaks  ="1 week") +
+    labs(title = "Weekly Ad Page Views per Visit by Device - Stradia IN", x = "weeks") +
+      facet_wrap(~device, nrow = 1)
+
+
+#REPLIES ANSWERS -----------------------------------------------
+
+
+#will do it only weekly to remove seasonality
+ansWeekly<- replies_answers%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+  ggplot( aes(x=as.Date(week), y=answers)) + geom_bar(stat="identity",fill="#FEC100") +
+  geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
+  scale_x_date(date_breaks  ="1 week") +
+  labs(title = "Weekly Answers - Stradia IN", x = "weeks")
+
+ansWeeklySource<- replies_answers%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+  ggplot( aes(x=as.Date(week), y=answers)) + geom_bar(stat="identity",fill="#FEC100") +
+  geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
+  scale_x_date(date_breaks  ="1 week") +
+  labs(title = "Weekly Answers by Device - Stradia IN", x = "weeks") +
+  facet_wrap(~ device, nrow=1)
+
+# # align axis and build final graph --
+# grid.arrange(ansWeekly, ansWeeklySource, nrow=2, ncol=1)
+plot(ansWeekly)
+plot(ansWeeklySource)
+
+#compare 4 weeks before the merge vs 4 weeks after
+
+##total  
+ansCmp<- replies_answers%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(answers=sum(answers)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_answers_per_week=mean(answers))
+
+# In the 4 weeks that followed the merge, the average weekly answers increased 
+# by 192% compared with the 4 weeks prior to the merge. 
+ansCmp[3,2]/ansCmp[1,2] -1
+
+
+##rwd
+ansCmpRwd<- replies_answers%>%
+  filter(device =="rwd") %>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(answers=sum(answers)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_answers_per_week=mean(answers))
+
+# rwd +437% 
+ansCmpRwd[3,2]/ansCmpRwd[1,2] -1
+
+
+##desktop
+ansCmpDsk<- replies_answers%>%
+  filter(device =="desktop") %>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(answers=sum(answers)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_answers_per_week=mean(answers))
+
+# desktop + 64%
+ansCmpDsk[3,2]/ansCmpDsk[1,2] -1
+
+
+
+#REPLIES SHOW PHONE NUMBER -----------------------------------------------
+#will only do it for desktop and responsive
+#c+because in the apps there is no "showing phone" event tracked, only clicks to call butoon
+
+#read AT files
+at_show_phone_dkt<- read.csv("./data/at_showing_phone_desktop.csv",sep = ";") %>%
+                    mutate(device="desktop")
+at_show_phone_rwd<- read.csv("./data/at_showing_phone_desktop_not_desktop.csv",sep = ";") %>%
+                    mutate(device="rwd")
+at_show_phone<- rbind(at_show_phone_dkt,at_show_phone_rwd) %>%
+                select(-Action.type) 
+names(at_show_phone)<- c("dia","show_phone","device")
+
+#read MP file
+mp_show_phone<- read.csv("./data/mixpanel_showing_phone.csv",sep = ",")
+names(mp_show_phone)<-c("dia","rwd","ios","android","desktop")
+
+#Convert from wide to long format like AT file
+mp_show_phone_l<-gather(mp_show_phone,device, show_phone, rwd:desktop, factor_key = T )
+
+#rbind before and after periods
+at_show_phone$dia<- as.Date(at_show_phone$dia,format = "%d/%m/%Y")
+show_phone<- rbind(at_show_phone, mp_show_phone_l) %>%
+                filter(device %in% c("desktop","rwd"))  #remove apps since I dont need to compare it  
+
+############continue........
+
+#will do it only weekly to remove seasonality
+phnWeekly<- show_phone%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+  ggplot( aes(x=as.Date(week), y=show_phone)) + geom_bar(stat="identity",fill="#CAB03D") +
+  geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5)) +
+  scale_x_date(date_breaks  ="1 week") +
+  labs(title = "Weekly Show Phone - Stradia IN", x = "weeks", subtitle="only desktop+rwd")
+
+phnWeeklySource<- show_phone%>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
+  ggplot( aes(x=as.Date(week), y=show_phone)) + geom_bar(stat="identity",fill="#CAB03D") +
+  geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
+  scale_x_date(date_breaks  ="1 week") +
+  labs(title = "Weekly Show Phone by Device - Stradia IN", x = "weeks") +
+  facet_wrap(~ device, nrow=1)
+
+plot(phnWeekly)
+plot(phnWeeklySource)
