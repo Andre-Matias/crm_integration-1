@@ -658,18 +658,18 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path):
 
  
 def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client):
-	if 'deals' == resource: s3_fulldump_deals(client,keyId,sKeyId,bucketName,path),
-	if 'contacts' == resource: s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path),
-	if 'leads' == resource: s3_fulldump_leads(client,keyId,sKeyId,bucketName,path),
-	if 'users' == resource: s3_fulldump_users(client,keyId,sKeyId,bucketName,path),
-	if 'tags' == resource: s3_fulldump_tags(client,keyId,sKeyId,bucketName,path),
-	if 'orders' == resource: s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path),
-	if 'calls' == resource: s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path),
-	if 'stages' == resource: s3_fulldump_stages(client,keyId,sKeyId,bucketName,path),
-	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path),
-	if 'notes' == resource: s3_fulldump_notes(client,keyId,sKeyId,bucketName,path),
-	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path),
-	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path),
+	if 'deals' == resource: s3_fulldump_deals(client,keyId,sKeyId,bucketName,path)
+	if 'contacts' == resource: s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path)
+	if 'leads' == resource: s3_fulldump_leads(client,keyId,sKeyId,bucketName,path)
+	if 'users' == resource: s3_fulldump_users(client,keyId,sKeyId,bucketName,path)
+	if 'tags' == resource: s3_fulldump_tags(client,keyId,sKeyId,bucketName,path)
+	if 'orders' == resource: s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path)
+	if 'calls' == resource: s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path)
+	if 'stages' == resource: s3_fulldump_stages(client,keyId,sKeyId,bucketName,path)
+	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path)
+	if 'notes' == resource: s3_fulldump_notes(client,keyId,sKeyId,bucketName,path)
+	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path)
+	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path)
 	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path)
 
 
