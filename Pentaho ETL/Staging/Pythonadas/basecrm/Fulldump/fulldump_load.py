@@ -16,8 +16,9 @@ bucketName = temp[7]
 path_fulldump = temp[9]
 manifest = temp[11]
 schema = temp[13]
-platform = temp[15]
-resources = temp[17].split(',')
+category = temp[15]
+country = temp[17]
+resources = temp[19].split(',')
 file.close()
 
 ##################################################
@@ -27,7 +28,8 @@ file.close()
 truncateResourceTables(chandra_conf_file,
 	schema,
 	resources,
-	platform,
+	category,
+	country,
 	'')
 
 ##################################################
@@ -36,7 +38,8 @@ truncateResourceTables(chandra_conf_file,
 ##################################################
 loadFromS3toRedshift(chandra_conf_file, 
 	schema,
-	platform,
+	category,
+	country,
 	bucketName,
 	path_fulldump,
 	fulldump_date,

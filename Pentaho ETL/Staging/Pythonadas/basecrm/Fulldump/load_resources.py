@@ -35,7 +35,7 @@ def getS3Keys(conf_file):
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
 	% {'key': temp[11],'skey': temp[13]}
 
-def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifest_path,resources,prefix):
+def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
 	conn = getChandraConnection(conf_file)
 	credentials = getS3Keys(conf_file)
 
@@ -46,10 +46,11 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifes
 		cur.execute(
 			getCopySql(
 				schema, \
-				'%(prefix)sstg_d_base_%(resource)s_%(platform)s' \
+				'%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s' \
 					% {
 					'resource':resource,
-					'platform':platform,
+					'category':category,
+					'country':country,
 					 'prefix': prefix},
 				's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
 					% {
@@ -73,15 +74,16 @@ def loadFromS3toRedshift(conf_file,schema,platform,bucket,data_path,date,manifes
 	cur.close()
 	conn.close()
 
-def truncateResourceTables(conf_file,schema,resources,platform,prefix):
+def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
 
 	for resource in resources:
-		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(platform)s" \
+		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s" \
 			% {
 			'resource':resource,
-			'platform':platform,
+			'category':category,
+			'country':country,
 			'prefix': prefix,
 			'schema': schema
 			}
