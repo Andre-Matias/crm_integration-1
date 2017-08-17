@@ -1,9 +1,9 @@
 {
 	"jsonpaths": [
-		"$'data']['country']",
-		"$'data']['category']",
-		"$'data']['meta_event_type']",
-		"$'data']['meta_event_time']",
+		"$['data']['country']",
+		"$['data']['category']",
+		"$['data']['meta_event_type']",
+		"$['data']['meta_event_time']",
 		"$['data']['id']",
 		"$['data']['name']",
 		"$['data']['creator_id']",

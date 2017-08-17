@@ -93,3 +93,29 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	#Close connection
 	cur.close()
 	conn.close()
+
+
+def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,country,prefix):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	for resource in resources:
+		cur.execute("DELETE FROM TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
+			"WHERE base_account_country = '%(country)s'" \
+			"AND base_account_category = '%(category)s'"  
+			% {
+			'resource':resource,
+			'category':category,
+			'country':country,
+			'prefix': prefix,
+			'schema': schema,
+			'country':country,
+			'category':category
+			}
+		)
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()	
+

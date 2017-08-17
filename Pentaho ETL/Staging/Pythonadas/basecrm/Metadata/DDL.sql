@@ -12,20 +12,20 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts"
 	,"created_at" DATE   ENCODE lzo
 	,"updated_at" DATE   ENCODE delta
 	,"title" VARCHAR(100)   ENCODE lzo
-	,"name" VARCHAR(100)   ENCODE lzo
+	,"name" VARCHAR(500)   ENCODE lzo
 	,"first_name" VARCHAR(100)   ENCODE lzo
 	,"last_name" VARCHAR(100)   ENCODE lzo
-	,"description" VARCHAR(100)   ENCODE lzo
+	,"description" VARCHAR(1000)   ENCODE lzo
 	,"industry" VARCHAR(100)   ENCODE lzo
 	,"website" VARCHAR(1000)   ENCODE lzo
-	,"email" VARCHAR(100)   ENCODE lzo
+	,"email" VARCHAR(500)   ENCODE lzo
 	,"phone" VARCHAR(100)   ENCODE lzo
 	,"mobile" VARCHAR(100)   ENCODE lzo
 	,"fax" VARCHAR(100)   ENCODE lzo
 	,"twitter" VARCHAR(100)   ENCODE lzo
 	,"facebook" VARCHAR(100)   ENCODE lzo
 	,"linkedin" VARCHAR(100)   ENCODE lzo
-	,"skype" VARCHAR(100)   ENCODE lzo
+	,"skype" VARCHAR(200)   ENCODE lzo
 	,"owner_id" VARCHAR(100)   ENCODE lzo
 	,"is_organization" boolean
 	,"address" VARCHAR(1000)   ENCODE lzo

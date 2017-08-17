@@ -25,7 +25,7 @@ file.close()
 # prefix parameter should be 'sync_' or ''
 # Truncate tables before loading the fulldumps
 ##################################################
-truncateResourceTables(chandra_conf_file,
+deleteCategoryCountryDataFromTables(chandra_conf_file,
 	schema,
 	resources,
 	category,
