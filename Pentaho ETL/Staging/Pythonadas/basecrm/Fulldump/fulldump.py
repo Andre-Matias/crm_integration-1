@@ -8,17 +8,16 @@ conf_file = sys.argv[1]
 ##################################################
 #Get access token and keys
 ##################################################
-file = open(conf_file, "r") 
-temp = file.read().splitlines()
-access_token_base = temp[1]
-keyId = temp[3]
-sKeyId = temp[5]
-bucketName = temp[7]
-path = temp[9]
-category = temp[15]
-country = temp[17]
-resources = temp[19].split(',')
-file.close()
+data = json.load(open(conf_file))
+
+access_token_base = data['base_token']
+keyId = data['s3_key']
+sKeyId = data['s3_skey']
+bucketName = data['bucket_name']
+path = data['s3_data_path']
+category = data['category']
+country = data['country']
+resources = data['resources'].split(',')
 
 ##################################################
 #Configure Base API client

@@ -20,20 +20,13 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 	}
 
 def getChandraConnection(conf_file):
-	file = open(conf_file, "r") 
-	temp = file.read().splitlines()
-	dbname = temp[1]
-	host = temp[3]
-	port = temp[5]
-	user = temp[7]
-	password = temp[9]
-	return psycopg2.connect(dbname=dbname, host=host, port=port, user=user, password=password)
+	data = json.load(open(conf_file))
+	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 	
 def getS3Keys(conf_file):
-	file = open(conf_file, "r") 
-	temp = file.read().splitlines()
+	data = json.load(open(conf_file))
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
-	% {'key': temp[11],'skey': temp[13]}
+	% {'key': data['s3_key'],'skey': data['s3_skey']}
 
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
 	conn = getChandraConnection(conf_file)

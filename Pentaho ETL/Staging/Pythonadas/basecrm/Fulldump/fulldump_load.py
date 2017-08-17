@@ -10,16 +10,15 @@ fulldump_date = sys.argv[3]
 ##################################################
 # Read conf_file
 ##################################################
-file = open(conf_file, "r") 
-temp = file.read().splitlines()
-bucketName = temp[7]
-path_fulldump = temp[9]
-manifest = temp[11]
-schema = temp[13]
-category = temp[15]
-country = temp[17]
-resources = temp[19].split(',')
-file.close()
+data = json.load(open(conf_file))
+
+bucketName = data['bucket_name']
+path_fulldump = data['s3_data_path']
+manifest = data['s3_manifest_path']
+schema = data['redshift_schema']
+category = data['category']
+country = data['country']
+resources = data['resources']
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
