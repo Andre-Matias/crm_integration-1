@@ -101,8 +101,8 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 
 	for resource in resources:
 		cur.execute("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
-			"WHERE base_account_country = '%(country)s'" \
-			"AND base_account_category = '%(category)s'"  
+			" WHERE base_account_country = '%(country)s'" \
+			" AND base_account_category = '%(category)s'"  
 			% {
 			'resource':resource,
 			'category':category,
