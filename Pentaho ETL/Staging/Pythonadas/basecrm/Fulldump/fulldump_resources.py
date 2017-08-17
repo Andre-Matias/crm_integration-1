@@ -779,7 +779,7 @@ def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,
 	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category)
 	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category)
 	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path,country,category)
-
+	if 'tasks' == resource: s3_fulldump_tasks(access_token_base,keyId,sKeyId,bucketName,path,country,category)
 
 
 
