@@ -46,7 +46,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 		cur.execute(
 			getCopySql(
 				schema, \
-				'%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s' \
+				'%(prefix)sstg_d_base_%(resource)s' \
 					% {
 					'resource':resource,
 					'category':category,
@@ -79,7 +79,7 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	cur = conn.cursor()
 
 	for resource in resources:
-		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s" \
+		cur.execute("TRUNCATE TABLE %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
 			% {
 			'resource':resource,
 			'category':category,
