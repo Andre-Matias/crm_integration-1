@@ -268,3 +268,29 @@ DISTSTYLE ALL
 SORTKEY ("id","meta_event_time")
 ;
 
+
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_tasks"
+(
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER NOT NULL  ENCODE lzo
+	,"creator_id" INTEGER   ENCODE lzo
+	,"owner_id" INTEGER ENCODE lzo
+	,"resource_type" VARCHAR(100)
+	,"resource_id" INTEGER ENCODE lzo
+	,"completed" BOOLEAN
+	,"completed_at" TIMESTAMP ENCODE lzo
+	,"due_date" TIMESTAMP ENCODE lzo
+	,"overdue" BOOLEAN
+	,"remind_at" TIMESTAMP ENCODE lzo
+	,"content" VARCHAR(1000) ENCODE lzo
+	,"created_at" TIMESTAMP   ENCODE lzo
+	,"updated_at" TIMESTAMP   ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY ("id")
+SORTKEY ("meta_event_time","created_at", "owner_id")
+;
+
