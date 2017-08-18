@@ -338,7 +338,7 @@ def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
 
 		fileName="tasks_" + str(aux).zfill(10) + ".txt.gz"
 
-		full_key_name = os.path.join(path+"stages/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		full_key_name = os.path.join(path+"tasks/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
