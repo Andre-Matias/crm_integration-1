@@ -302,6 +302,58 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 		#Next page iterate
 		aux += 1		
 
+
+
+def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
+	
+	print("Getting tasks data")
+	#Iterate for everypage returned by the API
+	aux = 1
+	name = "/home/ubuntu/Reports/tasks_"
+	while 1:
+		
+		data = client.tasks.list(page = aux, per_page = 100)
+
+		if len(data) > 0: empty = False
+		else:
+			print("Uploaded #" + str(aux) + " files to S3") 
+			return 1
+
+		#Write on local gz file
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+
+		#Iterate the list of deals
+		for stage_data in data:
+			stage_data['meta_event_type'] = 'created'
+			stage_data['meta_event_time'] = datetime.now().isoformat()
+			stage_data['country'] = country
+			stage_data['category'] = category
+			output.write(json.dumps(stage_data,use_decimal=True)+"\n")
+
+		#Close gz file		
+		output.close()
+
+		#Upload file to S3
+		localName = name + str(aux).zfill(10) + ".txt.gz"
+
+		fileName="tasks_" + str(aux).zfill(10) + ".txt.gz"
+
+		full_key_name = os.path.join(path+"tasks/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
+		conn = boto.connect_s3(keyId,sKeyId)
+		bucket = conn.get_bucket(bucketName)
+		k = bucket.new_key(full_key_name)
+		k.key=full_key_name
+
+		k.set_contents_from_filename(localName)
+		
+		#Remove local gz file
+		os.remove(localName)
+		
+		#Next page iterate
+		aux += 1
+
+
+
 def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting notes data")
@@ -727,7 +779,7 @@ def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,
 	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category)
 	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category)
 	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path,country,category)
-
+	if 'tasks' == resource: s3_fulldump_tasks(access_token_base,keyId,sKeyId,bucketName,path,country,category)
 
 
 

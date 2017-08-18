@@ -1,5 +1,6 @@
 from load_resources import *
 import sys
+import simplejson as json
 
 conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
@@ -10,22 +11,21 @@ fulldump_date = sys.argv[3]
 ##################################################
 # Read conf_file
 ##################################################
-file = open(conf_file, "r") 
-temp = file.read().splitlines()
-bucketName = temp[7]
-path_fulldump = temp[9]
-manifest = temp[11]
-schema = temp[13]
-category = temp[15]
-country = temp[17]
-resources = temp[19].split(',')
-file.close()
+data = json.load(open(conf_file))
+
+bucketName = data['bucket_name']
+path_fulldump = data['s3_data_path']
+manifest = data['s3_manifest_path']
+schema = data['redshift_schema']
+category = data['category']
+country = data['country']
+resources = data['resources'].split(',')
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
 # Truncate tables before loading the fulldumps
 ##################################################
-truncateResourceTables(chandra_conf_file,
+deleteCategoryCountryDataFromTables(chandra_conf_file,
 	schema,
 	resources,
 	category,
