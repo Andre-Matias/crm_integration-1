@@ -73,6 +73,9 @@ head(ads)
 
 
 #GROSS ADS -------------------------------------------------
+
+#Analyse gross ads -----
+
 gross<- ads%>%
             filter(ad_counted %in% c(0,1))%>%   # 0 or 1
             mutate(day=as.Date(dia))%>%
@@ -95,7 +98,7 @@ grossWeekly<- gross%>%
                 scale_x_date(date_breaks  ="1 week") +
                 labs(title = "Weekly Gross Listings - Stradia IN", x = "weeks")
  
-# align axis and build final graph -----------
+# align axis and build final graph
 gb1 <- ggplot_build(grossDaily)
 gb2 <- ggplot_build(grossWeekly)
 
@@ -146,7 +149,7 @@ grossCmp[3,2]/grossCmp[1,2] -1
 
 
 
-#VISITS ---------------------------------------------------------------------
+# VISITS ---------------------------------------------------------------------
 
 
 #Connection to Stradia IN web analytics data -----
@@ -265,13 +268,17 @@ visitsCmpIos<- visits%>%
   group_by(WeekN) %>%
   summarize(avg_visits_per_week=mean(visits))
 
-# rwd was +30%
+# ios was +50%
 visitsCmpIos[3,2]/visitsCmpIos[1,2] -1
 
 
 
-#AD PAGE VIEWS --------------------------------------------------------
+# AD PAGE VIEWS --------------------------------------------------------
 
+#Connection to Stradia IN web analytics data -----
+#AT Internet until migration 3 July 
+#Mixpanel after migration from 4 July
+#data extracted as .csv
 
 #read each AT file
 vec3<-c("at_adpage_desktop.csv","at_adpage_desktop_not_desktop.csv","at_adpage_android.csv","at_adpage_ios.csv")
@@ -296,6 +303,8 @@ names(mp_adpage_l)<- c("dia","device","loads")
 at_adpage$dia<- as.Date(at_adpage$dia,format = "%d/%m/%Y")
 adpage<- rbind(at_adpage, mp_adpage_l)
 
+#Analyse ad page views -----
+
 #Plot!
 adpageWeekly<- adpage%>%
                 mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
@@ -314,8 +323,8 @@ adpageWeeklyDevice<- adpage%>%
                         labs(title = "Weekly Ad Page Views by Device - Stradia IN", x = "weeks") +
                         facet_wrap(~device, nrow = 1)
 
-# align axis and build final graph -----------
-grid.arrange(adpageWeekly, adpageWeeklyDevice, nrow=2, ncol=1) 
+# # align axis and build final graph
+# grid.arrange(adpageWeekly, adpageWeeklyDevice, nrow=2, ncol=1) 
 
 plot(adpageWeekly)
 plot(adpageWeeklyDevice)
@@ -412,10 +421,10 @@ ggplot(data=adpage_per_visit_WeeklyDevice, aes(x=weekDate, y=adpage_per_visit)) 
       facet_wrap(~device, nrow = 1)
 
 
-#REPLIES ANSWERS -----------------------------------------------
+# REPLIES ANSWERS -----------------------------------------------
 
+#Analyse answers -----
 
-#will do it only weekly to remove seasonality
 ansWeekly<- replies_answers%>%
   mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
   ggplot( aes(x=as.Date(week), y=answers)) + geom_bar(stat="identity",fill="#FEC100") +
@@ -489,9 +498,14 @@ ansCmpDsk[3,2]/ansCmpDsk[1,2] -1
 
 
 
-#REPLIES SHOW PHONE NUMBER -----------------------------------------------
-#will only do it for desktop and responsive
-#c+because in the apps there is no "showing phone" event tracked, only clicks to call butoon
+# REPLIES SHOW PHONE NUMBER -----------------------------------------------
+# will only do it for desktop and responsive
+# because in the apps there is no "showing phone" event tracked, only clicks to call butoon
+
+#Connection to Stradia IN web analytics data -----
+#AT Internet until migration 3 July 
+#Mixpanel after migration from 4 July
+#data extracted as .csv
 
 #read AT files
 at_show_phone_dkt<- read.csv("./data/at_showing_phone_desktop.csv",sep = ";") %>%
@@ -514,9 +528,8 @@ at_show_phone$dia<- as.Date(at_show_phone$dia,format = "%d/%m/%Y")
 show_phone<- rbind(at_show_phone, mp_show_phone_l) %>%
                 filter(device %in% c("desktop","rwd"))  #remove apps since I dont need to compare it  
 
-############continue........
+# Analyse show phone -----
 
-#will do it only weekly to remove seasonality
 phnWeekly<- show_phone%>%
   mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
   ggplot( aes(x=as.Date(week), y=show_phone)) + geom_bar(stat="identity",fill="#CAB03D") +
@@ -536,3 +549,33 @@ phnWeeklySource<- show_phone%>%
 
 plot(phnWeekly)
 plot(phnWeeklySource)
+
+##rwd
+phnCmpRwd<- show_phone%>%
+  filter(device =="rwd") %>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(show_phone=sum(show_phone)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_show_phone_per_week=mean(show_phone))
+
+# rwd
+phnCmpRwd[3,2]/phnCmpRwd[1,2] -1
+
+##desktop
+phnCmpDsk<- show_phone%>%
+  filter(device =="desktop") %>%
+  mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%
+  mutate(weekDate=as.Date(as.character(week))) %>%
+  group_by(weekDate) %>%
+  summarize(show_phone=sum(show_phone)) %>%  # it's grouped by week
+  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
+  group_by(WeekN) %>%
+  summarize(avg_show_phone_per_week=mean(show_phone))
+
+# desktop + 255%
+phnCmpDsk[3,2]/phnCmpDsk[1,2] -1
