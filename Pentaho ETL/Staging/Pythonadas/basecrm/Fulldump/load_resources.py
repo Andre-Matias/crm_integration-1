@@ -2,6 +2,7 @@ import psycopg2
 import numpy as np
 import time
 import datetime
+import simplejson as json
 
 def getCopySql(schema, table, bucket, manifest, credentials):
     return "COPY %(schema)s.%(table)s\n" \
