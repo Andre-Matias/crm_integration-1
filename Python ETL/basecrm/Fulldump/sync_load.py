@@ -13,7 +13,7 @@ fulldump_date = sys.argv[3]
 data = json.load(open(conf_file))
 
 bucketName = data['bucket_name']
-path_fulldump = data['s3_data_path']
+path_fulldump = data['s3_data_path_sync']
 manifest = data['s3_manifest_path']
 schema = data['redshift_schema']
 category = data['category']

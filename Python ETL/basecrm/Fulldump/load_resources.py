@@ -35,33 +35,61 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 
 	cur = conn.cursor()
 
-	for resource in resources:
-		print(resource)
-		cur.execute(
-			getCopySql(
-				schema, \
-				'%(prefix)sstg_d_base_%(resource)s' \
-					% {
-					'resource':resource,
-					'category':category,
-					'country':country,
-					 'prefix': prefix},
-				's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
-					% {
-					'resource':resource,
-					'bucket':bucket,
-					'date': date,
-					'data_path':data_path},
-				's3://%(bucket)s%(manifest_path)s%(prefix)s%(resource)s_jsonpath.json' \
-					% {
-					'prefix': prefix,
-					'resource':resource,
-					'bucket':bucket,
-					'manifest_path':manifest_path
-					}, 
-				credentials
+	if prefix == '':
+		for resource in resources:
+			print(resource)
+			cur.execute(
+				getCopySql(
+					schema, \
+					'%(prefix)sstg_d_base_%(resource)s' \
+						% {
+						'resource':resource,
+						 'prefix': prefix},
+					's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
+						% {
+						'resource':resource,
+						'bucket':bucket,
+						'date': date,
+						'data_path':data_path},
+					's3://%(bucket)s%(manifest_path)s%(prefix)s%(resource)s_jsonpath.json' \
+						% {
+						'prefix': prefix,
+						'resource':resource,
+						'bucket':bucket,
+						'manifest_path':manifest_path
+						}, 
+					credentials
+				)
 			)
-		)
+	if prefix == 'sync_'
+		for resource in resources:
+			print(resource)
+			cur.execute(
+				getCopySql(
+					schema, \
+					'%(prefix)sstg_d_base_%(resource)s_%(category)s_%(country)s' \
+						% {
+						'resource':resource,
+						'category':category,
+						'country':country,
+						 'prefix': prefix},
+					's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
+						% {
+						'resource':resource,
+						'bucket':bucket,
+						'date': date,
+						'data_path':data_path},
+					's3://%(bucket)s%(manifest_path)s%(prefix)s%(resource)s_jsonpath.json' \
+						% {
+						'prefix': prefix,
+						'resource':resource,
+						'bucket':bucket,
+						'manifest_path':manifest_path
+						}, 
+					credentials
+				)
+			)
+
 	conn.commit()
 
 	#Close connection
