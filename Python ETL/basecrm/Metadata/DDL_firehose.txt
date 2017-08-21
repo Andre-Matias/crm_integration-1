@@ -1,0 +1,251 @@
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_deals_re_latam
+(
+
+	  owner_id INT   ENCODE lzo
+    ,created_at TIMESTAMP   ENCODE lzo
+    ,hot boolean
+	  ,contact_id INT   ENCODE lzo
+    ,estimated_close_date DATE   ENCODE delta
+	  , customized_win_likelihood INT   ENCODE lzo
+	  ,last_stage_change_by_id INT   ENCODE lzo
+    ,last_stage_change_at TIMESTAMP   ENCODE delta
+	  ,currency VARCHAR(10)   ENCODE lzo
+    ,id INT  ENCODE lzo
+	  ,value DOUBLE PRECISION   ENCODE bytedict
+    ,loss_reason_id INT   ENCODE lzo
+    ,stage_id INT   ENCODE lzo
+	  ,dropbox_email VARCHAR(100)   ENCODE lzo
+    ,tags VARCHAR(600)   ENCODE lzo
+	  ,custom_field_values VARCHAR(8000)   ENCODE lzo
+	  ,organization_id INT   ENCODE lzo
+    ,name VARCHAR(1000)   ENCODE lzo
+	  ,creator_id INT   ENCODE lzo
+	  ,source_id INT   ENCODE lzo
+			,  meta_event_cause VARCHAR(200)   ENCODE lzo
+	    ,  meta_sequence INT  ENCODE lzo
+	    ,  meta_event_id VARCHAR(200)   ENCODE lzo
+	    ,  meta_event_type VARCHAR(200)   ENCODE lzo
+	    ,  meta_previous VARCHAR(1000)   ENCODE lzo
+      ,  meta_type VARCHAR(200)   ENCODE lzo
+      ,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE KEY
+DISTKEY (id)
+SORTKEY (id);
+
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_contacts_re_latam
+(
+	    owner_id VARCHAR(1000)   ENCODE lzo
+	    ,description VARCHAR(1000)   ENCODE lzo
+      ,created_at DATE   ENCODE lzo
+      ,industry VARCHAR(1000)   ENCODE lzo
+		  ,billing_address VARCHAR(1000)   ENCODE lzo
+	    ,linkedin VARCHAR(1000)   ENCODE lzo
+	    ,title VARCHAR(1000)   ENCODE lzo
+	    ,contact_id INTEGER   ENCODE lzo
+      ,skype VARCHAR(1000)   ENCODE lzo
+      ,twitter VARCHAR(1000)   ENCODE lzo
+	    ,shipping_address VARCHAR(1000)   ENCODE lzo
+      ,id INTEGER NOT NULL  ENCODE lzo
+	    ,fax VARCHAR(1000)   ENCODE lzo
+      ,first_name VARCHAR(1000)   ENCODE lzo
+      ,email VARCHAR(1000)   ENCODE lzo
+      ,prospect_status VARCHAR(1000)   ENCODE lzo
+	    ,website VARCHAR(1000)   ENCODE lzo
+      ,address VARCHAR(1000)   ENCODE lzo
+	    ,facebook VARCHAR(100)   ENCODE lzo
+      ,mobile VARCHAR(100)   ENCODE lzo
+	    ,last_name VARCHAR(1000)   ENCODE lzo
+      ,is_organization boolean
+      ,tags VARCHAR(600)   ENCODE lzo
+	    ,custom_fields_values VARCHAR(5000)   ENCODE lzo
+	    ,phone VARCHAR(100)   ENCODE lzo
+      ,customer_status VARCHAR(100)   ENCODE lzo
+      ,name VARCHAR(500)   ENCODE lzo
+      ,creator_id INTEGER   ENCODE lzo
+			,  meta_event_cause VARCHAR(200)   ENCODE lzo
+	    ,  meta_sequence INT  ENCODE lzo
+	    ,  meta_event_id VARCHAR(200)   ENCODE lzo
+	    ,  meta_event_type VARCHAR(200)   ENCODE lzo
+      ,  meta_type VARCHAR(200)   ENCODE lzo
+      ,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE KEY
+DISTKEY (id)
+SORTKEY (created_at, owner_id)
+;
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_leads_re_latam
+(owner_id INTEGER   ENCODE lzo
+,description VARCHAR(500)   ENCODE lzo
+,created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE delta
+,industry VARCHAR(500)   ENCODE lzo
+,linkedin VARCHAR(500)   ENCODE lzo
+,title VARCHAR(500)   ENCODE lzo
+,skype VARCHAR(500)   ENCODE lzo
+,twitter VARCHAR(500)   ENCODE lzo
+,id INTEGER NOT NULL  ENCODE lzo
+,fax VARCHAR(500)   ENCODE lzo
+,first_name VARCHAR(500)   ENCODE lzo
+,email VARCHAR(500)   ENCODE lzo
+,website VARCHAR(500)   ENCODE lzo
+,address VARCHAR(1000)   ENCODE lzo
+,facebook VARCHAR(500)   ENCODE lzo
+,mobile VARCHAR(500)   ENCODE lzo
+,last_name VARCHAR(500)   ENCODE lzo
+,organization_name VARCHAR(500)   ENCODE lzo
+,tags VARCHAR(500)   ENCODE lzo
+,custom_fields_values VARCHAR(8000)   ENCODE lzo
+,phone VARCHAR(500)   ENCODE lzo
+,creator_id INTEGER   ENCODE lzo
+,source_id INTEGER   ENCODE lzo
+,status VARCHAR(500)   ENCODE lzo
+			,  meta_event_cause VARCHAR(200)   ENCODE lzo
+	    ,  meta_sequence INT  ENCODE lzo
+	    ,  meta_event_id VARCHAR(200)   ENCODE lzo
+	    ,  meta_event_type VARCHAR(200)   ENCODE lzo
+      ,  meta_type VARCHAR(200)   ENCODE lzo
+      ,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE ALL
+SORTKEY (
+	id
+	)
+;
+
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_users_re_latam
+(role VARCHAR(100)   ENCODE lzo
+,name VARCHAR(1000)   ENCODE lzo
+,created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE lzo
+,	id INTEGER NOT NULL  ENCODE lzo
+,confirmed BOOLEAN
+,email VARCHAR(1000)   ENCODE lzo
+,status VARCHAR(100)   ENCODE lzo
+,  meta_event_cause VARCHAR(200)   ENCODE lzo
+,  meta_sequence INT  ENCODE lzo
+,  meta_event_id VARCHAR(200)   ENCODE lzo
+,  meta_event_type VARCHAR(200)   ENCODE lzo
+,  meta_previous VARCHAR(1000)   ENCODE lzo
+,  meta_type VARCHAR(200)   ENCODE lzo
+,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE ALL
+SORTKEY (
+	id
+	)
+;
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_line_items_cars_in(
+  quantity INTEGER   ENCODE lzo
+, description VARCHAR(1000)   ENCODE lzo
+, created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE lzo
+, variation DOUBLE PRECISION   ENCODE bytedict
+, price DOUBLE PRECISION   ENCODE bytedict
+, product_id INTEGER   ENCODE lzo
+	, name VARCHAR(1000)   ENCODE lzo
+	, currency VARCHAR(3)   ENCODE lzo
+	, id INTEGER   ENCODE lzo
+	, sku VARCHAR(200)   ENCODE lzo
+	, deal_id INTEGER   ENCODE lzo
+	, value DOUBLE PRECISION   ENCODE bytedict
+	, order_id INTEGER   ENCODE lzo
+,  meta_event_cause VARCHAR(200)   ENCODE lzo
+,  meta_sequence INT  ENCODE lzo
+,  meta_event_id VARCHAR(200)   ENCODE lzo
+,  meta_event_type VARCHAR(200)   ENCODE lzo
+,  meta_type VARCHAR(200)   ENCODE lzo
+,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE ALL
+SORTKEY (
+	id
+	)
+;
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_tags_re_latam
+(
+	 id INTEGER NOT NULL  ENCODE lzo
+	,name VARCHAR(1000)   ENCODE lzo
+	,creator_id INTEGER   ENCODE lzo
+	,created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE lzo
+	,resource_type VARCHAR(100)   ENCODE lzo
+  ,meta_event_cause VARCHAR(200)   ENCODE lzo
+,  meta_sequence INT  ENCODE lzo
+,  meta_event_id VARCHAR(200)   ENCODE lzo
+,  meta_event_type VARCHAR(200)   ENCODE lzo
+,  meta_type VARCHAR(200)   ENCODE lzo
+,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE ALL
+SORTKEY (
+	id
+	)
+;
+
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_orders_re_latam
+(
+     discount DOUBLE PRECISION   ENCODE bytedict
+  ,created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE delta
+  ,id INTEGER   ENCODE lzo
+	,deal_id INTEGER   ENCODE lzo
+  ,meta_event_cause VARCHAR(200)   ENCODE lzo
+,  meta_sequence INT  ENCODE lzo
+,  meta_event_id VARCHAR(200)   ENCODE lzo
+,  meta_event_type VARCHAR(200)   ENCODE lzo
+,  meta_type VARCHAR(200)   ENCODE lzo
+,  meta_event_time TIMESTAMP ENCODE delta
+
+)
+DISTSTYLE KEY
+DISTKEY (deal_id)
+SORTKEY (
+	deal_id
+	, created_at
+	)
+;
+
+
+
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_calls_re_latam
+(
+  	 summary VARCHAR(5000)   ENCODE lzo
+  	,made_at TIMESTAMP WITHOUT TIME ZONE   ENCODE delta
+  	,outcome_id INTEGER   ENCODE lzo
+  	,incoming BOOLEAN
+  	,recording_url VARCHAR(256)   ENCODE lzo
+	  ,associated_deals_ids VARCHAR(256)   ENCODE lzo
+  	,missed BOOLEAN
+  	,resource_type VARCHAR(300)   ENCODE lzo
+  	,created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE delta
+  	,duration INTEGER   ENCODE lzo
+  	,user_id INTEGER   ENCODE lzo
+  	,resource_id INTEGER   ENCODE lzo
+  	,phone_number VARCHAR(150)   ENCODE lzo
+    , id INTEGER   ENCODE lzo
+,  meta_event_cause VARCHAR(200)   ENCODE lzo
+,  meta_sequence INT  ENCODE lzo
+,  meta_event_id VARCHAR(200)   ENCODE lzo
+,  meta_event_type VARCHAR(200)   ENCODE lzo
+,  meta_type VARCHAR(200)   ENCODE lzo
+,  meta_event_time TIMESTAMP ENCODE delta
+)
+DISTSTYLE KEY
+DISTKEY (id)
+SORTKEY (
+id
+	)
+;
+
+
+
+
