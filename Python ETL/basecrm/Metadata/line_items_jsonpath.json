@@ -1,0 +1,20 @@
+{
+	"jsonpaths": [
+		"$['data']['country']",
+		"$['data']['category']",
+		"$['data']['meta_event_type']",
+		"$['data']['meta_event_time']",
+		"$['data']['id']",
+		"$['data']['sku']",
+		"$['data']['description']",
+		"$['data']['order_id']",
+		"$['data']['value']",
+		"$['data']['price']",
+		"$['data']['currency']",
+		"$['data']['variation']",
+		"$['data']['quantity']",
+		"$['data']['name']",
+		"$['data']['created_at']",
+		"$['data']['updated_at']"
+    ]
+}

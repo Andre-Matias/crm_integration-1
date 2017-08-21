@@ -20,6 +20,7 @@ schema = data['redshift_schema']
 category = data['category']
 country = data['country']
 resources = data['resources'].split(',')
+prefix = ''
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
@@ -30,7 +31,7 @@ deleteCategoryCountryDataFromTables(chandra_conf_file,
 	resources,
 	category,
 	country,
-	'')
+	prefix)
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
@@ -45,4 +46,4 @@ loadFromS3toRedshift(chandra_conf_file,
 	fulldump_date,
 	manifest,
 	resources,
-	'')
+	prefix)

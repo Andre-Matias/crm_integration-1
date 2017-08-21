@@ -10,15 +10,16 @@ fulldump_date = sys.argv[3]
 ##################################################
 # Read conf_file
 ##################################################
-file = open(conf_file, "r") 
-temp = file.read().splitlines()
-bucketName = temp[7]
-path_fulldump = temp[9]
-manifest = temp[11]
-schema = temp[13]
-platform = temp[15]
-resources = temp[17].split(',')
-file.close()
+data = json.load(open(conf_file))
+
+bucketName = data['bucket_name']
+path_fulldump = data['s3_data_path']
+manifest = data['s3_manifest_path']
+schema = data['redshift_schema']
+category = data['category']
+country = data['country']
+resources = data['resources'].split(',')
+prefix = 'sync_'
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
@@ -27,8 +28,9 @@ file.close()
 truncateResourceTables(chandra_conf_file,
 	schema,
 	resources,
-	platform,
-	'sync_')
+	category,
+	country,
+	prefix)
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
@@ -36,10 +38,11 @@ truncateResourceTables(chandra_conf_file,
 ##################################################
 loadFromS3toRedshift(chandra_conf_file, 
 	schema,
-	platform,
+	category,
+	country,
 	bucketName,
 	path_fulldump,
 	fulldump_date,
 	manifest,
 	resources,
-	'sync_')
+	prefix)

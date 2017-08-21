@@ -294,3 +294,47 @@ DISTKEY ("id")
 SORTKEY ("meta_event_time","created_at", "owner_id")
 ;
 
+
+
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_orders"
+(
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER ENCODE lzo
+	,"deal_id" INTEGER ENCODE lzo
+	,"discount" INTEGER ENCODE lzo
+	,"created_at" TIMESTAMP   ENCODE lzo
+	,"updated_at" TIMESTAMP   ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY ("id")
+SORTKEY ("deal_id","meta_event_time","created_at")
+;
+
+
+CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_line_items"
+(
+	"base_account_country" VARCHAR(10) ENCODE lzo
+	,"base_account_category" VARCHAR(10) ENCODE lzo
+	,"meta_event_type" VARCHAR(10) ENCODE lzo
+	,"meta_event_time" TIMESTAMP ENCODE lzo
+	,"id" INTEGER ENCODE lzo
+	,"sku" VARCHAR(100) ENCODE lzo
+	,"description" VARCHAR(5000) ENCODE lzo
+	,"order_id" INTEGER ENCODE lzo
+	,"value" DOUBLE PRECISION   ENCODE bytedict
+	,"price" DOUBLE PRECISION   ENCODE bytedict
+	,"currency" VARCHAR(10) ENCODE lzo
+	,"variation" DOUBLE PRECISION   ENCODE bytedict
+	,"quantity" INTEGER ENCODE lzo
+	,"name" VARCHAR(1000) ENCODE lzo
+	,"created_at" TIMESTAMP   ENCODE lzo
+	,"updated_at" TIMESTAMP   ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY ("order_id")
+SORTKEY ("meta_event_time","created_at")
+;
+
