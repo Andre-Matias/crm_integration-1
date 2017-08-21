@@ -61,7 +61,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					credentials
 				)
 			)
-	if prefix == 'sync_'
+	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
 			cur.execute(
