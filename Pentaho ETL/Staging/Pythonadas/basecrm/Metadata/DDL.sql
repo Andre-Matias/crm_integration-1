@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("meta_event_time","created_at", "owner_id")
+SORTKEY ("id","meta_event_time","created_at", "owner_id")
 ;
 
 
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_deals"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("meta_event_time","stage_id", "last_stage_change_at")
+SORTKEY ("id","meta_event_time","stage_id", "last_stage_change_at")
 ;
 
 
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_leads"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("meta_event_time","created_at","owner_id")
+SORTKEY ("id","meta_event_time","created_at","owner_id")
 ;
 
 
@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_orders"
 )
 DISTSTYLE KEY
 DISTKEY ("id")
-SORTKEY ("deal_id","meta_event_time","created_at")
+SORTKEY ("id","deal_id","meta_event_time","created_at")
 ;
 
 
@@ -335,6 +335,6 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_line_items"
 )
 DISTSTYLE KEY
 DISTKEY ("order_id")
-SORTKEY ("meta_event_time","created_at")
+SORTKEY ("order_id","meta_event_time","created_at")
 ;
 
