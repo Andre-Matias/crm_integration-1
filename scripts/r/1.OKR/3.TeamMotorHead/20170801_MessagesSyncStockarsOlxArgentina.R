@@ -111,30 +111,52 @@ conDB <-  dbConnect(RMySQL::MySQL(), username = dbUsername,
 sqlCmd <- 
   "SELECT * FROM message A 
 LEFT JOIN
-(SELECT id_thread, partner_name FROM message_thread) B
+(SELECT id_thread, partner_name, id_product FROM message_thread) B
 ON A.id_thread = B.id_thread
 WHERE message_date >= '2017-01-01';
 "
 
 dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
+rawStockarsMessages <- as.data.frame(dfSqlCmd)
+
+sqlCmd <- 
+"
+SELECT external_id, A.id_product, email
+FROM (
+  SELECT
+  id_product,
+  external_id
+  FROM export_ad
+  WHERE
+  external_id IS NOT NULL AND external_id != '' AND partner_name = 'olx'
+)A
+INNER JOIN
+(SELECT id_product, modify_user FROM stock_product)B
+ON A.id_product = B.id_product
+INNER JOIN
+(SELECT id_user, email, status FROM user)C
+ON B.modify_user = C.id_user
+;
+"
+dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
+rawStockarsExport<- as.data.frame(dfSqlCmd)
 
 dbDisconnect(conDB)
 
-# -----------------------------------------------------------------------------
-rawStockarsMessages <- as.data.frame(dfSqlCmd)
-
 df <- 
   rawStockarsPoseidonMessages %>%
-  mutate(message_id = as.character(message_id)) %>%
-  left_join(rawStockarsMessages, by = c("message_id"="external_message_id")) %>%
+  mutate(message_id = as.character(message_id),
+         item_id = as.character(item_id)) %>%
+  left_join(rawStockarsMessages, by = c("message_id"="external_message_id"))%>%
+  left_join(rawStockarsExport, by = c("item_id"="external_id"))%>%
   mutate(dateorigin2 = fastPOSIXct(dateorigin, tz = "UTC"),
          message_date2 = fastPOSIXct(message_date, tz = "UTC"),
          create_date2 = fastPOSIXct(create_date, tz = "UTC"),
-# ERROR: stockars created and sync datetime are not correct (+ 60 minutes)        
+         # ERROR: stockars created and sync datetime are not correct (+ 60 minutes)        
          diffSyncTime = 
            as.numeric(
              difftime(create_date2, message_date2, tz = "UTC", units = "mins")
-             )-60,
+           )-60,
          diffSyncIntervals = 
            cut(diffSyncTime, 
                breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
@@ -142,7 +164,7 @@ df <-
   ) %>%
   filter(dateorigin2 >= '2017-01-20 00:00:00') %>%
   arrange(dateorigin2)
-
+a
 dfStats <- 
   df %>% 
   mutate(dayorigin = as.Date(dateorigin)) %>%
@@ -151,7 +173,6 @@ dfStats <-
             qtyMessagesStockars = sum(!is.na(id_message))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
-
 
 dfStatsSyncTime <- 
   df %>% 
@@ -219,4 +240,23 @@ gB <- ggplot_gtable(gb2)
 g <- rbind(gA, gB)
 
            
-           
+# list of users that messages are not syncing ---------------------------------
+dfUsersNotSincying <-
+  df %>%
+  filter(!is.na(message_id), 
+         is.na(id_message), 
+         dateorigin >= as.Date(Sys.time())-17,
+         !is.na(email)
+         ) %>%
+  group_by(email) %>%
+  summarise(qtyMessagesPerEmail = sum(!is.na(message_id))) %>%
+  arrange(-qtyMessagesPerEmail)
+
+# messages sent from stockars -------------------------------------------------
+dfSentMessagesFromStockars <-
+  rawStockarsMessages[ ,c("message_date", "direction")] %>%
+  filter(direction == 0) %>%
+  mutate(MessageDay = as.Date(message_date)) %>%
+  group_by(MessageDay) %>%
+  summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
+  
