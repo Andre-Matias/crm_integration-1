@@ -581,7 +581,7 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
 			orders_data['category'] = category
 			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
 			# Request the line items for this order_id
-			get_order_line_items(orders_data['data']['id'],token,output_line_items,country,category)
+			#get_order_line_items(orders_data['data']['id'],token,output_line_items,country,category)
 		
 
 		#Close gz file		
