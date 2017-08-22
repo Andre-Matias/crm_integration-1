@@ -19,7 +19,7 @@ args <- (commandArgs(TRUE))
 if(length(args)==0){
   print("No arguments supplied.")
   ##supply default values
-  vertical <-""
+  vertical <-"OtomotoPL"
 }else{
   for(i in 1:length(args)){
     eval(parse(text=args[[i]]))
@@ -45,10 +45,10 @@ dbName <- get(paste0("cf", vertical, "DbName"))
 
 
 # -----------------------------------------------------------------------------
-dates <- as.character(seq(as.Date("2017-03-01"), as.Date(Sys.Date()-1), "days"))
+dates <- as.character(seq(as.Date("2017-06-15"), as.Date(Sys.Date()-1), "days"))
 
-files <- list.files(path = '/home/daniel.rocha/datalake/',
-                    pattern = paste0('^RDL.*', vertical,'.*','ads' ,'.*feather$'),
+files <- list.files(path = '/data/lake/',
+                    pattern = paste0('^RDL.*', vertical,'.*','ads_history' ,'.*feather$'),
                     full.names = TRUE
 )
 
@@ -58,7 +58,7 @@ if(length(files) > 0){
                                     "_(", 
                                     vertical, 
                                     ")_(",
-                                    "[a-z].*",
+                                    "[a-z\\_].*",
                                     ")_(",
                                     "[0-9\\-]{10})"
                              )
@@ -73,9 +73,9 @@ for (i in dates){
   print(i)
   filename <- 
     paste0(
-      "/home/daniel.rocha/datalake/RDL_",
+      "/data/lake/RDL_",
       vertical, 
-      "_ads_", 
+      "_ads_history_", 
       i, 
       ".feather"
     )
@@ -96,15 +96,17 @@ for (i in dates){
   # get data ------------------------------------------------------------------
   dbSqlQuery <-
     paste(
-      "SELECT * FROM ads", 
-      "WHERE created_at_first", 
+      "SELECT `primary`, changed_at, id, `status`, params",
+      "FROM ads_history.ads_history_otomotopl", 
+      "WHERE changed_at", 
       "BETWEEN '", i, " 00:00:00'", 
       "AND '", i, " 23:59:59';"
     )
-  
+  system.time({
   dbSqlQuery <-
     dbGetQuery(conDB,dbSqlQuery)
-  
+  }
+  )
   
   # disconnect from database  -------------------------------------------------
   dbDisconnect(conDB)
