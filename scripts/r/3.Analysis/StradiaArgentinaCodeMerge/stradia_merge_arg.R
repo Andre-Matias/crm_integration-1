@@ -11,21 +11,21 @@ library("tidyr")
 library("ggplot2")
 library("gridExtra")
 
-#Connection to Stradia IN DB --------------------------------------
+#Connection to Stradia AR DB --------------------------------------
 
 load("~/r_scripts_miei/credentials.Rdata")
 
-dbUsername <- cfStradiaInDbUser
-dbPassword <- cfStradiaInDbPassword
-dbHost <- cfStradiaInDbHost
-dbPort <- cfStradiaInDbPort
-dbName <- cfStradiaIndbName
+dbUsername <- cfStradiaLatamDbUser
+dbPassword <- cfStradiaLatamDbPassword
+dbHost <- cfStradiaLatamDbHost
+dbPort <- cfStradiaLatamDbPort
+dbName <- cfStradiaArdbName
 
 conDB<- dbConnect(MySQL(), 
                   user=dbUsername, 
                   password=dbPassword,
                   host=dbHost, 
-                  port= 3312,
+                  port= 3311,
                   dbname = dbName
 )
 
@@ -38,8 +38,8 @@ SELECT
 DATE(created_at_first) as dia,
 net_ad_counted as ad_counted,
 COUNT(DISTINCT id) as listings
-FROM cars_in.ads
-WHERE created_at_first>=  ' 2017-04-02' AND created_at_first<= ' 2017-08-05'
+FROM stradia_ar.ads
+WHERE created_at_first>=  ' 2017-04-02' AND created_at_first<= ' 2017-08-19'
 GROUP BY dia, ad_counted
 ;"
 
@@ -53,8 +53,8 @@ CASE
   ELSE source
 END AS device,
 COUNT(DISTINCT id) as answers
-FROM cars_in.answers
-WHERE posted>=  ' 2017-04-02' AND posted<= ' 2017-08-05'
+FROM stradia_ar.answers
+WHERE posted>=  ' 2017-04-02' AND posted<= ' 2017-08-19'
 AND spam_status IN ('ok', 'probably_ok')
 AND user_id = seller_id AND buyer_id = sender_id AND parent_id = 0
 GROUP BY dia, device
@@ -87,7 +87,7 @@ grossDaily<-  ggplot(data=gross, aes(x=day, y=listings)) + geom_bar(stat="identi
                 geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
                 theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
                 #scale_x_date(date_breaks  ="1 day") +
-                labs(title = "Daily Gross Listings - Stradia IN")
+                labs(title = "Daily Gross Listings - Stradia AR")
 
 #weekly chart
 grossWeekly<- gross%>%
@@ -96,7 +96,7 @@ grossWeekly<- gross%>%
                 geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
                 theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
                 scale_x_date(date_breaks  ="1 week") +
-                labs(title = "Weekly Gross Listings - Stradia IN", x = "weeks")
+                labs(title = "Weekly Gross Listings - Stradia AR", x = "weeks")
  
 # align axis and build final graph
 gb1 <- ggplot_build(grossDaily)
@@ -119,7 +119,7 @@ grossCmp<- gross%>%
   mutate(weekDate=as.Date(as.character(week))) %>%
   group_by(weekDate) %>%
   summarize(listings=sum(listings)) %>%  # it's grouped by week
-  filter(weekDate >= "2017-06-04") %>%   # I filter until 4 weeks before
+  filter(weekDate >= "2017-06-04" & weekDate <="2017-07-30") %>%   # I filter until 4 weeks before and 4 weeks after
   mutate(WeekN = c(rep("t1",4),"t2",rep("t3",4))) %>%
   group_by(WeekN) %>%
   summarize(avg_listings_per_week=mean(listings))
@@ -431,7 +431,7 @@ ansWeekly<- replies_answers%>%
   geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
   scale_x_date(date_breaks  ="1 week") +
-  labs(title = "Weekly Answers - Stradia IN", x = "weeks")
+  labs(title = "Weekly Answers - Stradia AR", x = "weeks")
 
 ansWeeklySource<- replies_answers%>%
   mutate(week=cut(as.Date(dia),breaks="week", start.on.monday=FALSE)) %>%        
@@ -439,7 +439,7 @@ ansWeeklySource<- replies_answers%>%
   geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
   scale_x_date(date_breaks  ="1 week") +
-  labs(title = "Weekly Answers by Device - Stradia IN", x = "weeks") +
+  labs(title = "Weekly Answers by Device - Stradia AR", x = "weeks") +
   facet_wrap(~ device, nrow=1)
 
 # # align axis and build final graph --
@@ -579,4 +579,3 @@ phnCmpDsk<- show_phone%>%
 
 # desktop + 255%
 phnCmpDsk[3,2]/phnCmpDsk[1,2] -1
-
