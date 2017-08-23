@@ -35,7 +35,7 @@ if(!exists("vertical")){
 }
 
 dbUser <- get(paste0("cf", vertical, "DbUser")) 
-dbPass <- biUserPassword
+dbPass <- bi_team_pt_password
 dbHost <- as.character(
   ifelse(Sys.info()["nodename"] == "bisb", "127.0.0.1"
          , get(paste0("cf", vertical, "DbHost")))
@@ -70,7 +70,6 @@ if(length(files) > 0){
 
 for (i in dates){
   
-  print(i)
   filename <- 
     paste0(
       "/data/lake/RDL_",
@@ -80,8 +79,13 @@ for (i in dates){
       ".feather"
     )
   
-  print(filename)
+  print(paste(
+    Sys.time(),
+    i,
+    filename)
+  )
   
+  system.time({
   # connect to database  ------------------------------------------------------
   conDB <-  
     dbConnect(
@@ -113,4 +117,6 @@ for (i in dates){
   
   # write file to disk --------------------------------------------------------
   write_feather(x = dbSqlQuery, path = filename)
+  }
+  )
 }

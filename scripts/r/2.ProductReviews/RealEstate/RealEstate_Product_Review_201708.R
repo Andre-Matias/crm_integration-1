@@ -53,8 +53,8 @@ df <- data.frame(
   high=c(20000, 20000, 20000, 20000, 20000, 20000),
   mean=c(5000,5000, 5000, 5000, 5000,0),
   low=c(2500, 2500, 2500, 2500, 2500,0), 
-  target=c(3149202, 1281686, 382738, 1526899, 321105, 6661630),
-  value=c( 3210388, 1309185, 295498, 1827753, 273631, 6916455)
+  target=c(3149201, 1281686,  382737, 1526899,  207955, 6548478),
+  value=c(3210388, 1309185,  295498, 1827753,  273631, 6916455)
 )
 
 df$var <- percent(round(df$value/df$target-1,3))
@@ -63,7 +63,7 @@ df$value <- round(df$value / 1000000, 2)
 df$high <- 10
 
 
-gh_cars_revenue <- bullet.graph(df, "REAL ESTATE - Revenue", "FYTD July/FY18 - M USD", 10)
+gh_RE_revenue <- bullet.graph(df, "REAL ESTATE - Revenue", "FYTD July/FY18 - M USD", 10)
 
 # Graph for Paying Professional Users ----------------------------------------- 
 
@@ -73,8 +73,9 @@ df <- data.frame(
   mean=c(5000,5000, 5000, 5000, 0),
   low=c(2500, 2500, 2500, 2500, 0), 
   target=c(4049, 1974, 1120, 6049, 13192),
-  value=c(5109, 2226, 1114, 6525, 14974)
+  value=c(5018, 1917, 1114, 6525, 14574)
 )
+
 
 
 #myNumCols <- which(unlist(lapply(df, is.numeric)))
@@ -82,4 +83,4 @@ df <- data.frame(
 
 df$var <- percent(round(df$value/df$target-1,3))
 
-gh_cars_ppu <- bullet.graph(df, "REAL ESTATE - Paying Professional Users", "FYTD July/FY18 ", 25000)
+gh_RE_ppu <- bullet.graph(df, "REAL ESTATE - Paying Professional Users", "FYTD July/FY18 ", 25000)

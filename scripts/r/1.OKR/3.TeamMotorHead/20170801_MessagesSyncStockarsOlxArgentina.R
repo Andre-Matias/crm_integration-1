@@ -156,7 +156,7 @@ df <-
          diffSyncTime = 
            as.numeric(
              difftime(create_date2, message_date2, tz = "UTC", units = "mins")
-           )-60,
+           ),
          diffSyncIntervals = 
            cut(diffSyncTime, 
                breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
@@ -164,7 +164,7 @@ df <-
   ) %>%
   filter(dateorigin2 >= '2017-01-20 00:00:00') %>%
   arrange(dateorigin2)
-a
+
 dfStats <- 
   df %>% 
   mutate(dayorigin = as.Date(dateorigin)) %>%
