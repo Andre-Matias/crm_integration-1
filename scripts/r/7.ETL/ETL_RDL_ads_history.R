@@ -35,7 +35,7 @@ if(!exists("vertical")){
 }
 
 dbUser <- get(paste0("cf", vertical, "DbUser")) 
-dbPass <- biUserPassword
+dbPass <- bi_team_pt_password
 dbHost <- as.character(
   ifelse(Sys.info()["nodename"] == "bisb", "127.0.0.1"
          , get(paste0("cf", vertical, "DbHost")))
