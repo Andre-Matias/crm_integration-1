@@ -70,7 +70,6 @@ if(length(files) > 0){
 
 for (i in dates){
   
-  print(i)
   filename <- 
     paste0(
       "/data/lake/RDL_",
@@ -80,8 +79,13 @@ for (i in dates){
       ".feather"
     )
   
-  print(filename)
+  print(paste(
+    Sys.time(),
+    i,
+    filename)
+  )
   
+  system.time({
   # connect to database  ------------------------------------------------------
   conDB <-  
     dbConnect(
@@ -113,4 +117,6 @@ for (i in dates){
   
   # write file to disk --------------------------------------------------------
   write_feather(x = dbSqlQuery, path = filename)
+  }
+  )
 }
