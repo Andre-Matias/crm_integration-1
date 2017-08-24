@@ -152,10 +152,20 @@ df <-
   mutate(dateorigin2 = fastPOSIXct(dateorigin, tz = "UTC"),
          message_date2 = fastPOSIXct(message_date, tz = "UTC"),
          create_date2 = fastPOSIXct(create_date, tz = "UTC"),
-         # ERROR: stockars created and sync datetime are not correct (+ 60 minutes)        
          diffSyncTime = 
            as.numeric(
              difftime(create_date2, message_date2, tz = "UTC", units = "mins")
+           ),
+         diffSyncTime = ifelse(
+           dateorigin2 <= '2017-08-18 15:16:26', diffSyncTime - 60,
+           diffSyncTime),
+         diffSyncTime = ifelse(
+           dateorigin2 > '2017-08-18 15:16:26' &
+             dateorigin2 <= '2017-08-22 08:24:53',
+           diffSyncTime + 180, diffSyncTime
+           ),
+         diffSyncTime = ifelse(
+           dateorigin2 > '2017-08-22 08:24:53', diffSyncTime , diffSyncTime
            ),
          diffSyncIntervals = 
            cut(diffSyncTime, 
@@ -224,6 +234,34 @@ ghSyncingTime <-
   geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars),
             vjust = -0.1, family = "Andale Mono")
 
+
+# list of users that messages are not syncing ---------------------------------
+dfUsersNotSincying <-
+  df %>%
+  filter(!is.na(message_id), 
+         is.na(id_message), 
+         dateorigin >= as.Date(Sys.time())-17,
+         !is.na(email)
+         ) %>%
+  group_by(email) %>%
+  summarise(qtyMessagesPerEmail = sum(!is.na(message_id))) %>%
+  arrange(-qtyMessagesPerEmail)
+
+write.table(x = dfUsersNotSincying,
+            file = "~/tmp/dfUsersNotSincying.txt",
+            col.names = TRUE,
+            row.names = FALSE)
+
+# messages sent from stockars -------------------------------------------------
+dfSentMessagesFromStockars <-
+  rawStockarsMessages[ ,c("message_date", "direction")] %>%
+  filter(direction == 0) %>%
+  mutate(MessageDay = as.Date(message_date)) %>%
+  group_by(MessageDay) %>%
+  summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
+
+# GRAPH: messages sent from stockars ------------------------------------------
+
 # align axis and build final graph --------------------------------------------
 
 gb1 <- ggplot_build(ghQuantityMessagesSynced)
@@ -239,24 +277,5 @@ gB <- ggplot_gtable(gb2)
 
 g <- rbind(gA, gB)
 
-           
-# list of users that messages are not syncing ---------------------------------
-dfUsersNotSincying <-
-  df %>%
-  filter(!is.na(message_id), 
-         is.na(id_message), 
-         dateorigin >= as.Date(Sys.time())-17,
-         !is.na(email)
-         ) %>%
-  group_by(email) %>%
-  summarise(qtyMessagesPerEmail = sum(!is.na(message_id))) %>%
-  arrange(-qtyMessagesPerEmail)
 
-# messages sent from stockars -------------------------------------------------
-dfSentMessagesFromStockars <-
-  rawStockarsMessages[ ,c("message_date", "direction")] %>%
-  filter(direction == 0) %>%
-  mutate(MessageDay = as.Date(message_date)) %>%
-  group_by(MessageDay) %>%
-  summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
   

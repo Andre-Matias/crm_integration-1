@@ -94,11 +94,11 @@ grossDaily<-  ggplot(data=gross, aes(x=day, y=listings)) + geom_bar(stat="identi
 #weekly chart
 grossWeekly<- gross%>%
   mutate(week=cut(day,breaks="week", start.on.monday=FALSE)) %>%        
-  ggplot( data=grossWeekly, aes(x=as.Date(week), y=listings)) + geom_bar(stat="identity",fill="#BEC100") +
+  ggplot( aes(x=as.Date(week), y=listings)) + geom_bar(stat="identity",fill="#BEC100") +
   geom_vline(xintercept = as.numeric(as.Date("2017-07-02")), linetype=4) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),plot.title = element_text(hjust = 0.5)) +
   scale_x_date(date_breaks  ="1 week") +
-  labs(title = "Weekly Gross Listings - Stradia Prrrr", x = "weeks")
+  labs(title = "Weekly Gross Listings - Stradia PE", x = "weeks")
 
 # align axis and build final graph
 gb1 <- ggplot_build(grossDaily)
