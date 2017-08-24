@@ -632,8 +632,15 @@ def get_order_line_items(order_id,token,file,country,category):
 		if response.status_code != 200:
 	            # raise Exception('Request failed with {}'
 	            #     .format(response.status_code))
-	            print('No response for ' + str(order_id))
-	            return 0
+	            print('No response for ' + str(order_id) + 'Retrying')
+	            sleep(2)
+	            response = requests.get(url,
+					params={'per_page': 100,'page': aux},
+					headers={'Authorization':'Bearer {}'.format(token)})
+	            if response.status_code != 200:
+	            	raise Exception('Request failed with {}'
+	                 .format(response.status_code))
+	            	return 0
 
 		data = response.json()['items']     
 
