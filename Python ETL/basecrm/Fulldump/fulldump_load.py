@@ -19,7 +19,7 @@ manifest = data['s3_manifest_path']
 schema = data['redshift_schema']
 category = data['category']
 country = data['country']
-resources = data['resources'].split(',')
+resources = data['resources_fulldump_load'].split(',')
 prefix = ''
 
 ##################################################
