@@ -99,15 +99,15 @@ UsersStorandy <- data.frame(get_ga(profileId = idsand, start.date = startdate,
 
 #old DB 
 
-cmd_storia <- 'ssh -i ~/marco_pasin_key biuser@52.74.90.117 -p 10022 -L 10005:172.50.21.59:3306 -N'
+cmd_storia <- 'ssh -i ~/marco_pasin_key biuser@52.74.90.117 -p 10022 -L 10002:172.50.21.59:3306 -N'
 
 system(cmd_storia, wait=FALSE)
 
-conn_storia <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "SPwE57nX", host = "127.0.0.1", port = 10005, dbname = "realestate_id")
+conn_storia <-  dbConnect(RMySQL::MySQL(), username = "biuser", password = "SPwE57nX", host = "127.0.0.1", port = 10002, dbname = "realestate_id")
 
 #new DB 
 
-#conn_storianew <-  dbConnect(RMySQL::MySQL(), username = "bi_team_pt", password = "bi5Zv3TB", host = "192.168.1.5", port = 3315)
+conn_storianew <-  dbConnect(RMySQL::MySQL(), username = "bi_team_pt", password = "bi5Zv3TB", host = "192.168.1.5", port = 3315)
 
 
 
@@ -117,8 +117,8 @@ StoriaReplies <- "SELECT  DATE_FORMAT(posted,'%y-%m-%d') as Date, COUNT(*) FROM 
 StoriaReplies <- dbGetQuery(conn_storia,StoriaReplies)
 
 #load message replies new 
-#StoriaRepliesNew <- "SELECT  DATE_FORMAT(posted,'%y-%m-%d') as Date, COUNT(*) FROM storiaid.answers WHERE spam_status IN ('ok','probably_ok') AND user_id = seller_id AND buyer_id = sender_id AND parent_id = 0 AND posted >= '2017-08-18' GROUP BY 1"
-#StoriaRepliesNew <- dbGetQuery(conn_storianew,StoriaRepliesNew)
+StoriaRepliesNew <- "SELECT  DATE_FORMAT(posted,'%y-%m-%d') as Date, COUNT(*) FROM storiaid.answers WHERE spam_status IN ('ok','probably_ok') AND user_id = seller_id AND buyer_id = sender_id AND parent_id = 0 AND posted >= '2017-08-18' GROUP BY 1"
+StoriaRepliesNew <- dbGetQuery(conn_storianew,StoriaRepliesNew)
 
 #Activeads - If you have some problem with the script run the query directly in DB....and then save it on excel file to keep the data
 #Activeads <- read_excel("Activeadsid.xlsx")
@@ -144,13 +144,13 @@ NNL<- dbGetQuery(conn_storia,NNL)
 
 
 #load NNL new
-#NNLnew <- "SELECT DATE_FORMAT(created_at_first,'%y-%m-%d') as Date,COUNT(*) as NNL FROM storiaid.ads WHERE created_at_first >= '2017-08-18' AND net_ad_counted = 1 GROUP BY 1;"
-#NNLnew <- dbGetQuery(conn_storianew,NNLnew)
+NNLnew <- "SELECT DATE_FORMAT(created_at_first,'%y-%m-%d') as Date,COUNT(*) as NNL FROM storiaid.ads WHERE created_at_first >= '2017-08-18' AND net_ad_counted = 1 GROUP BY 1;"
+NNLnew <- dbGetQuery(conn_storianew,NNLnew)
 
 
 dbDisconnect(conn_storia)
 
-#dbDisconnect(conn_storianew)
+dbDisconnect(conn_storianew)
 
 
 
@@ -213,9 +213,9 @@ StoriaReplies$Date <- as.Date(StoriaReplies$Date, format = "%y-%m-%d")
 colnames(StoriaReplies) <- c("Date","Replies")
 
 #Replies to do after migration 
-#StoriaRepliesNew$Date <- as.Date(StoriaRepliesNew$Date, format = "%y-%m-%d")
-#StoriaReplies <- StoriaReplies[!(StoriaReplies %in% StoriaRepliesNew)]
-#StoriaReplies <- rbind(StoriaReplies,StoriaRepliesNew)
+StoriaRepliesNew$Date <- as.Date(StoriaRepliesNew$Date, format = "%y-%m-%d")
+StoriaReplies <- StoriaReplies[!(StoriaReplies %in% StoriaRepliesNew)]
+StoriaReplies <- rbind(StoriaReplies,StoriaRepliesNew)
 
 save(StoriaReplies,file="StoriaReplies.RData")
 
