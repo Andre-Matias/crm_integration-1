@@ -26,14 +26,21 @@ options(scipen=999)
 load("~/credentials.Rdata")
 load("~/GlobalConfig.Rdata")
 
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
+
+
 # load libraries --------------------------------------------------------------
 library("data.table")
 library("dplyr")
 library("dtplyr")
 library("magrittr")
 library("RPostgreSQL")
+library("feather")
+library("aws.s3")
 
 
+bucketlist()
 
 # connect to Triton Silver ----------------------------------------------------
 
@@ -58,7 +65,7 @@ requestDB <-
           WHERE country_sk = 'olx|asia|in'
           AND listing_external_partner_code = 'crm'
           AND category_sk LIKE 'olx|asia|in|5%'
-          AND date_posted_nk BETWEEN '2017-04-01' AND '2017-07-31';
+          AND date_posted_nk BETWEEN '2017-07-01' AND '2017-07-31';
           "
     )
 
@@ -80,7 +87,7 @@ requestDB <-
       WHERE country_sk = 'olx|asia|in'
       AND listing_external_partner_code = 'crm'
       AND category_sk LIKE 'olx|asia|in|5%'
-      AND date_posted_nk BETWEEN '2017-04-01' AND '2017-07-31'
+      AND date_posted_nk BETWEEN '2017-07-01' AND '2017-07-31'
     );
       "
   )
@@ -93,5 +100,26 @@ rawStockarsListingsInOlxReplies <- dfRequestDB
 
 dbDisconnect(conDB)
 
-
 rm("dfRequestDB")
+
+# save raw data to aws s3 -----------------------------------------------------
+
+# s3saveRDS(x = rawStockarsListingsInOlxReplies,
+#           object = "rawStockarsListingsInOlxReplies.RDS",
+#           bucket = "pyrates-data-ocean/GV-PI97")
+# 
+# s3saveRDS(x = rawStockarsListingsInOlx,
+#           object = "rawStockarsListingsInOlx.RDS",
+#           bucket = "pyrates-data-ocean/GV-PI97")
+
+# load raw data from aws s3 ---------------------------------------------------
+
+rawStockarsListingsInOlxReplies <- 
+  s3readRDS(object = "rawStockarsListingsInOlxReplies.RDS", 
+            bucket = "pyrates-data-ocean/GV-PI97"
+            )
+
+rawStockarsListingsInOlx <-
+  s3readRDS(object = "rawStockarsListingsInOlx.RDS",
+            bucket = "pyrates-data-ocean/GV-PI97"
+            )
