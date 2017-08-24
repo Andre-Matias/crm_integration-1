@@ -640,10 +640,10 @@ def get_order_line_items(order_id,token,file,country,category):
 					params={'per_page': 100,'page': aux},
 					headers={'Authorization':'Bearer {}'.format(token)})
 				count += 1
-				
+
 			if response.status_code != 200:
 				raise Exception('Request failed with {}'
-				format(response.status_code))
+					.format(response.status_code))
 				return 0
 
 		data = response.json()['items']     
