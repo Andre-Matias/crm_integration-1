@@ -1,5 +1,6 @@
 from load_resources import *
 import sys
+from datetime import date
 
 conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
