@@ -197,7 +197,8 @@ def sync_deals(conf_file,schema,category,country):
 			"INSERT INTO %(schema)s.stg_d_base_deals_debug2( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
-			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view);"
+			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
+			"DROP VIEW %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view;"
 		% {
 		'category':category,
 		'country':country,
