@@ -201,6 +201,7 @@ def sync_deals(conf_file,schema,category,country):
 		% {
 		'category':category,
 		'country':country,
+		'schema':schema
 		}
 	)
 	conn.commit()
