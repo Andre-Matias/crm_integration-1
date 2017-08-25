@@ -85,7 +85,6 @@ for (i in dates){
     filename)
   )
   
-  system.time({
   # connect to database  ------------------------------------------------------
   conDB <-  
     dbConnect(
@@ -106,17 +105,40 @@ for (i in dates){
       "BETWEEN '", i, " 00:00:00'", 
       "AND '", i, " 23:59:59';"
     )
-  system.time({
+
   dbSqlQuery <-
-    dbGetQuery(conDB,dbSqlQuery)
+    dbSendQuery(conDB,dbSqlQuery)
+
+  dfSqlQuery <- data.frame()
+  
+  chunk <- data.frame()
+  
+  while (!dbHasCompleted(dbSqlQuery)) {
+
+    chunk <- dbFetch(dbSqlQuery, n = 100000)
+
+    print(
+        paste(
+        Sys.time(),
+        nrow(chunk),
+        sep = " | "
+        )
+    )
+    
+    if(nrow(dfSqlQuery)==0){
+      dfSqlQuery <- chunk
+    } else {
+      dfSqlQuery <- rbind(dfSqlQuery, chunk)
+    }
+    
   }
-  )
+  # free the result set
+  dbClearResult(dbSqlQuery)
   
   # disconnect from database  -------------------------------------------------
   dbDisconnect(conDB)
   
   # write file to disk --------------------------------------------------------
-  write_feather(x = dbSqlQuery, path = filename)
-  }
-  )
+  write_feather(x = dfSqlQuery, path = filename)
+
 }
