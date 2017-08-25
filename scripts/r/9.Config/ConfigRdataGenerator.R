@@ -20,10 +20,10 @@ cfStoriaIdDbPort <- "3315"
 cfStoriaIdDbUser <- "bi_team_pt"
 
 # Triton Silver ---------------------------------------------------------------
-tritonDbHost <- 
+dwTritonSilverDbHost <- 
   "olxgroup-bi-silver.cmljrugfoo4y.us-west-2.redshift.amazonaws.com"
-tritonDbPort <- 5439
-tritonDbName <- "olxgroupbi"
+dwTritonSilverDbPort <- 5439
+dwTritonSilverDbName <- "olxgroupbi"
 
 # save all object in workspace ------------------------------------------------
 save(list = ls(), file= "~/GlobalConfig.Rdata")
