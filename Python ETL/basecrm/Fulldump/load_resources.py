@@ -138,7 +138,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	cur.close()
 	conn.close()	
 
-def sync_deals(conf_file,schema,category,country):
+def syncDealsTable(conf_file,schema,category,country):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
 
