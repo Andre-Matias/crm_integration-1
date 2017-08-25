@@ -165,8 +165,8 @@ def sync_deals(conf_file,schema,category,country):
 			"WHERE l_data.meta_event_time > p_data.meta_event_time "\
 			") "\
 			"select "\
-			"%(country)s as base_account_country, "\
-			"%(category)s as base_account_category, "\
+			"'%(country)s' as base_account_country, "\
+			"'%(category)s' as base_account_category, "\
 			"to_update_or_add.meta_event_type, "\
 			"to_update_or_add.meta_event_time, "\
 			"to_update_or_add.id, "\
