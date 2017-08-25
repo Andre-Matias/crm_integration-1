@@ -5,7 +5,10 @@ conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
 
 #Date of the fulldump yyyy/mm/dd format
-fulldump_date = sys.argv[3]
+try:
+	fulldump_date = sys.argv[3]
+except IndexError:
+	fulldump_date = str(date.today().strftime('%Y/%m/%d'))
 
 ##################################################
 # Read conf_file
@@ -23,7 +26,7 @@ prefix = 'sync_'
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
-# Truncate tables before loading the fulldumps
+# Truncate tables before loading the syncs
 ##################################################
 truncateResourceTables(chandra_conf_file,
 	schema,
@@ -34,7 +37,7 @@ truncateResourceTables(chandra_conf_file,
 
 ##################################################
 # prefix parameter should be 'sync_' or ''
-# Loads tables with fulldumps
+# Loads tables with syncs
 ##################################################
 loadFromS3toRedshift(chandra_conf_file, 
 	schema,
@@ -47,4 +50,11 @@ loadFromS3toRedshift(chandra_conf_file,
 	resources,
 	prefix)
 
-sync_deals(chandra_conf_file,schema,category,country)
+syncDealsTable(chandra_conf_file,schema,category,country)
+#Calls, Contacts, Deals, Leads, Line Items, Orders, Products***, Tags, Users
+
+
+
+
+
+

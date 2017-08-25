@@ -6,7 +6,11 @@ conf_file = sys.argv[1]
 chandra_conf_file = sys.argv[2]
 
 #Date of the fulldump yyyy/mm/dd format
-fulldump_date = sys.argv[3]
+
+try:
+	fulldump_date = sys.argv[3]
+except IndexError:
+	fulldump_date = str(date.today().strftime('%Y/%m/%d'))
 
 ##################################################
 # Read conf_file

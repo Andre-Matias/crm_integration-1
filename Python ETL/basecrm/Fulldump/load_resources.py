@@ -116,7 +116,6 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	cur.close()
 	conn.close()
 
-
 def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,country,prefix):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
@@ -138,7 +137,6 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	#Close connection
 	cur.close()
 	conn.close()	
-
 
 def sync_deals(conf_file,schema,category,country):
 	conn = getChandraConnection(conf_file)
@@ -210,3 +208,13 @@ def sync_deals(conf_file,schema,category,country):
 	#Close connection
 	cur.close()
 	conn.close()
+
+# TODO
+# sync calls
+# sync contacts
+# sync leads
+# sync line items
+# sync orders
+# sync tags
+# sync users
+
