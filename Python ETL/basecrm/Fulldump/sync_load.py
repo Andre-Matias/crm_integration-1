@@ -46,3 +46,5 @@ loadFromS3toRedshift(chandra_conf_file,
 	manifest,
 	resources,
 	prefix)
+
+sync_deals(chandra_conf_file,schema,category,country)
