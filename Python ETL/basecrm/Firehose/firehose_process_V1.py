@@ -69,7 +69,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				rows_per_page=3000
 				f=1
 				startingPosition = 'tail'
-				print("start sub_getDataApi"), print(var_category), print("-"), print(var_country), print("-"), print(var_subject)
+				print("start sub_getDataApi")#print(var_category), print("-"), print(var_country), print("-"), print(var_subject)
 				while f==1:
 						onTop = False
 						while not onTop:
