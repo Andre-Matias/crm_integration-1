@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_deals_re_latam
 (
 
@@ -15,7 +14,7 @@ CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_deals_re_latam
 	  ,value DOUBLE PRECISION   ENCODE bytedict
     ,loss_reason_id INT   ENCODE lzo
     ,stage_id INT   ENCODE lzo
-	  ,dropbox_email VARCHAR(100)   ENCODE lzo
+	  ,dropbox_email VARCHAR(1000)   ENCODE lzo
     ,tags VARCHAR(600)   ENCODE lzo
 	  ,custom_field_values VARCHAR(8000)   ENCODE lzo
 	  ,organization_id INT   ENCODE lzo
@@ -26,14 +25,13 @@ CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_deals_re_latam
 	    ,  meta_sequence INT  ENCODE lzo
 	    ,  meta_event_id VARCHAR(200)   ENCODE lzo
 	    ,  meta_event_type VARCHAR(200)   ENCODE lzo
-	    ,  meta_previous VARCHAR(1000)   ENCODE lzo
+	    ,  meta_previous VARCHAR(5000)   ENCODE lzo
       ,  meta_type VARCHAR(200)   ENCODE lzo
       ,  meta_event_time TIMESTAMP ENCODE delta
 )
 DISTSTYLE KEY
 DISTKEY (id)
 SORTKEY (id);
-
 
 
 CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_contacts_re_latam
@@ -131,7 +129,7 @@ CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_users_re_latam
 ,  meta_sequence INT  ENCODE lzo
 ,  meta_event_id VARCHAR(200)   ENCODE lzo
 ,  meta_event_type VARCHAR(200)   ENCODE lzo
-,  meta_previous VARCHAR(1000)   ENCODE lzo
+,  meta_previous VARCHAR(5000)   ENCODE lzo
 ,  meta_type VARCHAR(200)   ENCODE lzo
 ,  meta_event_time TIMESTAMP ENCODE delta
 )
@@ -142,7 +140,7 @@ SORTKEY (
 ;
 
 
-CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_line_items_cars_in(
+CREATE TABLE IF NOT EXISTS rdl_basecrm_v2.sync_stg_d_base_line_items_re_latam(
   quantity INTEGER   ENCODE lzo
 , description VARCHAR(1000)   ENCODE lzo
 , created_at TIMESTAMP WITHOUT TIME ZONE   ENCODE lzo
