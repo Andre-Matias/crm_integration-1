@@ -90,7 +90,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 							  if 'tags' in item['data']:
 							    item['data']['tags'] = method_convert_tags(item['data']['tags'])
 							  #file = open(thefile,"a")
-							  file = (gzip.open(thefile, mode="a", compresslevel=9, encoding=None, errors=None, newline=None))
+							  file = (gzip.open(thefile, mode="a"))
 							  file.write(json.dumps(item, indent=4).encode('utf-8'))
 							  file.close()
 							onTop = response.json()['meta']['top']
