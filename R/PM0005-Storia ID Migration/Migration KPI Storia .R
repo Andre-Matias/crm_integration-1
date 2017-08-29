@@ -192,8 +192,11 @@ UsersStorDirecty <- UsersStorDirecty[c(1,3)]
 UserSEO$date <- as.POSIXct(UserSEO$date, tz = "WIB")
 UsersStorDirecty$date <- as.POSIXct(UsersStorDirecty$date, tz = "WIB")
 UsersStorPaidy$date <- as.POSIXct(UsersStorPaidy$date, tz = "WIB")
+## Had to manually add a line to UsersStorPaidy dataframe otherwise cbind doesn't work. I inserted it and put 0 data.
 UsersSourcey <- cbind(UserSEO,UsersStorDirecty,UsersStorPaidy)
-UsersSourcey <- UsersSourcey[c(1,2,4,6)]
+#UsersSourcey <- UsersSourcey[c(1,2,4,6)]
+## Had to replace column 6 to 7 to get the right metric 
+UsersSourcey <- UsersSourcey[c(1,2,4,7)]
 colnames(UsersSourcey) <- c("Date","Organic Users","Direct Users","Paid Users")
 
 
@@ -211,6 +214,8 @@ save(UsersSource,file="UsersSource.RData")
 
 StoriaReplies$Date <- as.Date(StoriaReplies$Date, format = "%y-%m-%d")
 colnames(StoriaReplies) <- c("Date","Replies")
+##added below line otherwise rbind doesn't work.
+colnames(StoriaRepliesNew) <- c("Date","Replies")
 
 #Replies to do after migration 
 StoriaRepliesNew$Date <- as.Date(StoriaRepliesNew$Date, format = "%y-%m-%d")
@@ -270,9 +275,9 @@ save(Activeads,file="Activeads.RData")
 NNL$Date <- as.Date(NNL$Date, format = "%y-%m-%d")
 
 #nnl to do after migration 
-#NNLnew$Date <- as.Date(NNLnew$Date,format = "%y-%m-%d")
-#NNL <- NNL[!(NNL$Date %in% NNLnew$Date)]
-#NNL <- rbind(NNL,NNLnew)
+NNLnew$Date <- as.Date(NNLnew$Date,format = "%y-%m-%d")
+NNL <- NNL[!(NNL$Date %in% NNLnew$Date),]
+NNL <- rbind(NNL,NNLnew)
 
 save(NNL,file="nnlstoria.RData")
 #load("nnlstoria.RData")
