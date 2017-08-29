@@ -73,7 +73,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				while f==1:
 						onTop = False
 						while not onTop:
-							print(var_subject)
+							#print(var_subject)
 							url = "https://api.getbase.com/v3/"+str(var_subject)+"/stream"
 							response = requests.get(url,
 									params={'position': startingPosition},
@@ -101,7 +101,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				#this sub method gives a list with variable u will use in the next sub process
 				return[qty_pages,var_subject,rows]
 				print("done sub_getDataApi")
-							
+				print(var_subject)			
 def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, keyId, sKeyId, var_s3_data_path_sync, bucketName):
 		while qty_pages>=0 and rows>0 and i<8:
 			diayhora=('{:%Y%m%d}'.format(datetime.datetime.now()))
