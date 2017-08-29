@@ -1,0 +1,16 @@
+{
+"base_token":"4ae84b2b76284a7fc51faad73fc4023f08e2fadf7559e6f586d33b01125ab971",
+"s3_key":"AKIAJ64EPWTWUB3XAQTA",
+"s3_skey":"iYeanVlgMvHKsSk5ipSMTLMEzx+kVEo8VoDfQvWs",
+"bucket_name":"verticals-raw-data",
+"s3_data_path":"/BaseCRM_v3/India/Cars/fulldump/",
+"s3_manifest_path":"/BaseCRM_v3/Manifests/",
+"s3_data_path_sync":"/BaseCRM_v3/India/Cars/firehose/",
+"redshift_schema":"rdl_basecrm_v2",
+"category":"Cars",
+"country":"India",
+"resources_firehose":"deals,users,line_items,calls,tags,orders,leads,contacts",
+"resources_firehose_test":"deals,tags,contacts",
+"token_list_firehose":"4ae84b2b76284a7fc51faad73fc4023f08e2fadf7559e6f586d33b01125ab971,Cars,India",
+"resources_sync":"deals"
+}
