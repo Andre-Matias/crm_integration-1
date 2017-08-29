@@ -635,7 +635,7 @@ def get_order_line_items(order_id,token,file,country,category):
 			count = 0
 			while response.status_code != 200 or count <= 5:
 				print('No response for ' + str(order_id) + '. Retrying...')
-				time.sleep(2)
+				time.sleep(5)
 				response = requests.get(url,
 					params={'per_page': 100,'page': aux},
 					headers={'Authorization':'Bearer {}'.format(token)})

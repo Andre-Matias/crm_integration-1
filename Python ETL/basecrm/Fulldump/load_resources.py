@@ -116,7 +116,6 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	cur.close()
 	conn.close()
 
-
 def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,country,prefix):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
@@ -130,9 +129,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 			'category':category,
 			'country':country,
 			'prefix': prefix,
-			'schema': schema,
-			'country':country,
-			'category':category
+			'schema': schema
 			}
 		)
 	conn.commit()
@@ -140,4 +137,84 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	#Close connection
 	cur.close()
 	conn.close()	
+
+def syncDealsTable(conf_file,schema,category,country):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	### CREATE VIEW WITH NEW DATA
+	cur.execute("CREATE OR REPLACE VIEW %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view AS ( "\
+			"WITH latest_changes AS ( "\
+			"SELECT sync_data.*  "\
+			"FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s AS sync_data  "\
+			"INNER JOIN  "\
+			"(SELECT  "\
+			"id,  "\
+			"max(meta_sequence) AS max_meta_sequence  "\
+			"FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s "\
+			"GROUP BY id) AS latest_data "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"), "\
+			"to_update_or_add AS ( "\
+			"SELECT l_data.* "\
+			"FROM latest_changes AS l_data "\
+			"LEFT JOIN %(schema)s.stg_d_base_deals AS p_data "\
+			"ON (l_data.id = p_data.id) "\
+			"WHERE l_data.meta_event_time > p_data.meta_event_time "\
+			") "\
+			"select "\
+			"'%(country)s' as base_account_country, "\
+			"'%(category)s' as base_account_category, "\
+			"to_update_or_add.meta_event_type, "\
+			"to_update_or_add.meta_event_time, "\
+			"to_update_or_add.id, "\
+			"to_update_or_add.meta_event_time as last_activity_at, "\
+			"to_update_or_add.contact_id, "\
+			"to_update_or_add.source_id, "\
+			"to_update_or_add.estimated_close_date, "\
+			"to_update_or_add.dropbox_email, "\
+			"to_update_or_add.creator_id, "\
+			"to_update_or_add.loss_reason_id, "\
+			"to_update_or_add.currency, "\
+			"to_update_or_add.meta_event_time as updated_at, "\
+			"to_update_or_add.organization_id, "\
+			"to_update_or_add.last_stage_change_at, "\
+			"to_update_or_add.name, "\
+			"to_update_or_add.owner_id, "\
+			"to_update_or_add.value, "\
+			"to_update_or_add.created_at, "\
+			"to_update_or_add.hot, "\
+			"to_update_or_add.last_stage_change_by_id, "\
+			"to_update_or_add.stage_id, "\
+			"to_update_or_add.custom_field_values, "\
+			"to_update_or_add.tags "\
+			"from to_update_or_add "\
+			"); "\
+			"DELETE FROM %(schema)s.stg_d_base_deals_debug2 WHERE id IN ( "\
+			"SELECT id FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_deals_debug2( "\
+			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
+			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
+			"DROP VIEW %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view;"
+		% {
+		'category':category,
+		'country':country,
+		'schema':schema
+		}
+	)
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
+# TODO
+# sync calls
+# sync contacts
+# sync leads
+# sync line items
+# sync orders
+# sync tags
+# sync users
 
