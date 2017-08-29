@@ -73,7 +73,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				while f==1:
 						onTop = False
 						while not onTop:
-							print('downloading...')
+							print(var_subject)
 							url = "https://api.getbase.com/v3/"+str(var_subject)+"/stream"
 							response = requests.get(url,
 									params={'position': startingPosition},
