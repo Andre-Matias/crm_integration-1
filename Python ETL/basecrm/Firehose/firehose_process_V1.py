@@ -69,7 +69,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				rows_per_page=3000
 				f=1
 				startingPosition = 'tail'
-				print("start sub_getDataApi")#print(var_category), print("-"), print(var_country), print("-"), print(var_subject)
+				print(var_subject)
 				while f==1:
 						onTop = False
 						while not onTop:
@@ -137,9 +137,11 @@ def main_sourceToS3 (listatoken, lista, i):
 		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, keyId, sKeyId, var_s3_data_path_sync, bucketName)	
 		#next token		
 		time.sleep(10)
-		print("done subject_sourceToS3"), print(var_subject)
+		print("done subject_sourceToS3")
+		print(var_subject)
 		i=i+1
-	print("done main_sourceToS3"), print(var_subject)
+	print("done main_sourceToS3")
+	print(var_subject)
 	
 #execute this	
 main_sourceToS3 (listatoken, lista, i)
