@@ -119,8 +119,8 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, ke
 			thefile2="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
 			k.set_contents_from_filename(thefile2)
 			#delete local files
-			with contextlib.suppress(FileNotFoundError):			
-				os.remove(thefile2)
+			#with contextlib.suppress(FileNotFoundError):			
+			os.remove(thefile2)
 			qty_pages=qty_pages-1
 			print("done delete_local_files")
 		print("done sub_moveToS3")
