@@ -1,0 +1,15 @@
+{
+	"jsonpaths": [
+		"$['data']['id']",
+		"$['data']['name']",
+		"$['data']['creator_id']",
+		"$['data']['created_at']",
+		"$['data']['resource_type']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",
+		"$['meta']['event_type']",				
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}

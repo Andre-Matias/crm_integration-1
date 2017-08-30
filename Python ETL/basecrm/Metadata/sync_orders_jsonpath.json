@@ -1,0 +1,14 @@
+{
+	"jsonpaths": [
+		"$['data']['discount']",
+		"$['data']['created_at']",
+		"$['data']['id']",
+		"$['data']['deal_id']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",
+		"$['meta']['event_type']",				
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}
