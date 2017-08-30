@@ -125,7 +125,7 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, ke
 			print("done delete_local_files")
 		print("done sub_moveToS3")
 #main process
-def main_sourceToS3 (listatoken, lista, i):
+def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
 	#for objets_listaone in listatoken:  dont use it because i have one row only
 	var_token=listatoken[0]
 	var_category=listatoken[1]
@@ -144,4 +144,4 @@ def main_sourceToS3 (listatoken, lista, i):
 	print(var_subject)
 	
 #execute this	
-main_sourceToS3 (listatoken, lista, i)
+main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync)
