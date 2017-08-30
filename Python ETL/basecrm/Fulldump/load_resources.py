@@ -215,9 +215,7 @@ def syncContactsTable(conf_file,schema,category,country):
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
-	cur.execute("..."
-		}
-	)
+	cur.execute("...")
 	conn.commit()
 
 	#Close connection
