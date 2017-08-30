@@ -73,7 +73,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				while f==1:
 						onTop = False
 						while not onTop:
-							print('downloading...')
+							#print(var_subject)
 							url = "https://api.getbase.com/v3/"+str(var_subject)+"/stream"
 							response = requests.get(url,
 									params={'position': startingPosition},
@@ -90,7 +90,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 							  if 'tags' in item['data']:
 							    item['data']['tags'] = method_convert_tags(item['data']['tags'])
 							  #file = open(thefile,"a")
-							  file = (gzip.open(thefile, mode="a", compresslevel=9, encoding=None, errors=None, newline=None))
+							  file = (gzip.open(thefile, mode="a"))
 							  file.write(json.dumps(item, indent=4).encode('utf-8'))
 							  file.close()
 							onTop = response.json()['meta']['top']
@@ -101,7 +101,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				#this sub method gives a list with variable u will use in the next sub process
 				return[qty_pages,var_subject,rows]
 				print("done sub_getDataApi")
-							
+				print(var_subject)			
 def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, keyId, sKeyId, var_s3_data_path_sync, bucketName):
 		while qty_pages>=0 and rows>0 and i<8:
 			diayhora=('{:%Y%m%d}'.format(datetime.datetime.now()))
@@ -119,8 +119,8 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, ke
 			thefile2="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
 			k.set_contents_from_filename(thefile2)
 			#delete local files
-			with contextlib.suppress(FileNotFoundError):			
-				os.remove(thefile2)
+			#with contextlib.suppress(FileNotFoundError):			
+			os.remove(thefile2)
 			qty_pages=qty_pages-1
 			print("done delete_local_files")
 		print("done sub_moveToS3")
