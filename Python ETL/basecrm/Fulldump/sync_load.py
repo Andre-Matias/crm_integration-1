@@ -53,7 +53,7 @@ loadFromS3toRedshift(target_conf_file,
 	resources,
 	prefix)
 
-syncDealsTable(chandra_conf_file,schema,category,country)
+syncDealsTable(target_conf_file,schema,category,country)
 #Calls, Contacts, Deals, Leads, Line Items, Orders, Products***, Tags, Users
 
 

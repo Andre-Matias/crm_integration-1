@@ -17,7 +17,7 @@ except IndexError:
 # Read conf_file
 ##################################################
 data = json.load(open(conf_file))
-redshift_data = json.load(open(chandra_conf_file))
+redshift_data = json.load(open(target_conf_file))
 
 bucketName = data['bucket_name']
 path_fulldump = data['s3_data_path']
