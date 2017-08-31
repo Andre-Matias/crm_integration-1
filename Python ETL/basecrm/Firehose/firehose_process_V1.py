@@ -97,7 +97,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 							startingPosition = response.json()['meta']['position']
 							if onTop == True:
 								f=0
-							time.sleep(3)
+							#time.sleep(3)
 				#this sub method gives a list with variable u will use in the next sub process
 				return[qty_pages,var_subject,rows]
 				print("done sub_getDataApi")
@@ -136,7 +136,7 @@ def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
 		list_return_sub_getDataApi = sub_getDataApi(listatoken, lista, i, var_token, var_category, var_country, var_subject)	
 		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, keyId, sKeyId, var_s3_data_path_sync, bucketName)	
 		#next token		
-		time.sleep(10)
+		time.sleep(1)
 		print("done subject_sourceToS3")
 		print(var_subject)
 		i=i+1
