@@ -160,7 +160,7 @@ def syncDealsTable(conf_file,schema,category,country):
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_deals AS p_data "\
 			"ON (l_data.id = p_data.id) "\
-			"WHERE l_data.meta_event_time > p_data.meta_event_time "\
+			"WHERE l_data.meta_event_time > p_data.meta_event_time OR p_data.meta_event_time is null "\
 			") "\
 			"select "\
 			"'%(country)s' as base_account_country, "\
@@ -215,16 +215,81 @@ def syncContactsTable(conf_file,schema,category,country):
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
-	cur.execute("...")
+	cur.execute("CREATE OR REPLACE VIEW %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view AS ( "\
+			"WITH latest_changes AS ( "\
+			"SELECT sync_data.* "\
+			"FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s AS sync_data "\
+			"INNER JOIN "\
+			"(SELECT "\
+			"id, "\
+			"max(meta_sequence) AS max_meta_sequence "\
+			"FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s "\
+			"GROUP BY id) AS latest_data "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"), "\
+			"to_update_or_add AS ( "\
+			"SELECT l_data.* "\
+			"FROM latest_changes AS l_data "\
+			"LEFT JOIN %(schema)s.stg_d_base_contacts AS p_data "\
+			"ON (l_data.id = p_data.id) "\
+			"WHERE (l_data.meta_event_time > p_data.meta_event_time OR p_data.meta_event_time is null) "\
+			") "\
+			"select "\
+			"'%(country)s' as base_account_country, "\
+			"'%(category)s' as base_account_category, "\
+			"to_update_or_add.meta_event_type, "\
+			"to_update_or_add.meta_event_time, "\
+			"to_update_or_add.id, "\
+			"to_update_or_add.creator_id, "\
+			"to_update_or_add.contact_id, "\
+			"to_update_or_add.created_at, "\
+			"to_update_or_add.meta_event_time, "\
+			"to_update_or_add.title, "\
+			"to_update_or_add.name, "\
+			"to_update_or_add.first_name, "\
+			"to_update_or_add.last_name, "\
+			"to_update_or_add.description, "\
+			"to_update_or_add.industry, "\
+			"to_update_or_add.website, "\
+			"to_update_or_add.email, "\
+			"to_update_or_add.phone, "\
+			"to_update_or_add.mobile, "\
+			"to_update_or_add.fax, "\
+			"to_update_or_add.twitter, "\
+			"to_update_or_add.facebook, "\
+			"to_update_or_add.linkedin, "\
+			"to_update_or_add.skype, "\
+			"to_update_or_add.owner_id, "\
+			"to_update_or_add.is_organization, "\
+			"to_update_or_add.address, "\
+			"to_update_or_add.custom_fields_values, "\
+			"to_update_or_add.customer_status, "\
+			"to_update_or_add.prospect_status, "\
+			"to_update_or_add.tags "\
+			"from to_update_or_add "\
+			"); "\
+			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE id IN ( "\
+	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_base_contacts_debug "\
+			"( "\
+			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
+			"DROP VIEW %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view;"
+		% {
+		'category':category,
+		'country':country,
+		'schema':schema
+		}	
+	)
 	conn.commit()
 
 	#Close connection
 	cur.close()
 	conn.close()
 
+
+
 # TODO
 # sync calls
-# sync contacts
 # sync leads
 # sync line items
 # sync orders
