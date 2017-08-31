@@ -268,8 +268,11 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
-			"DELETE FROM %(schema)s.stg_d_base_contacts_debug WHERE id IN ( "\
+			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE id IN ( "\
 	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_contacts "\
+			"( "\
+			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_contacts_debug "\
 			"( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
