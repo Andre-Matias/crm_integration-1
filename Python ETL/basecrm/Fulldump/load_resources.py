@@ -270,7 +270,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"); "\
 			"DELETE FROM %(schema)s.stg_d_base_contacts_debug WHERE id IN ( "\
 	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
-			"INSERT INTO %(schema)s.stg_d_base_base_contacts_debug "\
+			"INSERT INTO %(schema)s.stg_d_base_contacts_debug "\
 			"( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
 			"DROP VIEW %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view;"
