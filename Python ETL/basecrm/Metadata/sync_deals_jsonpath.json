@@ -1,0 +1,31 @@
+{
+	"jsonpaths": [
+		"$['data']['owner_id']",
+		"$['data']['created_at']",
+		"$['data']['hot']",
+		"$['data']['contact_id']",
+		"$['data']['estimated_close_date']",
+		"$['data']['customized_win_likelihood']",
+		"$['data']['last_stage_change_by_id']",
+		"$['data']['last_stage_change_at']",
+		"$['data']['currency']",
+		"$['data']['id']",
+		"$['data']['value']",
+		"$['data']['loss_reason_id']",
+		"$['data']['stage_id']",		
+		"$['data']['dropbox_email']",
+		"$['data']['tags']",
+		"$['data']['custom_field_values']",
+		"$['data']['organization_id']",
+		"$['data']['name']",
+		"$['data']['creator_id']",
+		"$['data']['source_id']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",		
+		"$['meta']['event_type']",
+		"$['meta']['previous']",		
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}

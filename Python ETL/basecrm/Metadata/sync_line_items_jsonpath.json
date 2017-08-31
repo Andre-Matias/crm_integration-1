@@ -1,0 +1,23 @@
+{
+	"jsonpaths": [
+		"$['data']['quantity']",
+		"$['data']['description']",
+		"$['data']['created_at']",
+		"$['data']['variation']",
+		"$['data']['price']",
+		"$['data']['product_id']",
+		"$['data']['name']",
+		"$['data']['currency']",
+		"$['data']['id']",
+		"$['data']['sku']",
+		"$['data']['deal_id']",
+		"$['data']['value']",
+		"$['data']['order_id']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",
+		"$['meta']['event_type']",				
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}

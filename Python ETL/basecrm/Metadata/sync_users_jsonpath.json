@@ -1,0 +1,18 @@
+{
+	"jsonpaths": [
+		"$['data']['role']",
+		"$['data']['name']",
+		"$['data']['created_at']",
+		"$['data']['id']",
+		"$['data']['confirmed']",
+		"$['data']['email']",
+		"$['data']['status']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",
+		"$['meta']['event_type']",		
+		"$['meta']['previous']",		
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}

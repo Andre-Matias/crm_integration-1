@@ -209,6 +209,19 @@ def syncDealsTable(conf_file,schema,category,country):
 	cur.close()
 	conn.close()
 
+
+def syncContactsTable(conf_file,schema,category,country):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	### CREATE VIEW WITH NEW DATA
+	cur.execute("...")
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
 # TODO
 # sync calls
 # sync contacts

@@ -1,0 +1,24 @@
+{
+	"jsonpaths": [
+		"$['data']['summary']",
+		"$['data']['made_at']",
+		"$['data']['outcome_id']",
+		"$['data']['incoming']",
+		"$['data']['recording_url']",
+		"$['data']['associated_deals_ids']",
+		"$['data']['missed']",
+		"$['data']['resource_type']",
+		"$['data']['created_at']",
+		"$['data']['duration']",
+		"$['data']['user_id']",
+		"$['data']['resource_id']",
+		"$['data']['phone_number']",
+		"$['data']['id']",
+		"$['meta']['event_cause']",		
+		"$['meta']['sequence']",
+		"$['meta']['event_id']",
+		"$['meta']['event_type']",				
+		"$['meta']['type']",
+		"$['meta']['event_time']"
+    ]
+}
