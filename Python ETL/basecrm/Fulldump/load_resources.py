@@ -190,12 +190,12 @@ def syncDealsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
+			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
+			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_deals_debug2 WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
 			"AND id IN ( "\
 			"SELECT id FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_debug2( "\
-			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
-			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"DROP VIEW %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view;"
 		% {
@@ -269,13 +269,13 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
-			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
-			"AND id IN ( "\
-	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
-			"INSERT INTO %(schema)s.stg_d_base_contacts "\
+			"INSERT INTO %(schema)s.stg_d_base_contacts_debug "\
 			"( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
-			"INSERT INTO %(schema)s.stg_d_base_contacts_debug "\
+			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
+			"AND id IN ( "\
+			"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_contacts "\
 			"( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
 			"DROP VIEW %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view;"
