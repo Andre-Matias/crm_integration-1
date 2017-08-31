@@ -160,7 +160,7 @@ def syncDealsTable(conf_file,schema,category,country):
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_deals AS p_data "\
 			"ON (l_data.id = p_data.id) "\
-			"WHERE l_data.meta_event_time > p_data.meta_event_time OR p_data.meta_event_time is null "\
+			"WHERE (l_data.meta_event_time > p_data.meta_event_time AND base_account_country = '%(country)s' AND base_account_category = '%(category)s') OR p_data.meta_event_time is null "\
 			") "\
 			"select "\
 			"'%(country)s' as base_account_country, "\
@@ -190,7 +190,8 @@ def syncDealsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
-			"DELETE FROM %(schema)s.stg_d_base_deals_debug2 WHERE id IN ( "\
+			"DELETE FROM %(schema)s.stg_d_base_deals_debug2 WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
+			"AND id IN ( "\
 			"SELECT id FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_debug2( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
@@ -232,7 +233,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_contacts AS p_data "\
 			"ON (l_data.id = p_data.id) "\
-			"WHERE (l_data.meta_event_time > p_data.meta_event_time OR p_data.meta_event_time is null) "\
+			"WHERE ((l_data.meta_event_time > p_data.meta_event_time AND base_account_country = '%(country)s' AND base_account_category = '%(category)s') OR p_data.meta_event_time is null) "\
 			") "\
 			"select "\
 			"'%(country)s' as base_account_country, "\
@@ -268,7 +269,8 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
-			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE id IN ( "\
+			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
+			"AND id IN ( "\
 	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_contacts "\
 			"( "\
