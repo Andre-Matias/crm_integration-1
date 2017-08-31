@@ -4,7 +4,7 @@ import simplejson as json
 from datetime import date
 
 conf_file = sys.argv[1]
-chandra_conf_file = sys.argv[2]
+target_conf_file = sys.argv[2]
 
 #Date of the fulldump yyyy/mm/dd format
 try:
@@ -16,11 +16,12 @@ except IndexError:
 # Read conf_file
 ##################################################
 data = json.load(open(conf_file))
+redshift_data = json.load(open(target_conf_file))
 
 bucketName = data['bucket_name']
 path_fulldump = data['s3_data_path_sync']
 manifest = data['s3_manifest_path']
-schema = data['redshift_schema']
+schema = redshift_data['redshift_schema']
 category = data['category']
 country = data['country']
 resources = data['resources_sync'].split(',')
@@ -30,7 +31,7 @@ prefix = 'sync_'
 # prefix parameter should be 'sync_' or ''
 # Truncate tables before loading the syncs
 ##################################################
-truncateResourceTables(chandra_conf_file,
+truncateResourceTables(target_conf_file,
 	schema,
 	resources,
 	category,
@@ -41,7 +42,7 @@ truncateResourceTables(chandra_conf_file,
 # prefix parameter should be 'sync_' or ''
 # Loads tables with syncs
 ##################################################
-loadFromS3toRedshift(chandra_conf_file, 
+loadFromS3toRedshift(target_conf_file, 
 	schema,
 	category,
 	country,
