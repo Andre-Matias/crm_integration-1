@@ -23,16 +23,16 @@ with open(conf_file) as json_data:
 lista= d['resources_firehose'].split(',')
 print(lista)
 listatoken= d['token_list_firehose'].split(',')
-print(listatoken)
-print(listatoken[0])
-print(listatoken[1])
-print(listatoken[2])
+#print(listatoken)
+#print(listatoken[0])
+#print(listatoken[1])
+#print(listatoken[2])
 i=0
 keyId=d['s3_key']
-print(keyId)
+#print(keyId)
 
 sKeyId=d['s3_skey']
-print(sKeyId)
+#print(sKeyId)
 
 var_s3_data_path_sync=d['s3_data_path_sync']
 print(var_s3_data_path_sync)
@@ -136,7 +136,7 @@ def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
 		list_return_sub_getDataApi = sub_getDataApi(listatoken, lista, i, var_token, var_category, var_country, var_subject)	
 		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, keyId, sKeyId, var_s3_data_path_sync, bucketName)	
 		#next token		
-		time.sleep(1)
+		#time.sleep(1)
 		print("done subject_sourceToS3")
 		print(var_subject)
 		i=i+1
