@@ -243,7 +243,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.creator_id, "\
 			"to_update_or_add.contact_id, "\
 			"to_update_or_add.created_at, "\
-			"to_update_or_add.meta_event_time, "\
+			"to_update_or_add.meta_event_time as updated_at, "\
 			"to_update_or_add.title, "\
 			"to_update_or_add.name, "\
 			"to_update_or_add.first_name, "\
@@ -268,7 +268,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
-			"DELETE FROM %(schema)s.stg_d_base_contacts WHERE id IN ( "\
+			"DELETE FROM %(schema)s.stg_d_base_contacts_debug WHERE id IN ( "\
 	    	"SELECT id FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_base_contacts_debug "\
 			"( "\
