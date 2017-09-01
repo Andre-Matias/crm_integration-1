@@ -581,7 +581,7 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
 			orders_data['category'] = category
 			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
 			# Request the line items for this order_id
-			get_order_line_items(orders_data['data']['id'],token,output_line_items,country,category)
+			get_order_line_items(orders_data['data']['id'],orders_data['data']['deal_id'],token,output_line_items,country,category)
 		
 
 		#Close gz file		
@@ -619,7 +619,7 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1		
 
-def get_order_line_items(order_id,token,file,country,category):
+def get_order_line_items(order_id,deal_id,token,file,country,category):
 
 	aux = 1
 	while 1:
@@ -657,6 +657,7 @@ def get_order_line_items(order_id,token,file,country,category):
 			line_items_data['data']['country'] = country
 			line_items_data['data']['category'] = category
 			line_items_data['data']['order_id'] = order_id
+			line_items_data['data']['deal_id'] = deal_id
 			file.write(json.dumps(line_items_data,use_decimal=True) + "\n")
 		
 		#Next page iterate
