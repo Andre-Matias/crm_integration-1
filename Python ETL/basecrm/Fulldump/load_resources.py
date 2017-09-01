@@ -212,6 +212,7 @@ def syncDealsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_deals_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_debug( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
@@ -292,6 +293,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_contacts_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_contacts_debug "\
 			"( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s_view); "\
@@ -370,6 +372,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 			"to_update_or_add.tags "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_leads_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_leads_debug "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_leads_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_leads WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
@@ -433,6 +436,7 @@ def syncUsersTable(conf_file,schema,category,country):
 			"END as deleted_at "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_users_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_users_debug "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_users_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_users WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
@@ -498,6 +502,7 @@ def syncCallsTable(conf_file,schema,category,country):
 			"to_update_or_add.resource_type "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_calls_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_calls_debug "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_calls WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
@@ -555,6 +560,7 @@ def syncTagsTable(conf_file,schema,category,country):
 			"to_update_or_add.resource_type "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_tags_debug; "\
 			"INSERT INTO %(schema)s.stg_d_base_tags_debug "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_tags_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_tags WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
@@ -611,6 +617,9 @@ def syncOrdersTable(conf_file,schema,category,country):
 			"to_update_or_add.meta_event_time as updated_at "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_orders_debug; "\
+			"INSERT INTO %(schema)s.stg_d_base_orders_debug "\
+			"(SELECT * FROM %(schema)s.sync_stg_d_base_orders_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_orders "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_orders_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_orders WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
@@ -675,6 +684,9 @@ def syncLineItemsTable(conf_file,schema,category,country):
 			"to_update_or_add.meta_event_time as updated_at "\
 			"from to_update_or_add "\
 			"); "\
+			"TRUNCATE TABLE %(schema)s.stg_d_base_line_items_debug; "\
+			"INSERT INTO %(schema)s.stg_d_base_line_items_debug "\
+			"(SELECT * FROM %(schema)s.sync_stg_d_base_line_items_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_line_items "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_line_items_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_line_items WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
