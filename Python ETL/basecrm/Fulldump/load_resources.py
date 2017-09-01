@@ -372,7 +372,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 	cur.close()
 	conn.close()
 
-def syncUsersTable(conf_file,schema,category,country):
+# def syncUsersTable(conf_file,schema,category,country):
 	
 	
 # TODO
@@ -381,4 +381,3 @@ def syncUsersTable(conf_file,schema,category,country):
 # sync orders
 # sync tags
 # sync users
-
