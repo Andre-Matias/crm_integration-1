@@ -192,10 +192,10 @@ def syncDealsTable(conf_file,schema,category,country):
 			"); "\
 			"INSERT INTO %(schema)s.stg_d_base_deals_history( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
-			"DELETE FROM %(schema)s.stg_d_base_deals_debug2 WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
+			"DELETE FROM %(schema)s.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
 			"AND id IN ( "\
 			"SELECT id FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
-			"INSERT INTO %(schema)s.stg_d_base_deals_debug2( "\
+			"INSERT INTO %(schema)s.stg_d_base_deals( "\
 			"SELECT * FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view); "\
 			"DROP VIEW %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s_view;"
 		% {
