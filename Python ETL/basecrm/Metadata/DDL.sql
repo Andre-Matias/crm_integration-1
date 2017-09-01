@@ -324,6 +324,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_line_items"
 	,"sku" VARCHAR(100) ENCODE lzo
 	,"description" VARCHAR(5000) ENCODE lzo
 	,"order_id" INTEGER ENCODE lzo
+	,"deal_id" INTEGER ENCODE lzo
 	,"value" DOUBLE PRECISION   ENCODE bytedict
 	,"price" DOUBLE PRECISION   ENCODE bytedict
 	,"currency" VARCHAR(10) ENCODE lzo
