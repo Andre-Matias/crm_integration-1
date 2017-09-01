@@ -23,16 +23,10 @@ with open(conf_file) as json_data:
 lista= d['resources_firehose'].split(',')
 print(lista)
 listatoken= d['token_list_firehose'].split(',')
-print(listatoken)
-print(listatoken[0])
-print(listatoken[1])
-print(listatoken[2])
 i=0
 keyId=d['s3_key']
-print(keyId)
-
 sKeyId=d['s3_skey']
-print(sKeyId)
+
 
 var_s3_data_path_sync=d['s3_data_path_sync']
 print(var_s3_data_path_sync)
@@ -89,7 +83,6 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 							    item['data']['custom_field'] = method_convert_custom_fields(item['data']['custom_field_values'])
 							  if 'tags' in item['data']:
 							    item['data']['tags'] = method_convert_tags(item['data']['tags'])
-							  #file = open(thefile,"a")
 							  file = (gzip.open(thefile, mode="a"))
 							  file.write(json.dumps(item, indent=4).encode('utf-8'))
 							  file.close()
@@ -97,8 +90,6 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 							startingPosition = response.json()['meta']['position']
 							if onTop == True:
 								f=0
-							time.sleep(3)
-				#this sub method gives a list with variable u will use in the next sub process
 				return[qty_pages,var_subject,rows]
 				print("done sub_getDataApi")
 				print(var_subject)			
@@ -110,33 +101,26 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, ke
 			mes=('{:%m}'.format(datetime.datetime.now()))
 			dia=('{:%d}'.format(datetime.datetime.now()))
 			path = str(var_s3_data_path_sync)+str(var_subject)+"/"+anio+"/"+mes+"/"+dia+"/"
-			delimiter='/'
 			full_key_name = os.path.join(path, fileName)
 			conn = boto.connect_s3(keyId,sKeyId)
 			bucket = conn.get_bucket(bucketName)
 			k = bucket.new_key(full_key_name)
 			k.key=full_key_name
 			thefile2="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
-			k.set_contents_from_filename(thefile2)
-			#delete local files
-			#with contextlib.suppress(FileNotFoundError):			
+			k.set_contents_from_filename(thefile2)			
 			os.remove(thefile2)
 			qty_pages=qty_pages-1
 			print("done delete_local_files")
 		print("done sub_moveToS3")
 #main process
 def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
-	#for objets_listaone in listatoken:  dont use it because i have one row only
 	var_token=listatoken[0]
 	var_category=listatoken[1]
 	var_country=listatoken[2]
 	for object_in_lista in lista:
 		var_subject=str(lista[i])
-		#call to methods
 		list_return_sub_getDataApi = sub_getDataApi(listatoken, lista, i, var_token, var_category, var_country, var_subject)	
-		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, keyId, sKeyId, var_s3_data_path_sync, bucketName)	
-		#next token		
-		time.sleep(10)
+		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, keyId, sKeyId, var_s3_data_path_sync, bucketName)
 		print("done subject_sourceToS3")
 		print(var_subject)
 		i=i+1

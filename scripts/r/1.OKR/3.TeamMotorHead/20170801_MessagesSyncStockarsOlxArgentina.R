@@ -78,46 +78,46 @@ rawStockarsPoseidonMessages <- dfRequestDB
 
 rm("dfRequestDB")
 
-# connect to stockars ---------------------------------------------------------
-
-dbUsername <- "biuser"
-dbPassword <- biUserPassword
-dbHost <- "172.61.11.31"
-dbPort <- "3306"
-dbName <- "crm_cars_ar"
-
-sshUser <- "biuser"
-sshHost <- "52.33.194.191"
-sshPort <- "10022"
-
-dbLocalPort <- 10003
-dbLocalHost <- "127.0.0.1"
-
-system("killall ssh", wait=FALSE)
-
-cmdSSH <-
-  paste0(
-    "ssh -i", " ",  sshKeyPath, " ", sshUser, "@", sshHost, " ", "-p", " ", 
-    sshPort, " ", "-L", " ",  dbLocalPort, ":", dbHost ,":", dbPort," ", "-N"
-  )
-
-system(cmdSSH, wait=FALSE)
-
-Sys.sleep(5)
-conDB <-  dbConnect(RMySQL::MySQL(), username = dbUsername,
-                    password = dbPassword , host = dbLocalHost,
-                    port = dbLocalPort , dbname = dbName)
-
-sqlCmd <- 
-  "SELECT * FROM message A 
-LEFT JOIN
-(SELECT id_thread, partner_name, id_product FROM message_thread) B
-ON A.id_thread = B.id_thread
-WHERE message_date >= '2017-01-01';
-"
-
-dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
-rawStockarsMessages <- as.data.frame(dfSqlCmd)
+  # connect to stockars ---------------------------------------------------------
+  
+  dbUsername <- "biuser"
+  dbPassword <- biUserPassword
+  dbHost <- "172.61.11.31"
+  dbPort <- "3306"
+  dbName <- "crm_cars_ar"
+  
+  sshUser <- "biuser"
+  sshHost <- "52.33.194.191"
+  sshPort <- "10022"
+  
+  dbLocalPort <- 10003
+  dbLocalHost <- "127.0.0.1"
+  
+  system("killall ssh", wait=FALSE)
+  
+  cmdSSH <-
+    paste0(
+      "ssh -i", " ",  sshKeyPath, " ", sshUser, "@", sshHost, " ", "-p", " ", 
+      sshPort, " ", "-L", " ",  dbLocalPort, ":", dbHost ,":", dbPort," ", "-N"
+    )
+  
+  system(cmdSSH, wait=FALSE)
+  
+  Sys.sleep(5)
+  conDB <-  dbConnect(RMySQL::MySQL(), username = dbUsername,
+                      password = dbPassword , host = dbLocalHost,
+                      port = dbLocalPort , dbname = dbName)
+  
+  sqlCmd <- 
+    "SELECT * FROM message A 
+  LEFT JOIN
+  (SELECT id_thread, partner_name, id_product FROM message_thread) B
+  ON A.id_thread = B.id_thread
+  WHERE message_date >= '2017-01-01';
+  "
+  
+  dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
+  rawStockarsMessages <- as.data.frame(dfSqlCmd)
 
 sqlCmd <- 
 "

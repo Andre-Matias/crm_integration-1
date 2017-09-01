@@ -36,7 +36,7 @@ library("dplyr")
 library("dtplyr")
 library("magrittr")
 library("RPostgreSQL")
-library("feather")
+library("scales")
 library("aws.s3")
 
 # connect to Triton Silver ----------------------------------------------------
@@ -53,7 +53,7 @@ library("aws.s3")
 #     password = myTritonPass
 #   )
 
-# get listings ----------------------------------------------------------------
+# get live listings in OLX India exported from Stockars -----------------------
 # requestDB <- 
 #   dbSendQuery(
 #     conDB,
@@ -71,7 +71,7 @@ library("aws.s3")
 # 
 # rawStockarsListingsInOlx <- dfRequestDB
 
-# get replies -----------------------------------------------------------------
+# get replies to OLX India cars categories listings exported from Stockars-----
 # requestDB <- 
 #   dbSendQuery(
 #     conDB,
@@ -121,7 +121,7 @@ rawStockarsListingsInOlx <-
             bucket = "pyrates-data-ocean/GV-PI97"
             )
 
-# connect to poseidon ---------------------------------------------------------
+# connect to poseidon to get LATAM data (only leads) --------------------------
 drv <- dbDriver("PostgreSQL")
 
 conDB <- 
@@ -180,34 +180,243 @@ dbDisconnect(conDB)
 rawStockarsLeadsOnPoseidon <- dfRequestDB
 
 
+conDB <- 
+  dbConnect(
+    drv, 
+    host="bi-analytics.cnsuxis6zqxr.us-west-2.redshift.amazonaws.com",
+    port = "5439",
+    dbname = "analytics",
+    user = userPoseidon,
+    password = passPoseidon
+  )
 
-SELECT F.source, COUNT(*) QtyMessages FROM (
-  SELECT *
-    FROM
-  (
-    SELECT *
-      FROM ods_naspers.ft_h_conversations
-    WHERE item_id IN (
-      SELECT item_id
-      FROM ods_naspers.ft_h_listing AS A
-      WHERE A.country_id IN (32)
-      AND A.category_l2_id = 378
-      AND device_source_id = 27
-      AND A.platform_id = 1 AND A.live_id = 1
-      AND A.time_id BETWEEN '2017-07-01 00:00:00' AND '2017-07-31 00:00:00'
+requestDB <- 
+  dbSendQuery(
+    conDB, paste(
+          "SELECT F.source, COUNT(*) QtyMessages FROM (",
+          "SELECT *",
+          "FROM",
+          "(",
+          "SELECT *",
+          "FROM ods_naspers.ft_h_conversations",
+          "WHERE item_id IN (",
+          "SELECT item_id",
+          "FROM ods_naspers.ft_h_listing AS A",
+          "WHERE A.country_id IN (32)",
+          "AND A.category_l2_id = 378",
+          "AND device_source_id = 27",
+          "AND A.platform_id = 1 AND A.live_id = 1",
+          "AND A.time_id BETWEEN '2017-07-01 00:00:00' AND '2017-07-31 00:00:00'",
+          ")",
+          ") A",
+          "INNER JOIN (SELECT *",
+          "    FROM ods_naspers.ft_h_conversations",
+          "  WHERE country_id = 32) C",
+          "ON A.item_id = C.item_id",
+          "INNER JOIN (SELECT *",
+          "    FROM ods_naspers.ft_h_messages",
+          "  WHERE country_id = 32) M",
+          "ON C.conversation_id = M.conversation_id",
+          "WHERE C.seller_id = M.sender_id",
+          ")F",
+          "WHERE message_text != 'este producto ya no se encuentra disponible.'",
+          "GROUP BY 1;"
+  )
+  )
+
+dfRequestDB <- dbFetch(requestDB)
+dbClearResult(dbListResults(conDB)[[1]])
+dbDisconnect(conDB)
+
+rawStockarsRepliesFromSellers<- dfRequestDB
+
+
+conDB <- 
+  dbConnect(
+    drv, 
+    host="bi-analytics.cnsuxis6zqxr.us-west-2.redshift.amazonaws.com",
+    port = "5439",
+    dbname = "analytics",
+    user = userPoseidon,
+    password = passPoseidon
+  )
+
+requestDB <- 
+  dbSendQuery(
+    conDB, paste(
+      "SELECT F.source, COUNT(*) QtyMessages FROM (",
+      "SELECT *",
+      "FROM",
+      "(",
+      "SELECT *",
+      "FROM ods_naspers.ft_h_conversations",
+      "WHERE item_id IN (",
+      "SELECT item_id",
+      "FROM ods_naspers.ft_h_listing AS A",
+      "WHERE A.country_id IN (32)",
+      "AND A.category_l2_id = 378",
+      "AND device_source_id = 27",
+      "AND A.platform_id = 1 AND A.live_id = 1",
+      "AND A.time_id BETWEEN '2017-07-01 00:00:00' AND '2017-07-31 00:00:00'",
+      ")",
+      ") A",
+      "INNER JOIN (SELECT *",
+      "    FROM ods_naspers.ft_h_conversations",
+      "  WHERE country_id = 32) C",
+      "ON A.item_id = C.item_id",
+      "INNER JOIN (SELECT *",
+      "    FROM ods_naspers.ft_h_messages",
+      "  WHERE country_id = 32) M",
+      "ON C.conversation_id = M.conversation_id",
+      "WHERE C.seller_id != M.sender_id",
+      ")F",
+      "WHERE message_text != 'este producto ya no se encuentra disponible.'",
+      "GROUP BY 1;"
     )
-  ) A
-  INNER JOIN (SELECT *
-                FROM ods_naspers.ft_h_conversations
-              WHERE country_id = 32) C
-  ON A.item_id = C.item_id
-  INNER JOIN (SELECT *
-                FROM ods_naspers.ft_h_messages
-              WHERE country_id = 32) M
-  ON C.conversation_id = M.conversation_id
-  WHERE C.seller_id = M.sender_id
-)F
-GROUP BY 1
-;
+  )
+
+dfRequestDB <- dbFetch(requestDB)
+dbClearResult(dbListResults(conDB)[[1]])
+dbDisconnect(conDB)
+
+rawStockarsRepliesFromBuyers<- dfRequestDB
 
 
+# OLX India replies type ------------------------------------------------------
+
+  dfOlxRepliesType <-
+    rawStockarsListingsInOlxReplies %>%
+    group_by(action_sk) %>%
+    summarise (
+      qtyLeadsByType = sum(n())
+    ) %>%
+    mutate(
+      perLeadsByType = percent(round(qtyLeadsByType / sum(qtyLeadsByType),2))
+    )
+    
+dfOlxRepliesByDevice <-
+  rawStockarsListingsInOlxReplies %>%
+  group_by(reply_channel_sk) %>%
+  summarise (
+    qtyLeadsByDevice = sum(n())
+  ) %>%
+  mutate(
+    perLeadsByDevice =
+      percent(round(qtyLeadsByDevice / sum(qtyLeadsByDevice),2))
+  )
+
+dfOlxRepliesByDeviceAndType <-
+  rawStockarsListingsInOlxReplies %>%
+  group_by(action_sk, reply_channel_sk) %>%
+  summarise (
+    qtyLeadsByDeviceAndType = sum(n())
+  ) %>%
+  group_by()%>%
+  mutate(
+    perLeadsByDeviceAndType = 
+      percent(round(qtyLeadsByDeviceAndType / sum(qtyLeadsByDeviceAndType),2))
+  )
+
+# OLX Argentina replies type ----------------------------------------------------
+
+dfOlxRepliesTypeArgentina <-
+  rawStockarsLeadsOnPoseidon %>%
+  group_by(reply_type_desc)  %>%
+  summarise (
+    qtyLeadsByType = sum(qtyleads)
+  ) %>%
+  mutate(
+    perLeadsByType = percent(round(qtyLeadsByType / sum(qtyLeadsByType),2))
+  )
+
+dfOlxRepliesByDeviceArgentina <-
+  rawStockarsLeadsOnPoseidon %>%
+  group_by(device_source_desc) %>%
+  summarise (
+    qtyLeadsByDevice = sum(qtyleads)
+  ) %>%
+  mutate(
+    perLeadsByDevice =
+      percent(round(qtyLeadsByDevice / sum(qtyLeadsByDevice),2))
+  )
+
+dfOlxRepliesByDeviceAndTypeArgetina <-
+  rawStockarsLeadsOnPoseidon %>%
+  group_by(reply_type_desc, device_source_desc) %>%
+  summarise (
+    qtyLeadsByDeviceAndType = sum(qtyleads)
+  ) %>%
+  group_by()%>%
+  mutate(
+    perLeadsByDeviceAndType = 
+      percent(round(qtyLeadsByDeviceAndType / sum(qtyLeadsByDeviceAndType),2))
+  )
+
+# OLX Argentina dealer's responses --------------------------------------------
+
+dfOlxArgentinaDealersResponses <-
+  rawStockarsRepliesFromSellers %>%
+  filter(!is.na(source)) %>%
+  mutate(perMessages = 
+           percent(round(qtymessages /sum(qtymessages),2)))
+
+
+# OLX Argentina buyers's responses --------------------------------------------
+dfOlxArgentinaBuyersResponses <-
+  rawStockarsRepliesFromBuyers %>%
+  filter(!is.na(source)) %>%
+  mutate(perMessages = 
+           percent(round(qtymessages /sum(qtymessages),2)))
+
+# connect to stockars ---------------------------------------------------------
+
+dbUsername <- "biuser"
+dbPassword <- biUserPassword
+dbHost <- "172.61.11.31"
+dbPort <- "3306"
+dbName <- "crm_cars_ar"
+
+sshUser <- "biuser"
+sshHost <- "52.33.194.191"
+sshPort <- "10022"
+
+dbLocalPort <- 10003
+dbLocalHost <- "127.0.0.1"
+
+system("killall ssh", wait=FALSE)
+
+cmdSSH <-
+  paste0(
+    "ssh -i", " ",  sshKeyPath, " ", sshUser, "@", sshHost, " ", "-p", " ", 
+    sshPort, " ", "-L", " ",  dbLocalPort, ":", dbHost ,":", dbPort," ", "-N"
+  )
+
+system(cmdSSH, wait=FALSE)
+
+Sys.sleep(5)
+conDB <-  dbConnect(RMySQL::MySQL(), username = dbUsername,
+                    password = dbPassword , host = dbLocalHost,
+                    port = dbLocalPort , dbname = dbName)
+
+sqlCmd <- 
+  "SELECT * FROM message A 
+  LEFT JOIN
+  (SELECT id_thread, partner_name, id_product FROM message_thread) B
+  ON A.id_thread = B.id_thread
+  WHERE 
+  message_date >= '2017-07-01 00:00:00' 
+  AND message_date < '2017-08-01 00:00:00';
+  "
+
+dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
+rawStockarsMessages <- as.data.frame(dfSqlCmd)
+
+
+dfSentMessagesFromStockars <-
+  rawStockarsMessages[ ,c("message_date", "direction", "partner_name")] %>%
+  filter(direction == 0, partner_name == 'olx') %>%
+  mutate(MessageDay = as.Date(message_date)) %>%
+  group_by() %>%
+  summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
+
+dfOlxArgentinaDealersResponsesTotal <-  sum(dfOlxArgentinaDealersResponses$qtymessages)
