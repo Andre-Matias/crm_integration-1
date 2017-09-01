@@ -1,5 +1,5 @@
 import requests
-import json
+import simplejson as json
 import time
 import datetime
 import boto
