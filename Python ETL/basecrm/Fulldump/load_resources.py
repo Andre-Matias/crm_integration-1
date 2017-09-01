@@ -431,11 +431,74 @@ def syncUsersTable(conf_file,schema,category,country):
 
 	#Close connection
 	cur.close()
-	conn.close()	
+	conn.close()
 	
+def syncCallsTable(conf_file,schema,category,country):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	### CREATE VIEW WITH NEW DATA
+	cur.execute(
+			"CREATE OR REPLACE VIEW %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view AS ( "\
+			"WITH latest_changes AS ( "\
+			"SELECT sync_data.* "\
+			"FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s AS sync_data "\
+			"INNER JOIN "\
+			"(SELECT "\
+			"id, "\
+			"max(meta_sequence) AS max_meta_sequence "\
+			"FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s "\
+			"GROUP BY id) AS latest_data "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"), "\
+			"to_update_or_add AS ( "\
+			"SELECT l_data.* "\
+			"FROM latest_changes AS l_data "\
+			"LEFT JOIN %(schema)s.stg_d_base_calls AS p_data "\
+			"ON (l_data.id = p_data.id) "\
+			"WHERE ((l_data.meta_event_time > p_data.meta_event_time AND base_account_country = '%(country)s' AND base_account_category = '%(category)s') OR p_data.meta_event_time is null) "\
+			") "\
+			"select "\
+			"'%(country)s' as base_account_country, "\
+			"'%(category)s' as base_account_category, "\
+			"to_update_or_add.meta_event_type, "\
+			"to_update_or_add.meta_event_time, "\
+			"to_update_or_add.id, "\
+			"to_update_or_add.user_id, "\
+			"to_update_or_add.phone_number, "\
+			"to_update_or_add.missed, "\
+			"to_update_or_add.associated_deals_ids, "\
+			"to_update_or_add.resource_id, "\
+			"to_update_or_add.meta_event_time as updated_at, "\
+			"to_update_or_add.made_at, "\
+			"to_update_or_add.summary, "\
+			"to_update_or_add.outcome_id, "\
+			"to_update_or_add.duration, "\
+			"to_update_or_add.incoming, "\
+			"to_update_or_add.recording_url, "\
+			"to_update_or_add.resource_type "\
+			"from to_update_or_add "\
+			"); "\
+			"INSERT INTO %(schema)s.stg_d_base_calls_debug "\
+			"(SELECT * FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
+			"DELETE FROM %(schema)s.stg_d_base_calls WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
+			"AND id IN (SELECT id FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
+			"INSERT INTO %(schema)s.stg_d_base_calls "\
+			"(SELECT * FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
+			"DROP VIEW %(schema)s.sync_stg_d_base_users_%(category)s_%(country)s_view;"
+		% {
+		'category':category,
+		'country':country,
+		'schema':schema
+		}	
+	)
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
 # TODO
-# sync calls
 # sync line items
 # sync orders
 # sync tags
-# sync users
