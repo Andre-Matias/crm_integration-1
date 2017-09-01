@@ -416,6 +416,8 @@ def syncUsersTable(conf_file,schema,category,country):
 			"END as deleted_at "\
 			"from to_update_or_add "\
 			"); "\
+			"INSERT INTO %(schema)s.stg_d_base_users_debug "\
+			"(SELECT * FROM %(schema)s.sync_stg_d_base_users_%(category)s_%(country)s_view); "\
 			"DELETE FROM %(schema)s.stg_d_base_users WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
 			"AND id IN (SELECT id FROM %(schema)s.sync_stg_d_base_users_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_users "\
