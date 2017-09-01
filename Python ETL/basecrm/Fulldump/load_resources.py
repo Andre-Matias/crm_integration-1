@@ -536,7 +536,7 @@ def syncTagsTable(conf_file,schema,category,country):
 			"to_update_or_add.resource_type "\
 			"from to_update_or_add "\
 			"); "\
-			"INSERT INTO %(schema)s.stg_d_base_tags "\
+			"INSERT INTO %(schema)s.stg_d_base_tags_debug "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_tags_%(category)s_%(country)s_view); "\
 			"DROP VIEW %(schema)s.sync_stg_d_base_tags_%(category)s_%(country)s_view; "\
 			"DELETE FROM %(schema)s.stg_d_base_tags WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s' "\
