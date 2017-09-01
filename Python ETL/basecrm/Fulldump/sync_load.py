@@ -59,7 +59,8 @@ loadFromS3toRedshift(target_conf_file,
 syncDealsTable(target_conf_file,schema,category,country)
 syncContactsTable(target_conf_file,schema,category,country)
 syncLeadsTable(target_conf_file,schema,category,country)
-#Calls, Deals, Leads, Line Items, Orders, Products***, Tags, Users
+syncUsersTable(target_conf_file,schema,category,country)
+#Calls, Deals, Line Items, Orders, Products***, Tags, Users
 
 
 

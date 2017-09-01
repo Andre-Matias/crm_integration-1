@@ -373,7 +373,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncUsersTable(conf_file,schema,category,country):
-conn = getChandraConnection(conf_file)
+	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
