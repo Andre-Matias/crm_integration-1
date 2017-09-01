@@ -103,6 +103,21 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	cur.close()
 	conn.close()
 
+def copyDumpToHistoryTable(conf_file,schema,category,country):
+	conn = getChandraConnection(conf_file)
+	cur = conn.cursor()
+
+	### CREATE VIEW WITH NEW DATA
+	cur.execute(
+		"TRUNCATE TABLE rdl_basecrm_v2.stg_d_base_deals_history; "\
+		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals);"
+	)
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
 def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	conn = getChandraConnection(conf_file)
 	cur = conn.cursor()
