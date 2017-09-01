@@ -63,6 +63,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 			except(psycopg2.InternalError):
+				print("No file found")
 				pass
 	if prefix == 'sync_':
 		for resource in resources:
@@ -94,6 +95,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 			except(psycopg2.InternalError):
+				print("No file found")
 				pass
 	conn.commit()
 
@@ -370,8 +372,9 @@ def syncLeadsTable(conf_file,schema,category,country):
 	cur.close()
 	conn.close()
 
-def syncCallsTable()
-
+def syncUsersTable(conf_file,schema,category,country):
+	
+	
 # TODO
 # sync calls
 # sync line items
