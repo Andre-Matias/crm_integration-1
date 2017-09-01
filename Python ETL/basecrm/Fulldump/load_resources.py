@@ -485,7 +485,7 @@ def syncCallsTable(conf_file,schema,category,country):
 			"AND id IN (SELECT id FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
 			"INSERT INTO %(schema)s.stg_d_base_calls "\
 			"(SELECT * FROM %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view); "\
-			"DROP VIEW %(schema)s.sync_stg_d_base_users_%(category)s_%(country)s_view;"
+			"DROP VIEW %(schema)s.sync_stg_d_base_calls_%(category)s_%(country)s_view;"
 		% {
 		'category':category,
 		'country':country,
