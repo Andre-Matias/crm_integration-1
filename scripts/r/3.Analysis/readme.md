@@ -1,8 +1,7 @@
-# ---
-
 # Analysis
 
 R code used to perform analysis
+***
 
 ## Getting Started
 
