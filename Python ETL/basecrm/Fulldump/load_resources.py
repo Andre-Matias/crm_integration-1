@@ -712,3 +712,67 @@ def syncLineItemsTable(conf_file,schema,category,country):
 	#Close connection
 	cur.close()
 	conn.close()
+
+def copyToAnotherRedshift(source_conf,target_conf,resources):
+	conn = getChandraConnection(source_conf)
+	cur = conn.cursor()
+	credentials = getS3Keys(source_conf)
+	sc_conf = json.load(open(conf_file))
+
+	aux_path = sc_conf['aux_s3_path']
+	schema = sc_conf['redshift_schema']
+
+	#UNLOAD resources data
+	for resource in resources:
+		cur.execute(
+			"UNLOAD ('select * from %(schema)s.stg_d_base_%(resource)s') "\
+			"to 's3://%(aux_path)s/%(resource)s/data_' "\
+			"CREDENTIALS '%(credentials)s' "\
+			"ESCAPE "\
+			"manifest;"
+		% {
+		'schema':schema,
+		'resource':resource,
+		'credentials':credentials,
+		'aux_path':aux_path
+		}		
+	)
+
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
+
+	#LOAD to target redshift
+	conn_target = getChandraConnection(target_conf)
+	cur_target = conn_target.cursor()
+
+	tg_conf = json.load(open(target_conf))
+	tg_schema = tg_conf['redshift_schema']
+
+	for resource in resources:
+		cur_target.execute(
+			"TRUNCATE TABLE %(tg_schema)s.stg_d_base_%(resource)s; "\
+			"COPY %(tg_schema)s.stg_d_base_%(resource)s "\
+			"from 's3://%(aux_path)s/%(resource)s/data_manifest' "\
+			"CREDENTIALS '%(credentials)s' "\
+			"ESCAPE "\
+			"manifest;"
+		% {
+		'tg_schema':tg_schema,
+		'resource':resource,
+		'credentials':credentials,
+		'aux_path':aux_path
+		}	
+	)
+
+	conn_target.commit()	
+
+	cur_target.close()
+	conn_target.close()
+
+
+
+
