@@ -193,9 +193,10 @@ UserSEO$date <- as.POSIXct(UserSEO$date, tz = "WIB")
 UsersStorDirecty$date <- as.POSIXct(UsersStorDirecty$date, tz = "WIB")
 UsersStorPaidy$date <- as.POSIXct(UsersStorPaidy$date, tz = "WIB")
 ## Had to manually add a line to UsersStorPaidy dataframe otherwise cbind doesn't work. I inserted it and put 0 data.
-# UsersStorPaidy<- rbind(UsersStorPaidy,c("2017-08-31", 0))
+# UsersStorPaidy <- rbind(UsersStorPaidy,c("2017-08-31", 0))
 # str(UsersStorPaidy)
-# UsersStorPaidy$users<- as.integer(UsersStorPaidy$users)
+# UsersStorPaidy$users <- as.integer(UsersStorPaidy$users)
+# UsersStorPaidy <- arrange(UsersStorPaidy,date)
 UsersSourcey <- cbind(UserSEO,UsersStorDirecty,UsersStorPaidy)
 UsersSourcey <- UsersSourcey[c(1,2,4,6)]
 ## Had to replace column 6 to 7 to get the right metric because of above manual change.
