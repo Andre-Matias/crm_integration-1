@@ -627,7 +627,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , user_id&#xd;&#xa;-- , category_id&#xd;&#xa; , status&#xd;&#xa; , to_user_id&#xd;&#xa;-- , lat&#xd;&#xa;-- , lon&#xd;&#xa;-- , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;-- , user_agent&#xd;&#xa;-- , created_at&#xd;&#xa;-- , updated_at&#xd;&#xa;-- , deleted_at&#xd;&#xa;-- , null as exactdate&#xd;&#xa;-- , city_id&#xd;&#xa;FROM service_requests</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , user_id&#xd;&#xa;-- , category_id&#xd;&#xa; , status&#xd;&#xa; , to_user_id&#xd;&#xa; ,0.00 as lat&#xd;&#xa; ,0.00 as lon&#xd;&#xa;-- , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;-- , user_agent&#xd;&#xa;-- , created_at&#xd;&#xa;-- , updated_at&#xd;&#xa;-- , deleted_at&#xd;&#xa;-- , null as exactdate&#xd;&#xa;-- , city_id&#xd;&#xa;FROM service_requests</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
