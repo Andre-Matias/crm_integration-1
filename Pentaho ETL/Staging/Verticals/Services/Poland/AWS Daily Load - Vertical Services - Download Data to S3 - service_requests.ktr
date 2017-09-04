@@ -464,12 +464,12 @@
     <hop>
       <from>service_requests</from>
       <to>selec</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>selec</from>
       <to>S3 File Output</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>service_requests 2</from>
@@ -479,7 +479,7 @@
     <hop>
       <from>service_requests 2</from>
       <to>S3 File Output</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
   </order>
   <step>
