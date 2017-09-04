@@ -45,7 +45,7 @@ dbName <- get(paste0("cf", vertical, "DbName"))
 
 
 # -----------------------------------------------------------------------------
-dates <- as.character(seq(as.Date("2017-06-15"), as.Date(Sys.Date()-1), "days"))
+dates <- as.character(seq(as.Date("2017-05-15"), as.Date(Sys.Date()-1), "days"))
 
 files <- list.files(path = '/data/lake/',
                     pattern = paste0('^RDL.*', vertical,'.*','ads_history' ,'.*feather$'),
