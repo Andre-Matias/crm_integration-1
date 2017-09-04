@@ -717,7 +717,7 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn = getChandraConnection(source_conf)
 	cur = conn.cursor()
 	credentials = getS3Keys(source_conf)
-	sc_conf = json.load(open(conf_file))
+	sc_conf = json.load(open(source_conf))
 
 	aux_path = sc_conf['aux_s3_path']
 	schema = sc_conf['redshift_schema']
