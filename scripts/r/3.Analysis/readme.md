@@ -1,11 +1,11 @@
 # Analysis
 
-R code used to perform analysis
+R code used to perform analysis.
 ***
 
 ## Getting Started
 
-Each folder correspond to a specific ticket on JIRA. Look for the ticket for more details on what was requested.
+Each folder corresponds to a specific ticket in JIRA. Look for the ticket for more details on what was requested.
 
 
 ## Contributors
@@ -16,7 +16,7 @@ Each folder correspond to a specific ticket on JIRA. Look for the ticket for mor
 
 ### Credentials
 
-You can import credentials for your projects by running... :
+You can import credentials into your R script by running... :
 
 ```
 Give examples
