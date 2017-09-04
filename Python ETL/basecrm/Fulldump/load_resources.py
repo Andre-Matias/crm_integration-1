@@ -601,7 +601,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 			"(SELECT "\
 			"id, "\
 			"max(meta_sequence) AS max_meta_sequence "\
-			"FROM %(schema)s.sync_stg_d_base_orders_%(category)s_in "\
+			"FROM %(schema)s.sync_stg_d_base_orders_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
