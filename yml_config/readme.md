@@ -1,7 +1,7 @@
 Access DB configurations and credentials with R
 ================
 
-Centralized files with DBs configuration and credentials. Using the **config** package you can:
+Centralized files with DBs configuration and credentials template. Using the **config** package you can:
 
 - access DB configurations and personal credentials quickly within your R script;
 - avoid to include DB personal credentials when pushing R code to Github.  
@@ -19,7 +19,6 @@ Within the folder are included:
 
 #### 1. Pull folder into your local repo 
 
-Make sure to have an up-to-date version of the above files in your local machine.
 
 #### 2. Install **config** package in R
 
