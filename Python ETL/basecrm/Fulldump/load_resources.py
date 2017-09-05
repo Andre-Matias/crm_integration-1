@@ -3,6 +3,7 @@ import numpy as np
 import time
 import datetime
 import simplejson as json
+from boto.s3.connection import S3Connection, Bucket, Key
 
 def getCopySql(schema, table, bucket, manifest, credentials):
     return "COPY %(schema)s.%(table)s\n" \
@@ -713,6 +714,16 @@ def syncLineItemsTable(conf_file,schema,category,country):
 	cur.close()
 	conn.close()
 
+def deletePreviousS3Files(conf_file):
+	conf = json.load(open(conf_file))
+	key = conf['s3_key']
+	skey = conf['s3_skey']
+
+	conn = S3Connection(key, skey)
+	b = Bucket(conn, 'verticals-raw-data')
+	for x in b.list(prefix = 'BaseCRM_v3/Aux/'):
+		x.delete()
+
 def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn = getChandraConnection(source_conf)
 	cur = conn.cursor()
@@ -722,6 +733,8 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 	aux_path = sc_conf['aux_s3_path']
 	schema = sc_conf['redshift_schema']
 
+	### TODO - DELETE S3 PATH BEFORE UNLOADING!!!!
+	deletePreviousS3Files(source_conf)
 	#UNLOAD resources data
 	for resource in resources:
 		cur.execute(
@@ -743,7 +756,6 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 	#Close connection
 	cur.close()
 	conn.close()
-
 
 	#LOAD to target redshift
 	conn_target = getChandraConnection(target_conf)
@@ -772,7 +784,3 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 
 	cur_target.close()
 	conn_target.close()
-
-
-
-
