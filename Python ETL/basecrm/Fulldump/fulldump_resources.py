@@ -306,29 +306,37 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 
 def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
 	
-	print("Getting tasks data")
-	#Iterate for everypage returned by the API
+	print("Getting orders data")
+	
 	aux = 1
-	name = "/home/ubuntu/Reports/tasks_"
+	name = "tasks_"
 	while 1:
-		
-		data = client.tasks.list(page = aux, per_page = 100)
+
+		url = "https://api.getbase.com/v2/tasks"
+		response = requests.get(url,
+			params={'per_page': 100,'page': aux},
+			headers={'Authorization':'Bearer {}'.format(token)})
+
+		if response.status_code != 200:
+	            raise Exception('Request failed with {}'
+	                .format(response.status_code))
+	            return 0
+
+		data = response.json()['items']       
 
 		if len(data) > 0: empty = False
 		else:
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		#Write on local gz file
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
-		#Iterate the list of deals
-		for stage_data in data:
-			stage_data['meta_event_type'] = 'created'
-			stage_data['meta_event_time'] = datetime.now().isoformat()
-			stage_data['country'] = country
-			stage_data['category'] = category
-			output.write(json.dumps(stage_data,use_decimal=True)+"\n")
+		for tasks_data in data:
+			tasks_data['meta_event_type'] = 'created'
+			tasks_data['meta_event_time'] = datetime.now().isoformat()
+			tasks_data['country'] = country
+			tasks_data['category'] = category
+			output.write(json.dumps(tasks_data,use_decimal=True) + "\n")
 
 		#Close gz file		
 		output.close()
@@ -348,9 +356,9 @@ def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
 		
 		#Remove local gz file
 		os.remove(localName)
-		
+
 		#Next page iterate
-		aux += 1
+		aux += 1		
 
 
 
