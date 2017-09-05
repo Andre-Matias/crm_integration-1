@@ -304,7 +304,7 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 
 
 
-def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting orders data")
 	
@@ -315,7 +315,7 @@ def s3_fulldump_tasks(client,keyId,sKeyId,bucketName,path,country,category):
 		url = "https://api.getbase.com/v2/tasks"
 		response = requests.get(url,
 			params={'per_page': 100,'page': aux},
-			headers={'Authorization':'Bearer {}'.format(token)})
+			headers={'Authorization':'Bearer {}'.format(token)},timeout=2000)
 
 		if response.status_code != 200:
 	            raise Exception('Request failed with {}'
