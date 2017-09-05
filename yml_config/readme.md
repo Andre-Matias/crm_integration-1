@@ -17,7 +17,7 @@ Within the folder are included:
 - a `credentials.Rdata` file which contains password for each of the DB defined in the `config.yml` file.
 
 
-#### 1. Pull folder to your local repo 
+#### 1. Pull folder into your local repo 
 
 Make sure to have an up-to-date version of the above files in your local machine.
 
