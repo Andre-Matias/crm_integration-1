@@ -3,6 +3,7 @@ import numpy as np
 import time
 import datetime
 import simplejson as json
+from boto.s3.connection import S3Connection, Bucket, Key
 
 def getCopySql(schema, table, bucket, manifest, credentials):
     return "COPY %(schema)s.%(table)s\n" \
@@ -109,9 +110,16 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 
 	### CREATE VIEW WITH NEW DATA
 	cur.execute(
-		"TRUNCATE TABLE rdl_basecrm_v2.stg_d_base_deals_history; "\
+		"DELETE FROM rdl_basecrm_v2.stg_d_base_deals_history "\
+		" WHERE base_account_country = '%(country)s' " \
+		" AND base_account_category = '%(category)s'; " \
 		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals);"
+		% {
+			'country':country,
+			'category':category
+		} 
 	)
+
 	conn.commit()
 
 	#Close connection
@@ -594,7 +602,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 			"(SELECT "\
 			"id, "\
 			"max(meta_sequence) AS max_meta_sequence "\
-			"FROM %(schema)s.sync_stg_d_base_orders_%(category)s_in "\
+			"FROM %(schema)s.sync_stg_d_base_orders_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
@@ -705,3 +713,74 @@ def syncLineItemsTable(conf_file,schema,category,country):
 	#Close connection
 	cur.close()
 	conn.close()
+
+def deletePreviousS3Files(conf_file):
+	conf = json.load(open(conf_file))
+	key = conf['s3_key']
+	skey = conf['s3_skey']
+
+	conn = S3Connection(key, skey)
+	b = Bucket(conn, 'verticals-raw-data')
+	for x in b.list(prefix = 'BaseCRM_v3/Aux/'):
+		x.delete()
+
+def copyToAnotherRedshift(source_conf,target_conf,resources):
+	conn = getChandraConnection(source_conf)
+	cur = conn.cursor()
+	credentials = getS3Keys(source_conf)
+	sc_conf = json.load(open(source_conf))
+
+	aux_path = sc_conf['aux_s3_path']
+	schema = sc_conf['redshift_schema']
+
+	### TODO - DELETE S3 PATH BEFORE UNLOADING!!!!
+	deletePreviousS3Files(source_conf)
+	#UNLOAD resources data
+	for resource in resources:
+		cur.execute(
+			"UNLOAD ('select * from %(schema)s.stg_d_base_%(resource)s') "\
+			"to 's3://%(aux_path)s/%(resource)s/data_' "\
+			"CREDENTIALS '%(credentials)s' "\
+			"ESCAPE "\
+			"manifest;"
+		% {
+		'schema':schema,
+		'resource':resource,
+		'credentials':credentials,
+		'aux_path':aux_path
+		}		
+	)
+
+	conn.commit()
+
+	#Close connection
+	cur.close()
+	conn.close()
+
+	#LOAD to target redshift
+	conn_target = getChandraConnection(target_conf)
+	cur_target = conn_target.cursor()
+
+	tg_conf = json.load(open(target_conf))
+	tg_schema = tg_conf['redshift_schema']
+
+	for resource in resources:
+		cur_target.execute(
+			"TRUNCATE TABLE %(tg_schema)s.stg_d_base_%(resource)s; "\
+			"COPY %(tg_schema)s.stg_d_base_%(resource)s "\
+			"from 's3://%(aux_path)s/%(resource)s/data_manifest' "\
+			"CREDENTIALS '%(credentials)s' "\
+			"ESCAPE "\
+			"manifest;"
+		% {
+		'tg_schema':tg_schema,
+		'resource':resource,
+		'credentials':credentials,
+		'aux_path':aux_path
+		}	
+	)
+
+	conn_target.commit()	
+
+	cur_target.close()
+	conn_target.close()

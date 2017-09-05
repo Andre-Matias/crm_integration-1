@@ -437,7 +437,7 @@
   <notepads>
   </notepads>
   <connection>
-    <name>test - Fixly Poland Production</name>
+    <name>Fixly Poland Production</name>
     <server>fix-prod-prm-fixdb-bi-repl-public.c4whfvqlkcfd.eu-central-1.rds.amazonaws.com</server>
     <type>POSTGRESQL</type>
     <access>Native</access>
@@ -470,6 +470,16 @@
       <from>selec</from>
       <to>S3 File Output</to>
       <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>service_requests 2</from>
+      <to>selec</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>service_requests 2</from>
+      <to>S3 File Output</to>
+      <enabled>N</enabled>
     </hop>
   </order>
   <step>
@@ -584,12 +594,12 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>test - Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, category_id&#xd;&#xa;, status&#xd;&#xa;, to_user_id&#xd;&#xa;, lat&#xd;&#xa;, lon&#xd;&#xa; , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;-- , address&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , null as exactdate&#xd;&#xa;, city_id&#xd;&#xa;FROM service_requests&#xd;&#xa;</sql>
-    <limit>0</limit>
+    <connection>Fixly Poland Production</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, user_id&#xd;&#xa;, category_id&#xd;&#xa;, status&#xd;&#xa;, to_user_id&#xd;&#xa;, lat&#xd;&#xa;, lon&#xd;&#xa; , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , null as exactdate&#xd;&#xa;, city_id&#xd;&#xa;FROM service_requests</sql>
+    <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
+    <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cluster_schema/>
     <remotesteps>
@@ -601,6 +611,38 @@
     <GUI>
       <xloc>112</xloc>
       <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>service_requests 2</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Fixly Poland Production</connection>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , user_id&#xd;&#xa;-- , category_id&#xd;&#xa; , status&#xd;&#xa; , to_user_id&#xd;&#xa; ,0.00 as lat&#xd;&#xa; ,0.00 as lon&#xd;&#xa; , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa; , user_agent&#xd;&#xa; , created_at&#xd;&#xa; , updated_at&#xd;&#xa; , deleted_at&#xd;&#xa;-- , null as exactdate&#xd;&#xa;-- , city_id&#xd;&#xa;FROM service_requests</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>251</xloc>
+      <yloc>248</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

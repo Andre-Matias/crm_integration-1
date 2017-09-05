@@ -62,8 +62,8 @@ syncLeadsTable(target_conf_file,schema,category,country)
 syncUsersTable(target_conf_file,schema,category,country)
 syncCallsTable(target_conf_file,schema,category,country)
 syncTagsTable(target_conf_file,schema,category,country)
-#syncOrdersTable(target_conf_file,schema,category,country)
-#syncLineItemsTable(target_conf_file,schema,category,country)
+syncOrdersTable(target_conf_file,schema,category,country)
+syncLineItemsTable(target_conf_file,schema,category,country)
 
 
 
