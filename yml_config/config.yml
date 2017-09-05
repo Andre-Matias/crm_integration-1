@@ -1,0 +1,75 @@
+
+default:
+  DbHost: "example"
+  DbPort: 0
+  DbUser: "example"
+  DbName: "example"
+
+
+otomoto_pl:
+  DbHost: "192.168.1.5"
+  DbPort: 3320
+  DbUser: "bi_team_pt"
+  DbName: "otomotopl"
+  ArchiveDbName: "ads_history_otomotopl"
+  
+
+stradia_in:
+  DbHost: "192.168.1.5"
+  DbPort: 3312
+  DbUser: "bi_team_pt"
+  DbName: "cars_in"
+
+
+stradia_ar:
+  DbHost: "192.168.1.5"
+  DbPort: 3311
+  DbUser: "bi_team_pt"
+  DbName: "stradia_ar"
+  
+  
+stradia_co:
+  DbHost: "192.168.1.5"
+  DbPort: 3311
+  DbUser: "bi_team_pt"
+  DbName: "stradia_co"
+
+
+stradia_ec:
+  DbHost: "192.168.1.5"
+  DbPort: 3311
+  DbUser: "bi_team_pt"
+  DbName: "stradia_ec"
+  
+  
+stradia_pe:
+  DbHost: "192.168.1.5"
+  DbPort: 3311
+  DbUser: "bi_team_pt"
+  DbName: "stradia_pe"
+
+
+storia_id_new:
+  DbHost: "192.168.1.5"
+  DbPort: 3315
+  DbUser: "bi_team_pt"
+  DbName: "storiaid"
+
+
+standvirtual_pt:
+  DbHost: "192.168.1.5"
+  DbPort: 3308
+  DbUser: "bi_team_pt"
+  DbName: "carspt"
+
+
+autovito_ro:
+  DbHost: "192.168.1.5"
+  DbPort: 3316
+  DbUser: "bi_team_pt"
+  DbName: "autovitro"
+
+  
+
+
+
