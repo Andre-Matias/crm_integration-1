@@ -1,12 +1,12 @@
 Access DB configurations and credentials with R
 ================
 
-Centralized files with DBs configuration and credentials. Using the *config* package you can:
+Centralized files with DBs configuration and credentials. Using the **config** package you can:
 
 - access DB configurations and credentials quickly within your R script;
 - avoid to include DB credentials and password when pushing R code to Github.  
 
-
+<br />
 
 Getting Started
 -----
@@ -21,7 +21,7 @@ Within the folder are included:
 
 Make sure to have an up-to-date version of the above files in your local machine.
 
-#### 2. Install *config* package in R
+#### 2. Install **config** package in R
 
 ``` r
 install.packages("config")
@@ -46,7 +46,7 @@ Once the reading connection is established, you can access each credential of th
 ``` r
 config$DbPort
 config$DbHost
-config$DbName   #just press tab after the dollar sign to see which paramenters are available
+config$DbName   #press tab after the dollar sign to see which parameters are available
 ```
 
 #### 4. Import credentials (passwords) into your local environment
@@ -55,7 +55,7 @@ config$DbName   #just press tab after the dollar sign to see which paramenters a
 load("~/verticals-bi/yml_config/credentials.Rdata")
 ```
 
-
+<br />
 
 Quick Example with R
 ---
