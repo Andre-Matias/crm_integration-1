@@ -1,7 +1,7 @@
 Access DB configurations and credentials with R
 ================
 
-Centralized files with DBs configuration and credentials template. Using the **config** package you can:
+Centralized file with DBs configuration and credentials template. Using the **config** package you can:
 
 - access DB configurations and personal credentials quickly within your R script;
 - avoid to include DB personal credentials when pushing R code to Github.  
@@ -40,7 +40,7 @@ config <- config::get(file = "~/verticals-bi/yml_config/config.yml",
 ```
 To access any other DB just change the last argument, and use same nomenclature (e.g. "stradia_in", "stradia_ar"). Open `config.yml` file if you are not sure about the name.
 
-Once the reading connection is established, you can access each credential of that DFB this way:
+Once the reading connection is established, you can access each credential of that DB this way:
 
 ``` r
 config$DbPort
@@ -57,7 +57,7 @@ Run the script.
 
 Save the output as .Rdata as indicated in the template, so that you can import it later when needed.
 
-IMPORTANT: Save it only in your local machine outside of vertical-bi repo. Do not pull it to github!
+IMPORTANT: Save it only in your local machine outside of vertical-bi repo. Do not push it to github!
 
 
 To import personal credentials into you R environment you'll just need to load it:
