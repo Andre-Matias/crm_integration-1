@@ -4,6 +4,8 @@ default:
   DbPort: 0
   DbUser: "example"
   DbName: "example"
+  ArchiveDbName: ""
+  BiServerPort: ""
 
 
 otomoto_pl:
@@ -12,41 +14,47 @@ otomoto_pl:
   DbUser: "bi_team_pt"
   DbName: "otomotopl"
   ArchiveDbName: "ads_history_otomotopl"
-  
+  BiServerPort: "3317"
 
 stradia_in:
   DbHost: "192.168.1.5"
   DbPort: 3312
   DbUser: "bi_team_pt"
   DbName: "cars_in"
-
+  ArchiveDbName: ""
+  BiServerPort: ""
 
 stradia_ar:
   DbHost: "192.168.1.5"
   DbPort: 3311
   DbUser: "bi_team_pt"
   DbName: "stradia_ar"
-  
+  ArchiveDbName: ""
+  BiServerPort: "3311"
   
 stradia_co:
   DbHost: "192.168.1.5"
   DbPort: 3311
   DbUser: "bi_team_pt"
   DbName: "stradia_co"
-
+  ArchiveDbName: ""
+  BiServerPort: "3311"
 
 stradia_ec:
   DbHost: "192.168.1.5"
   DbPort: 3311
   DbUser: "bi_team_pt"
   DbName: "stradia_ec"
-  
+  ArchiveDbName: ""
+  BiServerPort: "3311"
   
 stradia_pe:
   DbHost: "192.168.1.5"
   DbPort: 3311
   DbUser: "bi_team_pt"
   DbName: "stradia_pe"
+  ArchiveDbName: ""
+  BiServerPort: "3311"
 
 
 storia_id_new:
@@ -54,6 +62,8 @@ storia_id_new:
   DbPort: 3315
   DbUser: "bi_team_pt"
   DbName: "storiaid"
+  ArchiveDbName: ""
+  BiServerPort: ""
 
 
 standvirtual_pt:
@@ -61,6 +71,8 @@ standvirtual_pt:
   DbPort: 3308
   DbUser: "bi_team_pt"
   DbName: "carspt"
+  ArchiveDbName: ""
+  BiServerPort: "3308"
 
 
 autovito_ro:
@@ -68,8 +80,25 @@ autovito_ro:
   DbPort: 3316
   DbUser: "bi_team_pt"
   DbName: "autovitro"
-
+  ArchiveDbName: ""
+  BiServerPort: ""
   
-
+  
+imovirtual_pt:
+  DbHost: ""
+  DbPort: 
+  DbUser: ""
+  DbName: ""
+  ArchiveDbName: ""
+  BiServerPort: "3309"
+  
+  
+otodom_ua:
+  DbHost: ""
+  DbPort: 
+  DbUser: ""
+  DbName: ""
+  ArchiveDbName: ""
+  BiServerPort: "3310"
 
 
