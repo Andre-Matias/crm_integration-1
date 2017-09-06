@@ -1,7 +1,3 @@
-Conlusion:
-The cron to expiry the was not working.
-When they turned it on, it 
-
 # libraries -------------------------------------------------------------------
 library("config")
 library("fasttime")
