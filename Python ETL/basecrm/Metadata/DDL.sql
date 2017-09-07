@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_contacts"
 	,"owner_id" VARCHAR(100)   ENCODE lzo
 	,"is_organization" boolean
 	,"address" VARCHAR(1000)   ENCODE lzo
-	,"custom_fields" VARCHAR(1000)   ENCODE lzo
+	,"custom_fields" VARCHAR(10000)   ENCODE lzo
 	,"customer_status" VARCHAR(100)   ENCODE lzo
 	,"prospect_status" VARCHAR(100)   ENCODE lzo
 	,"tags" VARCHAR(600)   ENCODE lzo
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS "rdl_basecrm_v2"."stg_d_base_leads"
 	,"title" VARCHAR(500)   ENCODE lzo
 	,"skype" VARCHAR(500)   ENCODE lzo
 	,"linkedin" VARCHAR(500)   ENCODE lzo
-	,"description" VARCHAR(500)   ENCODE lzo
+	,"description" VARCHAR(5000)   ENCODE lzo
 	,"industry" VARCHAR(500)   ENCODE lzo
 	,"fax" VARCHAR(500)   ENCODE lzo
 	,"website" VARCHAR(500)   ENCODE lzo
