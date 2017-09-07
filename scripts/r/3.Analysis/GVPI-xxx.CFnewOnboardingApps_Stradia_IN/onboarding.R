@@ -12,6 +12,7 @@
 library(config)
 library("RMySQL")
 
+#
 
 # Establish connection to yml config
 
