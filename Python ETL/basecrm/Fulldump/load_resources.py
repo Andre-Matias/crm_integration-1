@@ -39,30 +39,30 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == '':
 		for resource in resources:
 			print(resource)
-			try:
-				cur.execute(
-					getCopySql(
-						schema, \
-						'%(prefix)sstg_d_base_%(resource)s' \
-							% {
+			
+			cur.execute(
+				getCopySql(
+					schema, \
+					'%(prefix)sstg_d_base_%(resource)s' \
+						% {
+						'resource':resource,
+						 'prefix': prefix},
+					's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
+						% {
 							'resource':resource,
-							 'prefix': prefix},
-						's3://%(bucket)s%(data_path)s%(resource)s/%(date)s/' \
-							% {
-							'resource':resource,
-							'bucket':bucket,
-							'date': date,
-							'data_path':data_path},
-						's3://%(bucket)s%(manifest_path)s%(prefix)s%(resource)s_jsonpath.json' \
-							% {
-							'prefix': prefix,
-							'resource':resource,
-							'bucket':bucket,
-							'manifest_path':manifest_path
-							}, 
-						credentials
-					)
+						'bucket':bucket,
+						'date': date,
+						'data_path':data_path},
+					's3://%(bucket)s%(manifest_path)s%(prefix)s%(resource)s_jsonpath.json' \
+						% {
+						'prefix': prefix,
+						'resource':resource,
+						'bucket':bucket,
+						'manifest_path':manifest_path
+						}, 
+					credentials
 				)
+			)
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
