@@ -71,7 +71,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 			print(resource)
 
 			cur.execute("SELECT count(*) FROM rdl_basecrm_v2.stg_d_base_deals;")
-			print(np.array(cur.fetchall())
+			print(np.array(cur.fetchall()))
 			cur.execute(
 				getCopySql(
 					schema, \
