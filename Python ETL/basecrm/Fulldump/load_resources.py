@@ -64,7 +64,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 			except(psycopg2.InternalError):
-				print("Internal Error, probably non existing file")
+				print("No file found")
 				pass
 	if prefix == 'sync_':
 		for resource in resources:
@@ -96,7 +96,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 			except(psycopg2.InternalError):
-				print("Internal Error, probably non existing file")
+				print("No file found")
 				pass
 	conn.commit()
 
