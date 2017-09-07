@@ -63,9 +63,6 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 						credentials
 					)
 				)
-			except(psycopg2.InternalError):
-				print("No file found")
-				pass
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
