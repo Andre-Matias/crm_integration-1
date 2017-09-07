@@ -69,7 +69,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
-
+			
 			cur.execute(
 				getCopySql(
 					schema, \
