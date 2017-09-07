@@ -306,7 +306,7 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 
 def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 	
-	print("Getting orders data")
+	print("Getting tasks data")
 	
 	aux = 1
 	name = "tasks_"

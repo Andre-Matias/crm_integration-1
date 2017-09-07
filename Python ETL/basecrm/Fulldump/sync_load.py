@@ -56,14 +56,14 @@ loadFromS3toRedshift(target_conf_file,
 ##################################################
 # Updates the main tables using the sync tables
 ##################################################
-syncDealsTable(target_conf_file,schema,category,country)
-syncContactsTable(target_conf_file,schema,category,country)
-syncLeadsTable(target_conf_file,schema,category,country)
-syncUsersTable(target_conf_file,schema,category,country)
-syncCallsTable(target_conf_file,schema,category,country)
-syncTagsTable(target_conf_file,schema,category,country)
-syncOrdersTable(target_conf_file,schema,category,country)
-syncLineItemsTable(target_conf_file,schema,category,country)
+# syncDealsTable(target_conf_file,schema,category,country)
+# syncContactsTable(target_conf_file,schema,category,country)
+# syncLeadsTable(target_conf_file,schema,category,country)
+# syncUsersTable(target_conf_file,schema,category,country)
+# syncCallsTable(target_conf_file,schema,category,country)
+# syncTagsTable(target_conf_file,schema,category,country)
+# syncOrdersTable(target_conf_file,schema,category,country)
+# syncLineItemsTable(target_conf_file,schema,category,country)
 
 
 
