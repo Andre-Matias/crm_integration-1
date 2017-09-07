@@ -98,6 +98,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 			except(psycopg2.InternalError):
 				print("No file found")
 				pass
+			else: print("Something when wrong")	
 	conn.commit()
 
 	#Close connection
