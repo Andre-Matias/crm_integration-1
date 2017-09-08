@@ -39,7 +39,8 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == '':
 		for resource in resources:
 			print(resource)
-			try:
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') = 'true'):
+				print('Loading...')
 				cur.execute(
 					getCopySql(
 						schema, \
@@ -64,13 +65,13 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 				conn.commit()
-			except(psycopg2.InternalError):
-				print("No file found")
+
 				
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
-			try:
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') = 'true'):
+				print('Loading...')
 				cur.execute(
 					getCopySql(
 						schema, \
@@ -97,11 +98,6 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 					)
 				)
 				conn.commit()
-			except(psycopg2.InternalError):
-				print('Error!\n{0}').format(psycopg2.InternalError)
-				print("No file found")
-				
-	
 
 	#Close connection
 	cur.close()
@@ -726,6 +722,21 @@ def deletePreviousS3Files(conf_file):
 	b = Bucket(conn, 'verticals-raw-data')
 	for x in b.list(prefix = 'BaseCRM_v3/Aux/'):
 		x.delete()
+
+def checkS3FileExists(conf_file,bucket,path):
+	conf = json.load(open(conf_file))
+	key = conf['s3_key']
+	skey = conf['s3_skey']
+	conn = S3Connection(key, skey)
+	b = Bucket(conn, bucket)
+	found_file = 'false'
+
+	for x in b.list(prefix = path):
+		if(len(str(x)) > 0):
+			found_file = 'true'
+			break
+
+	return found_file
 
 def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn = getChandraConnection(source_conf)
