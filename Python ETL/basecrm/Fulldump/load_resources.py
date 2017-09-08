@@ -39,7 +39,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == '':
 		for resource in resources:
 			print(resource)
-			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') = 'true'):
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
 				print('Loading...')
 				cur.execute(
 					getCopySql(
@@ -70,7 +70,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
-			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') = 'true'):
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
 				print('Loading...')
 				cur.execute(
 					getCopySql(
