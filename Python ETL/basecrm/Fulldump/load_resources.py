@@ -751,9 +751,9 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 		'credentials':credentials,
 		'aux_path':aux_path
 		}		
-	)
-
-	conn.commit()
+		)
+		conn.commit()
+	
 
 	#Close connection
 	cur.close()
