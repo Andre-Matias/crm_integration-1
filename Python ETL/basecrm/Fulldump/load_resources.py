@@ -63,6 +63,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 						credentials
 					)
 				)
+				conn.commit()
 			except(psycopg2.InternalError):
 				print("No file found")
 				pass
@@ -95,10 +96,11 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 						credentials
 					)
 				)
+				conn.commit()
 			except(psycopg2.InternalError):
 				print("No file found")
 				pass
-	conn.commit()
+	
 
 	#Close connection
 	cur.close()
