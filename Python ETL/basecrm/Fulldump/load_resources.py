@@ -724,7 +724,6 @@ def deletePreviousS3Files(conf_file):
 		x.delete()
 
 def checkS3FileExists(conf_file,bucket,path):
-	print(path)
 	conf = json.load(open(conf_file))
 	key = conf['s3_key']
 	skey = conf['s3_skey']
@@ -734,6 +733,7 @@ def checkS3FileExists(conf_file,bucket,path):
 
 	for x in b.list(prefix = path):
 		if(len(str(x)) > 0):
+			print(path)
 			found_file = 'true'
 			break
 
