@@ -66,7 +66,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 				conn.commit()
 			except(psycopg2.InternalError):
 				print("No file found")
-				pass
+				
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
@@ -99,7 +99,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 				conn.commit()
 			except(psycopg2.InternalError):
 				print("No file found")
-				pass
+				
 	
 
 	#Close connection
@@ -780,9 +780,8 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 		'credentials':credentials,
 		'aux_path':aux_path
 		}	
-	)
-
-	conn_target.commit()	
+		)
+		conn_target.commit()	
 
 	cur_target.close()
 	conn_target.close()
