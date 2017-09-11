@@ -112,7 +112,7 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 		"DELETE FROM rdl_basecrm_v2.stg_d_base_deals_history "\
 		" WHERE base_account_country = '%(country)s' " \
 		" AND base_account_category = '%(category)s'; " \
-		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals);"
+		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s);"
 		% {
 			'country':country,
 			'category':category
