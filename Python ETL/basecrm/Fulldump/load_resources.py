@@ -150,7 +150,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	cur = conn.cursor()
 
 	for resource in resources:
-		prtin("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
+		print("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
 			" WHERE base_account_country = '%(country)s'" \
 			" AND base_account_category = '%(category)s'"  
 			% {
