@@ -139,7 +139,7 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()
 
 	#Close connection
 	cur.close()
