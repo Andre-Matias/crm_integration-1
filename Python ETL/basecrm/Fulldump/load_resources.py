@@ -161,7 +161,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()	
 
 	#Close connection
 	cur.close()
