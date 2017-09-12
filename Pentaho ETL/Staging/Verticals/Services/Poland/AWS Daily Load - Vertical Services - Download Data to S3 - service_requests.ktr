@@ -595,7 +595,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  CAST&#x28;id as integer&#x29; as id&#xd;&#xa;, CAST&#x28;user_id as integer&#x29; as user_id&#xd;&#xa;, CAST&#x28;category_id as integer&#x29; as category_id&#xd;&#xa;, status&#xd;&#xa; , CAST&#x28;to_user_id as integer&#x29; as to_user_id&#xd;&#xa;, CAST&#x28;lat as DECIMAL&#x28;10,4&#x29;&#x29; as lat&#xd;&#xa;, CAST&#x28;lon as DECIMAL&#x28;10,4&#x29;&#x29; as lon&#xd;&#xa; , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , null as exactdate&#xd;&#xa;, city_id&#xd;&#xa;FROM service_requests</sql>
+    <sql>SELECT&#xd;&#xa;  CAST&#x28;id as integer&#x29; as id&#xd;&#xa;, CAST&#x28;user_id as integer&#x29; as user_id&#xd;&#xa;, CAST&#x28;category_id as integer&#x29; as category_id&#xd;&#xa;, status&#xd;&#xa; , CAST&#x28;to_user_id as integer&#x29; as to_user_id&#xd;&#xa;, CAST&#x28;lat as DECIMAL&#x28;10,4&#x29;&#x29; as lat&#xd;&#xa;, CAST&#x28;lon as DECIMAL&#x28;10,4&#x29;&#x29; as lon&#xd;&#xa; , regexp_replace&#x28;address, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as address&#xd;&#xa;, user_agent&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , null as exactdate&#xd;&#xa;, CAST&#x28;city_id as integer&#x29; as city_id&#xd;&#xa;FROM service_requests</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
