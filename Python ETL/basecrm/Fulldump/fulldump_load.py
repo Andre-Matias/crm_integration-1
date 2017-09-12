@@ -53,5 +53,4 @@ loadFromS3toRedshift(target_conf_file,
 	manifest,
 	resources,
 	prefix)
-
 copyDumpToHistoryTable(target_conf_file,schema,category,country)

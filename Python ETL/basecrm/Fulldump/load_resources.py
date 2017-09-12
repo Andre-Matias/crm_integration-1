@@ -112,7 +112,7 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 		"DELETE FROM rdl_basecrm_v2.stg_d_base_deals_history "\
 		" WHERE base_account_country = '%(country)s' " \
 		" AND base_account_category = '%(category)s'; " \
-		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals);"
+		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s');"
 		% {
 			'country':country,
 			'category':category
@@ -139,7 +139,7 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()
 
 	#Close connection
 	cur.close()
@@ -150,6 +150,16 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	cur = conn.cursor()
 
 	for resource in resources:
+		print("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
+			" WHERE base_account_country = '%(country)s'" \
+			" AND base_account_category = '%(category)s'"  
+			% {
+			'resource':resource,
+			'category':category,
+			'country':country,
+			'prefix': prefix,
+			'schema': schema
+			})
 		cur.execute("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
 			" WHERE base_account_country = '%(country)s'" \
 			" AND base_account_category = '%(category)s'"  
@@ -161,7 +171,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()
 
 	#Close connection
 	cur.close()
@@ -185,7 +195,7 @@ def syncDealsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_deals AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -260,7 +270,7 @@ def syncContactsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_contacts AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -341,7 +351,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_leads AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -418,7 +428,7 @@ def syncUsersTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_users AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -482,7 +492,7 @@ def syncCallsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_calls AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -548,7 +558,7 @@ def syncTagsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_tags AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -606,7 +616,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_orders AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -665,7 +675,7 @@ def syncLineItemsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_line_items AS p_data "\
 			"ON (l_data.id = p_data.id) "\
