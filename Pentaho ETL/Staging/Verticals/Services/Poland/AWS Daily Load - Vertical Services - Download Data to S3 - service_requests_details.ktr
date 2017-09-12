@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>AWS Daily Load - Vertical Services - Download Data to S3 - individuals</name>
+    <name>AWS Daily Load - Vertical Services - Download Data to S3 - service_requests_details</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
     </parameters>
@@ -427,9 +428,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;03&#x2f;22 20&#x3a;27&#x3a;12.186</created_date>
+    <created_date>2017&#x2f;03&#x2f;22 20&#x3a;44&#x3a;33.570</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;03&#x2f;22 20&#x3a;27&#x3a;12.186</modified_date>
+    <modified_date>2017&#x2f;03&#x2f;22 20&#x3a;44&#x3a;33.570</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -461,12 +462,7 @@
   </connection>
   <order>
     <hop>
-      <from>individuals</from>
-      <to>select</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>select</from>
+      <from>service_request_details</from>
       <to>S3 File Output</to>
       <enabled>Y</enabled>
     </hop>
@@ -496,7 +492,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;new&#x2f;individuals-data</name>
+      <name>s3&#x3a;&#x2f;&#x2f;pyrates-data-ocean&#x2f;vertical-services-poland-2&#x2f;new&#x2f;service_request_details-data</name>
       <is_command>N</is_command>
       <servlet_output>N</servlet_output>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
@@ -514,150 +510,6 @@
       <splitevery>0</splitevery>
     </file>
     <fields>
-      <field>
-        <name>id</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>9</length>
-        <precision>0</precision>
-      </field>
-      <field>
-        <name>details</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>1000</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>settings</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>created_at</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>0</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>updated_at</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>0</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>deleted_at</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>0</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>info</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>offer_quote_limit</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>9</length>
-        <precision>0</precision>
-      </field>
-      <field>
-        <name>company_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>100</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>vat_number</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>none</trim_type>
-        <length>255</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>id_number</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>0</nullif>
-        <trim_type>none</trim_type>
-        <length>9</length>
-        <precision>0</precision>
-      </field>
-      <field>
-        <name>wizard_step</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>0</nullif>
-        <trim_type>none</trim_type>
-        <length>9</length>
-        <precision>0</precision>
-      </field>
     </fields>
       <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
       <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
@@ -669,14 +521,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>688</xloc>
-      <yloc>144</yloc>
+      <xloc>496</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>individuals</name>
+    <name>service_request_details</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -687,8 +539,8 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , regexp_replace&#x28;  replace &#x28;replace&#x28; replace&#x28;details, &#x27;&#x27;&#x27;&#x27;, &#x27;&#x27;&#x29; ,&#x27;&#x3b;&#x27;,&#x27;-&#x27;&#x29;, &#x27;&#x22;&#x27;, &#x27;&#x27; &#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , &#x27;&#x27; as info&#xd;&#xa;, offer_quote_limit&#xd;&#xa; , regexp_replace&#x28;replace&#x28;company_name,&#x27;&#x27;&#x27;&#x27;,&#x27;&#x27;&#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals</sql>
-    <limit>0</limit>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa;, service_request_id&#xd;&#xa;, regexp_replace&#x28;  replace &#x28;replace&#x28; replace&#x28;cast&#x28;details as varchar&#x28;5000&#x29;&#x29;, &#x27;&#x27;&#x27;&#x27;, &#x27;&#x27;&#x29; ,&#x27;&#x3b;&#x27;,&#x27;-&#x27;&#x29;, &#x27;&#x22;&#x27;, &#x27;&#x27; &#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa;FROM service_request_details</sql>
+    <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>N</variables_active>
@@ -701,79 +553,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>144</xloc>
+      <xloc>112</xloc>
       <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>select</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>        <select_unspecified>N</select_unspecified>
-      <meta>        <name>details</name>
-        <rename>details</rename>
-        <type>String</type>
-        <length>1000</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>      <meta>        <name>company_name</name>
-        <rename>company_name</rename>
-        <type>String</type>
-        <length>100</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>      <meta>        <name>id_number</name>
-        <rename>id_number</rename>
-        <type>Integer</type>
-        <length>-2</length>
-        <precision>-2</precision>
-        <conversion_mask>0</conversion_mask>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>    </fields>    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>400</xloc>
-      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

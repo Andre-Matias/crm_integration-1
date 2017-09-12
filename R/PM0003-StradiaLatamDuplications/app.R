@@ -50,7 +50,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 8000)) + 
+      coord_cartesian(ylim = c(0, 10000)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -65,7 +65,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 6000)) + 
+      coord_cartesian(ylim = c(0, 6500)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -80,7 +80,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 400)) + 
+      coord_cartesian(ylim = c(0, 550)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
@@ -95,7 +95,7 @@ server <- function(input, output) {
       geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
       geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
       scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 2300)) + 
+      coord_cartesian(ylim = c(0, 3100)) + 
       geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
       geom_text(aes(y= Ads,label = Ads, vjust=2)) +
       scale_x_date(date_breaks="2 days", date_labels="%d%b") + 

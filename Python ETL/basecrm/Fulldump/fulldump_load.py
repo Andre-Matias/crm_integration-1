@@ -54,4 +54,5 @@ loadFromS3toRedshift(target_conf_file,
 	resources,
 	prefix)
 
-copyDumpToHistoryTable(target_conf_file,schema,category,country)
+if 'deals' in resources:
+	copyDumpToHistoryTable(target_conf_file,schema,category,country)

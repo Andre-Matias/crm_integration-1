@@ -39,7 +39,8 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	if prefix == '':
 		for resource in resources:
 			print(resource)
-			try:
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
+				print('Loading...')
 				cur.execute(
 					getCopySql(
 						schema, \
@@ -63,13 +64,14 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 						credentials
 					)
 				)
-			except(psycopg2.InternalError):
-				print("No file found")
-				pass
+				conn.commit()
+
+				
 	if prefix == 'sync_':
 		for resource in resources:
 			print(resource)
-			try:
+			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
+				print('Loading...')
 				cur.execute(
 					getCopySql(
 						schema, \
@@ -95,10 +97,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 						credentials
 					)
 				)
-			except(psycopg2.InternalError):
-				print("No file found")
-				pass
-	conn.commit()
+				conn.commit()
 
 	#Close connection
 	cur.close()
@@ -113,7 +112,7 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 		"DELETE FROM rdl_basecrm_v2.stg_d_base_deals_history "\
 		" WHERE base_account_country = '%(country)s' " \
 		" AND base_account_category = '%(category)s'; " \
-		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals);"
+		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s');"
 		% {
 			'country':country,
 			'category':category
@@ -140,7 +139,7 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()
 
 	#Close connection
 	cur.close()
@@ -151,6 +150,16 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	cur = conn.cursor()
 
 	for resource in resources:
+		print("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
+			" WHERE base_account_country = '%(country)s'" \
+			" AND base_account_category = '%(category)s'"  
+			% {
+			'resource':resource,
+			'category':category,
+			'country':country,
+			'prefix': prefix,
+			'schema': schema
+			})
 		cur.execute("DELETE FROM %(schema)s.%(prefix)sstg_d_base_%(resource)s" \
 			" WHERE base_account_country = '%(country)s'" \
 			" AND base_account_category = '%(category)s'"  
@@ -162,7 +171,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 			'schema': schema
 			}
 		)
-	conn.commit()
+		conn.commit()
 
 	#Close connection
 	cur.close()
@@ -180,13 +189,13 @@ def syncDealsTable(conf_file,schema,category,country):
 			"INNER JOIN  "\
 			"(SELECT  "\
 			"id,  "\
-			"max(meta_sequence) AS max_meta_sequence  "\
+			"max(meta_sequence) AS max_meta_sequence,max(meta_event_id)  AS max_event_id  "\
 			"FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
-			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence AND sync_data.meta_event_id = latest_data.max_event_id) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_deals AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -255,13 +264,13 @@ def syncContactsTable(conf_file,schema,category,country):
 			"INNER JOIN "\
 			"(SELECT "\
 			"id, "\
-			"max(meta_sequence) AS max_meta_sequence "\
+			"max(meta_sequence) AS max_meta_sequence,max(meta_event_id)  AS max_event_id "\
 			"FROM %(schema)s.sync_stg_d_base_contacts_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
-			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence AND sync_data.meta_event_id = latest_data.max_event_id) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_contacts AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -336,13 +345,13 @@ def syncLeadsTable(conf_file,schema,category,country):
 			"INNER JOIN "\
 			"(SELECT "\
 			"id, "\
-			"max(meta_sequence) AS max_meta_sequence "\
+			"max(meta_sequence) AS max_meta_sequence,max(meta_event_id)  AS max_event_id "\
 			"FROM %(schema)s.sync_stg_d_base_leads_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
-			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence AND sync_data.meta_event_id = latest_data.max_event_id) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_leads AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -419,7 +428,7 @@ def syncUsersTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_users AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -483,7 +492,7 @@ def syncCallsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_calls AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -549,7 +558,7 @@ def syncTagsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_tags AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -607,7 +616,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_orders AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -666,7 +675,7 @@ def syncLineItemsTable(conf_file,schema,category,country):
 			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence) "\
 			"), "\
 			"to_update_or_add AS ( "\
-			"SELECT l_data.* "\
+			"SELECT distinct l_data.* "\
 			"FROM latest_changes AS l_data "\
 			"LEFT JOIN %(schema)s.stg_d_base_line_items AS p_data "\
 			"ON (l_data.id = p_data.id) "\
@@ -724,6 +733,22 @@ def deletePreviousS3Files(conf_file):
 	for x in b.list(prefix = 'BaseCRM_v3/Aux/'):
 		x.delete()
 
+def checkS3FileExists(conf_file,bucket,path):
+	conf = json.load(open(conf_file))
+	key = conf['s3_key']
+	skey = conf['s3_skey']
+	conn = S3Connection(key, skey)
+	b = Bucket(conn, bucket)
+	found_file = 'false'
+
+	for x in b.list(prefix = path[1:]):
+		if(len(str(x)) > 0):
+			print(path)
+			found_file = 'true'
+			break
+
+	return found_file
+
 def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn = getChandraConnection(source_conf)
 	cur = conn.cursor()
@@ -749,9 +774,9 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 		'credentials':credentials,
 		'aux_path':aux_path
 		}		
-	)
-
-	conn.commit()
+		)
+		conn.commit()
+	
 
 	#Close connection
 	cur.close()
@@ -778,9 +803,8 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 		'credentials':credentials,
 		'aux_path':aux_path
 		}	
-	)
-
-	conn_target.commit()	
+		)
+		conn_target.commit()	
 
 	cur_target.close()
 	conn_target.close()
