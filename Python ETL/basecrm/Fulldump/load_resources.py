@@ -192,7 +192,7 @@ def syncDealsTable(conf_file,schema,category,country):
 			"max(meta_sequence) AS max_meta_sequence,max(meta_event_id)  AS max_event_id  "\
 			"FROM %(schema)s.sync_stg_d_base_deals_%(category)s_%(country)s "\
 			"GROUP BY id) AS latest_data "\
-			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence AND sync_data.meta_event_id = latest_data.max_event_id)) "\
+			"ON (sync_data.id = latest_data.id AND sync_data.meta_sequence = latest_data.max_meta_sequence AND sync_data.meta_event_id = latest_data.max_event_id) "\
 			"), "\
 			"to_update_or_add AS ( "\
 			"SELECT distinct l_data.* "\
