@@ -1,4 +1,4 @@
-#' OKR project
+#' OKR Otomoto PL
 #' Objective: understand % of new users that send a lead within 30 days.
 #' Build cohorts of new users acquired weekly and see how they behave over 30 days from onboarding.
 #' Run first JQL code in Mixpanel and import JSON into R.
@@ -11,6 +11,7 @@ library("stringr")
 library("zoo")
 library("ggplot2")
 library("ggthemes")
+library('scales')
 
 setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR_Otomoto_PL")
 
@@ -95,21 +96,26 @@ dNewUsers2 <- dNewUsers %>%
 ggplot(data=dNewUsers2)+geom_line(aes(x=TimeToConvert, y=ret, colour=week))+
   scale_y_continuous(labels = scales::percent, breaks = seq(0,0.25,0.01), limits = c(0,0.25))+
   scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "otomoto.pl")+
-  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users")
-  
+  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") 
+
+ggplot(data=dNewUsers2)+geom_line(aes(x=TimeToConvert, y=ret))+
+  scale_y_continuous(labels = scales::percent, breaks = seq(0,0.25,0.01), limits = c(0,0.25))+
+  scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "otomoto.pl")+
+  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") +
+  scale_fill_gradient(low="green",high="darkgreen")
 
 
 
-steps <- factor(c("home", "listing", "ad detail page", "lead"), levels=c("home", "listing", "ad detail page", "lead"), ordered=TRUE)
-
-df <-
-  data.frame( steps = steps,
-              values = c(3326752/3326752, 2871078/3326752, 2612983/3326752, 330146/3326752)
-  )
-
-ggplot(data=df)+geom_bar(stat="identity",aes(steps, values))+theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+
-  scale_y_continuous(labels = percent)+geom_text(aes(steps, values, label=percent(round(values,3))), family = "Andale Mono", vjust=-0.5)+
-  ggtitle("Buyer's Browsing Funnel", subtitle = "otomoto.pl - 30 days convertion window")
+# steps <- factor(c("home", "listing", "ad detail page", "lead"), levels=c("home", "listing", "ad detail page", "lead"), ordered=TRUE)
+# 
+# df <-
+#   data.frame( steps = steps,
+#               values = c(3326752/3326752, 2871078/3326752, 2612983/3326752, 330146/3326752)
+#   )
+# 
+# ggplot(data=df)+geom_bar(stat="identity",aes(steps, values))+theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+
+#   scale_y_continuous(labels = percent)+geom_text(aes(steps, values, label=percent(round(values,3))), family = "Andale Mono", vjust=-0.5)+
+#   ggtitle("Buyer's Browsing Funnel", subtitle = "otomoto.pl - 30 days convertion window")
 
 
 
