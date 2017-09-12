@@ -17,7 +17,7 @@ setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR_Otomoto_PL")
 
 options(scipen=999)
 
-a <- fromJSON(file = "retention_marco_3Jul_7Sep.json")
+a <- fromJSON(file = "retention_lead_pl_3Jul_7Sep.json")
 # a <- fromJSON(file = "retention_otomoto_pl.json")
 b <- do.call(rbind, a) 
 c <- as.data.frame(t(b))
