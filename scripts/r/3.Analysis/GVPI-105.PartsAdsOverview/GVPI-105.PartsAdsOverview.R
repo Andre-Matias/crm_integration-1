@@ -66,11 +66,25 @@ dfAds$subcategory <-
          )
   )
 
+dfAds$type <- 
+  unlist(
+    lapply(dfAds$params,
+           function (x) str_match(x, "type\\<\\=\\>(.*?)\\<br\\>")[1,2]
+    )
+  )
+
 # -----------------------------------------------------------------------------
 
-dfAds$category[is.na(dfAds$category) | dfAds$category == ""] <- "BLANK"
+dfAds$category[is.na(dfAds$category) |
+                 dfAds$category == ""] <- "BLANK"
 
-dfAds$subcategory[is.na(dfAds$subcategory) | dfAds$category == ""] <- "BLANK"
+dfAds$subcategory[is.na(dfAds$subcategory) | 
+                    dfAds$subcategory == "" |
+                    dfAds$subcategory == "blank" ] <- "BLANK"
+
+dfAds$type[is.na(dfAds$type) | 
+                    dfAds$type == "" |
+                    dfAds$type == "blank" ] <- "BLANK"
 
 # Stats for category field ----------------------------------------------------
 
@@ -83,7 +97,7 @@ dfCategoryStats <-
   mutate(
     perAds = qtyAds / sum(qtyAds)
   ) %>%
-  arrange(-category)
+  arrange(desc(category))
 
 # Stats for subcategory field -------------------------------------------------
 
@@ -96,7 +110,20 @@ dfSubCategoryStats <-
   mutate(
     perAds = qtyAds / sum(qtyAds)
   ) %>%
-  arrange(-subcategory)
+  arrange(desc(subcategory))
+
+# Stats for subcategory field -------------------------------------------------
+
+dfTypeStats <-
+  dfAds %>%
+  group_by(type) %>%
+  summarise(
+    qtyAds = sum(n())
+  ) %>%
+  mutate(
+    perAds = qtyAds / sum(qtyAds)
+  ) %>%
+  arrange(desc(type))
 
 # graph for category field ----------------------------------------------------
 
@@ -120,7 +147,20 @@ ghSubCategory <-
                 label = paste0(percent(round(perAds, 2)), " (", qtyAds,")")),
             hjust = - 0.1)+ 
   coord_flip()+
-  scale_y_continuous(labels = percent, limits = c(0, 0.4))+
+  scale_y_continuous(labels = percent, limits = c(0, 1))+
   theme_fivethirtyeight()+
   ggtitle("Percentage of Parts Listings with Blank SubCategory")
+
+# graph for type field --------------------------------------------------------
+
+ghType <-
+  ggplot(dfTypeStats)+
+  geom_bar(stat = "identity", aes(type, perAds))+
+  geom_text(aes(x= type, y = perAds,
+                label = paste0(percent(round(perAds, 2)), " (", qtyAds,")")),
+            hjust = - 0.1)+ 
+  coord_flip()+
+  scale_y_continuous(labels = percent, limits = c(0, 1))+
+  theme_fivethirtyeight()+
+  ggtitle("Percentage of Parts Listings with Blank Type")
 
