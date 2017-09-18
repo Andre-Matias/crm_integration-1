@@ -1,19 +1,3 @@
----
-title: "OKR's"
-output: 
-  flexdashboard::flex_dashboard
----
-
-```{r setup, include=FALSE}
-library(flexdashboard)
-```
-
-Column {data-width=600}
------------------------------------------------------------------------
-
-### New Users that Send a Lead - Time to Send (days)  
-
-```{r, fig.width=30, fig.height=15}
 #' Retention code consolidating data from PL, PT, RO
 #' use a function as per point 3)
 #' since I have to replicate processing for PL, PT, RO
@@ -30,7 +14,7 @@ Column {data-width=600}
 #' Combine plots into a dashboard if necessary
 
 # Set working directory
-setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
+# setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
 
 # Load libraries
 library("rjson")
@@ -136,7 +120,12 @@ d$CTR <- d$ConvertedUsers / d$TotalUsers
   dNewUsers2 <- dNewUsers %>%
     group_by(week,TimeToConvert) %>%
     summarize(ret=mean(RollingSum))
+  
+ 
 
+# Visualization (all countries aggregated)
+  
+## ggplot
 ret_plot_cons <- 
   ggplot(data = dNewUsers2) + geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
   scale_y_continuous(labels = scales::percent, breaks = seq(0,0.20,0.01), limits = c(0,0.20))+
@@ -144,28 +133,13 @@ ret_plot_cons <-
   theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert") + ylab("% new users") 
 
 ret_plot_cons 
-```
+
+# + geom_text(data = dNewUsers2, aes(label = week, x = 12, y=c(week), hjust = 0.7, vjust = 1))
 
 
-### Chart B
-
-```{r}
+# Put data into a wide table also (convert long to wide format)
 ret_table_cons <- dNewUsers2 %>%
                    mutate(ret_per = round(ret*100, 1))
 ret_table_cons <- dcast(ret_table_cons, week ~ TimeToConvert, value.var="ret_per")
-library(knitr)
-kable(ret_table_cons)
-```
 
-Column {data-width=400}
--------------------------------------
-### Chart C
-```{r}
-
-```
-
-### Chart C
-```{r}
-
-```
 

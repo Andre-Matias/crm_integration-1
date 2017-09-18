@@ -57,7 +57,8 @@ prepare_for_consolidation <- function(a) {
   # d <- d[d$V3 >= '2017-06-01' & d$V3 < '2017-07-01' , ]
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
-  d <- d[d$V3 >= '2017-07-31' & d$V3 < '2017-09-10' , ]
+  # or put the start/end dates you like
+  d <- d[d$V3 >= '2017-07-03' & d$V3 < '2017-09-10' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange(V3, NewUsers, V5)
@@ -108,66 +109,37 @@ d$CTR <- d$ConvertedUsers / d$TotalUsers
   # Calculate week starting on Mondays                      
   dNewUsers <- mutate (dNewUsers, week = cut(Date,breaks="week", start.on.monday=T))
   
+  # Calculate number of new users weekly
+  newWeekly <- dNewUsers %>%
+                 group_by(week,Date) %>%
+                 summarize(new_users_day= mean(TotalUsers)) %>%
+                 group_by(week) %>%
+                 summarize(new_users_week= sum(new_users_day))
+  
   # Prepare dataframe for retention
   dNewUsers2 <- dNewUsers %>%
     group_by(week,TimeToConvert) %>%
     summarize(ret=mean(RollingSum))
   
+ 
 
-
-
+# Visualization (all countries aggregated)
+  
 ## ggplot
 ret_plot_cons <- 
-  ggplot(data=dNewUsers2)+geom_line(aes(x=TimeToConvert, y=ret, colour=week))+
+  ggplot(data = dNewUsers2) + geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
   scale_y_continuous(labels = scales::percent, breaks = seq(0,0.20,0.01), limits = c(0,0.20))+
   scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "Consolidated: otomoto.pl + standvirtual.pt + autovit.ro")+
-  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") 
+  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert") + ylab("% new users") 
 
-ret_plot_cons
+ret_plot_cons 
 
-
-# Standvirtual PT ---------------------------------------
-a <- fromJSON(file = "retention_lead_pt_3Jul_7Sep.json")
-ret_df_pt <- prepare_for_retention(a)
-
-## ggplot
-ret_plot_pt <- 
-  ggplot(data=ret_df_pt)+geom_line(aes(x=TimeToConvert, y=ret, colour=week))+
-  scale_y_continuous(labels = scales::percent, breaks = seq(0,0.25,0.01), limits = c(0,0.25))+
-  scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "standvirtual.pt")+
-  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") 
-
-ret_plot_pt
+# + geom_text(data = dNewUsers2, aes(label = week, x = 12, y=c(week), hjust = 0.7, vjust = 1))
 
 
-# Autovit RO ---------------------------------------
-a <- fromJSON(file = "retention_lead_ro_3Jul_7Sep.json")
-ret_df_ro <- prepare_for_retention(a)
-
-## ggplot
-ret_plot_ro <- 
-  ggplot(data=ret_df_ro)+geom_line(aes(x=TimeToConvert, y=ret, colour=week))+
-  scale_y_continuous(labels = scales::percent, breaks = seq(0,0.25,0.01), limits = c(0,0.25))+
-  scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "autovit.ro")+
-  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") 
-
-ret_plot_ro
-
-
-#'------------------------------------------------
-#'Combine plots
-
-# gb1 <- ggplot_build(ret_plot_pl)
-# gb2 <- ggplot_build(ret_plot_pt)
-# 
-# n1 <- length(gb1$layout$panel_params[[1]]$y.labels)
-# n2 <- length(gb2$layout$panel_params[[1]]$y.labels)
-# 
-# gA <- ggplot_gtable(gb1)
-# gB <- ggplot_gtable(gb2)
-# plot(rbind(gA, gB))
-# plot(rbind(ret_plot_pl, ret_plot_pt, ret_plot_ro))
-
-grid.arrange(ret_plot_pl, ret_plot_pt, ret_plot_ro, nrow=2, ncol=2) 
+# Put data into a wide table also (convert long to wide format)
+ret_table_cons <- dNewUsers2 %>%
+                   mutate(ret_per = round(ret*100, 1))
+ret_table_cons <- dcast(ret_table_cons, week ~ TimeToConvert, value.var="ret_per")
 
 
