@@ -1,4 +1,5 @@
-#' Retention code all in a function as per point 3)
+#' Retention code each country separate
+#' all in a function as per point 3)
 #' since I have to replicate it for PL, PT, RO
 #' 
 #' 1) downnload each JQL result in json format
@@ -21,7 +22,7 @@ library("gridExtra")
 
 # Define function
 prepare_for_retention <- function(a) { 
-  b <- do.call(rbind, jql_file) 
+  b <- do.call(rbind, a) 
   c <- as.data.frame(t(b))
   d <- as.data.frame(lapply(c, function(x) unlist(x)))
   d$V2 <- row.names(d)

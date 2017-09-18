@@ -1,5 +1,6 @@
-#' Retention code all in a function as per point 3)
-#' since I have to replicate it for PL, PT, RO
+#' Retention code consolidating data from PL, PT, RO
+#' use a function as per point 3)
+#' since I have to replicate processing for PL, PT, RO
 #' 
 #' 1) downnload each JQL result in json format
 #' 2) import it into R and assign it to a object
@@ -11,6 +12,9 @@
 #' prepare_for_retention() function containing retention code. Output a table with retention by week.
 #' Build ggplot on each country output
 #' Combine plots into a dashboard if necessary
+
+# Set working directory
+setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
 
 # Load libraries
 library("rjson")
@@ -24,7 +28,7 @@ library("ggthemes")
 library('scales')
 library("gridExtra")
 
-# Define function
+# Define prepare_for_consolidation() function
 prepare_for_consolidation <- function(a) { 
   b <- do.call(rbind, a) 
   c <- as.data.frame(t(b))
@@ -53,7 +57,7 @@ prepare_for_consolidation <- function(a) {
   # d <- d[d$V3 >= '2017-06-01' & d$V3 < '2017-07-01' , ]
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
-  d <- d[d$V3 >= '2017-07-03' & d$V3 < '2017-08-06' , ]
+  d <- d[d$V3 >= '2017-07-31' & d$V3 < '2017-09-10' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange(V3, NewUsers, V5)
@@ -70,9 +74,9 @@ prepare_for_consolidation <- function(a) {
 }
 
 # Read in json files
-  json_pl <- fromJSON(file = "retention_lead_pl_3Jul_7Sep.json")
-  json_pt <- fromJSON(file = "retention_lead_pt_3Jul_7Sep.json")
-  json_ro <- fromJSON(file = "retention_lead_ro_3Jul_7Sep.json")
+  json_pl <- fromJSON(file = "data/retention_lead_pl_3Jul_17Sep.json")
+  json_pt <- fromJSON(file = "data/retention_lead_pt_3Jul_17Sep.json")
+  json_ro <- fromJSON(file = "data/retention_lead_ro_3Jul_17Sep.json")
 
 # Prepare for consolidation  
 pl <- prepare_for_consolidation(json_pl)
@@ -80,7 +84,7 @@ pt <- prepare_for_consolidation(json_pt)
 ro <- prepare_for_consolidation(json_ro)
 
 # Bind dataframes
-d <- rbind(pl, pt, ro)
+bind <- rbind(pl, pt, ro)
 
 # Group by date, typeofuser, time to convert
 d <- bind %>%
@@ -115,7 +119,7 @@ d$CTR <- d$ConvertedUsers / d$TotalUsers
 ## ggplot
 ret_plot_cons <- 
   ggplot(data=dNewUsers2)+geom_line(aes(x=TimeToConvert, y=ret, colour=week))+
-  scale_y_continuous(labels = scales::percent, breaks = seq(0,0.25,0.01), limits = c(0,0.25))+
+  scale_y_continuous(labels = scales::percent, breaks = seq(0,0.20,0.01), limits = c(0,0.20))+
   scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "Consolidated: otomoto.pl + standvirtual.pt + autovit.ro")+
   theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert")+ylab("% new users") 
 
