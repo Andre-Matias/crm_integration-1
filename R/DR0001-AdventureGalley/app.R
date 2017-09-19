@@ -63,8 +63,10 @@ ui <-
                   ),
                 box(
                   checkboxGroupInput("inputDropPostingFlowProject", "Project:", 
-                                     choices = unique(dfAll$project),
-                                     selected = unique(dfAll$project) 
+                                     choices = unique(
+                                       dfAll$project[!is.na(dfAll$project)],
+                                     selected = unique(
+                                       dfAll$project[!is.na(dfAll$project)]
                   )
                 )
                 )
