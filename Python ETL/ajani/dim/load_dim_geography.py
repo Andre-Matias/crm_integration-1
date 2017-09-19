@@ -1,5 +1,6 @@
 import psycopg2
 import simplejson as json
+import sys
 
 def getConnection(conf_file):
   	data = json.load(open(conf_file))	
