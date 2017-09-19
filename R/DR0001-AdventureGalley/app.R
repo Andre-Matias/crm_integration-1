@@ -54,7 +54,7 @@ ui <-
       tabItem(tabName = "tabDropReasons",
               fluidRow(
                 box(
-                  plotOutput("DropPostingFlowReasons", height = 250)),
+                  plotOutput("DropPostingFlowReasons", height = 400)),
                 box(
                   checkboxGroupInput("inputDropPostingFlowReasons", "Reasons:", 
                                      choices =
@@ -102,8 +102,10 @@ server <- function(input, output) {
     renderPlot({
       ggplot(dfDropPostingFlowReasons()) +
         geom_line(stat = "identity", 
-                  aes(date,perQty, group = reason, colour= reason))+
-        scale_y_continuous(labels = percent)+
+                  aes(date, perQty, group = reason, colour= reason))+
+        geom_text(aes(date, perQty, group = reason,
+                      label= percent(perQty), colour= reason), vjust = 0)+
+        scale_y_continuous(labels = percent, limits = c(0,1))+
         theme_fivethirtyeight()+
         theme(legend.position="bottom")+
         guides(col = guide_legend(nrow = 2, bycol = TRUE))+
