@@ -1,0 +1,17 @@
+jqlQuery <- '
+function main() {
+  return Events({
+    from_date: \'2017-09-14\',
+    to_date: \'2100-09-19\',
+    event_selectors: [
+      {event: \'posting_leaving_reason_show\'},
+      {event: \'posting_leaving_reason\'},
+      ]
+  })
+  .groupBy([getDay, "name", "properties.reason", "properties.user_status", "properties.platform"], mixpanel.reducer.count());
+}
+
+function getDay(event) {
+  return (new Date(event.time)).toISOString().split(\'T\')[0];
+}
+'
