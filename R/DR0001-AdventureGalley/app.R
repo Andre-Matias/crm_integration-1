@@ -83,6 +83,7 @@ ui <-
 )
 server <- function(input, output) { 
 
+# Monetization - Posting Flow - Drop Reasons - START -------------------------- 
   dfDropPostingFlowReasons <- 
     reactive({
     test <-       
@@ -112,6 +113,8 @@ server <- function(input, output) {
                   )
                 )
     })
+  # Monetization - Posting Flow - Drop Reasons - END --------------------------
+
   }
 
 # Run the application 
