@@ -3,15 +3,23 @@ library(shinydashboard)
 
 ui <- 
   dashboardPage(
-  dashboardHeader(),
+  dashboardHeader(title = "Adventure Galley"),
+
+# dashboardSidebar start ------------------------------------------------------
+
   dashboardSidebar(
-    dashboardSidebar(
       sidebarMenu(
-        menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-        menuItem("Widgets", tabName = "widgets", icon = icon("th"))
+        menuItem("Monetization", tabName = "monetization", icon = icon("money"),
+                   menuItem('Posting Flow', tabName = 'postingflow', 
+                            menuSubItem('Sub-Item Two', tabName = 'subItemTwo'))
+                 )
+      ),
+      sidebarMenu(
+        menuItem("Business Tool", tabName = "bt", icon = icon("wrench"))
       )
-  )
   ),
+# dashboardSidebar end --------------------------------------------------------
+
 # dashboardbody start ---------------------------------------------------------
   dashboardBody()
 # dashboardbody end -----------------------------------------------------------
