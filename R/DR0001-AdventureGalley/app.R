@@ -29,11 +29,10 @@ ui <-
 
   dashboardSidebar(
       sidebarMenu(
+        menuItem("Global", tabName = 'tabGlobal', icon = icon('dashboard')),
         menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
                  menuItem('Posting Flow', tabName = 'tabPostingFlow', 
-                          menuSubItem('Drop Reasons', tabName = 'tabDropReasons')),
-                 menuItem('teste2', tabName = 'tabTeste2', 
-                          menuSubItem('', tabName = 'tab'))
+                          menuSubItem('Drop Reasons', tabName = 'tabDropReasons'))
                  )
       ),
       sidebarMenu(
@@ -45,6 +44,10 @@ ui <-
 # dashboardbody start ---------------------------------------------------------
   dashboardBody(
     tabItems(
+      
+      # Global 
+      tabItem(tabName = "tabGlobal"),
+    
       # Monetization - Posting Flow - Drop Reasons 
       tabItem(tabName = "tabDropReasons",
               fluidRow(
@@ -57,15 +60,17 @@ ui <-
 )
 server <- function(input, output) { 
   
-  output$d <- renderPlot({
-    dfAll %>%
-    filter(project == "Otomoto.PL", event == "posting_leaving_reason") %>%
-    group_by(date, reason) %>%
-    summarise(qty = sum(qty)) %>%
-    mutate(perQty = qty / sum(qty)) %>%
-    ggplot() +
-    geom_line(stat = "identity", aes(date,perQty, group = reason, colour= reason))
-  })
+  output$d <- 
+    renderPlot({
+      dfAll %>%
+      filter(project == "Otomoto.PL", event == "posting_leaving_reason") %>%
+      group_by(date, reason) %>%
+      summarise(qty = sum(qty)) %>%
+      mutate(perQty = qty / sum(qty)) %>%
+      ggplot() +
+      geom_line(stat = "identity", 
+                aes(date,perQty, group = reason, colour= reason))
+    })
   
   }
 
