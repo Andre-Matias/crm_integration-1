@@ -57,16 +57,22 @@ ui <-
                   plotOutput("DropPostingFlowReasons", height = 250)),
                 box(
                   checkboxGroupInput("inputDropPostingFlowReasons", "Reasons:", 
-                                     choices = unique(dfAll$reason),
-                                     selected = unique(dfAll$reason) 
+                                     choices =
+                                       unique(
+                                         dfAll$reason[!is.na(dfAll$reason)]),
+                                     selected =
+                                       unique(
+                                         dfAll$reason[!is.na(dfAll$reason)]) 
                                      )
                   ),
                 box(
                   checkboxGroupInput("inputDropPostingFlowProject", "Project:", 
-                                     choices = unique(
-                                       dfAll$project[!is.na(dfAll$project)],
-                                     selected = unique(
-                                       dfAll$project[!is.na(dfAll$project)]
+                                     choices =
+                                       unique(
+                                         dfAll$project[!is.na(dfAll$project)]),
+                                     selected =
+                                       unique(
+                                         dfAll$project[!is.na(dfAll$project)]) 
                   )
                 )
                 )
