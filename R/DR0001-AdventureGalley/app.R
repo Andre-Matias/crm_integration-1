@@ -75,7 +75,8 @@ ui <-
 )
 server <- function(input, output) { 
 
-  dat <- reactive({
+  dfDropPostingFlowReasons <- 
+    reactive({
     test <-       
       dfAll %>%
       filter(project %in% input$inputDropPostingFlowProject,
@@ -90,7 +91,7 @@ server <- function(input, output) {
   
   output$DropPostingFlowReasons <- 
     renderPlot({
-      ggplot(dat()) +
+      ggplot(dfDropPostingFlowReasons()) +
         geom_line(stat = "identity", 
                   aes(date,perQty, group = reason, colour= reason))+
         scale_y_continuous(labels = percent)+
