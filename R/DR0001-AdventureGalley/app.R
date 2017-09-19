@@ -68,8 +68,9 @@ server <- function(input, output) {
       summarise(qty = sum(qty)) %>%
       mutate(perQty = qty / sum(qty)) %>%
       ggplot() +
-      geom_line(stat = "identity", 
-                aes(date,perQty, group = reason, colour= reason))
+        geom_line(stat = "identity", 
+                aes(date,perQty, group = reason, colour= reason))+
+        theme(legend.position="bottom")
     })
   
   }
