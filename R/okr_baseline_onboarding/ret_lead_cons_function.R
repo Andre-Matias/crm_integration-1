@@ -14,7 +14,7 @@
 #' Combine plots into a dashboard if necessary
 
 # Set working directory
-setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
+# setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
 
 # Load libraries
 library("rjson")
