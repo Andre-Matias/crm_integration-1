@@ -9,6 +9,7 @@ import codecs
 import os
 import boto
 from boto.s3.key import Key
+import simplejson as json
 
 #pip install unicodedata2
 
