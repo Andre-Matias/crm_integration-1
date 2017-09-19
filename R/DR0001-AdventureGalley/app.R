@@ -7,6 +7,8 @@ library("magrittr")
 library("data.table")
 library("dplyr")
 library("dtplyr")
+library("scales")
+library("ggthemes")
 
 
 # load mixpanel user's credentials --------------------------------------------
@@ -51,28 +53,55 @@ ui <-
       # Monetization - Posting Flow - Drop Reasons 
       tabItem(tabName = "tabDropReasons",
               fluidRow(
-                box(plotOutput("d", height = 250))
-              )
+                box(
+                  plotOutput("DropPostingFlowReasons", height = 250)),
+                box(
+                  checkboxGroupInput("inputDropPostingFlowReasons", "Reasons:", 
+                                     choices = unique(dfAll$reason),
+                                     selected = unique(dfAll$reason) 
+                                     )
+                  ),
+                box(
+                  checkboxGroupInput("inputDropPostingFlowProject", "Project:", 
+                                     choices = unique(dfAll$project),
+                                     selected = unique(dfAll$project) 
+                  )
+                )
+                )
               )
     )
   )
 # dashboardbody end -----------------------------------------------------------
 )
 server <- function(input, output) { 
-  
-  output$d <- 
-    renderPlot({
+
+  dat <- reactive({
+    test <-       
       dfAll %>%
-      filter(project == "Otomoto.PL", event == "posting_leaving_reason") %>%
+      filter(project %in% input$inputDropPostingFlowProject,
+             reason %in% input$inputDropPostingFlowReasons) %>%
       group_by(date, reason) %>%
       summarise(qty = sum(qty)) %>%
-      mutate(perQty = qty / sum(qty)) %>%
-      ggplot() +
-        geom_line(stat = "identity", 
-                aes(date,perQty, group = reason, colour= reason))+
-        theme(legend.position="bottom")
-    })
+      mutate(perQty = qty / sum(qty))
+    test
+  })
   
+  
+  output$DropPostingFlowReasons <- 
+    renderPlot({
+      ggplot(dat()) +
+        geom_line(stat = "identity", 
+                  aes(date,perQty, group = reason, colour= reason))+
+        scale_y_continuous(labels = percent)+
+        theme_fivethirtyeight()+
+        theme(legend.position="bottom")+
+        guides(col = guide_legend(nrow = 2, bycol = TRUE))+
+        ggtitle("Drop Off Ad Posting Funnel Reasons",
+                subtitle = paste("Platforms:",
+                  paste(input$inputDropPostingFlowProject, collapse = " ")
+                  )
+                )
+    })
   }
 
 # Run the application 
