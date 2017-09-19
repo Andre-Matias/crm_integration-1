@@ -9,9 +9,9 @@ ui <-
 
   dashboardSidebar(
       sidebarMenu(
-        menuItem("Monetization", tabName = "monetization", icon = icon("money"),
-                   menuItem('Posting Flow', tabName = 'postingflow', 
-                            menuSubItem('Sub-Item Two', tabName = 'subItemTwo'))
+        menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
+                   menuItem('Posting Flow', tabName = 'tabPostingFlow', 
+                            menuSubItem('Drop Reasons', tabName = 'tabDropReasons'))
                  )
       ),
       sidebarMenu(
