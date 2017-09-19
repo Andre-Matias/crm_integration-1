@@ -28,7 +28,7 @@ drv <- dbDriver("PostgreSQL")
 conDB <- 
   dbConnect(
     drv, 
-    host="bi-analytics.cnsuxis6zqxr.us-west-2.redshift.amazonaws.PEm",
+    host="bi-analytics.cnsuxis6zqxr.us-west-2.redshift.amazonaws.com",
     port = "5439",
     dbname = "analytics",
     user = userPoseidon,
@@ -38,8 +38,8 @@ conDB <-
 requestDB <- 
   dbSendQuery(
     conDB,
-    "SELECT A.message_id, B.PEnversation_id, A.sender_id,
-    A.PEuntry_id, A.platform_id, CONVERT(varchar, A.date) as DateOrigin,
+    "SELECT A.message_id, B.conversation_id, A.sender_id,
+    A.country_id, A.platform_id, CONVERT(varchar, A.date) as DateOrigin,
     A.message_text, B.item_id
     FROM
     (
@@ -66,7 +66,7 @@ requestDB <-
     )A
     INNER JOIN 
     (SELECT item_id, conversation_id FROM ods_naspers.ft_h_conversations) B
-    ON A.PEnversation_id=B.PEnversation_id
+    ON A.conversation_id=B.conversation_id
     ;"
   )
 
