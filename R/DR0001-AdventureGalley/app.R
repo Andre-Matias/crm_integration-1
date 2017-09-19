@@ -79,7 +79,8 @@ server <- function(input, output) {
     test <-       
       dfAll %>%
       filter(project %in% input$inputDropPostingFlowProject,
-             reason %in% input$inputDropPostingFlowReasons) %>%
+             reason %in% input$inputDropPostingFlowReasons,
+             event != "posting_leaving_reason_show") %>%
       group_by(date, reason) %>%
       summarise(qty = sum(qty)) %>%
       mutate(perQty = qty / sum(qty))
