@@ -3,6 +3,8 @@
 library(ggplot2)
 library(shiny)
 library(scales)
+library(googleVis)
+
 
 server <- function(input, output) {
   
@@ -38,18 +40,40 @@ server <- function(input, output) {
   
   options(scipen=10000)
   
-  output$duplicatesPlot <- renderPlot({
+  output$duplicatesPlot <- renderGvis({
     
-    ggplot(df, aes(Date)) + 
-      geom_bar(width=.5,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(30000, 600000)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=0,angle=90)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") +
-      theme(plot.title = element_text(lineheight=.8, face="bold"))
+graphstoria <- gvisComboChart(df, xvar="Date", 
+                              yvar=c("%Duplicates", "Ads"),
+                                  options=list(title="%Duplicates by Active Ads",
+                                               titleTextStyle="{color:'black',
+                                               fontName:'Courier',
+                                               fontSize:16}",
+                                               curveType="function", 
+                                               pointSize=9,
+                                               seriesType="bars",
+                                               series="[{type:'line', 
+                                               targetAxisIndex:0,
+                                               color:'blue'}, 
+                                               {type:'bars', 
+                                               targetAxisIndex:1,
+                                               color:'orange'}]",
+                                               vAxes="[{title:'Percent',
+                                               format:'#,###%',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out'}, 
+                                               {title:'Thousands',
+                                               format:'#,###',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}]",
+                                               hAxes="[{title:'Date',
+                                               textPosition: 'out'}]",
+                                               width=1000, height=600
+                                  ))
+    
+  graphstoria
     
   })
   
@@ -132,7 +156,7 @@ ui <- navbarPage(
              h6("Date: 30 days for graphs, current day for tables"),
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
-  tabPanel('Storia Dup Graph', plotOutput("duplicatesPlot")),   
+  tabPanel('Storia Dup Graph', htmlOutput("duplicatesPlot")),   
   tabPanel('Storia Dup Table', dataTableOutput('ex1')),
   tabPanel('Stradia Dup Graph', plotOutput("duplicatesPlot2")),   
   tabPanel('Stradia Dup Table', dataTableOutput('ex2')),
