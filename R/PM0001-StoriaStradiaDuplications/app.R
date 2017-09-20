@@ -70,7 +70,7 @@ graphstoria <- gvisComboChart(df, xvar="Date",
                                                minValue:0}]",
                                                hAxes="[{title:'Date',
                                                textPosition: 'out'}]",
-                                               width=1000, height=600
+                                               width=1200, height=600
                                   ))
     
   graphstoria
@@ -79,52 +79,88 @@ graphstoria <- gvisComboChart(df, xvar="Date",
   
 
   #Stradia Graph
-  output$duplicatesPlot2 <- renderPlot({
+  output$duplicatesPlot2 <- renderGvis({
     
-    ggplot(dfstradia, aes(Date)) + 
-      geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 72000)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
+    
+    graphstradia <- gvisComboChart(dfstradia, xvar="Date", 
+                                  yvar=c("%Duplicates", "Ads"),
+                                  options=list(title="%Duplicates by Active Ads",
+                                               titleTextStyle="{color:'black',
+                                               fontName:'Courier',
+                                               fontSize:16}",
+                                               curveType="function", 
+                                               pointSize=9,
+                                               seriesType="bars",
+                                               series="[{type:'line', 
+                                               targetAxisIndex:0,
+                                               color:'blue'}, 
+                                               {type:'bars', 
+                                               targetAxisIndex:1,
+                                               color:'orange'}]",
+                                               vAxes="[{title:'Percent',
+                                               format:'#,###%',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}, 
+                                               {title:'Thousands',
+                                               format:'#,###',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}]",
+                                               hAxes="[{title:'Date',
+                                               textPosition: 'out'}]",
+                                               width=1200, height=600
+                                  ))
+    
+    graphstradia
     
   })
   
-  output$DeletedPlot <- renderPlot({
+  output$DeletedPlot <- renderGvis({
     
-    ggplot(dfstoriadel1, aes(Date)) +
-      geom_line(aes(y = dfstoriadel1$"Deleted 7 Days %", group = 1, color = "Deleted 7 Days %")) +  
-      geom_line(aes(y = dfstoriadel1$"Deleted 3 Days %",group = 1, color = "Deleted 3 Days %")) +
-      geom_line(aes(y = dfstoriadel1$"Deleted 1 Day %", group = 1, color = "Deleted 1 Day %")) +
-      scale_colour_manual("", values=c("Deleted 3 Days %" = "blue","Deleted 7 Days %" = "orange","Deleted 1 Day %" = "brown")) +
-      geom_text(aes(y= dfstoriadel1$"Deleted 7 Days %",label = percent(dfstoriadel1$"Deleted 7 Days %"), vjust=-1)) + 
-      geom_text(aes(y= dfstoriadel1$"Deleted 3 Days %",label = percent(dfstoriadel1$"Deleted 3 Days %"), vjust=-2)) + 
-      geom_text(aes(y= dfstoriadel1$"Deleted 1 Day %",label = percent(dfstoriadel1$"Deleted 1 Day %"), vjust=1)) + 
-      ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.01),labels=percent) + 
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("%Deleted ads based on creation date of the last 7, 3 and 1 Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
+    graphstoriadel <- gvisLineChart(dfstoriadel1, xvar="Date", yvar=c("Deleted 1 Day %","Deleted 3 Days %","Deleted 7 Days %"),
+                                    options=list(title="%Deleted ads based on creation date of the last 7, 3 and 1 Day",
+                                                 titleTextStyle="{color:'black',
+                                                 fontName:'Courier',
+                                                 fontSize:16}",
+                                                 vAxes="[{title:'%Deleted Ads',
+                                                 format:'#,###%',
+                                                 titleTextStyle: {color: 'black'},
+                                                 textStyle:{color: 'black'},
+                                                 textPosition: 'out',
+                                                 minValue:0}]",
+                                                 hAxes="[{title:'Date',
+                                                 textPosition: 'out'}]",
+                                                 width=1200, height=600
+                                    ))
+    
+    
+graphstoriadel
     
   }) 
   
-  output$DeletedPlot2 <- renderPlot({
+  output$DeletedPlot2 <- renderGvis({
   
-  ggplot(dfstradiadel1, aes(Date)) +
-    geom_line(aes(y = dfstradiadel1$"Deleted 7 Days %", group = 1, color = "Deleted 7 Days %")) +  
-    geom_line(aes(y = dfstradiadel1$"Deleted 3 Days %",group = 1, color = "Deleted 3 Days %")) +
-    geom_line(aes(y = dfstradiadel1$"Deleted 1 Day %", group = 1, color = "Deleted 1 Day %")) +
-    scale_colour_manual("", values=c("Deleted 3 Days %" = "blue","Deleted 7 Days %" = "orange","Deleted 1 Day %" = "brown")) +
-    geom_text(aes(y= dfstradiadel1$"Deleted 7 Days %",label = percent(dfstradiadel1$"Deleted 7 Days %"), vjust=1)) + 
-    geom_text(aes(y= dfstradiadel1$"Deleted 3 Days %",label = percent(dfstradiadel1$"Deleted 3 Days %"), vjust=1)) + 
-    geom_text(aes(y= dfstradiadel1$"Deleted 1 Day %",label = percent(dfstradiadel1$"Deleted 1 Day %"), vjust=1)) + 
-    ylab("Deleted Ads %") + scale_y_continuous(breaks = seq(0, 1, 0.2),labels=percent) + 
-    scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-    ggtitle("%Deleted ads based on creation date of the last 7, 3 and 1 Day") + 
-    theme(plot.title = element_text(lineheight=.8, face="bold"))  
+    graphstradiadel <- gvisLineChart(dfstradiadel1, xvar="Date", yvar=c("Deleted 1 Day %","Deleted 3 Days %","Deleted 7 Days %"),
+                                    options=list(title="%Deleted ads based on creation date of the last 7, 3 and 1 Day",
+                                                 titleTextStyle="{color:'black',
+                                                 fontName:'Courier',
+                                                 fontSize:16}",
+                                                 vAxes="[{title:'%Deleted Ads',
+                                                 format:'#,###%',
+                                                 titleTextStyle: {color: 'black'},
+                                                 textStyle:{color: 'black'},
+                                                 textPosition: 'out',
+                                                 minValue:0}]",
+                                                 hAxes="[{title:'Date',
+  textPosition: 'out'}]",
+                                                 width=1200, height=600
+                                    ))
+    
+    
+graphstradiadel
   
 })
   
@@ -158,10 +194,10 @@ ui <- navbarPage(
              h6("Author: Pedro Matos"))),  
   tabPanel('Storia Dup Graph', htmlOutput("duplicatesPlot")),   
   tabPanel('Storia Dup Table', dataTableOutput('ex1')),
-  tabPanel('Stradia Dup Graph', plotOutput("duplicatesPlot2")),   
+  tabPanel('Stradia Dup Graph', htmlOutput("duplicatesPlot2")),   
   tabPanel('Stradia Dup Table', dataTableOutput('ex2')),
-  tabPanel('Storia Del Graph',plotOutput("DeletedPlot")),
-  tabPanel('Stradia Del Graph',plotOutput("DeletedPlot2"))
+  tabPanel('Storia Del Graph', htmlOutput("DeletedPlot")),
+  tabPanel('Stradia Del Graph',htmlOutput("DeletedPlot2"))
   
 )
 
