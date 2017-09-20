@@ -74,6 +74,16 @@ ui <-
                                        unique(
                                          dfAll$project[!is.na(dfAll$project)]) 
                   )
+                ),
+                box(
+                  checkboxGroupInput("inputDropPostingFlowPlatform", "Platform:", 
+                                     choices =
+                                       unique(
+                                         dfAll$platform[!is.na(dfAll$platform)]),
+                                     selected =
+                                       unique(
+                                         dfAll$platform[!is.na(dfAll$platform)]) 
+                  )
                 )
                 )
               )
@@ -90,6 +100,7 @@ server <- function(input, output) {
       dfAll %>%
       filter(project %in% input$inputDropPostingFlowProject,
              reason %in% input$inputDropPostingFlowReasons,
+             platform %in% input$inputDropPostingFlowPlatform,
              event != "posting_leaving_reason_show") %>%
       group_by(date, reason) %>%
       summarise(qty = sum(qty)) %>%
@@ -110,8 +121,11 @@ server <- function(input, output) {
         theme(legend.position="bottom")+
         guides(col = guide_legend(nrow = 2, bycol = TRUE))+
         ggtitle("Drop Off Ad Posting Funnel Reasons",
-                subtitle = paste("Platforms:",
-                  paste(input$inputDropPostingFlowProject, collapse = " ")
+                subtitle = paste(
+                  "Project:",
+                  paste(input$inputDropPostingFlowProject, collapse = " "),
+                  "| Platform: ",
+                  paste(input$inputDropPostingFlowPlatform, collapse = " ")
                   )
                 )
     })
