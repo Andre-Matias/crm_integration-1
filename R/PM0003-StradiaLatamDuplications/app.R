@@ -3,6 +3,7 @@
 library(ggplot2)
 library(shiny)
 library(scales)
+library(googleVis)
 
 server <- function(input, output) {
   
@@ -42,65 +43,159 @@ server <- function(input, output) {
   
   #Stradia Graphs 
   
-  options(scipen=10000)
-  
-  output$duplicatesPlot1 <- renderPlot({
+  output$duplicatesPlot1 <- renderGvis({
     
-    ggplot(dfstradiar, aes(Date)) + 
-      geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 10000)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
     
-  })
-  
-  output$duplicatesPlot2 <- renderPlot({
+    graphstradiar <- gvisComboChart(dfstradiar, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                               fontName:'Courier',
+                                               fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                               targetAxisIndex:0,
+                                               color:'blue'}, 
+                                               {type:'bars', 
+                                               targetAxisIndex:1,
+                                               color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                               format:'#,###%',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}, 
+                                               {title:'Thousands',
+                                               format:'#,###',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                               textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
     
-    ggplot(dfstradiaco, aes(Date)) + 
-      geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 6500)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
-    
-  })
-  
-  output$duplicatesPlot3 <- renderPlot({
-    
-    ggplot(dfstradiape, aes(Date)) + 
-      geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 550)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
+    graphstradiar
     
   })
   
-  output$duplicatesPlot4 <- renderPlot({
+  output$duplicatesPlot2 <- renderGvis({
     
-    ggplot(dfstradiaec, aes(Date)) + 
-      geom_bar(width=.8,aes(y = Ads, color = "Ads"), stat="identity", fill = "orange") +
-      geom_line(aes(y = Duplicates, group = 1, color = "Duplicates")) +
-      scale_colour_manual("", values=c("Duplicates" = "blue", "Ads" = "orange")) + 
-      coord_cartesian(ylim = c(0, 3100)) + 
-      geom_text(aes(y= Duplicates,label =paste0(Duplicates,"\n",perduplicates), vjust=-1)) +
-      geom_text(aes(y= Ads,label = Ads, vjust=2)) +
-      scale_x_date(date_breaks="2 days", date_labels="%d%b") + 
-      ggtitle("Active Ads vs Active Duplicates by Day") + 
-      theme(plot.title = element_text(lineheight=.8, face="bold")) 
+    
+    graphstradiaco <- gvisComboChart(dfstradiaco, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                               fontName:'Courier',
+                                               fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                               targetAxisIndex:0,
+                                               color:'blue'}, 
+                                               {type:'bars', 
+                                               targetAxisIndex:1,
+                                               color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                               format:'#,###%',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}, 
+                                               {title:'Thousands',
+                                               format:'#,###',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                               textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
+    
+    graphstradiaco
+    
+  })
+  
+  output$duplicatesPlot3 <- renderGvis({
+    
+    
+    graphstradiape <- gvisComboChart(dfstradiape, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                                fontName:'Courier',
+                                                fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                                targetAxisIndex:0,
+                                                color:'blue'}, 
+                                                {type:'bars', 
+                                                targetAxisIndex:1,
+                                                color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                                format:'#,###%',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}, 
+                                                {title:'Thousands',
+                                                format:'#,###',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                                textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
+    
+    graphstradiape
+    
+  })
+  
+  output$duplicatesPlot4 <- renderGvis({
+    
+    
+    graphstradiaec <- gvisComboChart(dfstradiaec, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                                fontName:'Courier',
+                                                fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                                targetAxisIndex:0,
+                                                color:'blue'}, 
+                                                {type:'bars', 
+                                                targetAxisIndex:1,
+                                                color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                                format:'#,###%',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}, 
+                                                {title:'Thousands',
+                                                format:'#,###',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                                textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
+    
+    graphstradiaec
     
   })
   
@@ -127,13 +222,13 @@ ui <- navbarPage(
              h6("Date: 30 days for graphs, current day for tables"),
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
-  tabPanel('Stradia Ar Dup Graph', plotOutput("duplicatesPlot1")),   
+  tabPanel('Stradia Ar Dup Graph', htmlOutput("duplicatesPlot1")),   
   tabPanel('Stradia Ar Table', dataTableOutput('ex1')),
-  tabPanel('Stradia Co Dup Graph', plotOutput("duplicatesPlot2")),   
+  tabPanel('Stradia Co Dup Graph', htmlOutput("duplicatesPlot2")),   
   tabPanel('Stradia Co Table', dataTableOutput('ex2')),
-  tabPanel('Stradia Pe Dup Graph', plotOutput("duplicatesPlot3")),   
+  tabPanel('Stradia Pe Dup Graph', htmlOutput("duplicatesPlot3")),   
   tabPanel('Stradia Pe Table', dataTableOutput('ex3')),
-  tabPanel('Stradia Ec Dup Graph', plotOutput("duplicatesPlot4")),   
+  tabPanel('Stradia Ec Dup Graph', htmlOutput("duplicatesPlot4")),   
   tabPanel('Stradia Ec Table', dataTableOutput('ex4'))
   
              )

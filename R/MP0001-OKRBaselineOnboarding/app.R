@@ -11,12 +11,12 @@ source("ret_lead_cons_function.R")
 ui <- fluidPage(
    
    # Application title
-   titlePanel("OKR's for Onboarding"),
+   titlePanel("OKRs for Onboarding"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput("show_vars", "Weeks to show:", unique(dNewUsers2$week), selected = unique(dNewUsers2$week))
+         checkboxGroupInput("show_vars", "Weeks to show:", unique(dNewUsers2$week), selected = tail(unique(dNewUsers2$week),5))
          ),
       
       
@@ -24,10 +24,14 @@ ui <- fluidPage(
       # Show a plot of the generated distribution
       mainPanel(
          # plotOutput("distPlot"),
-         plotOutput("retPlot")
+         plotOutput("retPlot", height = 600),
+         br(),
+         #tableOutput("retTable")
+         DT::dataTableOutput("table")
       )
    )
 )
+
 
 # Define server logic 
 server <- function(input, output) {
@@ -47,6 +51,20 @@ server <- function(input, output) {
     
    })
    
+   # add data table
+   # output$retTable <- renderTable({
+   # ret_table_cons <- filter(ret_table_cons, week %in% input$show_vars)
+   # ret_table_cons  
+   # })
+   
+   
+   output$table <- DT::renderDataTable({
+     
+     ret_table_cons <- filter(ret_table_cons, week %in% input$show_vars)
+     DT::datatable(ret_table_cons, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   # add 1st okr graph + data table
    
 }
 
