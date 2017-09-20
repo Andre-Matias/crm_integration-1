@@ -5,99 +5,63 @@ library(shiny)
 library(scales)
 library(googleVis)
 
-
 server <- function(input, output) {
   
   
   #load date 
-  load("dfstoriadup.RData")
-  load("Storiadupfinal.RData")
-  load("dfstradia.RData")
-  load("Stradiadupfinal.RData")
-  load("dfstoriadel1.RData")
-  load("dfstradiadel1.RData")
+  load("Stradiardupfinal.RData")
+  load("Stradiacodupfinal.RData")
+  load("Stradiapedupfinal.RData")
+  load("Stradiaecdupfinal.RData")
+  load("dfstradiar.RData")
+  load("dfstradiaco.RData")
+  load("dfstradiape.RData")
+  load("dfstradiaec.RData")
   
-  
-  #Ajust similarity percentage (Shiny has some problems with that)
-  
-  Storiadupfinal2$similarity <- paste(round(Storiadupfinal2$similarity*100,digits=1),"%",sep="")
   
   #Tables(daily duplicates)
   
   output$ex1 <- renderDataTable(
-    Storiadupfinal2, options = list(pageLength = 30)
+    Stradiardupfinal3, options = list(pageLength = 30)
   )
   
   output$ex2 <- renderDataTable(
-   Stradiadupfinal3, options = list(pageLength = 30)
+    Stradiacodupfinal3, options = list(pageLength = 30)
+  )
+  
+  output$ex3 <- renderDataTable(
+    Stradiapedupfinal3, options = list(pageLength = 30)
+  )
+  
+  output$ex4 <- renderDataTable(
+    Stradiaecdupfinal3, options = list(pageLength = 30)
   )
   
   
-
+  
   #plot (evolution by month)
   
-  #Storia Graph 
+  #Stradia Graphs 
   
-  options(scipen=10000)
-  
-  output$duplicatesPlot <- renderGvis({
+  output$duplicatesPlot1 <- renderGvis({
     
-graphstoria <- gvisComboChart(df, xvar="Date", 
-                              yvar=c("%Duplicates", "Ads"),
-                                  options=list(title="%Duplicates by Active Ads",
-                                               titleTextStyle="{color:'black',
+    
+    graphstradiar <- gvisComboChart(dfstradiar, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
                                                fontName:'Courier',
                                                fontSize:16}",
-                                               curveType="function", 
-                                               pointSize=9,
-                                               seriesType="bars",
-                                               series="[{type:'line', 
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
                                                targetAxisIndex:0,
                                                color:'blue'}, 
                                                {type:'bars', 
                                                targetAxisIndex:1,
                                                color:'orange'}]",
-                                               vAxes="[{title:'Percent',
-                                               format:'#,###%',
-                                               titleTextStyle: {color: 'black'},
-                                               textStyle:{color: 'black'},
-                                               textPosition: 'out'}, 
-                                               {title:'Thousands',
-                                               format:'#,###',
-                                               titleTextStyle: {color: 'black'},
-                                               textStyle:{color: 'black'},
-                                               textPosition: 'out',
-                                               minValue:0}]",
-                                               hAxes="[{title:'Date',
-                                               textPosition: 'out'}]",
-                                               width=1200, height=600
-                                  ))
-    
-  graphstoria
-    
-  })
-  
-
-  #Stradia Graph
-  output$duplicatesPlot2 <- renderGvis({
-    
-    
-    graphstradia <- gvisComboChart(dfstradia, xvar="Date", 
-                                  yvar=c("%Duplicates", "Ads"),
-                                  options=list(title="%Duplicates by Active Ads",
-                                               titleTextStyle="{color:'black',
-                                               fontName:'Courier',
-                                               fontSize:16}",
-                                               curveType="function", 
-                                               pointSize=9,
-                                               seriesType="bars",
-                                               series="[{type:'line', 
-                                               targetAxisIndex:0,
-                                               color:'blue'}, 
-                                               {type:'bars', 
-                                               targetAxisIndex:1,
-                                               color:'orange'}]",
-                                               vAxes="[{title:'Percent',
+                                                vAxes="[{title:'Percent',
                                                format:'#,###%',
                                                titleTextStyle: {color: 'black'},
                                                textStyle:{color: 'black'},
@@ -109,97 +73,165 @@ graphstoria <- gvisComboChart(df, xvar="Date",
                                                textStyle:{color: 'black'},
                                                textPosition: 'out',
                                                minValue:0}]",
-                                               hAxes="[{title:'Date',
+                                                hAxes="[{title:'Date',
                                                textPosition: 'out'}]",
-                                               width=1200, height=600
-                                  ))
+                                                width=1200, height=600
+                                   ))
     
-    graphstradia
+    graphstradiar
     
   })
   
-  output$DeletedPlot <- renderGvis({
-    
-    graphstoriadel <- gvisLineChart(dfstoriadel1, xvar="Date", yvar=c("Deleted 1 Day %","Deleted 3 Days %","Deleted 7 Days %"),
-                                    options=list(title="%Deleted ads based on creation date of the last 7, 3 and 1 Day",
-                                                 titleTextStyle="{color:'black',
-                                                 fontName:'Courier',
-                                                 fontSize:16}",
-                                                 vAxes="[{title:'%Deleted Ads',
-                                                 format:'#,###%',
-                                                 titleTextStyle: {color: 'black'},
-                                                 textStyle:{color: 'black'},
-                                                 textPosition: 'out',
-                                                 minValue:0}]",
-                                                 hAxes="[{title:'Date',
-                                                 textPosition: 'out'}]",
-                                                 width=1200, height=600
-                                    ))
+  output$duplicatesPlot2 <- renderGvis({
     
     
-graphstoriadel
+    graphstradiaco <- gvisComboChart(dfstradiaco, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                               fontName:'Courier',
+                                               fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                               targetAxisIndex:0,
+                                               color:'blue'}, 
+                                               {type:'bars', 
+                                               targetAxisIndex:1,
+                                               color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                               format:'#,###%',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}, 
+                                               {title:'Thousands',
+                                               format:'#,###',
+                                               titleTextStyle: {color: 'black'},
+                                               textStyle:{color: 'black'},
+                                               textPosition: 'out',
+                                               minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                               textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
     
-  }) 
+    graphstradiaco
+    
+  })
   
-  output$DeletedPlot2 <- renderGvis({
-  
-    graphstradiadel <- gvisLineChart(dfstradiadel1, xvar="Date", yvar=c("Deleted 1 Day %","Deleted 3 Days %","Deleted 7 Days %"),
-                                    options=list(title="%Deleted ads based on creation date of the last 7, 3 and 1 Day",
-                                                 titleTextStyle="{color:'black',
-                                                 fontName:'Courier',
-                                                 fontSize:16}",
-                                                 vAxes="[{title:'%Deleted Ads',
-                                                 format:'#,###%',
-                                                 titleTextStyle: {color: 'black'},
-                                                 textStyle:{color: 'black'},
-                                                 textPosition: 'out',
-                                                 minValue:0}]",
-                                                 hAxes="[{title:'Date',
-  textPosition: 'out'}]",
-                                                 width=1200, height=600
-                                    ))
+  output$duplicatesPlot3 <- renderGvis({
     
     
-graphstradiadel
+    graphstradiape <- gvisComboChart(dfstradiape, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                                fontName:'Courier',
+                                                fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                                targetAxisIndex:0,
+                                                color:'blue'}, 
+                                                {type:'bars', 
+                                                targetAxisIndex:1,
+                                                color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                                format:'#,###%',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}, 
+                                                {title:'Thousands',
+                                                format:'#,###',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                                textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
+    
+    graphstradiape
+    
+  })
   
-})
+  output$duplicatesPlot4 <- renderGvis({
+    
+    
+    graphstradiaec <- gvisComboChart(dfstradiaec, xvar="Date", 
+                                   yvar=c("%Duplicates", "Ads"),
+                                   options=list(title="%Duplicates by Active Ads",
+                                                titleTextStyle="{color:'black',
+                                                fontName:'Courier',
+                                                fontSize:16}",
+                                                curveType="function", 
+                                                pointSize=9,
+                                                seriesType="bars",
+                                                series="[{type:'line', 
+                                                targetAxisIndex:0,
+                                                color:'blue'}, 
+                                                {type:'bars', 
+                                                targetAxisIndex:1,
+                                                color:'orange'}]",
+                                                vAxes="[{title:'Percent',
+                                                format:'#,###%',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}, 
+                                                {title:'Thousands',
+                                                format:'#,###',
+                                                titleTextStyle: {color: 'black'},
+                                                textStyle:{color: 'black'},
+                                                textPosition: 'out',
+                                                minValue:0}]",
+                                                hAxes="[{title:'Date',
+                                                textPosition: 'out'}]",
+                                                width=1200, height=600
+                                   ))
+    
+    graphstradiaec
+    
+  })
   
+  
+ 
 }
 
-  
+
 ui <- navbarPage(
   title = (""),
-  tabPanel('Overview',titlePanel("Storia.IND and Stradia.IN Duplicated and Deleted Ads"),
+  tabPanel('Overview',titlePanel("Stradia Latam Duplicated"),
            mainPanel(
-             h5("This report provides data about ad duplications and deleted for Storia Indonesia and Stradia India based on some variables."),
+             h5("This report provides data about ad duplications and deleted for Stradia Latam (Argentina, Colombia, Peru and Ecuador) based on some variables."),
              br(),
-             h5("To find ad duplicates we use the following variables for Storia: 
-                Same user id, same city id, same category id, same price and title similarity with at least 70%.
-                For Stradia we use the following variables:
-                Same user id, same brand, same model, same year, same fuel and same Variant."),
+             h5("To find ad duplicates we use the following variables: 
+                Same user id, same brand, same model, same year, same fuel and mileage."),
              br(),
-             h5("In Storia and Stradia dup graph tabs we have a plot with the relation between active ads and ad duplicates, by day. 
+             h5("We have the plots with the relation between active ads and ad duplicates, by day. 
                 Due performance and memory capacity reasons, we just consider a maximum of 30 days per plot. With this we can have an overall perspective regarding the evolution of duplicates."), 
              br(),
-             h5("On Storia and Stradia del graphs we can see the % of deleted ads considering the creation date (NNL) for the last 7, 3 and 1 day."),
-             br(),
-             h5("On Storia and Stradia tables you can find the current duplications (daily active) and you can look deep for the data using the variables that we used.
-                These differences between both platforms help us to understand why Stradia has such a low number of active duplicates."),
-             br(),
-             h5("We need to consider that some users can cheat us with different prices, titles, description, mileages or even year so is expected that we might have more duplicates than this report shows."),
+             h5("On tables you can find the current duplications (daily active) and you can look deep for the data using the variables that we used."),
              br(), 
              br(),
              h6("Date: 30 days for graphs, current day for tables"),
              h6("Source: Database"),
              h6("Author: Pedro Matos"))),  
-  tabPanel('Storia Dup Graph', htmlOutput("duplicatesPlot")),   
-  tabPanel('Storia Dup Table', dataTableOutput('ex1')),
-  tabPanel('Stradia Dup Graph', htmlOutput("duplicatesPlot2")),   
-  tabPanel('Stradia Dup Table', dataTableOutput('ex2')),
-  tabPanel('Storia Del Graph', htmlOutput("DeletedPlot")),
-  tabPanel('Stradia Del Graph',htmlOutput("DeletedPlot2"))
+  tabPanel('Stradia Ar Dup Graph', htmlOutput("duplicatesPlot1")),   
+  tabPanel('Stradia Ar Table', dataTableOutput('ex1')),
+  tabPanel('Stradia Co Dup Graph', htmlOutput("duplicatesPlot2")),   
+  tabPanel('Stradia Co Table', dataTableOutput('ex2')),
+  tabPanel('Stradia Pe Dup Graph', htmlOutput("duplicatesPlot3")),   
+  tabPanel('Stradia Pe Table', dataTableOutput('ex3')),
+  tabPanel('Stradia Ec Dup Graph', htmlOutput("duplicatesPlot4")),   
+  tabPanel('Stradia Ec Table', dataTableOutput('ex4'))
   
-)
+             )
 
 shinyApp(ui = ui, server = server)
 
