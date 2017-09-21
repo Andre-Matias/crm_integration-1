@@ -82,7 +82,7 @@ autovito_ro:
   DbUser: "bi_team_pt"
   DbName: "autovitro"
   ArchiveDbName: ""
-  BiServerPort: 
+  BiServerPort: 3315
   
   
 imovirtual_pt:
