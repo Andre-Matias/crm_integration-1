@@ -76,7 +76,7 @@ standvirtual_pt:
   BiServerPort: 3308
 
 
-autovito_ro:
+autovit_ro:
   DbHost: "192.168.1.5"
   DbPort: 3316
   DbUser: "bi_team_pt"
