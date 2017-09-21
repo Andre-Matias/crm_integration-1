@@ -134,7 +134,7 @@ ret_plot_cons <-
 
 ret_plot_cons 
 
-# + geom_text(data = dNewUsers2, aes(label = week, x = 12, y=c(week), hjust = 0.7, vjust = 1))
+
 
 
 # Put data into a wide table also (convert long to wide format)
