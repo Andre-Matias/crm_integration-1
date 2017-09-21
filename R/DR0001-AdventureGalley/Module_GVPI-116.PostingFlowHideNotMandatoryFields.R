@@ -29,23 +29,22 @@ module_GVPI116_UI <- function(id){
   
   ns <- NS(id)
   
-  
-tagList(
-  
-    plotOutput(ns("HideDescriptionPlot")),
+  fluidRow(
+    box(plotOutput(ns("HideDescriptionPlot"))),
     
-    checkboxGroupInput(
+    box(checkboxGroupInput(
       inputId = ns("gvpi116SelectPlatform"),
       label = "Platform",
       choices = unique(rawDf$platform)
-      ),
+      )),
     
-    checkboxGroupInput(
+    box(checkboxGroupInput(
       inputId = ns("gvpi116SelectCategories"),
       label = "Category",
       choices = unique(rawDf$name_en)
-      )
+      ))
   )
+    
 # end of UI module ------------------------------------------------------------
 }
 
