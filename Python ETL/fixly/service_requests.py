@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 #- * -coding: utf - 8 - * -
 import gzip
 import psycopg2
@@ -10,8 +8,6 @@ import os
 import boto
 from boto.s3.key import Key
 import simplejson as json
-
-#pip install unicodedata2
 
 
 bucketName="vertical-services-poland-2"
