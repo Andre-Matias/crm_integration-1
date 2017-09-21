@@ -95,7 +95,7 @@ ui <-
                 )
               ),
       tabItem(tabName = "tabHideDescriptionField",
-              module_GVPI116_UI("HideDescriptionPlot")
+                module_GVPI116_UI("HideDescription")
               )
     )
   )
@@ -143,7 +143,7 @@ server <- function(input, output) {
 
 # Monetization - Posting Flow - Hide Description - START ----------------------
 
-callModule(module_GVPI116, "HideDescriptionPlot")
+callModule(module_GVPI116, "HideDescription")
 
 # Monetization - Posting Flow - Hide Description - END ------------------------
 }
