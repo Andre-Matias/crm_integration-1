@@ -36,7 +36,7 @@ def connect():
 		
 		#the file thing
 		thefile="service_requests-data.txt"
-		file = open(thefile, mode="w", encoding='utf-8')
+		file = open(thefile, mode="w")
 		for elemento in lista:
 			#print(elemento) # Una simple verificación
 			for line in elemento:
