@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 #- * -coding: utf - 8 - * -
 import gzip
 import psycopg2
@@ -10,8 +8,6 @@ import os
 import boto
 from boto.s3.key import Key
 import simplejson as json
-
-#pip install unicodedata2
 
 
 bucketName="vertical-services-poland-2"
@@ -40,7 +36,7 @@ def connect():
 		
 		#the file thing
 		thefile="service_requests-data.txt"
-		file = open(thefile, mode="w", encoding='utf-8')
+		file = open(thefile, mode="w")
 		for elemento in lista:
 			#print(elemento) # Una simple verificación
 			for line in elemento:
