@@ -23,6 +23,9 @@ dfAll <-
             bucket = "pyrates-data-ocean/GVPI-112"
   )
 
+# load modules ----------------------------------------------------------------
+source("Module_GVPI-116.PostingFlowHideNotMandatoryFields.R")
+
 ui <- 
   dashboardPage(
   dashboardHeader(title = "Adventure Galley"),
@@ -34,7 +37,11 @@ ui <-
         menuItem("Global", tabName = 'tabGlobal', icon = icon('dashboard')),
         menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
                  menuItem('Posting Flow', tabName = 'tabPostingFlow', 
-                          menuSubItem('Drop Reasons', tabName = 'tabDropReasons'))
+                          menuSubItem('Drop Reasons',
+                                      tabName = 'tabDropReasons'),
+                          menuSubItem('Hide Description Field',
+                                      tabName = 'tabHideDescriptionField')
+                          )
                  )
       ),
       sidebarMenu(
@@ -86,6 +93,9 @@ ui <-
                   )
                 )
                 )
+              ),
+      tabItem(tabName = "tabHideDescriptionField",
+              module_GVPI116_UI("HideDescriptionPlot")
               )
     )
   )
@@ -129,9 +139,14 @@ server <- function(input, output) {
                   )
                 )
     })
-  # Monetization - Posting Flow - Drop Reasons - END --------------------------
+# Monetization - Posting Flow - Drop Reasons - END --------------------------
 
-  }
+# Monetization - Posting Flow - Hide Description - START ----------------------
+
+callModule(module_GVPI116, "HideDescriptionPlot")
+
+# Monetization - Posting Flow - Hide Description - END ------------------------
+}
 
 # Run the application 
 shinyApp(ui = ui, server = server)
