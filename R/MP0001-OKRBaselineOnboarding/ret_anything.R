@@ -1,7 +1,7 @@
 #' Retention code consolidating data from PL, PT, RO
 #' 
 
-#library(tidyr)
+library(tidyr)
 
 #setwd("~/verticals-bi/R/MP0001-OKRBaselineOnboarding")
 
