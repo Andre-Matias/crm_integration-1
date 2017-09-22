@@ -72,7 +72,11 @@ output$HideDescriptionPlot <-
   ggplot(df())+
   geom_line(
     aes(x = day, y = perListings,
-        group = DescriptionState, color = DescriptionState))
+        group = DescriptionState, color = DescriptionState))+
+  scale_y_continuous(labels = percent, limits = c(0,1))+
+  theme_fivethirtyeight()+
+  theme(legend.position="bottom")+
+  guides(col = guide_legend(nrow = 2, bycol = TRUE))
   })
 
 # end of SERVER module --------------------------------------------------------
