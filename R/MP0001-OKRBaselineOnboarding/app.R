@@ -7,7 +7,7 @@ library(dplyr)
 
 # Global
 source("ret_lead_cons_function.R")
-source("ret_anything.R")
+source("ret_any_cons.R")
 
 
 # Define UI for application that draws a histogram
@@ -27,14 +27,14 @@ ui <- fluidPage(
       # Show a plot of the generated distribution
       mainPanel(
          ## 1st okr
-         plotOutput("retPlot", height = 500),
+         plotOutput("retPlot", height = 400),
          br(),
          DT::dataTableOutput("retTable"),
          
          br(),
          br(),
          ## 2nd okr
-         plotOutput("retAnyPlot", height = 500),
+         plotOutput("retAnyPlot", height = 400),
          br(),
          DT::dataTableOutput("retAnyTable")
          
@@ -56,7 +56,7 @@ server <- function(input, output) {
      dNewUsers2<- filter(dNewUsers2, week %in% input$show_vars)
       ggplot(data = dNewUsers2) + geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
        scale_y_continuous(labels = scales::percent, breaks = seq(0,0.20,0.01), limits = c(0,0.20))+
-       scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "Consolidated: otomoto.pl + standvirtual.pt + autovit.ro")+
+       scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30))+ggtitle("New Users That Send a Lead - Time to Send (days)", subtitle = "Consolidated: otomoto.pl + standvirtual.pt + autovit.ro. Retention % is cumulated")+
        theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono"))+xlab("days to convert") + ylab("% new users") 
     
    })
@@ -73,7 +73,7 @@ server <- function(input, output) {
      ret_any_2 <- filter(ret_any_2, week %in% input$show_vars)
      ggplot(data = ret_any_2) + geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
        scale_y_continuous(labels = scales::percent, breaks = seq(0,0.13,0.01), limits = c(0,0.13))+
-       scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30)) +ggtitle("New Users That Return and do Anything - Time to Return (days)", subtitle = " otomoto.pl")+
+       scale_x_continuous(breaks = seq(0,30,1), limits = c(0,30)) +ggtitle("New Users That Return and do Anything - Time to Return (days)", subtitle = "Consolidated: otomoto.pl + standvirtual.pt + autovit.ro. Retention % is not cumulated")+
        theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono")) + xlab("days to convert") + ylab("% new users") 
      
    })
