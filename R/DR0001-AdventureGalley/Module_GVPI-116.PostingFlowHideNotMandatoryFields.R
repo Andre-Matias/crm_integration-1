@@ -34,7 +34,7 @@ module_GVPI116_UI <- function(id){
     
     box(checkboxGroupInput(
       inputId = ns("gvpi116SelectPlatform"),
-      label = "Platform",
+      label = "Project",
       choices = unique(rawDf$platform)
       )),
     
