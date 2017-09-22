@@ -76,7 +76,15 @@ output$HideDescriptionPlot <-
   scale_y_continuous(labels = percent, limits = c(0,1))+
   theme_fivethirtyeight()+
   theme(legend.position="bottom")+
-  guides(col = guide_legend(nrow = 2, bycol = TRUE))
+  guides(col = guide_legend(nrow = 1, bycol = TRUE))+
+  ggtitle("Description Field Usage on Posting Ad Flow",
+          subtitle = paste(
+            "Project:",
+            paste(input$gvpi116SelectPlatform, collapse = " "),
+            "| Categories: ",
+            paste(input$gvpi116SelectCategories, collapse = ", ")
+          )
+  )
   })
 
 # end of SERVER module --------------------------------------------------------
