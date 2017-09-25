@@ -1,4 +1,4 @@
-#
+# OKRs Dashboard to track the new ONBOARDING 
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 
@@ -19,7 +19,7 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput("show_vars", "Weeks to show:", unique(dNewUsers2$week), selected = tail(unique(dNewUsers2$week),5))
+         checkboxGroupInput("show_vars", "Weeks to show:", unique(dNewUsers2$week), selected = tail(unique(dNewUsers2$week),3))
          ),
       
       

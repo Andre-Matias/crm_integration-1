@@ -9,9 +9,7 @@
 #' 
 #' Consolidate dataframes from different countries
 #' Complete calculations prepare a consolidate dataframe ready to be plot
-#' prepare_for_retention() function containing retention code. Output a table with retention by week.
-#' Build ggplot on each country output
-#' Combine plots into a dashboard if necessary
+
 
 # Set working directory
 # setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-92.CFbaselineOKR")
@@ -58,7 +56,7 @@ prepare_for_consolidation <- function(a) {
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
   # or put the start/end dates you like
-  d <- d[d$V3 >= '2017-07-03' & d$V3 < '2017-09-10' , ]
+  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-09-17' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange(V3, NewUsers, V5)
@@ -75,9 +73,9 @@ prepare_for_consolidation <- function(a) {
 }
 
 # Read in json files
-  json_pl <- fromJSON(file = "data/retention_lead_pl_3Jul_17Sep.json")
-  json_pt <- fromJSON(file = "data/retention_lead_pt_3Jul_17Sep.json")
-  json_ro <- fromJSON(file = "data/retention_lead_ro_3Jul_17Sep.json")
+  json_pl <- fromJSON(file = "data/retention_lead_pl.json")
+  json_pt <- fromJSON(file = "data/retention_lead_pt.json")
+  json_ro <- fromJSON(file = "data/retention_lead_ro.json")
 
 # Prepare for consolidation  
 pl <- prepare_for_consolidation(json_pl)
