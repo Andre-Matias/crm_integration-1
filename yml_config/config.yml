@@ -23,7 +23,7 @@ stradia_in:
   DbUser: "bi_team_pt"
   DbName: "cars_in"
   ArchiveDbName: ""
-  BiServerPort: ""
+  BiServerPort: 3312
 
 stradia_ar:
   DbHost: "192.168.1.5"
