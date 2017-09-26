@@ -25,7 +25,7 @@ dfAll <-
 
 # load modules ----------------------------------------------------------------
 source("Module_GVPI-116.PostingFlowHideNotMandatoryFields.R")
-source("Module_GVPI-88.StradiaStockarsMessages_PE.R")
+source("Module_GVPI-88.StradiaStockarsMessages.R")
 
 ui <- 
   dashboardPage(
@@ -106,7 +106,7 @@ ui <-
               ),
       # Business Tool - Messages - Sync Time Stockars/Stradia
       tabItem(tabName = "tabSyncTimeStkStr",
-              module_GVPI88_UI("MessageSyncTimePeru")
+              module_GVPI88_UI("MessageSyncTime")
       )
     )
   )
@@ -161,7 +161,7 @@ callModule(module_GVPI116, "HideDescription")
   
 # Business Tool - Messages - Sync Time Stockars/Stradia - START ---------------
   
-callModule(module_GVPI88, "MessageSyncTimePeru")
+callModule(module_GVPI88, "MessageSyncTime")
 
 # Business Tool - Messages - Sync Time Stockars/Stradia - END -----------------
 }
