@@ -25,6 +25,7 @@ dfAll <-
 
 # load modules ----------------------------------------------------------------
 source("Module_GVPI-116.PostingFlowHideNotMandatoryFields.R")
+source("Module_GVPI-88.StradiaStockarsMessages_PE.R")
 
 ui <- 
   dashboardPage(
@@ -45,7 +46,12 @@ ui <-
                  )
       ),
       sidebarMenu(
-        menuItem("Business Tool", tabName = "bt", icon = icon("wrench"))
+        menuItem("Business Tool", tabName = "bt", icon = icon("wrench"),
+                 menuItem('Messages', tabName = 'tabStockarsMessages',
+                          menuSubItem('Sync Time: Stockars/Stradia',
+                                      tabName = 'tabSyncTimeStkStr')
+                          )
+        )
       )
   ),
 # dashboardSidebar end --------------------------------------------------------
@@ -94,9 +100,14 @@ ui <-
                 )
                 )
               ),
+      # Monetization - Posting Flow - Hide Description Field
       tabItem(tabName = "tabHideDescriptionField",
                 module_GVPI116_UI("HideDescription")
-              )
+              ),
+      # Business Tool - Messages - Sync Time Stockars/Stradia
+      tabItem(tabName = "tabSyncTimeStkStr",
+              module_GVPI88_UI("MessageSyncTimePeru")
+      )
     )
   )
 # dashboardbody end -----------------------------------------------------------
@@ -146,6 +157,13 @@ server <- function(input, output) {
 callModule(module_GVPI116, "HideDescription")
 
 # Monetization - Posting Flow - Hide Description - END ------------------------
+  
+  
+# Business Tool - Messages - Sync Time Stockars/Stradia - START ---------------
+  
+callModule(module_GVPI88, "MessageSyncTimePeru")
+
+# Business Tool - Messages - Sync Time Stockars/Stradia - END -----------------
 }
 
 # Run the application 
