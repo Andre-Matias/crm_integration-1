@@ -139,7 +139,8 @@ dfStats <-
   summarise(
     qtyByBracket = sum(!is.na(id))
   ) %>%
-  mutate(perByBracket = qtyByBracket / sum(qtyByBracket))
+  mutate(perByBracket = qtyByBracket / sum(qtyByBracket)) %>%
+  filter(dayhour >= Sys.Date()-7)
   
 # save it to amazon s3 --------------------------------------------------------
 
