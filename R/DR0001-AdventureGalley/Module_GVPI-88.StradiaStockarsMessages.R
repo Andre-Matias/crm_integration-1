@@ -39,6 +39,11 @@ dfStats_EC <-
             bucket = "pyrates-data-ocean/GVPI-88"
   )
 
+dfStats_AR <-
+  s3readRDS(object = "argentina_stk_str_messanges.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88"
+  )
+
 # begin of UI module ----------------------------------------------------------
 module_GVPI88_UI <- function(id){
   
@@ -46,6 +51,7 @@ module_GVPI88_UI <- function(id){
   
   fluidRow(
     box(plotOutput(ns("MessageSyncTimeIndia"))),
+    box(plotOutput(ns("MessageSyncTimeArgentina"))),
     box(plotOutput(ns("MessageSyncTimePeru"))),
     box(plotOutput(ns("MessageSyncTimeEcuador"))),
     box(plotOutput(ns("MessageSyncTimeColombia")))
@@ -111,6 +117,20 @@ output$MessageSyncTimeEcuador <-
       scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
       theme_fivethirtyeight()+
       ggtitle("Ecuador - Stockars/Stradia Messages Syncing Time ",
+              subtitle = "seconds")
+  })
+
+output$MessageSyncTimeArgentina <-
+  renderPlot({
+    ggplot(dfStats_AR)+
+      geom_bar(stat="identity",
+               aes(x = dayhour, y = perByBracket, fill = brackets)
+      )+
+      scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
+      scale_y_continuous(labels = percent)+
+      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      theme_fivethirtyeight()+
+      ggtitle("Argentina - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")
   })
   # end of SERVER module --------------------------------------------------------
