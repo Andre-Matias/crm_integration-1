@@ -20,7 +20,7 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
          "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 config <- config::get(file = "~/verticals-bi/yml_config/config.yml", 
-                      config = Sys.getenv("R_CONFIG_ACTIVE", "stradia_pe")
+                      config = Sys.getenv("R_CONFIG_ACTIVE", "stradia_in")
 )
 
 # define query ----------------------------------------------------------------
@@ -63,15 +63,15 @@ rm(dfQueryResults)
 
 dbUsername <- "biuser"
 dbPassword <- biUserPassword
-dbHost <- "172.61.11.31"
+dbHost <- "scindbbi.row"
 dbPort <- "3306"
-dbName <- "crm_cars_pe"
+dbName <- "crm_cars_in"
 
 sshUser <- "biuser"
-sshHost <- "52.35.32.165"
+sshHost <- "34.251.141.34"
 sshPort <- "10022"
 
-dbLocalPort <- 10103
+dbLocalPort <- 10403
 dbLocalHost <- "127.0.0.1"
 
 system("killall ssh", wait=FALSE)
@@ -145,7 +145,7 @@ dfStats <-
 # save it to amazon s3 --------------------------------------------------------
 
 s3saveRDS(x = dfStats,
-          object = "peru_stk_str_messanges.RDS",
+          object = "india_stk_str_messanges.RDS",
           bucket = "pyrates-data-ocean/GVPI-88")
 
 
