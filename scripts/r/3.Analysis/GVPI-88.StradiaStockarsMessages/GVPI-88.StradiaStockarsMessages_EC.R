@@ -145,19 +145,19 @@ dfStats <-
 # save it to amazon s3 --------------------------------------------------------
 
 s3saveRDS(x = dfStats,
-          object = "ecuador_stk_str_messanges.RDS",
+          object = "ecuador_stk_str_messages.RDS",
           bucket = "pyrates-data-ocean/GVPI-88")
 
 
+dfStatsInOut <-
+  df %>%
+  mutate(day = as.POSIXct(format(posted, "%Y-%m-%d"))) %>%
+  group_by(day, direction) %>%
+  summarise(
+    qtyByDirection = sum(!is.na(id))
+  ) %>%
+  filter(day >= Sys.Date()-7)
 
-# ghStats <-
-#   ggplot(dfStats)+
-#   geom_bar(stat="identity",
-#            aes(x = dayhour, y = perByBracket, fill = brackets)
-#   )+
-#   scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
-#   scale_y_continuous(labels = percent)+
-#   scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
-#   theme_fivethirtyeight()+
-#   ggtitle("Peru - Stockars/Stradia Messages Syncing Time ",
-#           subtitle = "seconds")
+s3saveRDS(x = dfStatsInOut,
+          object = "ecuador_dfStatsInOut.RDS",
+          bucket = "pyrates-data-ocean/GVPI-88")
