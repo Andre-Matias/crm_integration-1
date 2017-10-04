@@ -69,6 +69,7 @@ ui <-
                 box(
                   plotOutput("DropPostingFlowReasons", height = 400)),
                 box(
+                  box(
                   dateRangeInput("dateSelector", label = "Date Range",
                                  start = max(dfAll$date)-7,
                                  end = max(dfAll$date), 
@@ -106,6 +107,7 @@ ui <-
                                        unique(
                                          dfAll$platform[!is.na(dfAll$platform)]) 
                   )
+                )
                 )
                 )
               ),
