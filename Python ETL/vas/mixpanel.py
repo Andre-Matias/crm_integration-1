@@ -73,8 +73,9 @@ def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,fro
 		#Add additional metadata columns
 		output = gzip.open(workspace + str(context) + ".txt.gz", 'wb')
 		for i in data:
-			i['project_name']=project_name
-			output.write(json.dumps(i,use_decimal=True)+"\n")
+			new_data = i
+			new_data['project_name']=project_name
+			output.write(json.dumps(new_data,use_decimal=True)+"\n")
 		output.close()
 
 		sendToS3("verticals-raw-data","/vas/mixpanel/",context,workspace,project_name,keyId,skeyId,from_date)
