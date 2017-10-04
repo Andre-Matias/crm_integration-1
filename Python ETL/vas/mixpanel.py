@@ -130,7 +130,6 @@ def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path,p
 	conn.close()
 
 
-
 mixpanel_conf = sys.argv[2]
 project_name = sys.argv[3]
 conf = json.load(open(mixpanel_conf))
