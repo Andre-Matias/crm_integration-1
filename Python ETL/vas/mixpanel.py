@@ -80,7 +80,7 @@ skey = conf['s3_skey']
 try:
 	from_date = sys.argv[4]
 except IndexError:
-	from_date = (date.today() - timedelta(1)).strftime('%Y/%m/%d')
+	from_date = (date.today() - timedelta(1)).strftime('%Y-%m-%d')
 
 split_date = from_date.split('-')
 to_date = (date(int(split_date[0]),int(split_date[1]),int(split_date[2])) + timedelta(1)).strftime('%Y/%m/%d')
