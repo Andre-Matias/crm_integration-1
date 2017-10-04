@@ -9,6 +9,32 @@ import os
 import sys
 from datetime import date, timedelta
 
+
+def getChandraConnection(conf_file):
+	data = json.load(open(conf_file))
+	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
+	
+def getS3Keys(conf_file):
+	data = json.load(open(conf_file))
+	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
+	% {'key': data['s3_key'],'skey': data['s3_skey']}
+
+def getCopySql(schema, table, bucket, manifest, credentials):
+    return "COPY %(schema)s.%(table)s\n" \
+		"FROM '%(bucket)s'\n" \
+		"JSON AS '%(manifest)s'\n" \
+		"dateformat 'auto'\n" \
+		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
+		"gzip\n" \
+		"CREDENTIALS '%(credentials)s';" \
+		% {
+		'schema': schema,
+		'table': table,
+		'bucket': bucket,
+		'manifest': manifest,
+		'credentials': credentials
+	}
+
 def getMixpanelDataAPI(token,script):
 	url = "https://mixpanel.com/api/2.0/jql"
 	response = requests.post(url,
@@ -17,7 +43,6 @@ def getMixpanelDataAPI(token,script):
 		)
 				
 	return response.json()
-
 
 def sendToS3(bucketName,path,context,workspace,project_name,keyId,skeyId,date):
 
@@ -30,7 +55,6 @@ def sendToS3(bucketName,path,context,workspace,project_name,keyId,skeyId,date):
 	k.key=full_key_name
 
 	k.set_contents_from_filename(localname)
-
 
 def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,from_date,to_date):
 	for context in contexts:
@@ -56,6 +80,39 @@ def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,fro
 
 		os.remove(workspace + str(context) + ".txt.gz")
 
+def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
+	conn = getChandraConnection(conf_file)
+	credentials = getS3Keys(conf_file)
+
+	date = date.replace('-','/')
+	cur = conn.cursor()
+	
+	for context in contexts:
+		cur.execute(
+			getCopySql(
+				schema,
+				'mixpanel_%(resource)s' \
+								% {
+								'resource':resource},
+				's3://%(bucket)s%(data_path)s/%(date)s/%(resource)s.txt.gz' \
+								% {
+								'resource':resource,
+								'bucket':bucket,
+								'date': date,
+								'data_path':data_path},
+				's3://%(bucket)s%(manifest_path)s%(resource)s_jsonpath.json' \
+								% {
+								'resource':resource,
+								'bucket':bucket,
+								'manifest_path':manifest_path
+								}, 
+				credentials)
+			)
+	conn.commit()
+
+
+	cur.close()
+	conn.close()
 
 mixpanel_conf = sys.argv[2]
 project_name = sys.argv[3]
@@ -100,5 +157,5 @@ for i in range(len(contexts)):
 
 getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
 
-
+loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests"):
 

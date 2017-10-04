@@ -1,0 +1,9 @@
+{
+	"jsonpaths": [
+		"$['date']",
+		"$['project_name']",
+		"$['id']",
+		"$['leads']"
+    ]
+}
+
