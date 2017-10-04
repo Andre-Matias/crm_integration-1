@@ -8,6 +8,7 @@ from boto.s3.key import Key
 import os
 import sys
 from datetime import date, timedelta
+import psycopg2
 
 
 def getChandraConnection(conf_file):
