@@ -68,11 +68,11 @@ script = [
 	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/leads.sql'
 ]
 
-if(sys.argv[4] = 'cars'):
+if(sys.argv[4] == 'cars'):
 	contexts = ["impressions","loads","leads"]
-if(sys.argv[4] = 're'):
+if(sys.argv[4] == 're'):
 	contexts = ["impressions_re","loads_re","leads_re"]
-	
+
 workspace = "/home/ubuntu/github-etl/Python ETL/vas/temp/"
 
 
