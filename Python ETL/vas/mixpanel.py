@@ -1,5 +1,4 @@
 import simplejson as json 
-import MySQLdb
 import requests
 import base64
 import urllib # for url encoding
