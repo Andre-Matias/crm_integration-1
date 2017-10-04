@@ -2,8 +2,8 @@ repliesReference = ['reply_phone_show','reply_message_sent','reply_chat_sent','r
 function getDay(event) {return (new Date(event.time)).toISOString().split('T')[0];}
 function main() {
   return Events({
-    from_date: '2017-10-02',
-    to_date:   '2017-10-02'
+    from_date: 'FROM_DATE_REPLACE',
+    to_date:   'TO_DATE_REPLACE'
   })
   .filter(e=>_.contains(repliesReference,e.name)===true)
   .filter(e=>e.properties.ad_id!==undefined)
