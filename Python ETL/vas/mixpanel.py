@@ -48,7 +48,7 @@ def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,fro
 		for i in data:
 			i['project_name']=project_name
 
-		output = gzip.open(str(context) + ".txt.gz", 'wb')
+		output = gzip.open(workspace + str(context) + ".txt.gz", 'wb')
 		output.write(json.dumps(data,use_decimal=True)+"\n")
 		output.close()
 
