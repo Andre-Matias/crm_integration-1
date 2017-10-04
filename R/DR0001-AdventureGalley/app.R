@@ -70,9 +70,9 @@ ui <-
                   plotOutput("DropPostingFlowReasons", height = 400)),
                 box(
                   dateRangeInput("dateSelector", label = "Date Range",
-                                 start = min(dfAll$date),
+                                 start = max(dfAll$date)-7,
                                  end = max(dfAll$date), 
-                                 min = max(dfAll$date)-7,
+                                 min = min(dfAll$date),
                                  max = max(dfAll$date), format = "yyyy-mm-dd", 
                                  language = "en", separator = " to ", width = NULL
                                  )
