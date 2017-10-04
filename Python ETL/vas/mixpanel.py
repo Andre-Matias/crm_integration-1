@@ -62,7 +62,6 @@ project_name = sys.argv[3]
 conf = json.load(open(mixpanel_conf))
 token = conf[project_name]
 
-]
 
 if(sys.argv[4] == 'cars'):
 	contexts = ["impressions","loads","leads"]
