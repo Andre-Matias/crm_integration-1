@@ -36,6 +36,7 @@ print(bucketName)
 
 def method_convert_custom_fields(custom_field_values):
     convert_json = {}
+    print custom_field_values
     for custom_fld in custom_field_values:
         name = (custom_fld['custom_field']['data']['name'])
         if (isinstance(custom_fld['value'],list)):
