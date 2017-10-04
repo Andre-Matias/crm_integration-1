@@ -25,7 +25,7 @@ def unloadDataToS3(silver_conf):
 
 	credentials = getS3Keys(silver_conf)
 
-	query = "UNLOAD ('select * from livesync.verticals_ads where livesync_dbname in (''otodompl'',''otomotopl'',''storiaro'',''imovirtualpt'',''otodomua'',''autovitro'',''carspt'')') \
+	query = "UNLOAD ('select * from livesync.verticals_ads where livesync_dbname') \
 		to 's3://verticals-raw-data/vas/silver/data_' \
 		CREDENTIALS %(credentials)s \
 		ESCAPE \
