@@ -11,17 +11,14 @@ from datetime import date, timedelta
 import psycopg2
 
 
-def sendToS3(bucketName,path,context,workspace,project_name,keyId,skeyId,date):
+def getS3Keys(conf_file):
+	data = json.load(open(conf_file))
+	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
+	% {'key': data['s3_key'],'skey': data['s3_skey']}
 
-	localname = workspace + str(context) + ".txt.gz"
-	full_key_name = os.path.join(path + project_name + str("/") + date.replace('-','/') + str("/") ,str(context) + ".txt.gz")
-
-	conn = boto.connect_s3(keyId,skeyId)
-	bucket = conn.get_bucket(bucketName)
-	k = bucket.new_key(full_key_name)
-	k.key=full_key_name
-
-	k.set_contents_from_filename(localname)
+def getConnection(conf_file):
+	data = json.load(open(conf_file))
+	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
 
 def unloadDataToS3(silver_conf):
