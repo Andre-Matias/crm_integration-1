@@ -9,6 +9,7 @@ import os
 import sys
 from datetime import date, timedelta
 import psycopg2
+from boto.s3.connection import S3Connection, Bucket, Key
 
 
 def getS3Keys(conf_file):
