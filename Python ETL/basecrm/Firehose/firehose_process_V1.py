@@ -47,7 +47,7 @@ def method_convert_custom_fields(custom_field_values):
         if (isinstance(custom_fld['value'],dict)):
         	if(custom_fld['value']['name'] is None):
         		convert_json[name] = ""
-            else: 
+            else:
             	convert_json[name] = custom_fld['value']['name']
         else:
             convert_json[name] = custom_fld['value']

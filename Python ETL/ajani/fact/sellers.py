@@ -77,6 +77,8 @@ def getMonthlyRegisteredSellers():
 			"AND users.create_date <= %(date)s "\
 			"GROUP BY 1,2,3,4,5,6,7,8)"
 
+
+
 def getDailyPayingSellers_India():
  return "INSERT INTO verticals_bi.fact_d_crm_aux_paying_sellers (SELECT "\
 			"CAST( %(date)s AS date ), "\
@@ -139,6 +141,7 @@ def getMonthlyPayingSellers_India():
 		"AND NOT((ps.end_date <= DATE_TRUNC('month',CAST( %(date)s AS date ))) OR (ps.start_date >= %(date)s + '23:59:59')) "\
 		"GROUP BY 1,2,3,4,5,6,7,8)"
 
+def getDailyPayingSellers_
 
 def getDeleteQueries():
  	return "DELETE FROM verticals_bi.fact_d_crm_aux_registered_sellers WHERE date_id = CAST( %(date)s AS date ); "\
