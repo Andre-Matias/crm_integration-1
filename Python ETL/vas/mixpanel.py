@@ -94,16 +94,16 @@ def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
 				"vas",
 				'mixpanel_%(resource)s' \
 								% {
-								'resource':resource},
+								'resource':context},
 				's3://%(bucket)s%(data_path)s/%(date)s/%(resource)s.txt.gz' \
 								% {
-								'resource':resource,
+								'resource':context,
 								'bucket':bucket,
 								'date': date,
 								'data_path':data_path},
 				's3://%(bucket)s%(manifest_path)s%(resource)s_jsonpath.json' \
 								% {
-								'resource':resource,
+								'resource':context,
 								'bucket':bucket,
 								'manifest_path':manifest_path
 								}, 
