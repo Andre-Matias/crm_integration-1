@@ -68,13 +68,13 @@ def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,fro
 
 		print jqlquery
 		text_file.close()
+
 		data = getMixpanelDataAPI(token,jqlquery)
 		#Add additional metadata columns
+		output = gzip.open(workspace + str(context) + ".txt.gz", 'wb')
 		for i in data:
 			i['project_name']=project_name
-
-		output = gzip.open(workspace + str(context) + ".txt.gz", 'wb')
-		output.write(json.dumps(data,use_decimal=True)+"\n")
+			output.write(json.dumps(i,use_decimal=True)+"\n")
 		output.close()
 
 		sendToS3("verticals-raw-data","/vas/mixpanel/",context,workspace,project_name,keyId,skeyId,from_date)
@@ -156,7 +156,7 @@ jql_scripts = {}
 for i in range(len(contexts)):
     jql_scripts[contexts[i]] = script[i]
 
-#getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
+getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
 
 loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests/")
 
