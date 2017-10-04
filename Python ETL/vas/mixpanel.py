@@ -70,7 +70,7 @@ if(sys.argv[4] == 'cars'):
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/impressions.sql',
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/loads.sql',
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/leads.sql']
-]
+
 if(sys.argv[4] == 're'):
 	contexts = ["impressions_re","loads_re","leads_re"]
 	script = [
