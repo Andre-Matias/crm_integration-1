@@ -67,7 +67,12 @@ script = [
 	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/loads.sql',
 	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/leads.sql'
 ]
-contexts = ["impressions","loads","leads"]
+
+if(sys.argv[4] = 'cars'):
+	contexts = ["impressions","loads","leads"]
+if(sys.argv[4] = 're'):
+	contexts = ["impressions_re","loads_re","leads_re"]
+	
 workspace = "/home/ubuntu/github-etl/Python ETL/vas/temp/"
 
 
@@ -78,7 +83,7 @@ skey = conf['s3_skey']
 
 
 try:
-	from_date = sys.argv[4]
+	from_date = sys.argv[5]
 except IndexError:
 	from_date = (date.today() - timedelta(1)).strftime('%Y-%m-%d')
 
