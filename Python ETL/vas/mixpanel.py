@@ -81,14 +81,27 @@ def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,fro
 
 		os.remove(workspace + str(context) + ".txt.gz")
 
-def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
+def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path,project_name):
 	conn = getChandraConnection(conf_file)
 	credentials = getS3Keys(conf_file)
 
-	date = date.replace('-','/')
+	date_path = date.replace('-','/')
 	cur = conn.cursor()
 	
 	for context in contexts:
+
+
+		cur.execute("DELETE FROM vas.mixpanel_%(resource)s" \
+			" WHERE date = '%(date)s'" \
+			" AND project_name = '%(name)s'"  
+			% {
+			'resource':context.replace("_re",""),
+			'date':date,
+			'name':project_name
+			}
+		)
+		conn.commit()
+
 		cur.execute(
 			getCopySql(
 				"vas",
@@ -99,7 +112,7 @@ def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
 								% {
 								'resource':context,
 								'bucket':bucket,
-								'date': date,
+								'date': date_path,
 								'data_path':data_path},
 				's3://%(bucket)s%(manifest_path)s%(resource)s_jsonpath.json' \
 								% {
@@ -109,11 +122,13 @@ def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
 								}, 
 				credentials)
 			)
-	conn.commit()
+		conn.commit()
 
 
 	cur.close()
 	conn.close()
+
+
 
 mixpanel_conf = sys.argv[2]
 project_name = sys.argv[3]
@@ -158,5 +173,5 @@ for i in range(len(contexts)):
 
 getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
 
-loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests/")
+loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests/",project_name)
 
