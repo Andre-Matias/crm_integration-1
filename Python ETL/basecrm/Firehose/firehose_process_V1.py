@@ -35,19 +35,22 @@ bucketName=d['bucket_name']
 print(bucketName)
 
 def method_convert_custom_fields(custom_field_values):
-    convert_json = {}
-    for custom_fld in custom_field_values:
-        name = (custom_fld['custom_field']['data']['name'])
-        if (isinstance(custom_fld['value'],list)):
-            aux_array = []
-            for list_element in custom_fld['value']:
-                aux_array.append(list_element['name'])
-            convert_json[name] = aux_array  
-        if (isinstance(custom_fld['value'],dict)):
-            convert_json[name] = custom_fld['value']['name']
-        else:
-            convert_json[name] = custom_fld['value']
-    return convert_json
+	convert_json = {}
+	for custom_fld in custom_field_values:
+		name = (custom_fld['custom_field']['data']['name'])
+		if (isinstance(custom_fld['value'],list)):
+			aux_array = []
+			for list_element in custom_fld['value']:
+				aux_array.append(list_element['name'])
+			convert_json[name] = aux_array  
+		if (isinstance(custom_fld['value'],dict)):
+			if('name' in custom_fld['value']):
+				convert_json[name] = custom_fld['value']['name']
+			else:
+				convert_json[name] = ""
+		else:
+			convert_json[name] = custom_fld['value']
+	return convert_json
 	
 def method_convert_tags(tags):
     convert_tag = []

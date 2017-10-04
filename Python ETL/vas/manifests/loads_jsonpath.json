@@ -1,0 +1,11 @@
+{
+	"jsonpaths": [
+		"$['date']",
+		"$['project_name']",
+		"$['id']",
+		"$['nb_pictures']",
+		"$['price']",
+		"$['loads']"
+    ]
+}
+

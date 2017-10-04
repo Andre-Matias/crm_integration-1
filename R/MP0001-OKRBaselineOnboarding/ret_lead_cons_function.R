@@ -56,7 +56,7 @@ prepare_for_consolidation <- function(a) {
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
   # or put the start/end dates you like
-  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-09-17' , ]
+  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-09-24' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange(V3, NewUsers, V5)
