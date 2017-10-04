@@ -45,7 +45,10 @@ def method_convert_custom_fields(custom_field_values):
                 aux_array.append(list_element['name'])
             convert_json[name] = aux_array  
         if (isinstance(custom_fld['value'],dict)):
-            convert_json[name] = custom_fld['value']['name']
+        	if(custom_fld['value']['name'] is None):
+        		convert_json[name] = ""
+            else: 
+            	convert_json[name] = custom_fld['value']['name']
         else:
             convert_json[name] = custom_fld['value']
     return convert_json
