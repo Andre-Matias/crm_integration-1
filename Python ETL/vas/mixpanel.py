@@ -77,7 +77,7 @@ if(sys.argv[4] == 're'):
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/loads_re.sql',
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/leads_re.sql']
 
-workspace = "/home/ubuntu/github-etl/Python ETL/vas/temp/"
+workspace = "/home/ubuntu/github-etl/Python ETL/vas/"
 
 
 conf_file = sys.argv[1]
