@@ -36,7 +36,7 @@ def unloadDataToS3(silver_conf):
 	conn = getConnection(silver_conf)
 	cur = conn.cursor()
 
-	data = {'date': credentials}
+	data = {'credentials': credentials}
 	cur.execute(query,data)
 	conn.commit()
 	cur.close()
@@ -56,7 +56,7 @@ def loadDataToRedshift(conf_file):
 	conn = getConnection(conf_file)
 	cur = conn.cursor()
 
-	data = {'date': credentials}
+	data = {'credentials': credentials}
 	cur.execute(query,data)
 	conn.commit()
 	cur.close()
