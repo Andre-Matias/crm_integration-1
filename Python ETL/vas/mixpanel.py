@@ -35,7 +35,7 @@ def sendToS3(bucketName,path,context,workspace,project_name,keyId,skeyId,date):
 def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,from_date,to_date):
 	for context in contexts:
 		print(jql_scripts)
-		text_file = open(workspace + jql_scripts[context], "r")
+		text_file = open(jql_scripts[context], "r")
 		
 		jqlquery = text_file.read().encode('utf-8')
 		jqlquery = jqlquery.replace('FROM_DATE_REPLACE',from_date)
@@ -62,16 +62,21 @@ project_name = sys.argv[3]
 conf = json.load(open(mixpanel_conf))
 token = conf[project_name]
 
-script = [
-	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/impressions.sql',
-	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/loads.sql',
-	'/Users/miguelchin/Repos/verticals-bi/Python ETL/vas/jql/leads.sql'
 ]
 
 if(sys.argv[4] == 'cars'):
 	contexts = ["impressions","loads","leads"]
+	script = [
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/impressions.sql',
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/loads.sql',
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/leads.sql']
+]
 if(sys.argv[4] == 're'):
 	contexts = ["impressions_re","loads_re","leads_re"]
+	script = [
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/impressions_re.sql',
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/loads_re.sql',
+	'/home/ubuntu/github-etl/Python ETL/vas/jql/leads_re.sql']
 
 workspace = "/home/ubuntu/github-etl/Python ETL/vas/temp/"
 
