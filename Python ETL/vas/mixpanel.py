@@ -91,7 +91,7 @@ def loadFilesToRedshift(conf_file,bucket,data_path,contexts,date,manifest_path):
 	for context in contexts:
 		cur.execute(
 			getCopySql(
-				schema,
+				"vas",
 				'mixpanel_%(resource)s' \
 								% {
 								'resource':resource},
