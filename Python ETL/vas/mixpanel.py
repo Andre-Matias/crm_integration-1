@@ -35,7 +35,7 @@ def sendToS3(bucketName,path,context,workspace,project_name,keyId,skeyId,date):
 def getMixpanelData(contexts,jql_scripts,workspace,project_name,keyId,skeyId,from_date,to_date):
 	for context in contexts:
 		print(jql_scripts)
-		text_file = open(jql_scripts[context], "r")
+		text_file = open(workspace + jql_scripts[context], "r")
 		
 		jqlquery = text_file.read().encode('utf-8')
 		jqlquery = jqlquery.replace('FROM_DATE_REPLACE',from_date)
