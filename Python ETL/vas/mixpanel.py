@@ -155,7 +155,7 @@ jql_scripts = {}
 for i in range(len(contexts)):
     jql_scripts[contexts[i]] = script[i]
 
-getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
+#getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
 
-loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests"):
+loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests")
 
