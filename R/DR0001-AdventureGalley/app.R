@@ -69,6 +69,16 @@ ui <-
                 box(
                   plotOutput("DropPostingFlowReasons", height = 400)),
                 box(
+                  box(
+                  dateRangeInput("dateSelector", label = "Date Range",
+                                 start = max(dfAll$date)-7,
+                                 end = max(dfAll$date), 
+                                 min = min(dfAll$date),
+                                 max = max(dfAll$date), format = "yyyy-mm-dd", 
+                                 language = "en", separator = " to ", width = NULL
+                                 )
+                ),
+                box(
                   checkboxGroupInput("inputDropPostingFlowReasons", "Reasons:", 
                                      choices =
                                        unique(
@@ -99,6 +109,7 @@ ui <-
                   )
                 )
                 )
+                )
               ),
       # Monetization - Posting Flow - Hide Description Field
       tabItem(tabName = "tabHideDescriptionField",
@@ -114,7 +125,8 @@ ui <-
 )
 server <- function(input, output) { 
 
-# Monetization - Posting Flow - Drop Reasons - START -------------------------- 
+# Monetization - Posting Flow - Drop Reasons - START --------------------------
+  
   dfDropPostingFlowReasons <- 
     reactive({
     test <-       
@@ -122,7 +134,14 @@ server <- function(input, output) {
       filter(project %in% input$inputDropPostingFlowProject,
              reason %in% input$inputDropPostingFlowReasons,
              platform %in% input$inputDropPostingFlowPlatform,
-             event != "posting_leaving_reason_show") %>%
+             event != "posting_leaving_reason_show",
+             date >= ifelse(is.na(max(input$dateSelector)),
+                            max(dfAll$date) - 7,
+                            min(input$dateSelector)),
+             date <= ifelse(is.na(max(input$dateSelector)), 
+                            max(dfAll$date) + 1,
+                            max(input$dateSelector))
+             )%>%
       group_by(date, reason) %>%
       summarise(qty = sum(qty)) %>%
       mutate(perQty = qty / sum(qty))
