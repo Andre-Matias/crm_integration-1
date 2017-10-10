@@ -56,7 +56,7 @@ prepare_for_consolidation <- function(a) {
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
   # or put the start/end dates you like
-  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-10-01' , ]
+  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-10-08' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange(V3, NewUsers, V5)
@@ -119,6 +119,11 @@ d$CTR <- d$ConvertedUsers / d$TotalUsers
     group_by(week,TimeToConvert) %>%
     summarize(ret=mean(RollingSum))
   
+  ## creating also a df for plotting retention not cumulated 
+  dNewUsers2_not_cum <- dNewUsers %>%
+    group_by(week,TimeToConvert) %>%
+    summarize(ret=mean(CTR))
+  
  
 
 # Visualization (all countries aggregated)
@@ -139,5 +144,9 @@ ret_plot_cons
 ret_table_cons <- dNewUsers2 %>%
                    mutate(ret_per = round(ret*100, 1))
 ret_table_cons <- dcast(ret_table_cons, week ~ TimeToConvert, value.var="ret_per")
+
+ret_table_cons_not_cum <- dNewUsers2_not_cum %>%
+  mutate(ret_per = round(ret*100, 1))
+ret_table_cons_not_cum <- dcast(ret_table_cons_not_cum, week ~ TimeToConvert, value.var="ret_per")
 
 
