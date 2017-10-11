@@ -1,0 +1,158 @@
+require(devtools)
+require(RMixpanel)
+library(openxlsx)
+library(sqldf)
+library(stringr)
+
+
+#--------------------------------------------------------------------------------  SOURCE MIXPANEL DATA
+
+account_imo = mixpanelCreateAccount("imovirtual.pt",token="xxx",secret="xxx",key="xxx")
+class(account_imo)
+account_stro = mixpanelCreateAccount("storia.ro",token="xxx",secret="xxx",key="xxx")
+class(account_stro)
+account_stid = mixpanelCreateAccount("storia.id",token="xxx",secret="xxx",key="xxx")
+class(account_stid)
+account_otpl = mixpanelCreateAccount("otodom.pl",token="xxx",secret="xxx",key="xxx")
+class(account_otpl)
+account_otua = mixpanelCreateAccount("otodom.ua",token="xxx",secret="xxx",key="xxx")
+class(account_otua)
+
+dtbeg<-'2017-07-31'
+dtend<-Sys.Date()-2
+
+"%+%" <- function(a,b){ paste0(a,b,sep="")} 
+
+
+
+getliq<-function(datebeg, dateend,source)
+{
+  '
+  
+ function main() {
+  return Events({
+  from_date: "'  %+%  datebeg %+%  '",
+  to_date:   "'  %+%  dateend  %+%  '"
+  })
+.filter(ric=>ric.properties.platform === "desktop" || ric.properties.platform === "rwd" || ric.properties.platform === "android" || ric.properties.platform === "ios") 
+ 
+ .filter(ric=>ric.name==="reply_phone_call" || ric.name==="reply_message_sent" || ric.name==="reply_phone_sms" || ric.name==="reply_phone_show") 
+ 
+
+  .groupByUser( [function(e){return new Date(e.time).toISOString().split("T")[0]},"properties.platform",x => parseInt(x.properties.ad_id),function(){return "' %+% source %+%  '"}],function(state,events){
+        state = state || {}
+  return state
+  })
+  
+  .groupBy(["key.1","key.3","key.4"],mixpanel.reducer.count())
+}
+  '
+}
+
+# liqimo <- mixpanelJQLQuery(account_imo, getliq(dtbeg,dtend,account_imo$name),columnNames=c("user","day","plat","adid","vertical","adclick","calls","chat","freply","messages","replycount","show","sms"))
+# liqpl <- mixpanelJQLQuery(account_otpl, getliq(dtbeg,dtend,account_otpl$name),columnNames=c("user","day","plat","adid","vertical","adclick","calls","chat","freply","messages","replycount","show","sms"))
+# liqua <- mixpanelJQLQuery(account_otua, getliq(dtbeg,dtend,account_otua$name),columnNames=c("user","day","plat","adid","vertical","adclick","calls","chat","freply","messages","replycount","show","sms"))
+# #liqid <- mixpanelJQLQuery(account_stid, getliq(dtbeg,dtend,account_stid$name),columnNames=c("user","day","plat","adid","vertical","adclick","calls","chat","freply","messages","replycount","show","sms"))
+# liqro <- mixpanelJQLQuery(account_stro, getliq(dtbeg,dtend,account_stro$name),columnNames=c("user","day","plat","adid","vertical","adclick","calls","chat","freply","messages","replycount","show","sms"))
+# 
+
+liqimo <- mixpanelJQLQuery(account_imo, getliq(dtbeg,dtend,account_imo$name),columnNames=c("day","adid","vertical","users"))
+liqpl <- mixpanelJQLQuery(account_otpl, getliq(dtbeg,dtend,account_otpl$name),columnNames=c("day","adid","vertical","users"))
+liqua <- mixpanelJQLQuery(account_otua, getliq(dtbeg,dtend,account_otua$name),columnNames=c("day","adid","vertical","users"))
+#liqid <- mixpanelJQLQuery(account_stid, getliq(dtbeg,dtend,account_stid$name),columnNames=c("day","adid","vertical","users"))
+liqro <- mixpanelJQLQuery(account_stro, getliq(dtbeg,dtend,account_stro$name),columnNames=c("day","adid","vertical","users"))
+
+# append all data frames together
+res_l <- rbind(liqimo,liqpl,liqua,liqro)#liqid,liqro)
+
+
+library (RPostgreSQL)
+drv <- dbDriver("PostgreSQL")
+con1 <- dbConnect(drv, host="olxgroup-bi-silver.cmljrugfoo4y.us-west-2.redshift.amazonaws.com", 
+                 port="5439",
+                 dbname="olxgroupbi", 
+                 user="xxx", 
+                 password="xxx")
+
+adposting <- dbGetQuery(con1, "
+SELECT
+    a.id,
+    a.livesync_dbname,cast(created_at_first as date) as dt
+    FROM
+    olxgroupbi.livesync.verticals_users u
+    INNER JOIN olxgroupbi.livesync.verticals_ads a ON u.id=a.user_id
+    AND a.livesync_dbname = u.livesync_dbname and net_ad_counted = 1
+    WHERE 
+    a.livesync_dbname IN ('imovirtualpt', 'otodompl', 'storiaro', 'otodomua')
+    AND u.livesync_dbname IN ('imovirtualpt', 'otodompl', 'storiaro', 'otodomua')
+    and cast(created_at_first as date) between '" %+% dtbeg %+% "' and '" %+% dtend %+% "'
+")
+
+
+dbDisconnect(con1)
+
+library(stringr)
+res_l$day <- as.Date(res_l$day)
+res_l$adid <- as.numeric(res_l$adid)
+res_l$vertical <- str_replace(res_l$vertical,"[.]","")
+
+liquid <-sqldf("
+               select  *
+              from  adposting   a 
+              left join  res_l  b 
+              on a.id = b.adid and a.livesync_dbname = b.vertical
+ ",drv="SQLite")
+
+liquid$date_diff <- liquid$day -liquid$dt
+
+
+
+liquid$date_diff_cat  <- ifelse(is.na(liquid$date_diff),'notliquid' ,
+                                ifelse ((liquid$date_diff <= 6),'liquid1',
+                                ifelse ((liquid$date_diff <= 13),'liquid2',
+                                ifelse ((liquid$date_diff <= 20),'liquid3',
+                                ifelse ((liquid$date_diff <= 27),'liquid4',
+                                ifelse ((liquid$date_diff <= 60),'liquid5',
+                                'liquidother'
+                                ))))))
+
+
+
+liquid1 <-sqldf("
+               select  
+              id,livesync_dbname,dt,sum(users) as r, date_diff_cat
+              from liquid 
+              group by  id,livesync_dbname,dt, date_diff_cat
+ ",drv="SQLite")
+
+liquid2 <-sqldf("
+               select  
+              id,livesync_dbname,dt, r, date_diff_cat,
+              case when r >= 3 and date_diff_cat = 'liquid1' then 1 else 0 end as f_liq
+              from liquid1 
+ ",drv="SQLite")
+
+
+              # sum(case when date_diff_cat = 'notliquid' then 1 else 0 end) as notliqf,
+              # sum(case when date_diff_cat = 'liquid1' then 1 else 0 end) as liq1f,
+              # sum(case when date_diff_cat = 'liquid2' then 1 else 0 end) as liq2f,
+              # sum(case when date_diff_cat = 'liquid3' then 1 else 0 end) as liq3f,
+              # sum(case when date_diff_cat = 'liquid4' then 1 else 0 end) as liq4f,
+              # sum(case when date_diff_cat = 'liquid5' then 1 else 0 end) as liq5f,
+              # sum(case when date_diff_cat = 'liquidother' then 1 else 0 end) as liqotherf,
+              # sum(case when date_diff_cat = 'notliquid' then 1 else 0 end) as notliq,
+              # sum(case when date_diff_cat = 'liquid1' then r else 0 end) as liq1,
+              # sum(case when date_diff_cat = 'liquid2' then r else 0 end) as liq2,
+              # sum(case when date_diff_cat = 'liquid3' then r else 0 end) as liq3,
+              # sum(case when date_diff_cat = 'liquid4' then r else 0 end) as liq4,
+              # sum(case when date_diff_cat = 'liquid5' then r else 0 end) as liq5,
+              # sum(case when date_diff_cat = 'liquidother' then r else 0 end) as liqother,
+              
+
+liquid3 <-sqldf("
+               select  
+              sum(f_liq) as liquids,
+              livesync_dbname, dt
+              from liquid2
+              group by  livesync_dbname, dt
+ ",drv="SQLite")
