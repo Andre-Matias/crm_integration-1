@@ -142,7 +142,7 @@ dfStats <-
     qtyByBracket = sum(!is.na(id))
   ) %>%
   mutate(perByBracket = qtyByBracket / sum(qtyByBracket)) %>%
-  filter(dayhour >= Sys.Date()-7)
+  filter(dayhour >= Sys.Date()-14)
   
 # save it to amazon s3 --------------------------------------------------------
 
@@ -158,7 +158,7 @@ dfStatsInOut <-
   summarise(
     qtyByDirection = sum(!is.na(id))
   ) %>%
-  filter(day >= Sys.Date()-7)
+  filter(day >= Sys.Date()-14)
 
 s3saveRDS(x = dfStatsInOut,
           object = "peru_dfStatsInOut.RDS",
