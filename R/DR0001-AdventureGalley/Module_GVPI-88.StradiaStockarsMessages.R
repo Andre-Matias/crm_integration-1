@@ -170,6 +170,7 @@ output$QtyInOutIndia <-
                 vjust = 0
       )+
       theme_fivethirtyeight()+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("India - Quantity Messages")
   })
 
@@ -187,6 +188,7 @@ output$QtyInOutArgentina <-
                 vjust = 0
       )+
       theme_fivethirtyeight()+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("Argentina - Quantity Messages")
   })
 
@@ -203,6 +205,7 @@ output$QtyInOutPeru <-
                 vjust = 0
       )+
       theme_fivethirtyeight()+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("Peru - Quantity Messages")
   })
 
@@ -219,6 +222,7 @@ output$QtyInOutEcuador <-
                 vjust = 0
       )+
       theme_fivethirtyeight()+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("Ecuador - Quantity Messages")
   })
 
@@ -235,6 +239,7 @@ output$QtyInOutColombia <-
                 vjust = 0
       )+
       theme_fivethirtyeight()+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("Colombia - Quantity Messages")
   })
 

@@ -153,7 +153,7 @@ s3saveRDS(x = dfStats,
 
 dfStatsInOut <-
   df %>%
-  mutate(day = as.POSIXct(format(posted, "%Y-%m-%d"))) %>%
+  mutate(day = as.Date(format(posted, "%Y-%m-%d"))) %>%
   group_by(day, direction) %>%
   summarise(
     qtyByDirection = sum(!is.na(id))
