@@ -275,7 +275,7 @@ gA <- ggplot_gtable(gb1)
 gB <- ggplot_gtable(gb2)
 
 
-g <- rbind(gA, gB)
+g <- rbind(gA, gB, size = "last")
 
 
   
