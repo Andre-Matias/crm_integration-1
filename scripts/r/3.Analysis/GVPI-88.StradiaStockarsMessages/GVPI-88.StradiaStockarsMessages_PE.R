@@ -104,6 +104,8 @@ sqlCmd <-
 
 dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
 
+dbDisconnect(conDB)
+
 rawStockarsMessages <- as.data.frame(dfSqlCmd)
 
 # -----------------------------------------------------------------------------
@@ -129,12 +131,12 @@ df <-
              difftime(created_at, posted, "secs"),
              difftime(posted, created_at, "secs")
            ),
-    brackets = cut(synctime, c(0, 5, 60, Inf))
+    brackets = cut(synctime, c(0, 5, 60, Inf), include.lowest = TRUE)
   )
 
 dfStats <-
   df %>%
-  mutate(dayhour = as.POSIXct(format(posted, "%Y-%m-%d %H:00:00"))) %>%
+  mutate(dayhour = as.POSIXct(format(posted, "%Y-%m-%d"))) %>%
   group_by(dayhour, brackets) %>%
   summarise(
     qtyByBracket = sum(!is.na(id))
