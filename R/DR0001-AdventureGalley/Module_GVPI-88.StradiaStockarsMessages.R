@@ -94,7 +94,7 @@ output$MessageSyncTimePeru <-
       )+
       scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
       scale_y_continuous(labels = percent)+
-      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       theme_fivethirtyeight()+
       ggtitle("Peru - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")
@@ -108,7 +108,7 @@ output$MessageSyncTimeColombia <-
       )+
       scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
       scale_y_continuous(labels = percent)+
-      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       theme_fivethirtyeight()+
       ggtitle("Colombia - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")
@@ -123,7 +123,7 @@ output$MessageSyncTimeIndia <-
       )+
       scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
       scale_y_continuous(labels = percent)+
-      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       theme_fivethirtyeight()+
       ggtitle("India - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")
@@ -137,7 +137,7 @@ output$MessageSyncTimeEcuador <-
       )+
       scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
       scale_y_continuous(labels = percent)+
-      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       theme_fivethirtyeight()+
       ggtitle("Ecuador - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")
@@ -151,7 +151,7 @@ output$MessageSyncTimeArgentina <-
       )+
       scale_fill_manual(values = c("darkgreen", "yellow", "red"))+
       scale_y_continuous(labels = percent)+
-      scale_x_datetime(date_labels = "%Hh\n%d\n%b\n%y", date_breaks = "6 hours")+
+      scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       theme_fivethirtyeight()+
       ggtitle("Argentina - Stockars/Stradia Messages Syncing Time ",
               subtitle = "seconds")

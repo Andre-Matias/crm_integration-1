@@ -136,7 +136,7 @@ df <-
 
 dfStats <-
   df %>%
-  mutate(dayhour = as.POSIXct(format(posted, "%Y-%m-%d"))) %>%
+  mutate(dayhour = as.Date(format(posted, "%Y-%m-%d"))) %>%
   group_by(dayhour, brackets) %>%
   summarise(
     qtyByBracket = sum(!is.na(id))
