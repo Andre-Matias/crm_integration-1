@@ -3,7 +3,6 @@ library("RMySQL")
 library("feather")
 library("stringr")
 
-
 # config ---------------------------------------------------------------------
 load("~/credentials.Rdata")
 load("~/GlobalConfig.Rdata")
@@ -43,9 +42,8 @@ dbHost <- as.character(
 dbPort <- as.numeric(get(paste0("cf", vertical, "DbPort")))
 dbName <- get(paste0("cf", vertical, "DbName")) 
 
-
 # -----------------------------------------------------------------------------
-dates <- as.character(seq(as.Date("2017-03-15"), as.Date(Sys.Date()-1), "days"))
+dates <- as.character(seq(as.Date("2016-11-01"), as.Date("2017-09-30"), "days"))
 
 files <- list.files(path = '/data/lake/',
                     pattern = paste0('^RDL.*', vertical,'.*','ads_history' ,'.*feather$'),
