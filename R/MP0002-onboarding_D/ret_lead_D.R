@@ -14,9 +14,9 @@ library("gridExtra")
 library("tidyr")
 
 # Import JSON with data from Mixpanel JQL query
-json_pl <- fromJSON(file = "retention_lead_platform_pl.json")
-json_pt <- fromJSON(file = "retention_lead_platform_pt.json")
-json_ro <- fromJSON(file = "retention_lead_platform_ro.json")
+json_pl <- fromJSON(file = "./data/retention_lead_platform_pl.json")
+json_pt <- fromJSON(file = "./data/retention_lead_platform_pt.json")
+json_ro <- fromJSON(file = "./data/retention_lead_platform_ro.json")
 
 # Clean and convert JSON to a tabular format
 df_lead_pl <- cleaning_json(json_pl)
