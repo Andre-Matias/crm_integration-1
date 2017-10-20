@@ -26,8 +26,8 @@ ui <- fluidPage(
                                                    # "ios"="ios",           don't have data for now
                                                    "android"="android")),
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
-         Example: for the cohort of new users adcquired in the week starting on May 7, 9.8% 
-         came back after 1 day, 7.1% after 2 days, etc. and do something")
+         Example: for the cohort of new users adcquired in the week starting on the 3rd of July, 11% 
+         came back after 1 day, 7% after 2 days, etc. and do something") 
          ),
       
       
