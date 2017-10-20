@@ -40,4 +40,7 @@ ret_lead_table_ro <- to_wide_table(ret_lead_ro)
 ## Save ret_lead_ro RO (with column platform)
 ## Save ret_any_2 consolidated (no country neither platform)
 
-retPlot(ret_lead_pl, title="lead...", subtitle="cdcecdv")
+# for now save as .RData
+save(ret_any_pl, ret_any_pt, ret_any_ro, ret_any_table_pl, ret_any_table_pt, ret_any_table_ro,
+     ret_lead_pl, ret_lead_pt, ret_lead_ro, ret_lead_table_pl, ret_lead_table_pt, ret_lead_table_ro,
+     file="ret_files.RData")

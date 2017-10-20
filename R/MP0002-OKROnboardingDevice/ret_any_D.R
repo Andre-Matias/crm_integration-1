@@ -27,13 +27,13 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 ## Will send a query for each account
 
 ## Define timerange 
-from_date <- "20170901"
-to_date <- "20170905"
+from_date <- "20170703"
+to_date <- "20171008"
 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
 ## Otomoto PL --------------------
-df_oto_any <- data.frame()
+df_any_pl <- data.frame()
 for (i in seq_along(device_vec)) {
   string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
   tmp <- 
@@ -48,7 +48,7 @@ for (i in seq_along(device_vec)) {
                 )
   
   tmp$platform <- device_vec[i]
-  df_oto_any <- rbind(df_oto_any, tmp)
+  df_any_pl <- rbind(df_any_pl, tmp)
 }
 
 

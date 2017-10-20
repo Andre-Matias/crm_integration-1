@@ -2,18 +2,13 @@
 # OKRs Dashboard to track the new ONBOARDING 
 # This is a Shiny web application. You can run it by clicking the 'Run App' button above.
 
+# Global
 library(shiny)
 library(dplyr)
 library(ggplot2)
 library(ggthemes)
-
 source("functions.R")
-
-# Global
-# source("ret_lead_cons_function.R")
-# source("ret_any_cons.R")
-
-#source("ret_any_cons_D.R")
+load("ret_files.RData")
 
 
 # Define UI  -----------------------------------------------------------------------------------
@@ -25,11 +20,14 @@ ui <- fluidPage(
    # Sidebar 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput("show_vars", "Weeks to show:", unique(ret_any_pl$week), selected = tail(unique(ret_any_pl$week),3)),
+         checkboxGroupInput("show_vars", "Cohorts to show:", unique(ret_any_pl$week), selected = tail(unique(ret_any_pl$week),3)),
          selectInput("platform_filter", "Platform:", c("responsive"="rwd",
                                                    "desktop"="desktop",
-                                                   "android"="android",
-                                                   "ios"="ios"))
+                                                   # "ios"="ios",           don't have data for now
+                                                   "android"="android")),
+         helpText("Each line shows the daily retention rate for a specific cohort of new users. 
+         Example: for the cohort of new users adcquired in the week starting on May 7, 9.8% 
+         came back after 1 day, 7.1% after 2 days, etc. and do something")
          ),
       
       
@@ -69,11 +67,11 @@ ui <- fluidPage(
              plotOutput("ret_lead_ro", height = 400),
              br(),
              DT::dataTableOutput("ret_lead_table_ro")
-                  ),
-          
-          tabPanel("Consolidated",
-                   br()
                   )
+          
+          # tabPanel("Consolidated",
+          #          br()
+          #         )
         )
       )
    )
@@ -100,7 +98,7 @@ server <- function(input, output) {
      ret_any_pl <- filter(ret_any_pl, week %in% input$show_vars & platform==input$platform_filter)
      # use retPlot() function instead of ggplot chunk
      # max= max(ret_any_pl$ret, na.rm = T)+0.02
-     retPlot(ret_any_pl, title="New Users That Return and do Anything - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_any_pl, title="New Users That Return and do Something - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_any_table_pl <- DT::renderDataTable({
@@ -121,7 +119,7 @@ server <- function(input, output) {
    ##### Standvirtual PT tab ----------
    output$ret_any_pt <- renderPlot({
      ret_any_pt <- filter(ret_any_pt, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_pt, title="New Users That Return and do Anything - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_any_pt, title="New Users That Return and do Something - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
      
    })
    
@@ -143,7 +141,7 @@ server <- function(input, output) {
    ##### Autovit RO tab ---------------
    output$ret_any_ro <- renderPlot({
      ret_any_ro <- filter(ret_any_ro, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_ro, title="New Users That Return and do Anything - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_any_ro, title="New Users That Return and do Something - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
      
    })
    
