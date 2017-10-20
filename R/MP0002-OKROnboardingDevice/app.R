@@ -20,7 +20,7 @@ ui <- fluidPage(
    # Sidebar 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput("show_vars", "Cohorts to show:", unique(ret_any_pl$week), selected = tail(unique(ret_any_pl$week),3)),
+         checkboxGroupInput("show_vars", "Cohorts to show:", as.character(unique(ret_any_pl$week)), selected = tail(unique(ret_any_pl$week),3)),
          selectInput("platform_filter", "Platform:", c("responsive"="rwd",
                                                    "desktop"="desktop",
                                                    # "ios"="ios",           don't have data for now
