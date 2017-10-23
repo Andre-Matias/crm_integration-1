@@ -27,7 +27,9 @@ ui <- fluidPage(
                                                    "android"="android")),
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
          Example: for the cohort of new users adcquired in the week starting on the 3rd of July, 11% 
-         came back after 1 day, 7% after 2 days, etc. and do something") 
+         came back after 1 day, 7% after 2 days, etc. and do something."),
+         helpText( "Other", a("Healthy Metrics", href="http://www.olx.com", target="_blank")
+         )
          ),
       
       
