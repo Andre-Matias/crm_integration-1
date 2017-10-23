@@ -62,6 +62,10 @@ dfStatsInOut_AR <-
   s3readRDS(object = "argentina_dfStatsInOut.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
+dfNotSynced_AR <-
+  s3readRDS(object = "argentina_NotSynced.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88")
+
 # begin of UI module ----------------------------------------------------------
 module_GVPI88_UI <- function(id){
   
@@ -77,7 +81,9 @@ module_GVPI88_UI <- function(id){
     box(plotOutput(ns("MessageSyncTimeEcuador"))),
     box(plotOutput(ns("QtyInOutEcuador"))),
     box(plotOutput(ns("MessageSyncTimeColombia"))),
-    box(plotOutput(ns("QtyInOutColombia")))
+    box(plotOutput(ns("QtyInOutColombia"))),
+    box(DT::dataTableOutput(ns("mytable")))
+    
   )
   
   # end of UI module ------------------------------------------------------------
@@ -241,6 +247,11 @@ output$QtyInOutColombia <-
       theme_fivethirtyeight()+
       scale_x_date(date_labels = "%d\n%b\n%Y", date_breaks = "days")+
       ggtitle("Colombia - Quantity Messages")
+  })
+
+output$mytable <- 
+  DT::renderDataTable({
+    dfNotSynced_AR
   })
 
   # end of SERVER module --------------------------------------------------------

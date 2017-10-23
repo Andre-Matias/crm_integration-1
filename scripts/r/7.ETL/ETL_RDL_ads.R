@@ -96,17 +96,14 @@ conDB <-
 # get data ------------------------------------------------------------------
 dbSqlQuery <-
   paste(
-    "SELECT * FROM ads", 
-    "WHERE created_at_first", 
-    "BETWEEN '", i, " 00:00:00'", 
-    "AND '", i, " 23:59:59'",
-    "UNION ALL", 
-    "SELECT * FROM ads_archive", 
-    "WHERE created_at_first", 
-    "BETWEEN '", i, " 00:00:00'", 
-    "AND '", i, " 23:59:59'",
-    ";"
-  )
+"SELECT * ",
+"FROM otomotopl.ads",
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59',
+"UNION ALL",
+"SELECT *",
+"FROM otomotopl.ads_archive",
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'
+)
 
 dbSqlQuery <-
   dbGetQuery(conDB,dbSqlQuery)
