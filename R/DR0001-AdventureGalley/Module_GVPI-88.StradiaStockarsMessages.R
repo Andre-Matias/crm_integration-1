@@ -274,27 +274,27 @@ output$QtyInOutColombia <-
 
 output$NotSynced_IN <- 
   DT::renderDataTable(
-    dfNotSynced_IN, rownames = FALSE
+    dfNotSynced_IN, rownames = FALSE, options = list(dom = 'tip')
   )
 
 output$NotSynced_AR <- 
   DT::renderDataTable(
-    dfNotSynced_AR, rownames = FALSE
+    dfNotSynced_AR, rownames = FALSE, options = list(dom = 'tip')
   )
 
 output$NotSynced_EC <- 
   DT::renderDataTable(
-    dfNotSynced_EC, rownames = FALSE
+    dfNotSynced_EC, rownames = FALSE, options = list(dom = 'tip')
   )
 
 output$NotSynced_PE <- 
   DT::renderDataTable(
-    dfNotSynced_PE, rownames = FALSE
+    dfNotSynced_PE, rownames = FALSE, options = list(dom = 'tip')
   )
 
 output$NotSynced_CO <- 
   DT::renderDataTable(
-    dfNotSynced_CO, rownames = FALSE
+    dfNotSynced_CO, rownames = FALSE, options = list(dom = 'tip')
   )
 
   # end of SERVER module --------------------------------------------------------
