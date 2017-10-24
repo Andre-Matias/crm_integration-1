@@ -27,6 +27,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"dateformat 'auto'\n" \
 		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
 		"gzip\n" \
+		"maxerror as 20 \n" \
 		"CREDENTIALS '%(credentials)s';" \
 		% {
 		'schema': schema,
