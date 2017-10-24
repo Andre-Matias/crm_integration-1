@@ -28,12 +28,20 @@ dfStatsInOut_PE <-
   s3readRDS(object = "peru_dfStatsInOut.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
+dfNotSynced_PE <-
+  s3readRDS(object = "peru_NotSynced.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88")
+
 dfStats_CO <-
   s3readRDS(object = "colombia_stk_str_messages.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
 dfStatsInOut_CO <-
   s3readRDS(object = "colombia_dfStatsInOut.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88")
+
+dfNotSynced_CO <-
+  s3readRDS(object = "colombia_NotSynced.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
 
@@ -45,6 +53,9 @@ dfStatsInOut_IN <-
   s3readRDS(object = "india_dfStatsInOut.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
+dfNotSynced_IN <-
+  s3readRDS(object = "india_NotSynced.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88")
 
 dfStats_EC <-
   s3readRDS(object = "ecuador_stk_str_messages.RDS",
@@ -52,6 +63,10 @@ dfStats_EC <-
 
 dfStatsInOut_EC <-
   s3readRDS(object = "ecuador_dfStatsInOut.RDS",
+            bucket = "pyrates-data-ocean/GVPI-88")
+
+dfNotSynced_EC <-
+  s3readRDS(object = "ecuador_NotSynced.RDS",
             bucket = "pyrates-data-ocean/GVPI-88")
 
 dfStats_AR <-
@@ -82,8 +97,16 @@ module_GVPI88_UI <- function(id){
     box(plotOutput(ns("QtyInOutEcuador"))),
     box(plotOutput(ns("MessageSyncTimeColombia"))),
     box(plotOutput(ns("QtyInOutColombia"))),
-    box(DT::dataTableOutput(ns("mytable")))
-    
+    box(title = "IN - Not Synced Messages IDs",
+        DT::dataTableOutput(ns("NotSynced_IN")), width = 2),
+    box(title = "AR - Not Synced Messages IDs",
+        DT::dataTableOutput(ns("NotSynced_AR")), width = 2),
+    box(title = "PE - Not Synced Messages IDs",
+        DT::dataTableOutput(ns("NotSynced_PE")), width = 2),
+    box(title = "EC - Not Synced Messages IDs",
+        DT::dataTableOutput(ns("NotSynced_EC")), width = 2),
+    box(title = "CO - Not Synced Messages IDs",
+        DT::dataTableOutput(ns("NotSynced_CO")), width = 2)
   )
   
   # end of UI module ------------------------------------------------------------
@@ -249,10 +272,30 @@ output$QtyInOutColombia <-
       ggtitle("Colombia - Quantity Messages")
   })
 
-output$mytable <- 
-  DT::renderDataTable({
-    dfNotSynced_AR
-  })
+output$NotSynced_IN <- 
+  DT::renderDataTable(
+    dfNotSynced_IN, rownames = FALSE
+  )
+
+output$NotSynced_AR <- 
+  DT::renderDataTable(
+    dfNotSynced_AR, rownames = FALSE
+  )
+
+output$NotSynced_EC <- 
+  DT::renderDataTable(
+    dfNotSynced_EC, rownames = FALSE
+  )
+
+output$NotSynced_PE <- 
+  DT::renderDataTable(
+    dfNotSynced_PE, rownames = FALSE
+  )
+
+output$NotSynced_CO <- 
+  DT::renderDataTable(
+    dfNotSynced_CO, rownames = FALSE
+  )
 
   # end of SERVER module --------------------------------------------------------
 }

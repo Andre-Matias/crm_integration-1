@@ -163,3 +163,14 @@ dfStatsInOut <-
 s3saveRDS(x = dfStatsInOut,
           object = "peru_dfStatsInOut.RDS",
           bucket = "pyrates-data-ocean/GVPI-88")
+
+dfNotSynced <-
+  df %>% 
+  filter (is.na(created_at) & posted >= "2017-10-03 00:00:00") %>%
+  select(id, posted) %>%
+  arrange(desc(posted))
+
+s3saveRDS(x = dfNotSynced,
+          object = "peru_NotSynced.RDS",
+          bucket = "pyrates-data-ocean/GVPI-88"
+)
