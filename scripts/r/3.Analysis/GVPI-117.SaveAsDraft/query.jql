@@ -1,0 +1,13 @@
+function main() {
+  return Events({
+    from_date: '2017-10-23',
+    to_date:   '2017-10-23'//,
+    /*event_selectors: [
+      {selector: '"9008090397:9031150194" in properties["experiments"]'}, // original
+      {selector: '"9008090397:9016300173" in properties["experiments"]'}, // variation
+      ]*/
+  }
+  )
+  .filter(e=>e.name=="posting_add_click" || e.name == "posting_form" || e.name.includes("save")===true)
+  .groupBy(["name", "properties.experiments"], mixpanel.reducer.count());
+}

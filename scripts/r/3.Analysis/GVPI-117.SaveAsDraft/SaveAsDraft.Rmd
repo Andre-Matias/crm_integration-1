@@ -1,0 +1,201 @@
+---
+title: 'Feature Release: Save as a Draft'
+output:
+  html_document:
+    theme: spacelab
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Requested By (PM):**
+Cláudia Rosado  
+**Product:**  
+Otomoto, Autovit, Standvirtual (desktop)  
+**Feature:**  
+Save as Draft (Button in Posting Flow)  
+**Goal Description / User Behavior to Change:**  
+"Understand if users are interested in "save ads as a draft" and check if having this option reduce the posting flow conversion rate."  
+**Main Metric to Impact:**  
+Posting Flow Convertion Rate (posting_add_click / posting_form)  
+**Metric Goal to Achieve:**  
+Don't decrease Posting Flow Convertion Rate  
+**Expected Release Date:**  
+  
+**Effective Release Date:** 
+  
+**Related JIRA Ticket:**  
+GVPI-117  
+
+### **Conclusions**
+This in not the final reports as it isn't finished. It's not finished because we cannot draw statistically relevant conclusions from the data that we have at current moment (11th/Oct - 24th/Oct). In this particular case, for all the countries (OTO, AUT, STV), we don't have the needed sample size with a statistical power greater than 0.8 (currently: OTO(0.2768531), AUT(0.2167030), STV(0.07786580)). 
+The difference between "Original"(A)  and "Variation With Save Draft Button"(B) conversions rates is between -0.881 p.p. (-1.84%) in STV and +0.0141 (2.01%) in OTO.
+
+As the differences between A and B are very small, we need a bigger sample (recommended samples: OTO(65188), AUT(16143), STV(50465)). These bigger samples would take the test to run for more 2 months.
+Even then, **I my personal opinion/intuition**, we wouldn't see big differences.
+
+Nevertheless, it's necessary to fix the "save draft" button's tracking before ending the test, as I would like to test another hyphothesis: people are savings drafts, abandoning the posting flow, recovery the ad in their personal account and posting it from there. 
+
+### **Otomoto**
+```{r , echo=FALSE}
+library(pander)
+library(knitr)
+library(kableExtra)
+
+df <- NULL
+
+df <-
+  data.frame(
+  id = c("9010710728", "9009940388"),
+  name = c("Original", "Variant with Button"),
+  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  PopulationMetric = c("posting_form","posting_form"),
+  PopulationValue = c(15538, 15543),
+  SucessMetric = c("posting_add_click","posting_add_click"),
+  SucessValue = c(10823, 10937)
+  )
+
+df$ctr <- 
+  df$SucessValue / df$PopulationValue
+
+testResults <- 
+  power.prop.test(
+    n = df$PopulationValue, 
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    alternative = "two.sided"
+  )
+
+neededSample <- 
+  power.prop.test(
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    power = 0.8,
+    alternative = "two.sided"
+  )$n
+
+otomotoData <- df
+otomotoTestResults <- testResults
+neededSampleOtomoto <- neededSample
+
+knitr::kable(otomotoData, format = "html", padding = 2) %>%
+  kable_styling
+
+testResults
+
+df <- NULL
+testResults <- NULL
+neededSample <- NULL
+```
+
+### **Autovit**
+```{r , echo=FALSE}
+library(pander)
+library(knitr)
+library(kableExtra)
+
+df <- NULL
+
+df <-
+  data.frame(
+  id = c("9024060291", "9010870766"),
+  name = c("Original", "Variant with Button"),
+  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  PopulationMetric = c("posting_form","posting_form"),
+  PopulationValue = c(2848, 2658),
+  SucessMetric = c("posting_add_click","posting_add_click"),
+  SucessValue = c(2045, 1871)
+  )
+
+df$ctr <- 
+  df$SucessValue / df$PopulationValue
+
+testResults <- 
+  power.prop.test(
+    n = df$PopulationValue, 
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    alternative = "two.sided"
+  )
+
+neededSample <- 
+  power.prop.test(
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    power = 0.8,
+    alternative = "two.sided"
+  )$n
+
+autovitData <- df
+autovitTestResults <- testResults
+neededSampleAutovit<- neededSample
+
+knitr::kable(autovitData, format = "html", padding = 2) %>%
+  kable_styling
+
+testResults
+
+df <- NULL
+testResults <- NULL
+neededSample <- NULL
+```
+
+### **Standvirtual**
+```{r , echo=FALSE}
+library(pander)
+library(knitr)
+library(kableExtra)
+
+df <- NULL
+
+df <-
+  data.frame(
+  id = c("9031150194", "9016300173"),
+  name = c("Original", "Variant with Button"),
+  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  PopulationMetric = c("posting_form","posting_form"),
+  PopulationValue = c(1878, 1925),
+  SucessMetric = c("posting_add_click","posting_add_click"),
+  SucessValue = c(881, 920)
+  )
+
+df$ctr <- 
+  df$SucessValue / df$PopulationValue
+
+testResults <- 
+  power.prop.test(
+    n = df$PopulationValue, 
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    alternative = "two.sided"
+  )
+
+neededSample <- 
+  power.prop.test(
+    p1 = df$ctr[1],
+    p2 = df$ctr[2],
+    sig.level = 0.05,
+    power = 0.8,
+    alternative = "two.sided"
+  )$n
+
+stvData <- df
+stvTestResults <- testResults
+neededSampleSTV<- neededSample
+
+knitr::kable(stvData, format = "html", padding = 2) %>%
+  kable_styling
+
+testResults
+
+df <- NULL
+testResults <- NULL
+neededSample <- NULL
+```
