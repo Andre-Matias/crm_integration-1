@@ -20,16 +20,17 @@ ui <- fluidPage(
    # Sidebar 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput("show_vars", "Cohorts to show:", as.character(unique(ret_any_pl$week)), selected = tail(unique(ret_any_pl$week),3)),
+         checkboxGroupInput("show_vars", "Cohorts to show:", as.character(unique(ret_any_pl$week)), 
+                            selected = tail(unique(ret_any_pl$week),4)),
          selectInput("platform_filter", "Platform:", c("responsive"="rwd",
                                                    "desktop"="desktop",
                                                    # "ios"="ios",           don't have data for now
                                                    "android"="android")),
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
-         Example: for the cohort of new users adcquired in the week starting on the 3rd of July, 11% 
+         Example: for the cohort of new users adcquired in the week starting on the 4th of September, 11% 
          came back after 1 day, 7% after 2 days, etc. and do something."),
          helpText( "Other", 
-                   a("Healthy Metrics", href="https://triton.olxgroup.bi/#/views/HealthyMetrics-Onboarding/HealthyMetricsOnboarding?:iid=3", target="_blank")
+                   a("Healthy Metrics", href="https://triton.olxgroup.bi/#/site/europe/views/HealthyMetrics-onboarding/HealthyMetricsOnboarding", target="_blank")
          )
          ),
       

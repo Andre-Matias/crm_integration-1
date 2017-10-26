@@ -115,7 +115,7 @@ cleaning_json <- function(a) {
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
   # or put the start/end dates you like
-  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-10-08' , ]
+  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-10-22' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange( platform, V3, NewUsers, V5)
