@@ -27,8 +27,8 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 ## Will send a query for each account
 
 ## Define timerange 
-from_date <- "20170703"
-to_date <- "20171008"
+from_date <- "20170904"
+to_date <- "20171022"
 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -110,44 +110,3 @@ ret_any_table_ro <- to_wide_table(ret_any_ro)
 ## Save ret_any_2 PT (with column platform)
 ## Save ret_any_2 RO (with column platform)
 ## Save ret_any_2 consolidated (no country neither platform)
-
-
-
-
-
-
-
-
-
-
-#for loop   test: born_where string is not evaluated and it returns always data withputh that condition --------------------------
-# from_date <- "20170901"
-# to_date <- "20170905"
-# device_vec <- c("rwd", "desktop", "ios", "android")
-# test <- data.frame()
-# for (i in seq_along(device_vec)) {
-#   # string_where <- paste("\'( properties[\"cl\"] ==1 and properties[\"platform\"] ==", "\"",device_vec[i], "\"", ")\'")
-#   # string_where <- paste0("\'( properties[\"cl\"] ==1 and properties[\"platform\"] ==", "\"","rwd", "\"", ")\'")
-#   string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
-#   tmp <- 
-#     as.data.frame(
-#       mixpanelGetRetention (oto_auth, 
-#                             segment_method= "first",
-#                             retention_type= "birth",
-#                             born_event="home",
-#                             born_where= string_where,
-#                             from=from_date, to=to_date, unit="day", intervalCount = 15
-#                             )
-#                   )
-#   
-#   tmp$platform <- device_vec[i]
-#   test <- rbind(test, tmp)
-# }
-# 
-# str <- paste0("'( properties[\"cl\"] ==1 and properties[\"platform\"] ==", "\"",valore, "\"", ")'")
-# cat(str)
-# device_vec <- c("rwd", "desktop", "ios", "android")
-# for (i in seq_along(device_vec)) {
-#   str <- paste0("\'( properties[\"cl\"] ==1 and properties[\"platform\"] ==", "\"",device_vec[i], "\"", ")\'")
-#   print(str)
-# }
