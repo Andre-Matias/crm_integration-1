@@ -10,7 +10,6 @@ library("dtplyr")
 library("scales")
 library("ggthemes")
 
-
 # load mixpanel user's credentials --------------------------------------------
 load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
