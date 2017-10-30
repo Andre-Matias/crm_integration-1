@@ -3,6 +3,9 @@ options(scipen=999)
 
 # load credentials file -------------------------------------------------------
 load("~/credentials.Rdata")
+load("~/GlobalConfig.Rdata")
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # load libraries --------------------------------------------------------------
 
@@ -271,5 +274,9 @@ gB <- ggplot_gtable(gb2)
 
 g <- rbind(gA, gB, size = "last")
 
+CO_g <- g
 
-  
+save(list = c("CO_g"), file = "CO_g.Rdata")
+
+put_object(file = "CO_g.Rdata", object = "CO_g.Rdata",
+           bucket = "pyrates-data-ocean/GVPI-85")

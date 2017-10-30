@@ -3,6 +3,9 @@ options(scipen=999)
 
 # load credentials file -------------------------------------------------------
 load("~/credentials.Rdata")
+load("~/GlobalConfig.Rdata")
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # load libraries --------------------------------------------------------------
 
@@ -21,6 +24,7 @@ library("forcats")
 library("RColorBrewer")
 library("gridExtra")
 library("grid")
+library("aws.s3")
 
 # connect to poseidon ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
@@ -271,5 +275,11 @@ gB <- ggplot_gtable(gb2)
 
 g <- rbind(gA, gB, size = "last")
 
+EC_g <- g
+
+save(list = c("EC_g"), file = "EC_g.Rdata")
+
+put_object(file = "EC_g.Rdata", object = "EC_g.Rdata",
+           bucket = "pyrates-data-ocean/GVPI-85")
 
   

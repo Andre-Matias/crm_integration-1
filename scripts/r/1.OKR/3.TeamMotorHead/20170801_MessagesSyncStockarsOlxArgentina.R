@@ -62,7 +62,7 @@ requestDB <-
     )
     AND country_id IN (32) -- 32 Argentina
     AND MESSAGE_TEXT != 'este producto ya no se encuentra disponible.'
-    
+    AND date > '2017-10-01 00:00:00'
     )A
     INNER JOIN 
     (SELECT item_id, conversation_id FROM ods_naspers.ft_h_conversations) B
@@ -108,12 +108,17 @@ rm("dfRequestDB")
                       password = dbPassword , host = dbLocalHost,
                       port = dbLocalPort , dbname = dbName)
   
-  sqlCmd <- 
-    "SELECT * FROM message A 
-  LEFT JOIN
-  (SELECT id_thread, partner_name, id_product FROM message_thread) B
-  ON A.id_thread = B.id_thread
-  WHERE message_date >= '2017-01-01';
+sqlCmd <- 
+  "
+  SELECT m.external_id, m.sent_at, m.created_at, m.direction
+  FROM messages m
+  INNER JOIN messages_threads mt
+  ON m.message_thread_id = mt.id
+  INNER JOIN buyers b
+  ON mt.buyer_id = b.id
+  WHERE partner = 'olx'
+  AND m.created_at >= '2017-10-01 00:00:00'
+  ;
   "
   
   dfSqlCmd <- dbGetQuery(conDB,sqlCmd)
@@ -147,32 +152,21 @@ df <-
   rawStockarsPoseidonMessages %>%
   mutate(message_id = as.character(message_id),
          item_id = as.character(item_id)) %>%
-  left_join(rawStockarsMessages, by = c("message_id"="external_message_id"))%>%
+  left_join(rawStockarsMessages, by = c("message_id"="external_id"))%>%
   left_join(rawStockarsExport, by = c("item_id"="external_id"))%>%
   mutate(dateorigin2 = fastPOSIXct(dateorigin, tz = "UTC"),
-         message_date2 = fastPOSIXct(message_date, tz = "UTC"),
-         create_date2 = fastPOSIXct(create_date, tz = "UTC"),
+         message_date2 = fastPOSIXct(sent_at, tz = "UTC"),
+         create_date2 = fastPOSIXct(created_at, tz = "UTC"),
          diffSyncTime = 
            as.numeric(
              difftime(create_date2, message_date2, tz = "UTC", units = "mins")
-           ),
-         diffSyncTime = ifelse(
-           dateorigin2 <= '2017-08-18 15:16:26', diffSyncTime - 60,
-           diffSyncTime),
-         diffSyncTime = ifelse(
-           dateorigin2 > '2017-08-18 15:16:26' &
-             dateorigin2 <= '2017-08-22 08:24:53',
-           diffSyncTime + 180, diffSyncTime
-           ),
-         diffSyncTime = ifelse(
-           dateorigin2 > '2017-08-22 08:24:53', diffSyncTime , diffSyncTime
            ),
          diffSyncIntervals = 
            cut(diffSyncTime, 
                breaks = c(0, 0.08333333, 1, 10, 60, 240, Inf),
                dig.lab=10)
   ) %>%
-  filter(dateorigin2 >= '2017-01-20 00:00:00') %>%
+  filter(dateorigin2 >= '2017-10-01 00:00:00') %>%
   arrange(dateorigin2)
 
 dfStats <- 
@@ -180,7 +174,7 @@ dfStats <-
   mutate(dayorigin = as.Date(dateorigin)) %>%
   group_by(dayorigin) %>%
   summarise(qtyMessagesPoseidon = sum(!is.na(message_id)), 
-            qtyMessagesStockars = sum(!is.na(id_message))) %>%
+            qtyMessagesStockars = sum(!is.na(message_date2))) %>%
   mutate(var = qtyMessagesStockars/qtyMessagesPoseidon-1) %>%
   filter(dayorigin > as.Date(Sys.time())-17)
 
@@ -239,7 +233,7 @@ ghSyncingTime <-
 dfUsersNotSincying <-
   df %>%
   filter(!is.na(message_id), 
-         is.na(id_message), 
+         is.na(message_date2), 
          dateorigin >= as.Date(Sys.time())-17,
          !is.na(email)
          ) %>%
@@ -252,13 +246,13 @@ write.table(x = dfUsersNotSincying,
             col.names = TRUE,
             row.names = FALSE)
 
-# messages sent from stockars -------------------------------------------------
-dfSentMessagesFromStockars <-
-  rawStockarsMessages[ ,c("message_date", "direction")] %>%
-  filter(direction == 0) %>%
-  mutate(MessageDay = as.Date(message_date)) %>%
-  group_by(MessageDay) %>%
-  summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
+# # messages sent from stockars -------------------------------------------------
+# dfSentMessagesFromStockars <-
+#   rawStockarsMessages[ ,c("message_date", "direction")] %>%
+#   filter(direction == 0) %>%
+#   mutate(MessageDay = as.Date(message_date)) %>%
+#   group_by(MessageDay) %>%
+#   summarise(qtyMessagesSent = sum(!is.na(MessageDay)))
 
 # GRAPH: messages sent from stockars ------------------------------------------
 
