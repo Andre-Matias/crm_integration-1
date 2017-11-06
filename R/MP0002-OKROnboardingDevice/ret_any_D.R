@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange 
 from_date <- "20170904"
-to_date <- "20171022"
+to_date <- "20171105"
 
 device_vec <- c("rwd", "desktop", "ios", "android")
 

@@ -13,6 +13,9 @@ library('scales')
 library("gridExtra")
 library("tidyr")
 
+# Make sure to be in working directory
+setwd("~/verticals-bi/R/MP0002-OKROnboardingDevice")
+
 # Import JSON with data from Mixpanel JQL query
 json_pl <- fromJSON(file = "./data/retention_lead_platform_pl.json")
 json_pt <- fromJSON(file = "./data/retention_lead_platform_pt.json")
