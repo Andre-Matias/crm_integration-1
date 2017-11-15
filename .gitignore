@@ -4,3 +4,4 @@
 .DS_Store
 *.Rout
 R/PM0003-StradiaLatamDuplications/app.R
+*.Rdata

@@ -1,33 +1,28 @@
 ---
 title: 'Feature Release: Save as a Draft'
 output:
+<<<<<<< HEAD
   pdf_document: default
   html_document:
     theme: spacelab
+=======
+  pdf_document
+>>>>>>> 76cadfc941f95e1dd3138e1f38fa03295dedc6cc
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**Requested By (PM):**
-Cláudia Rosado  
-**Product:**  
-Otomoto, Autovit, Standvirtual (desktop)  
-**Feature:**  
-Save as Draft (Button in Posting Flow)  
-**Goal Description / User Behavior to Change:**  
-"Understand if users are interested in "save ads as a draft" and check if having this option reduce the posting flow conversion rate."  
-**Main Metric to Impact:**  
-Posting Flow Convertion Rate (posting_add_click / posting_form)  
-**Metric Goal to Achieve:**  
-Don't decrease Posting Flow Convertion Rate  
+**Requested By (PM):** Cláudia Rosado  
+**Product:** Otomoto, Autovit, Standvirtual (desktop)  
+**Feature:** Save as Draft (Button in Posting Flow)  
+**Goal Description / User Behavior to Change:** "Understand if users are interested in "save ads as a draft" and check if having this option reduce the posting flow conversion rate."  
+**Main Metric to Impact:** Posting Flow Convertion Rate (posting_add_click / posting_form)  
+**Metric Goal to Achieve:** Don't decrease Posting Flow Convertion Rate  
 **Expected Release Date:**  
-  
-**Effective Release Date:** 
-  
-**Related JIRA Ticket:**  
-GVPI-117  
+**Effective Release Date:**  
+**Related JIRA Ticket:** GVPI-117  
 
 ### **Conclusions**
 This in not the final reports as it isn't finished. It's not finished because we cannot draw statistically relevant conclusions from the data that we have at current moment (11th/Oct - 24th/Oct). In this particular case, for all the countries (OTO, AUT, STV), we don't have the needed sample size with a statistical power greater than 0.8 (currently: OTO(0.2768531), AUT(0.2167030), STV(0.07786580)). 
@@ -82,8 +77,8 @@ otomotoData <- df
 otomotoTestResults <- testResults
 neededSampleOtomoto <- neededSample
 
-knitr::kable(otomotoData, format = "html", padding = 2) %>%
-  kable_styling
+knitr::kable(otomotoData, format = "latex", booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
 testResults
 
@@ -136,8 +131,8 @@ autovitData <- df
 autovitTestResults <- testResults
 neededSampleAutovit<- neededSample
 
-knitr::kable(autovitData, format = "html", padding = 2) %>%
-  kable_styling
+knitr::kable(autovitData, format = "latex", booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
 testResults
 
@@ -190,8 +185,8 @@ stvData <- df
 stvTestResults <- testResults
 neededSampleSTV<- neededSample
 
-knitr::kable(stvData, format = "html", padding = 2) %>%
-  kable_styling
+knitr::kable(stvData, format = "latex", booktabs = T) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
 
 testResults
 

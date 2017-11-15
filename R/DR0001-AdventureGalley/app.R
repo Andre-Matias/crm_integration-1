@@ -10,7 +10,6 @@ library("dtplyr")
 library("scales")
 library("ggthemes")
 
-
 # load mixpanel user's credentials --------------------------------------------
 load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
@@ -26,6 +25,8 @@ dfAll <-
 # load modules ----------------------------------------------------------------
 source("Module_GVPI-116.PostingFlowHideNotMandatoryFields.R")
 source("Module_GVPI-88.StradiaStockarsMessages.R")
+source("Module_GVPI-85.OLXStockarsMessages.R")
+
 
 ui <- 
   dashboardPage(
@@ -49,7 +50,9 @@ ui <-
         menuItem("Business Tool", tabName = "bt", icon = icon("wrench"),
                  menuItem('Messages', tabName = 'tabStockarsMessages',
                           menuSubItem('Sync Time: Stockars/Stradia',
-                                      tabName = 'tabSyncTimeStkStr')
+                                      tabName = 'tabSyncTimeStkStr'),
+                          menuSubItem('Sync Time: Stockars/OLX',
+                                      tabName = 'tabSyncTimeStkOLX')
                           )
         )
       )
@@ -118,6 +121,9 @@ ui <-
       # Business Tool - Messages - Sync Time Stockars/Stradia
       tabItem(tabName = "tabSyncTimeStkStr",
               module_GVPI88_UI("MessageSyncTime")
+      ),
+      tabItem(tabName = "tabSyncTimeStkOLX",
+              module_GVPI85_UI("MessageSyncTime")
       )
     )
   )
@@ -183,6 +189,9 @@ callModule(module_GVPI116, "HideDescription")
 callModule(module_GVPI88, "MessageSyncTime")
 
 # Business Tool - Messages - Sync Time Stockars/Stradia - END -----------------
+  
+  callModule(module_GVPI85, "MessageSyncTime")
+  
 }
 
 # Run the application 

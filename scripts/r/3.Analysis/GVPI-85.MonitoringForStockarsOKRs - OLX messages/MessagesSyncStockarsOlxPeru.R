@@ -3,6 +3,9 @@ options(scipen=999)
 
 # load credentials file -------------------------------------------------------
 load("~/credentials.Rdata")
+load("~/GlobalConfig.Rdata")
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # load libraries --------------------------------------------------------------
 
@@ -60,7 +63,7 @@ requestDB <-
     AND time_id >= '2017-01-01 00:00:00'
     )
     )
-    AND country_id IN (32) -- 32 Argentina
+    AND country_id IN (604)
     AND MESSAGE_TEXT != 'este producto ya no se encuentra disponible.'
     AND date > '2017-10-01 00:00:00'
     )A
@@ -80,20 +83,20 @@ rm("dfRequestDB")
 
   # connect to stockars ---------------------------------------------------------
   
-  dbUsername <- "biuser"
-  dbPassword <- biUserPassword
-  dbHost <- "172.61.11.31"
-  dbPort <- "3306"
-  dbName <- "crm_cars_ar"
-  
-  sshUser <- "biuser"
-  sshHost <- "52.33.194.191"
-  sshPort <- "10022"
-  
-  dbLocalPort <- 10003
-  dbLocalHost <- "127.0.0.1"
-  
-  system("killall ssh", wait=FALSE)
+dbUsername <- "biuser"
+dbPassword <- biUserPassword
+dbHost <- "172.61.11.31"
+dbPort <- "3306"
+dbName <- "crm_cars_pe"
+
+sshUser <- "biuser"
+sshHost <- "52.35.32.165"
+sshPort <- "10022"
+
+dbLocalPort <- 10006
+dbLocalHost <- "127.0.0.1"
+
+system("killall ssh", wait=FALSE)
   
   cmdSSH <-
     paste0(
@@ -209,7 +212,7 @@ ghQuantityMessagesSynced <-
   scale_x_date(
     date_breaks = "1 day", date_labels = "%d\n%b\n%y")+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
-  ggtitle("OLX/Stockars.AR - Quantity of Messages synced") + 
+  ggtitle("OLX/Stockars.PE - Quantity of Messages synced") + 
   geom_text(aes(x=dayorigin, y=0, label=qtyMessagesStockars), vjust = -0.1, 
             family = "Andale Mono", colour="white")
 
@@ -224,7 +227,7 @@ ghSyncingTime <-
                     guide = guide_legend(title = "Sync Intervals"))+
   theme_fivethirtyeight()+theme(text=element_text(family = "Andale Mono"))+
   theme(legend.position="bottom")+
-  ggtitle("OLX/Stockars.AR - Syncing Time") + 
+  ggtitle("OLX/Stockars.PE - Syncing Time") + 
   geom_text(data = dfStats, aes(x=dayorigin, y=0, label=qtyMessagesStockars),
             vjust = -0.1, family = "Andale Mono")
 
@@ -270,6 +273,13 @@ gB <- ggplot_gtable(gb2)
 
 
 g <- rbind(gA, gB, size = "last")
+
+PE_g <- g
+
+save(list = c("PE_g"), file = "PE_g.Rdata")
+
+put_object(file = "PE_g.Rdata", object = "PE_g.Rdata",
+           bucket = "pyrates-data-ocean/GVPI-85")
 
 
   
