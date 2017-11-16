@@ -1,3 +1,4 @@
+-- hello <3
 -- tmp table : sessionslist
 -- to remove the bots
 select
