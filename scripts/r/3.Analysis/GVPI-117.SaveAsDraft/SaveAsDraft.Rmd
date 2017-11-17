@@ -1,16 +1,12 @@
 ---
 title: 'Feature Release: Save as a Draft'
 output:
-<<<<<<< HEAD
   pdf_document: default
   html_document:
     theme: spacelab
-=======
-  pdf_document
->>>>>>> 76cadfc941f95e1dd3138e1f38fa03295dedc6cc
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -25,6 +21,26 @@ knitr::opts_chunk$set(echo = TRUE)
 **Related JIRA Ticket:** GVPI-117  
 
 ### **Conclusions**
+
+UPDATED: 17-11-2017  
+
+OTOMOTO: Test already finished with +1.06p.p (+ 1.6%) advantaged for the variant with save draft button.
+Results:  
+Original - 66.2 %  
+Variant with Button - 67.3 %  
+
+AUTOVIT: Test not finished (insufficent number of samples). Until now + 0.04 p.p (0.06%) advantaged for the variant with save draft button.  
+Results:  
+Original - 70.92 %  
+Variant with Button - 70.97 %  
+
+STANDVIRTUAL: Test not finished (insufficent number of samples). Until now + 1.79 p.p (4%) advantaged for the variant with save draft button.  
+Results:  
+Original - 44.60 %  
+Variant with Button - 46.39 %  
+
+---------------------
+20-10-2017  
 This in not the final reports as it isn't finished. It's not finished because we cannot draw statistically relevant conclusions from the data that we have at current moment (11th/Oct - 24th/Oct). In this particular case, for all the countries (OTO, AUT, STV), we don't have the needed sample size with a statistical power greater than 0.8 (currently: OTO(0.2768531), AUT(0.2167030), STV(0.07786580)). 
 The difference between "Original"(A)  and "Variation With Save Draft Button"(B) conversions rates is between -0.881 p.p. (-1.84%) in STV and +0.0141 (2.01%) in OTO.
 
@@ -34,7 +50,7 @@ Even then, **I my personal opinion/intuition**, we wouldn't see big differences.
 Nevertheless, it's necessary to fix the "save draft" button's tracking before ending the test, as I would like to test another hyphothesis: people are savings drafts, abandoning the posting flow, recovery the ad in their personal account and posting it from there. 
 
 ### **Otomoto**
-```{r , echo=FALSE}
+```{r , echo=FALSE, message=FALSE}
 library(pander)
 library(knitr)
 library(kableExtra)
@@ -45,11 +61,11 @@ df <-
   data.frame(
   id = c("9010710728", "9009940388"),
   name = c("Original", "Variant with Button"),
-  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  period = c("Oct 11, 2017 - Nov 14, 2017", "Oct 11, 2017 - Nov 14, 2017"),
   PopulationMetric = c("posting_form","posting_form"),
-  PopulationValue = c(15538, 15543),
+  PopulationValue = c(44764, 44493),
   SucessMetric = c("posting_add_click","posting_add_click"),
-  SucessValue = c(10823, 10937)
+  SucessValue = c(29626, 29921)
   )
 
 df$ctr <- 
@@ -88,7 +104,7 @@ neededSample <- NULL
 ```
 
 ### **Autovit**
-```{r , echo=FALSE}
+```{r , echo=FALSE, message=FALSE}
 library(pander)
 library(knitr)
 library(kableExtra)
@@ -99,11 +115,11 @@ df <-
   data.frame(
   id = c("9024060291", "9010870766"),
   name = c("Original", "Variant with Button"),
-  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  period = c("Oct 11, 2017 - Nov 14, 2017", "Oct 11, 2017 - Nov 14, 2017"),
   PopulationMetric = c("posting_form","posting_form"),
-  PopulationValue = c(2848, 2658),
+  PopulationValue = c(6735, 6638),
   SucessMetric = c("posting_add_click","posting_add_click"),
-  SucessValue = c(2045, 1871)
+  SucessValue = c(4777, 4711)
   )
 
 df$ctr <- 
@@ -142,7 +158,7 @@ neededSample <- NULL
 ```
 
 ### **Standvirtual**
-```{r , echo=FALSE}
+```{r , echo=FALSE, message=FALSE}
 library(pander)
 library(knitr)
 library(kableExtra)
@@ -153,11 +169,11 @@ df <-
   data.frame(
   id = c("9031150194", "9016300173"),
   name = c("Original", "Variant with Button"),
-  period = c("Oct 11, 2017 - Oct 24, 2017", "Oct 11, 2017 - Oct 24, 2017"),
+  period = c("Oct 11, 2017 - Nov 14, 2017", "Oct 11, 2017 - Nov 14, 2017"),
   PopulationMetric = c("posting_form","posting_form"),
-  PopulationValue = c(1878, 1925),
+  PopulationValue = c(5231, 5327),
   SucessMetric = c("posting_add_click","posting_add_click"),
-  SucessValue = c(881, 920)
+  SucessValue = c(2333, 2471)
   )
 
 df$ctr <- 
