@@ -14,3 +14,5 @@ Recommendations
 - comment inside the file: at the top briefly describe the output of the query and within the query please explain any important step (like any categorizations in the data, join, etc.).
 
 
+Here you can find [Hydra documentation](https://naspersclassifieds.atlassian.net/wiki/spaces/COM/pages/28835876/Hydra).
+
