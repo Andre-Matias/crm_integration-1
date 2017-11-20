@@ -240,12 +240,12 @@ dfUsersNotSincying <-
          dateorigin >= as.Date(Sys.time())-17,
          !is.na(email)
          ) %>%
-  group_by(email) %>%
+  group_by(email, message_id) %>%
   summarise(qtyMessagesPerEmail = sum(!is.na(message_id))) %>%
   arrange(-qtyMessagesPerEmail)
 
 write.table(x = dfUsersNotSincying,
-            file = "~/tmp/dfUsersNotSincying.txt",
+            file = "~/tmp/dfUsersNotSincyingAR.txt",
             col.names = TRUE,
             row.names = FALSE)
 
