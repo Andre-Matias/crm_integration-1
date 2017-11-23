@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange 
 from_date <- "20170904"
-to_date <- "20171105"
+to_date <- "20171119"
 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -43,7 +43,7 @@ for (i in seq_along(device_vec)) {
                             retention_type= "birth",
                             born_event="home",
                             born_where= string_where,
-                            from=from_date, to=to_date, unit="day", intervalCount = 15
+                            from= from_date, to= to_date, unit= "day", intervalCount = 15
                            )
                 )
   
