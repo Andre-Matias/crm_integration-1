@@ -129,7 +129,7 @@ server <- function(input, output) {
      ret_any_pl <- filter(ret_any_pl, week %in% input$show_vars & platform==input$platform_filter)
      # use retPlot() function instead of ggplot chunk
      # max= max(ret_any_pl$ret, na.rm = T)+0.02
-     retPlot(ret_any_pl, title="New Users That Return and do Something - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_any_pl, title="Current Home - New Users That Return - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_any_table_pl <- DT::renderDataTable({
@@ -139,7 +139,7 @@ server <- function(input, output) {
    
    output$ret_any_pl_pwa <- renderPlot({
      ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_pl_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_any_pl_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_any_table_pl_pwa <- DT::renderDataTable({
@@ -149,7 +149,7 @@ server <- function(input, output) {
    
    output$ret_lead_pl <- renderPlot({
      ret_lead_pl <- filter(ret_lead_pl, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_pl, title="New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_lead_pl, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_lead_table_pl <- DT::renderDataTable({
@@ -170,7 +170,7 @@ server <- function(input, output) {
    ##### Standvirtual PT tab ----------
    output$ret_any_pt <- renderPlot({
      ret_any_pt <- filter(ret_any_pt, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_pt, title="New Users That Return and do Something - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_any_pt, title="Current Home - New Users That Return - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
      
    })
    
@@ -181,7 +181,7 @@ server <- function(input, output) {
    
    output$ret_any_pt_pwa <- renderPlot({
      ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_pt_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_any_pt_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
      
    })
    
@@ -192,7 +192,7 @@ server <- function(input, output) {
    
    output$ret_lead_pt <- renderPlot({
      ret_lead_pt <- filter(ret_lead_pt, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_pt, title="New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_lead_pt, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
    })
    
    output$ret_lead_table_pt <- DT::renderDataTable({
@@ -213,7 +213,7 @@ server <- function(input, output) {
    ##### Autovit RO tab ---------------
    output$ret_any_ro <- renderPlot({
      ret_any_ro <- filter(ret_any_ro, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_ro, title="New Users That Return and do Something - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_any_ro, title="Current Home - New Users That Return - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
      
    })
    
@@ -224,7 +224,7 @@ server <- function(input, output) {
    
    output$ret_any_ro_pwa <- renderPlot({
      ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_ro_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_any_ro_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
      
    })
    
@@ -235,7 +235,7 @@ server <- function(input, output) {
    
    output$ret_lead_ro <- renderPlot({
      ret_lead_ro <- filter(ret_lead_ro, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_ro, title="New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_lead_ro, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
    })
    
    output$ret_lead_table_ro <- DT::renderDataTable({
