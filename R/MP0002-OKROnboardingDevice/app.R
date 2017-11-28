@@ -29,9 +29,14 @@ ui <- fluidPage(
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
          Example: for the cohort of new users adcquired in the week starting on the 4th of September, 11% 
          came back after 1 day, 7% after 2 days, etc. and do something."),
+
+         helpText("OKR 1: Increase % of new users returning after 1 week by 10%"),
+         helpText("OKR 2: Increase % of new users with 1+ reply after 14 days by 10%"),
+         br(),
          helpText( "Other", 
                    a("Healthy Metrics", href="https://triton.olxgroup.bi/#/site/europe/views/HealthyMetrics-onboarding/HealthyMetricsOnboarding", target="_blank")
          )
+
          ),
       
       
