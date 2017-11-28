@@ -45,10 +45,19 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_pl"),
              br(),
+             plotOutput("ret_any_pl_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_pl_pwa"),
+             br(),
              br(),
              plotOutput("ret_lead_pl", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_pl")
+             DT::dataTableOutput("ret_lead_table_pl"),
+             br(),
+             plotOutput("ret_lead_pl_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_pl_pwa"),
+             br()
                   ),
           
           tabPanel("Standvirtual PT",
@@ -56,10 +65,19 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_pt"),
              br(),
+             plotOutput("ret_any_pt_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_pt_pwa"),
+             br(),
              br(),
              plotOutput("ret_lead_pt", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_pt")
+             DT::dataTableOutput("ret_lead_table_pt"),
+             br(),
+             plotOutput("ret_lead_pt_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_pt_pwa"),
+             br()
                   ),
           
           tabPanel("Autovit RO",
@@ -67,10 +85,19 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_ro"),
              br(),
+             plotOutput("ret_any_ro_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_ro_pwa"),
+             br(),
              br(),
              plotOutput("ret_lead_ro", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_ro")
+             DT::dataTableOutput("ret_lead_table_ro"),
+             br(),
+             plotOutput("ret_lead_ro_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_ro_pwa"),
+             br()
                   )
           
           # tabPanel("Consolidated",
@@ -110,6 +137,16 @@ server <- function(input, output) {
     DT::datatable(ret_any_table_pl, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_pl_pwa <- renderPlot({
+     ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_pl_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+   })
+   
+   output$ret_any_table_pl_pwa <- DT::renderDataTable({
+     ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_pl_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
    output$ret_lead_pl <- renderPlot({
      ret_lead_pl <- filter(ret_lead_pl, week %in% input$show_vars & platform==input$platform_filter)
      retPlot(ret_lead_pl, title="New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
@@ -118,6 +155,16 @@ server <- function(input, output) {
    output$ret_lead_table_pl <- DT::renderDataTable({
      ret_lead_table_pl <- filter(ret_lead_table_pl, week %in% input$show_vars & platform==input$platform_filter)
      DT::datatable(ret_lead_table_pl, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$ret_lead_pl_pwa <- renderPlot({
+     ret_lead_pl_pwa <- filter(ret_lead_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_pl_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_pl_pwa <- DT::renderDataTable({
+     ret_lead_table_pl_pwa <- filter(ret_lead_table_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_pl_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
    ##### Standvirtual PT tab ----------
@@ -132,6 +179,17 @@ server <- function(input, output) {
      DT::datatable(ret_any_table_pt, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_pt_pwa <- renderPlot({
+     ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_pt_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     
+   })
+   
+   output$ret_any_table_pt_pwa <- DT::renderDataTable({
+     ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_pt_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
    output$ret_lead_pt <- renderPlot({
      ret_lead_pt <- filter(ret_lead_pt, week %in% input$show_vars & platform==input$platform_filter)
      retPlot(ret_lead_pt, title="New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
@@ -140,6 +198,16 @@ server <- function(input, output) {
    output$ret_lead_table_pt <- DT::renderDataTable({
      ret_lead_table_pt <- filter(ret_lead_table_pt, week %in% input$show_vars & platform==input$platform_filter)
      DT::datatable(ret_lead_table_pt, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$ret_lead_pt_pwa <- renderPlot({
+     ret_lead_pt_pwa <- filter(ret_lead_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_pt_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_pt_pwa <- DT::renderDataTable({
+     ret_lead_table_pt_pwa <- filter(ret_lead_table_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_pt_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
    ##### Autovit RO tab ---------------
@@ -154,6 +222,17 @@ server <- function(input, output) {
      DT::datatable(ret_any_table_ro, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_ro_pwa <- renderPlot({
+     ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_ro_pwa, title="PWA - New Users That Return and do Something - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     
+   })
+   
+   output$ret_any_table_ro_pwa <- DT::renderDataTable({
+     ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_ro_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
    output$ret_lead_ro <- renderPlot({
      ret_lead_ro <- filter(ret_lead_ro, week %in% input$show_vars & platform==input$platform_filter)
      retPlot(ret_lead_ro, title="New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
@@ -163,7 +242,20 @@ server <- function(input, output) {
      ret_lead_table_ro <- filter(ret_lead_table_ro, week %in% input$show_vars & platform==input$platform_filter)
      DT::datatable(ret_lead_table_ro, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
+   
+   output$ret_lead_ro_pwa <- renderPlot({
+     ret_lead_ro_pwa <- filter(ret_lead_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_ro_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_ro_pwa <- DT::renderDataTable({
+     ret_lead_table_ro_pwa <- filter(ret_lead_table_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_ro_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
 }
+
+  
 
 # Run the application 
 shinyApp(ui = ui, server = server)

@@ -35,7 +35,7 @@ prepare_for_retention <- function (country_df) {
   #Group by
   ret_any_long <- ret_any_long %>% 
     group_by(platform, week, TimeToConvert) %>% 
-    summarize(TotalUsers=sum(TotalUsers), ConvertedUsers=sum(ConvertedUsers)) 
+    summarize(TotalUsers=sum(TotalUsers, na.rm=T), ConvertedUsers=sum(ConvertedUsers, na.rm=T)) 
   
   # CTR
   ret_any_long$CTR <- ret_any_long$ConvertedUsers / ret_any_long$TotalUsers
@@ -44,7 +44,7 @@ prepare_for_retention <- function (country_df) {
   # Prepare dataframe for retention
   ret_any_3 <- ret_any_long %>%
     group_by(platform, week, TimeToConvert) %>%
-    summarize(ret=mean(CTR))
+    summarize(ret=mean(CTR, na.rm=T))
   
   return(ret_any_3)
   
@@ -115,7 +115,7 @@ cleaning_json <- function(a) {
   # Filter only new users acquired between Mon 3 Jul - Sun 6 Ago
   # All have 30 days to convert since data was extracted until 7 Sep
   # or put the start/end dates you like
-  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-11-19' , ]
+  d <- d[d$V3 >= '2017-07-03' & d$V3 <= '2017-11-26' , ]
   
   d[is.na(d$V5), c("V5")] <- -1
   d <- d %>% arrange( platform, V3, NewUsers, V5)
