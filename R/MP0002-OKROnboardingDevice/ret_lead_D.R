@@ -63,11 +63,12 @@ ret_lead_table_ro_pwa <- to_wide_table(ret_lead_ro_pwa)
 ## Save ret_lead_ro RO (with column platform)
 ## Save ret_any_2 consolidated (no country neither platform)
 
-
+last_update <- date()
 
 # for now save as .RData
 save(ret_any_pl, ret_any_pt, ret_any_ro, ret_any_table_pl, ret_any_table_pt, ret_any_table_ro,
      ret_lead_pl, ret_lead_pt, ret_lead_ro, ret_lead_table_pl, ret_lead_table_pt, ret_lead_table_ro,
      ret_any_pl_pwa, ret_any_pt_pwa, ret_any_ro_pwa, ret_any_table_pl_pwa, ret_any_table_pt_pwa, ret_any_table_ro_pwa,
      ret_lead_pl_pwa, ret_lead_pt_pwa, ret_lead_ro_pwa, ret_lead_table_pl_pwa, ret_lead_table_pt_pwa, ret_lead_table_ro_pwa,
+     last_update,
      file="ret_files.RData")

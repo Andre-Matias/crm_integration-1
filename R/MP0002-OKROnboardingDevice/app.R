@@ -33,6 +33,8 @@ ui <- fluidPage(
          helpText("OKR 1: Increase % of new users returning after 1 week by 10%"),
          helpText("OKR 2: Increase % of new users with 1+ reply after 14 days by 10%"),
          br(),
+         helpText(paste("Last update:", "", last_update)),
+         br(),
          helpText( "Other", 
                    a("Healthy Metrics", href="https://triton.olxgroup.bi/#/site/europe/views/HealthyMetrics-onboarding/HealthyMetricsOnboarding", target="_blank")
          )
