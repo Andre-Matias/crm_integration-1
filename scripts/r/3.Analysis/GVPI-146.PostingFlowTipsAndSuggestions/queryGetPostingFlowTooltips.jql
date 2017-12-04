@@ -1,0 +1,9 @@
+function main() {
+  return Events({
+    from_date: '2017-12-01',
+    to_date:   '2017-12-04'
+  })
+  .filter(e=>e.name=="posting_form" || (e.name.includes("tooltip")===true && e.name.includes("show")===true))
+  .groupBy(["name", "distinct_id"], mixpanel.reducer.count())
+  .groupBy(["key.0"], mixpanel.reducer.count())
+}
