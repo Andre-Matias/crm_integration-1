@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange 
 from_date <- "20171002"
-to_date <- "20171126"
+to_date <- "20171203"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -188,11 +188,19 @@ ret_any_table_ro_pwa <- to_wide_table(ret_any_ro_pwa)
 ## Save ret_any_2 consolidated (no country neither platform)
 
 # keep only week from 20 Nov for PWA data
-ret_any_pl_pwa <- filter(ret_any_pl_pwa, week=="2017-11-20")
-ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week=="2017-11-20")
+week_test <- c("2017-11-20", "2017-11-27")
 
-ret_any_pt_pwa <- filter(ret_any_pt_pwa, week=="2017-11-20")
-ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week=="2017-11-20")
+#ret_any_pl_pwa$week <- as.Date(ret_any_pl_pwa$week)
+ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% week_test)
+#ret_any_table_pl_pwa$week <- as.Date(ret_any_table_pl_pwa$week)
+ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% week_test)
 
-ret_any_ro_pwa <- filter(ret_any_ro_pwa, week=="2017-11-20")
-ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week=="2017-11-20")
+#ret_any_pt_pwa$week <- as.Date(ret_any_pt_pwa$week)
+ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% week_test)
+#ret_any_table_pt_pwa$week <- as.Date(ret_any_table_pt_pwa$week)
+ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week %in% week_test)
+
+#ret_any_ro_pwa$week <- as.Date(ret_any_ro_pwa$week)
+ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% week_test)
+#ret_any_table_ro_pwa$week <- as.Date(ret_any_table_ro_pwa$week)
+ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week %in% week_test)
