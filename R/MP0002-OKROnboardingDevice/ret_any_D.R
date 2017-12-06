@@ -26,11 +26,12 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 #' Extract Retention data --------------------------------------------------------------------------
 #' Will send a query for each account
 
-## Define timerange 
+## Define timerange: valid across countries
 from_date <- "20171002"
 to_date <- "20171203"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
+
 
 ## Otomoto PL -------------------------------------------------------------------------------------
 df_any_pl <- data.frame()
@@ -190,17 +191,11 @@ ret_any_table_ro_pwa <- to_wide_table(ret_any_ro_pwa)
 # keep only week from 20 Nov for PWA data
 week_test <- c("2017-11-20", "2017-11-27")
 
-#ret_any_pl_pwa$week <- as.Date(ret_any_pl_pwa$week)
 ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% week_test)
-#ret_any_table_pl_pwa$week <- as.Date(ret_any_table_pl_pwa$week)
 ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% week_test)
 
-#ret_any_pt_pwa$week <- as.Date(ret_any_pt_pwa$week)
 ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% week_test)
-#ret_any_table_pt_pwa$week <- as.Date(ret_any_table_pt_pwa$week)
 ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week %in% week_test)
 
-#ret_any_ro_pwa$week <- as.Date(ret_any_ro_pwa$week)
 ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% week_test)
-#ret_any_table_ro_pwa$week <- as.Date(ret_any_table_ro_pwa$week)
 ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week %in% week_test)
