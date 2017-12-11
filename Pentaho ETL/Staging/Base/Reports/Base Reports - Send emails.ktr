@@ -465,7 +465,7 @@
     <hop>
       <from>ID</from>
       <to>Mail to ID</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>LATAM</from>
