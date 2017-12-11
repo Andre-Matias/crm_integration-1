@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries
 from_date <- "20171002"
-to_date <- "20171209"
+to_date <- "20171210"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -56,7 +56,7 @@ for (i in seq_along(device_vec)) {
 # started "20171122", will take a longer period anyway because functions are working with minimum 15 days
 df_any_pl_pwa <- data.frame()
 for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["platform"] == "', device_vec[i] ,'"')
+  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
   tmp <- 
     as.data.frame(
       mixpanelGetRetention (oto_auth, 
@@ -97,7 +97,7 @@ for (i in seq_along(device_vec)) {
 # started "20171121"
 df_any_pt_pwa <- data.frame()
 for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["platform"] == "', device_vec[i] ,'"')
+  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
   tmp <- 
     as.data.frame(
       mixpanelGetRetention (sta_auth, 
@@ -137,7 +137,7 @@ for (i in seq_along(device_vec)) {
 # started "20171120"
 df_any_ro_pwa <- data.frame()
 for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["platform"] == "', device_vec[i] ,'"')
+  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
   tmp <- 
     as.data.frame(
       mixpanelGetRetention (aut_auth, 
