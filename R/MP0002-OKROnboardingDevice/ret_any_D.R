@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries
 from_date <- "20171002"
-to_date <- "20171203"
+to_date <- "20171209"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -53,7 +53,7 @@ for (i in seq_along(device_vec)) {
 }
 
 #### PWA version on A/B test
-# started "20171122"
+# started "20171122", will take a longer period anyway because functions are working with minimum 15 days
 df_any_pl_pwa <- data.frame()
 for (i in seq_along(device_vec)) {
   string_where <- paste0('properties["platform"] == "', device_vec[i] ,'"')
@@ -154,10 +154,6 @@ for (i in seq_along(device_vec)) {
 }
 
 
-## Without platform segmentation? (only use this for old dash, with consolidated countries) -------
-## or see if I can sum up each country df
-
-
 # Clean & prepare datasets for retention analysis -------------------------------------------------
 
 # PL
@@ -188,8 +184,8 @@ ret_any_table_ro_pwa <- to_wide_table(ret_any_ro_pwa)
 ## Save ret_any_2 RO (with column platform)
 ## Save ret_any_2 consolidated (no country neither platform)
 
-# keep only week from 20 Nov for PWA data
-week_test <- c("2017-11-20", "2017-11-27")
+# keep only weeks from 20 Nov for PWA data
+week_test <- c("2017-11-20", "2017-11-27", "2017-12-04")
 
 ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% week_test)
 ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% week_test)
