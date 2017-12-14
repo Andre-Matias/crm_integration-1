@@ -7,7 +7,7 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 library(ggthemes)
-source("functions.R")
+#source("functions.R")
 load("ret_files.RData")
 
 
