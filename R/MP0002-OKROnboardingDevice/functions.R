@@ -69,13 +69,53 @@ to_wide_table <- function (df_prepared_retention) {
 # retPlot(): make a retention plot for 1st okr ---------------------------------------------
 retPlot <- function (df_prepared_retention, title="", subtitle=""){
   max_y <- max(df_prepared_retention$ret, na.rm = T)+0.02
-  ggplot(data = df_prepared_retention) + geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
+  ggplot(data = df_prepared_retention) + 
+  geom_line(aes(x = TimeToConvert, y = ret, colour = week))+
   scale_y_continuous(labels = scales::percent, breaks = seq(0,max_y,0.01), limits = c(0,max_y))+
   scale_x_continuous(breaks = seq(0,15,1), limits = c(0,15)) +
   ggtitle(title, subtitle)+
-  theme_fivethirtyeight()+theme(text = element_text(family = "Andale Mono")) + xlab("days to convert") + ylab("% new users") 
+  theme_fivethirtyeight()+
+  theme(text = element_text(family = "Andale Mono")) + 
+    xlab("days to convert") + ylab("% new users") 
 }
 
+
+#' daily_okr1(): ---------------------------------------------------------------------------
+#' Calculate OKR1 7 days retention on a daily basis
+# to be used for comparing original vs variation
+daily_okr1 <- function (country_df) {
+  daily <- country_df %>%
+    select(dates:retainCount.15, platform) 
+  row.names(daily) <- NULL
+  daily$retainCount.0 <- NULL
+  daily$ret_users <- rowSums(daily[, 3:9], na.rm = T)
+  daily <- daily %>%
+    select (platform, dates, cohortCount, ret_users) %>%
+    mutate (ret_per= ret_users / cohortCount) %>%
+    mutate( dates = as.Date(as.character(dates)), week = cut(dates, breaks="week", start.on.monday=T))
+  return(daily)
+}
+
+# retCompPlot(): plot to compare OKR1 original vs variation --------------------------------------
+retCompPlot <- function (df_comp, title="", subtitle=""){
+  ggplot(data = df_comp, aes(dates)) + 
+  geom_line(aes(y = ret_per.x, colour = "original (home)"))+ 
+  geom_line(aes(y = ret_per.y, colour = "variation (pwa)"))+
+  theme(legend.position="bottom")+
+  scale_y_continuous(labels = scales::percent)+
+  ggtitle(title, subtitle)+
+  theme_fivethirtyeight()+
+  xlab(label="day of first interaction") + ylab(label="% retention")
+#return(p)
+}
+
+# test function
+test <- filter(comp_okr2_pl, platform=="rwd")
+ggplot(data = test, aes(dates)) + 
+  geom_line(aes(y = ret_per.x, colour="original (home)"))+ 
+  geom_line(aes(y = ret_per.y, colour="variation (pwa)")) +
+  xlab(label="day") + ylab(label="14 days retention") +
+  theme(legend.position="bottom")
 
 
 ###################################################################################################
@@ -83,7 +123,9 @@ retPlot <- function (df_prepared_retention, title="", subtitle=""){
 # currently not using it--------------------------------------------------------------------------#
 # #################################################################################################
 
-# cleaning_json(): clean and put in tabular format lead dataset coming in json format
+#' cleaning_json(): 
+#' clean and put in tabular format lead dataset coming in json format
+#' not using it anymore!
 cleaning_json <- function(a) { 
   b <- do.call(rbind, a) 
   c <- as.data.frame(t(b))
@@ -253,7 +295,24 @@ prepare_for_retention2 <- function (country_df) {
 }
 
 
-# to test -----------------
+#' daily_okr2(): ---------------------------------------------------------------------------
+#' Calculate OKR2 14 days retention on a daily basis
+# to be used for comparing original vs variation
+daily_okr2 <- function (country_df) {
+  daily <- country_df %>%
+    select(dates:retainCount.15, platform) 
+  row.names(daily) <- NULL
+  #daily$retainCount.0 <- NULL
+  daily$ret_users <- rowSums(daily[, 3:16], na.rm = T)
+  daily <- daily %>%
+    select (platform, dates, cohortCount, ret_users) %>%
+    mutate (ret_per= ret_users / cohortCount) %>%
+    mutate( dates = as.Date(as.character(dates)), week = cut(dates, breaks="week", start.on.monday=T))
+  return(daily)
+}
+
+
+# functions to test -----------------
 prepare_for_retention <- function (country_df, same_day="no") {
   
   clean <- country_df %>%

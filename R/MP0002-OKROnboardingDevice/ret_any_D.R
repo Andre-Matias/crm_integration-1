@@ -163,6 +163,11 @@ ret_any_table_pl <- to_wide_table(ret_any_pl)
 ret_any_pl_pwa <- prepare_for_retention(df_any_pl_pwa)
 ret_any_table_pl_pwa <- to_wide_table(ret_any_pl_pwa)
 
+## compare daily okr1 7 days retention
+daily_okr1_pl <- daily_okr1 (df_any_pl)
+daily_okr1_pl_pwa <- daily_okr1 (df_any_pl_pwa)
+comp_okr1_pl <- left_join(daily_okr1_pl, daily_okr1_pl_pwa, by=c("platform", "dates"))
+
 # PT
 ret_any_pt <- prepare_for_retention(df_any_pt)
 ret_any_table_pt <- to_wide_table(ret_any_pt)
@@ -170,12 +175,22 @@ ret_any_table_pt <- to_wide_table(ret_any_pt)
 ret_any_pt_pwa <- prepare_for_retention(df_any_pt_pwa)
 ret_any_table_pt_pwa <- to_wide_table(ret_any_pt_pwa)
 
+## compare daily okr1 7 days retention
+daily_okr1_pt <- daily_okr1 (df_any_pt)
+daily_okr1_pt_pwa <- daily_okr1 (df_any_pt_pwa)
+comp_okr1_pt <- left_join(daily_okr1_pt, daily_okr1_pt_pwa, by=c("platform", "dates"))
+
 # RO
 ret_any_ro <- prepare_for_retention(df_any_ro)
 ret_any_table_ro <- to_wide_table(ret_any_ro)
 
 ret_any_ro_pwa <- prepare_for_retention(df_any_ro_pwa)
 ret_any_table_ro_pwa <- to_wide_table(ret_any_ro_pwa)
+
+## compare daily okr1 7 days retention
+daily_okr1_ro <- daily_okr1 (df_any_ro)
+daily_okr1_ro_pwa <- daily_okr1 (df_any_ro_pwa)
+comp_okr1_ro <- left_join(daily_okr1_ro, daily_okr1_ro_pwa, by=c("platform", "dates"))
 
 
 # Save it into Amazon S3 -------------------------------------------------------------------------
