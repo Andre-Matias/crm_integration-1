@@ -104,7 +104,7 @@ retCompPlot <- function (df_comp, title="", subtitle=""){
   geom_line(aes(y = ret_per.y, colour = "variation (pwa)"))+
   theme(legend.position="bottom")+
   #scale_y_continuous(labels = scales::percent)+
-  scale_y_continuous(labels = scales::percent, breaks = seq(0,max_y,0.01), limits = c(0,max_y))+
+  scale_y_continuous(labels = scales::percent, breaks = seq(0, max_y, 0.02), limits = c(0, max_y))+
   ggtitle(title, subtitle)+
   theme_fivethirtyeight()+
   xlab(label="day of first interaction") + ylab(label="% retention")
@@ -320,48 +320,48 @@ daily_okr2 <- function (country_df) {
 
 # --------------------------------------------------------------------
 # functions to test -----------------
-prepare_for_retention <- function (country_df, same_day="no") {
-  
-  clean <- country_df %>%
-    select(dates:retainCount.15, platform) 
-  # %>%
-  #           if_else (same_day=="no", select(-retainCount.0), select()) 
-  row.names(clean) <- NULL
-  if(same_day=="no") {clean$retainCount.0 <- NULL}
-  
-  #if (same_day=="no") {my_interval <- as.character(seq(1,15))} else {my_interval <- as.character(seq(0,15))}
-  #my_interval <- ifelse(same_day=="no", as.character(seq(1,15)), as.character(seq(0,15)) )
-  #return (clean)}
-  my_interval <- as.character(seq(1,15))
-  names(clean) <- c("Date", "TotalUsers", my_interval, "platform")
-  
-  ## From wide to long
-  ret_any_long <- gather(clean, TimeToConvert, ConvertedUsers, 
-                         as.character(my_interval), factor_key = T)
-  
-  # Date format and sort
-  ret_any_long$Date <- as.Date(as.character(ret_any_long$Date))
-  ret_any_long <- ret_any_long %>% 
-    arrange(platform, Date, TimeToConvert)
-  ret_any_long$TimeToConvert <- as.numeric(as.character(ret_any_long$TimeToConvert))
-  
-  # Calculate week starting on Mondays                      
-  ret_any_long <- mutate (ret_any_long, week = cut(Date, breaks="week", start.on.monday=T))
-  
-  #Group by
-  ret_any_long <- ret_any_long %>% 
-    group_by(platform, week, TimeToConvert) %>% 
-    summarize(TotalUsers=sum(TotalUsers, na.rm=T), ConvertedUsers=sum(ConvertedUsers, na.rm=T)) 
-  
-  # CTR
-  ret_any_long$CTR <- ret_any_long$ConvertedUsers / ret_any_long$TotalUsers
-  
-  
-  # Prepare dataframe for retention
-  ret_any_3 <- ret_any_long %>%
-    group_by(platform, week, TimeToConvert) %>%
-    summarize(ret=mean(CTR, na.rm=T))
-  
-  return(ret_any_3)
-  
-}
+# prepare_for_retention <- function (country_df, same_day="no") {
+#   
+#   clean <- country_df %>%
+#     select(dates:retainCount.15, platform) 
+#   # %>%
+#   #           if_else (same_day=="no", select(-retainCount.0), select()) 
+#   row.names(clean) <- NULL
+#   if(same_day=="no") {clean$retainCount.0 <- NULL}
+#   
+#   #if (same_day=="no") {my_interval <- as.character(seq(1,15))} else {my_interval <- as.character(seq(0,15))}
+#   #my_interval <- ifelse(same_day=="no", as.character(seq(1,15)), as.character(seq(0,15)) )
+#   #return (clean)}
+#   my_interval <- as.character(seq(1,15))
+#   names(clean) <- c("Date", "TotalUsers", my_interval, "platform")
+#   
+#   ## From wide to long
+#   ret_any_long <- gather(clean, TimeToConvert, ConvertedUsers, 
+#                          as.character(my_interval), factor_key = T)
+#   
+#   # Date format and sort
+#   ret_any_long$Date <- as.Date(as.character(ret_any_long$Date))
+#   ret_any_long <- ret_any_long %>% 
+#     arrange(platform, Date, TimeToConvert)
+#   ret_any_long$TimeToConvert <- as.numeric(as.character(ret_any_long$TimeToConvert))
+#   
+#   # Calculate week starting on Mondays                      
+#   ret_any_long <- mutate (ret_any_long, week = cut(Date, breaks="week", start.on.monday=T))
+#   
+#   #Group by
+#   ret_any_long <- ret_any_long %>% 
+#     group_by(platform, week, TimeToConvert) %>% 
+#     summarize(TotalUsers=sum(TotalUsers, na.rm=T), ConvertedUsers=sum(ConvertedUsers, na.rm=T)) 
+#   
+#   # CTR
+#   ret_any_long$CTR <- ret_any_long$ConvertedUsers / ret_any_long$TotalUsers
+#   
+#   
+#   # Prepare dataframe for retention
+#   ret_any_3 <- ret_any_long %>%
+#     group_by(platform, week, TimeToConvert) %>%
+#     summarize(ret=mean(CTR, na.rm=T))
+#   
+#   return(ret_any_3)
+#   
+# }
