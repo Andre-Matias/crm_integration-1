@@ -28,7 +28,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries
 from_date <- "20171023"
-to_date <- "20171210"
+to_date <- "20171218"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -64,7 +64,7 @@ for (i in seq_along(device_vec)) {
                             retention_type= "birth",
                             born_event="welcome_screen",
                             born_where= string_where,
-                            from="20171106", to=to_date, unit="day", intervalCount = 15
+                            from="20171120", to=to_date, unit="day", intervalCount = 15
       )
     )
   
@@ -105,7 +105,7 @@ for (i in seq_along(device_vec)) {
                             retention_type= "birth",
                             born_event="welcome_screen",
                             born_where= string_where,
-                            from="20171106", to=to_date, unit="day", intervalCount = 15
+                            from="20171120", to=to_date, unit="day", intervalCount = 15
       )
     )
   
@@ -145,7 +145,7 @@ for (i in seq_along(device_vec)) {
                             retention_type= "birth",
                             born_event="welcome_screen",
                             born_where= string_where,
-                            from="20171106", to=to_date, unit="day", intervalCount = 15
+                            from="20171120", to=to_date, unit="day", intervalCount = 15
       )
     )
   
@@ -200,7 +200,7 @@ comp_okr1_ro <- left_join(daily_okr1_ro, daily_okr1_ro_pwa, by=c("platform", "da
 ## Save ret_any_2 consolidated (no country neither platform)
 
 # keep only weeks from 20 Nov for PWA data
-week_test <- c("2017-11-20", "2017-11-27", "2017-12-04")
+week_test <- c("2017-11-20", "2017-11-27", "2017-12-04", "2017-12-11")
 
 ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% week_test)
 ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% week_test)

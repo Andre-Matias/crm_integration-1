@@ -44,7 +44,7 @@ for (i in seq_along(device_vec)) {
                             born_event="welcome_screen",
                             born_where= string_where,
                             event="$custom_event:750077",
-                            from="20171122", to=to_date, unit="day", intervalCount = 15
+                            from="20171120", to=to_date, unit="day", intervalCount = 15
       )
     )
   
@@ -89,7 +89,7 @@ for (i in seq_along(device_vec)) {
                             born_event="welcome_screen",
                             born_where= string_where,
                             event="$custom_event:753501",
-                            from="20171121", to=to_date, unit="day", intervalCount = 15
+                            from="20171120", to=to_date, unit="day", intervalCount = 15
       )
     )
   
