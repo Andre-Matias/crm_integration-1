@@ -110,12 +110,12 @@ retCompPlot <- function (df_comp, title="", subtitle=""){
 }
 
 # test function
-test <- filter(comp_okr2_pl, platform=="rwd")
-ggplot(data = test, aes(dates)) + 
-  geom_line(aes(y = ret_per.x, colour="original (home)"))+ 
-  geom_line(aes(y = ret_per.y, colour="variation (pwa)")) +
-  xlab(label="day") + ylab(label="14 days retention") +
-  theme(legend.position="bottom")
+# test <- filter(comp_okr2_pl, platform=="rwd")
+# ggplot(data = test, aes(dates)) + 
+#   geom_line(aes(y = ret_per.x, colour="original (home)"))+ 
+#   geom_line(aes(y = ret_per.y, colour="variation (pwa)")) +
+#   xlab(label="day") + ylab(label="14 days retention") +
+#   theme(legend.position="bottom")
 
 
 ###################################################################################################
@@ -310,6 +310,7 @@ daily_okr2 <- function (country_df) {
     mutate( dates = as.Date(as.character(dates)), week = cut(dates, breaks="week", start.on.monday=T))
   return(daily)
 }
+
 
 
 # functions to test -----------------
