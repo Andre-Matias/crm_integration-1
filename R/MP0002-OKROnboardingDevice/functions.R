@@ -98,16 +98,19 @@ daily_okr1 <- function (country_df) {
 
 # retCompPlot(): plot to compare OKR1 original vs variation --------------------------------------
 retCompPlot <- function (df_comp, title="", subtitle=""){
+  max_y <- max(df_comp$ret_per.x, na.rm = T)+0.02
   ggplot(data = df_comp, aes(dates)) + 
   geom_line(aes(y = ret_per.x, colour = "original (home)"))+ 
   geom_line(aes(y = ret_per.y, colour = "variation (pwa)"))+
   theme(legend.position="bottom")+
-  scale_y_continuous(labels = scales::percent)+
+  #scale_y_continuous(labels = scales::percent)+
+  scale_y_continuous(labels = scales::percent, breaks = seq(0,max_y,0.01), limits = c(0,max_y))+
   ggtitle(title, subtitle)+
   theme_fivethirtyeight()+
   xlab(label="day of first interaction") + ylab(label="% retention")
 #return(p)
 }
+
 
 # test function
 # test <- filter(comp_okr2_pl, platform=="rwd")
@@ -313,6 +316,9 @@ daily_okr2 <- function (country_df) {
 
 
 
+
+
+# --------------------------------------------------------------------
 # functions to test -----------------
 prepare_for_retention <- function (country_df, same_day="no") {
   
