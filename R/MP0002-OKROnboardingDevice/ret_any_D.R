@@ -1,7 +1,11 @@
 library(RMixpanel)
 library(dplyr)
 library(tidyr)
-#
+
+
+setwd("~/verticals-bi/R/MP0002-OKROnboardingDevice")
+source("functions.R")
+
 # MixPanel account authentication --------------------------------------------------------------------
 ## Fill in here the API token, key and secret as found on 
 ## www.mixpanel.com - Account -> Projects. 
