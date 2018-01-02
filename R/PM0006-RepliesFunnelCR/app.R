@@ -68,7 +68,7 @@ output$ex1 <- renderDataTable(
   output$funnelotplPlot <- renderGvis({
     
    
-    graphfunnelotpl <- gvisSankey(funnel_total_stro, from="origin", 
+    graphfunnelotpl <- gvisSankey(funnel_total_otpl, from="origin", 
                  to="to",weight="Step conversion",
                  options=list(
                    height=800,width=950,
