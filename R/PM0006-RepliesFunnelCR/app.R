@@ -1,7 +1,7 @@
 
 
-library(ggplot2)
-library(shiny)
+
+library(DT)
 library(scales)
 library(googleVis)
 
