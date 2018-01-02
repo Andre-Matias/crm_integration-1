@@ -31,21 +31,36 @@ funnel_total_stro_per$"Step conversion" <- paste(round(funnel_total_stro_per$"St
 
 
   
-  #Tables(daily duplicates)
+  #Tables
 
 output$ex1 <- renderDataTable(
-  funnel_total_otpl_per, options = list(pageLength = 10)
+  funnel_total_otpl_per,extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy','excel'), 
+    searching = FALSE, 
+    paging = FALSE, 
+    columnDefs = list(list(className = 'dt-center', targets = 0:5)))
   )
 
   output$ex2 <- renderDataTable(
- funnel_total_imo_per, options = list(pageLength = 10)
+ funnel_total_imo_per, extensions = 'Buttons', options = list(
+   dom = 'Bfrtip',
+   buttons = c('copy','excel'), 
+   searching = FALSE, 
+   paging = FALSE, 
+   columnDefs = list(list(className = 'dt-center', targets = 0:5)))
   )
 
   output$ex3 <- renderDataTable(
-     funnel_total_stro_per, options = list(pageLength = 10)
+     funnel_total_stro_per, extensions = 'Buttons', options = list(
+       dom = 'Bfrtip',
+       buttons = c('copy','excel'), 
+       searching = FALSE, 
+       paging = FALSE, 
+       columnDefs = list(list(className = 'dt-center', targets = 0:5)))
   )
 
-
+    
   #plot (evolution by month)
   
   #Otodom PL Graph 
@@ -126,7 +141,7 @@ output$ex1 <- renderDataTable(
 }
   
 ui <- navbarPage(
-  title = ("Replies Funnel Conversion Rate"),
+  title = ("Replies Funnel Conversion Rate (Week 52)"), 
   tabPanel('Otodom PL Funnel Graph', htmlOutput("funnelotplPlot")),   
   tabPanel('Otodom PL Funnel Table', dataTableOutput('ex1')),
   tabPanel('Imovirtual Funnel Graph', htmlOutput("funnelimoPlot")),   
@@ -136,8 +151,9 @@ ui <- navbarPage(
   
 )
 
+  
+  
 shinyApp(ui = ui, server = server)
-
 
 
 
