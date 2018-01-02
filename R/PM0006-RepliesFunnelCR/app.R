@@ -36,7 +36,7 @@ funnel_total_stro_per$"Step conversion" <- paste(round(funnel_total_stro_per$"St
 output$ex1 <- renderDataTable(
   funnel_total_otpl_per,extensions = 'Buttons', options = list(
     dom = 'Bfrtip',
-    buttons = c('copy','excel'), 
+    buttons = c('copy','print'), 
     searching = FALSE, 
     paging = FALSE, 
     columnDefs = list(list(className = 'dt-center', targets = 0:5)))
@@ -45,7 +45,7 @@ output$ex1 <- renderDataTable(
   output$ex2 <- renderDataTable(
  funnel_total_imo_per, extensions = 'Buttons', options = list(
    dom = 'Bfrtip',
-   buttons = c('copy','excel'), 
+   buttons = c('copy','print'), 
    searching = FALSE, 
    paging = FALSE, 
    columnDefs = list(list(className = 'dt-center', targets = 0:5)))
@@ -54,7 +54,7 @@ output$ex1 <- renderDataTable(
   output$ex3 <- renderDataTable(
      funnel_total_stro_per, extensions = 'Buttons', options = list(
        dom = 'Bfrtip',
-       buttons = c('copy','excel'), 
+       buttons = c('copy','print'), 
        searching = FALSE, 
        paging = FALSE, 
        columnDefs = list(list(className = 'dt-center', targets = 0:5)))
