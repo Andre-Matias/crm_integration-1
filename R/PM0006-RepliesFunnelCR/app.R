@@ -20,7 +20,16 @@ server <- function(input, output) {
   
   #Ajust similarity percentage (Shiny has some problems with that)
   
-  #Storiadupfinal2$similarity <- paste(round(Storiadupfinal2$similarity*100,digits=1),"%",sep="")
+funnel_total_imo_per$"Overall Conversion" <- paste(round(funnel_total_imo$"Overall Conversion"*100,digits=1),"%",sep="")
+funnel_total_imo_per$"Step conversion" <- paste(round(funnel_total_imo$"Step conversion"*100,digits=1),"%",sep="")
+
+funnel_total_otpl_per$"Overall Conversion" <- paste(round(funnel_total_otpl$"Overall Conversion"*100,digits=1),"%",sep="")
+funnel_total_otpl_per$"Step conversion" <- paste(round(funnel_total_otpl$"Step conversion"*100,digits=1),"%",sep="")
+
+funnel_total_stro_per$"Overall Conversion" <- paste(round(funnel_total_stro$"Overall Conversion"*100,digits=1),"%",sep="")
+funnel_total_stro_per$"Step conversion" <- paste(round(funnel_total_stro$"Step conversion"*100,digits=1),"%",sep="")
+
+
   
   #Tables(daily duplicates)
   
