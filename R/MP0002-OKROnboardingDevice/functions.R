@@ -108,7 +108,6 @@ retCompPlot <- function (df_comp, title="", subtitle=""){
   ggtitle(title, subtitle)+
   theme_fivethirtyeight()+
   xlab(label="day of first interaction") + ylab(label="% retention")
-#return(p)
 }
 
 
@@ -121,14 +120,9 @@ retCompPlot <- function (df_comp, title="", subtitle=""){
 #   theme(legend.position="bottom")
 
 
-###################################################################################################
-# OKR2 functions (for old JSON)                                                                   #
-# currently not using it--------------------------------------------------------------------------#
-# #################################################################################################
-
-#' cleaning_json(): 
+#' cleaning_json(): OKR2 functions (for old JSON)                                                                   #
+#'currently not using it
 #' clean and put in tabular format lead dataset coming in json format
-#' not using it anymore!
 cleaning_json <- function(a) { 
   b <- do.call(rbind, a) 
   c <- as.data.frame(t(b))

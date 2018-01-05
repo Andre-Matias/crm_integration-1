@@ -26,7 +26,7 @@ ui <- fluidPage(
                             selected = tail(unique(ret_any_pl$week),4)),
          selectInput("platform_filter", "Platform:", c("responsive"="rwd",
                                                    "desktop"="desktop",
-                                                   # "ios"="ios",           don't have data for now
+                                                   "ios"="ios",
                                                    "android"="android")),
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
          Example: for the cohort of new users adcquired in the week starting on the 4th of September, 11% 
@@ -121,9 +121,6 @@ ui <- fluidPage(
              br()
                   )
           
-          # tabPanel("Consolidated",
-          #          br()
-          #         )
         )
       )
    )
