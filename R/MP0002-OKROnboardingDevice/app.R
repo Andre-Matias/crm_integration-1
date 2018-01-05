@@ -1,6 +1,8 @@
-# New app by countries and platforms
-# OKRs Dashboard to track the new ONBOARDING 
-# This is a Shiny web application. You can run it by clicking the 'Run App' button above.
+###################################################################################################
+# OKRs Dashboard to track the new ONBOARDING                                                      #
+# New app by countries and platforms                                                              #
+# This is a Shiny web application. You can run it by clicking the 'Run App' button above.         #
+###################################################################################################
 
 # Global
 library(shiny)
