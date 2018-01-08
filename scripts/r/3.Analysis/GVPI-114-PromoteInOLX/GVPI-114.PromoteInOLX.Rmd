@@ -21,7 +21,11 @@ knitr::opts_chunk$set(echo = TRUE)
 **Related JIRA Ticket:** GVPI-114  
 
 ### **Conclusions**
+In Otomoto.PL, we have statistically relevant results with the blue version winning (3.4% CTR) against the grey version (2.2% CTR). 
 
+In Autovit.RO and Standvirtual.PT, we still need a bigger sample to decide between blue or grey. Nevertheless, the blue version has always a small advantage over the grey version (AUT: 2,7% vs 2,3% STV: 1,9% vs 1,3%).
+
+My advice is to shutdown the test and consider the blue version the winner in all countries.
 
 ### **Otomoto**
 ```{r , echo=FALSE, message=FALSE}
