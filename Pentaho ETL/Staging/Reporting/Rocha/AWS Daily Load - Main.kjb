@@ -374,8 +374,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1808</xloc>
-      <yloc>528</yloc>
+      <xloc>1664</xloc>
+      <yloc>80</yloc>
     </entry>
     <entry>
       <name>Real Estate ID - NNL</name>
@@ -2890,7 +2890,7 @@
       <to>Cars IN - NNL</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -3091,6 +3091,15 @@
       <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>PPU LATAM</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
