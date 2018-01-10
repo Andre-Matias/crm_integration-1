@@ -17,7 +17,7 @@ options(scipen = 9999)
 
 #for(site in c("standvirtual_pt", "otomoto_pl", "autovit_ro")){
 
-for(site in c("otomoto_pl")){
+for(site in c("autovit_ro")){
   
   # load db configurations ------------------------------------------------------
   config <- config::get(file = "~/verticals-bi/yml_config/config.yml", 
@@ -41,7 +41,7 @@ for(site in c("otomoto_pl")){
 
   cmdSqlQuery <-
   "
-    SELECT * FROM otomotopl.answers 
+    SELECT * FROM answers 
     WHERE posted >= '2017-09-01 00:00:00'
     AND posted < '2018-01-01 00:00:00'
   "
