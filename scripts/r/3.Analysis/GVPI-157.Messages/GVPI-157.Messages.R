@@ -17,7 +17,7 @@ options(scipen = 9999)
 
 #for(site in c("standvirtual_pt", "otomoto_pl", "autovit_ro")){
 
-for(site in c("autovit_ro")){
+for(site in c("standvirtual_pt")){
   
   # load db configurations ------------------------------------------------------
   config <- config::get(file = "~/verticals-bi/yml_config/config.yml", 
@@ -71,6 +71,7 @@ dfMessages_L0 <-
          seller_id != buyer_id,
          sender_id == buyer_id,
          user_id == buyer_id)
+
 # filter message for Sep, Oct, Nov 2017 and count number of messages in thread
 dfStats <- 
   dfMessages_L0 %>%
@@ -85,7 +86,7 @@ dfStats <-
 ggplot(dfStats)+
   geom_bar(stat="identity", aes(x = topics_count, y = perTopicsCount))+
   scale_x_continuous(limits = c(0, 15), breaks = seq(1,15,1))+
-  scale_y_continuous(limits = c(0, 0.6), labels = percent)+
+  scale_y_continuous(limits = c(0, 1), labels = percent)+
   geom_label(
     aes(x = topics_count, 
         y = perTopicsCount, 
