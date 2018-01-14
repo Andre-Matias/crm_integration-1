@@ -5,6 +5,8 @@ library(DT)
 library(scales)
 library(googleVis)
 
+load("funnel_total_weeks.RData")
+
 
 server <- function(input, output) {
   
