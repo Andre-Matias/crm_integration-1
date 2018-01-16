@@ -309,7 +309,7 @@ def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 	print("Getting tasks data")
 	
 	aux = 1
-	name = "tasks_"
+	name = "/home/ubuntu/Reports/tasks_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/tasks"
@@ -336,6 +336,7 @@ def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 			tasks_data['meta_event_time'] = datetime.now().isoformat()
 			tasks_data['country'] = country
 			tasks_data['category'] = category
+			tasks_data['reminder_offset'] = 0
 			output.write(json.dumps(tasks_data,use_decimal=True) + "\n")
 
 		#Close gz file		
