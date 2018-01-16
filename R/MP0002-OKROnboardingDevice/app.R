@@ -1,14 +1,18 @@
-# New app by countries and platforms
-# OKRs Dashboard to track the new ONBOARDING 
-# This is a Shiny web application. You can run it by clicking the 'Run App' button above.
+###################################################################################################
+# OKRs Dashboard to track the new ONBOARDING                                                      #
+# New app by countries and platforms                                                              #
+# This is a Shiny web application. You can run it by clicking the 'Run App' button above.         #
+###################################################################################################
 
 # Global
 library(shiny)
 library(dplyr)
 library(ggplot2)
 library(ggthemes)
+
 source("functions.R")
 load("ret_files.RData")
+
 
 
 # Define UI  -----------------------------------------------------------------------------------
@@ -24,14 +28,21 @@ ui <- fluidPage(
                             selected = tail(unique(ret_any_pl$week),4)),
          selectInput("platform_filter", "Platform:", c("responsive"="rwd",
                                                    "desktop"="desktop",
-                                                   # "ios"="ios",           don't have data for now
+                                                   "ios"="ios",
                                                    "android"="android")),
          helpText("Each line shows the daily retention rate for a specific cohort of new users. 
          Example: for the cohort of new users adcquired in the week starting on the 4th of September, 11% 
          came back after 1 day, 7% after 2 days, etc. and do something."),
+
+         helpText("OKR 1: Increase % of new users returning after 1 week by 10%"),
+         helpText("OKR 2: Increase % of new users with 1+ reply after 14 days by 10%"),
+         br(),
+         helpText(paste("Last update:", "", last_update)),
+         br(),
          helpText( "Other", 
                    a("Healthy Metrics", href="https://triton.olxgroup.bi/#/site/europe/views/HealthyMetrics-onboarding/HealthyMetricsOnboarding", target="_blank")
          )
+
          ),
       
       
@@ -45,10 +56,23 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_pl"),
              br(),
+             plotOutput("ret_any_pl_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_pl_pwa"),
+             br(),
+             plotOutput("comp_okr1_pl", height = 400),
+             br(),
              br(),
              plotOutput("ret_lead_pl", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_pl")
+             DT::dataTableOutput("ret_lead_table_pl"),
+             br(),
+             plotOutput("ret_lead_pl_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_pl_pwa"),
+             br(),
+             plotOutput("comp_okr2_pl", height = 400),
+             br()
                   ),
           
           tabPanel("Standvirtual PT",
@@ -56,10 +80,23 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_pt"),
              br(),
+             plotOutput("ret_any_pt_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_pt_pwa"),
+             br(),
+             plotOutput("comp_okr1_pt", height = 400),
+             br(),
              br(),
              plotOutput("ret_lead_pt", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_pt")
+             DT::dataTableOutput("ret_lead_table_pt"),
+             br(),
+             plotOutput("ret_lead_pt_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_pt_pwa"),
+             br(),
+             plotOutput("comp_okr2_pt", height = 400),
+             br()
                   ),
           
           tabPanel("Autovit RO",
@@ -67,15 +104,25 @@ ui <- fluidPage(
              br(),
              DT::dataTableOutput("ret_any_table_ro"),
              br(),
+             plotOutput("ret_any_ro_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_any_table_ro_pwa"),
+             br(),
+             plotOutput("comp_okr1_ro", height = 400),
+             br(),
              br(),
              plotOutput("ret_lead_ro", height = 400),
              br(),
-             DT::dataTableOutput("ret_lead_table_ro")
+             DT::dataTableOutput("ret_lead_table_ro"),
+             br(),
+             plotOutput("ret_lead_ro_pwa", height = 400),
+             br(),
+             DT::dataTableOutput("ret_lead_table_ro_pwa"),
+             br(),
+             plotOutput("comp_okr2_ro", height = 400),
+             br()
                   )
           
-          # tabPanel("Consolidated",
-          #          br()
-          #         )
         )
       )
    )
@@ -102,7 +149,7 @@ server <- function(input, output) {
      ret_any_pl <- filter(ret_any_pl, week %in% input$show_vars & platform==input$platform_filter)
      # use retPlot() function instead of ggplot chunk
      # max= max(ret_any_pl$ret, na.rm = T)+0.02
-     retPlot(ret_any_pl, title="New Users That Return and do Something - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_any_pl, title="Current Home - New Users That Return - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_any_table_pl <- DT::renderDataTable({
@@ -110,9 +157,25 @@ server <- function(input, output) {
     DT::datatable(ret_any_table_pl, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_pl_pwa <- renderPlot({
+     ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_pl_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+   })
+   
+   output$ret_any_table_pl_pwa <- DT::renderDataTable({
+     ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_pl_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   
+   output$comp_okr1_pl <- renderPlot({
+     comp_okr1_pl <- filter(comp_okr1_pl, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr1_pl, title="OKR1: original vs variation", subtitle="Cumulated retention after 7 days")
+   })
+   
    output$ret_lead_pl <- renderPlot({
      ret_lead_pl <- filter(ret_lead_pl, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_pl, title="New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+     retPlot(ret_lead_pl, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
    })
    
    output$ret_lead_table_pl <- DT::renderDataTable({
@@ -120,10 +183,25 @@ server <- function(input, output) {
      DT::datatable(ret_lead_table_pl, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_lead_pl_pwa <- renderPlot({
+     ret_lead_pl_pwa <- filter(ret_lead_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_pl_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="otomoto.pl. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_pl_pwa <- DT::renderDataTable({
+     ret_lead_table_pl_pwa <- filter(ret_lead_table_pl_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_pl_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$comp_okr2_pl <- renderPlot({
+     comp_okr2_pl <- filter(comp_okr2_pl, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr2_pl, title="OKR2: original vs variation", subtitle="Cumulated retention after 14 days")
+   })
+   
    ##### Standvirtual PT tab ----------
    output$ret_any_pt <- renderPlot({
      ret_any_pt <- filter(ret_any_pt, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_pt, title="New Users That Return and do Something - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_any_pt, title="Current Home - New Users That Return - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
      
    })
    
@@ -132,9 +210,25 @@ server <- function(input, output) {
      DT::datatable(ret_any_table_pt, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_pt_pwa <- renderPlot({
+     ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_pt_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     
+   })
+   
+   output$ret_any_table_pt_pwa <- DT::renderDataTable({
+     ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_pt_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$comp_okr1_pt <- renderPlot({
+     comp_okr1_pt <- filter(comp_okr1_pt, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr1_pt, title="OKR1: original vs variation", subtitle="Cumulated retention after 7 days")
+   })
+   
    output$ret_lead_pt <- renderPlot({
      ret_lead_pt <- filter(ret_lead_pt, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_pt, title="New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+     retPlot(ret_lead_pt, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
    })
    
    output$ret_lead_table_pt <- DT::renderDataTable({
@@ -142,10 +236,25 @@ server <- function(input, output) {
      DT::datatable(ret_lead_table_pt, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_lead_pt_pwa <- renderPlot({
+     ret_lead_pt_pwa <- filter(ret_lead_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_pt_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="standvirtual.pt. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_pt_pwa <- DT::renderDataTable({
+     ret_lead_table_pt_pwa <- filter(ret_lead_table_pt_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_pt_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$comp_okr2_pt <- renderPlot({
+     comp_okr2_pt <- filter(comp_okr2_pt, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr2_pt, title="OKR2: original vs variation", subtitle="Cumulated retention after 14 days")
+   })
+   
    ##### Autovit RO tab ---------------
    output$ret_any_ro <- renderPlot({
      ret_any_ro <- filter(ret_any_ro, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_any_ro, title="New Users That Return and do Something - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_any_ro, title="Current Home - New Users That Return - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
      
    })
    
@@ -154,16 +263,50 @@ server <- function(input, output) {
      DT::datatable(ret_any_table_ro, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
    
+   output$ret_any_ro_pwa <- renderPlot({
+     ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_any_ro_pwa, title="PWA - New Users That Return - Time to Return (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     
+   })
+   
+   output$ret_any_table_ro_pwa <- DT::renderDataTable({
+     ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_any_table_ro_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$comp_okr1_ro <- renderPlot({
+     comp_okr1_ro <- filter(comp_okr1_ro, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr1_ro, title="OKR1: original vs variation", subtitle="Cumulated retention after 7 days")
+   })
+   
    output$ret_lead_ro <- renderPlot({
      ret_lead_ro <- filter(ret_lead_ro, week %in% input$show_vars & platform==input$platform_filter)
-     retPlot(ret_lead_ro, title="New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
+     retPlot(ret_lead_ro, title="Current Home - New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
    })
    
    output$ret_lead_table_ro <- DT::renderDataTable({
      ret_lead_table_ro <- filter(ret_lead_table_ro, week %in% input$show_vars & platform==input$platform_filter)
      DT::datatable(ret_lead_table_ro, options = list(dom = 't'), class = "compact", rownames= FALSE)
    })
+   
+   output$ret_lead_ro_pwa <- renderPlot({
+     ret_lead_ro_pwa <- filter(ret_lead_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     retPlot(ret_lead_ro_pwa, title="PWA - New Users That Send a Lead - Time to Send (days)", subtitle="autovit.ro. Retention % is not cumulated")
+   })
+   
+   output$ret_lead_table_ro_pwa <- DT::renderDataTable({
+     ret_lead_table_ro_pwa <- filter(ret_lead_table_ro_pwa, week %in% input$show_vars & platform==input$platform_filter)
+     DT::datatable(ret_lead_table_ro_pwa, options = list(dom = 't'), class = "compact", rownames= FALSE)
+   })
+   
+   output$comp_okr2_ro <- renderPlot({
+     comp_okr2_ro <- filter(comp_okr2_ro, week.x %in% input$show_vars & platform==input$platform_filter)
+     retCompPlot(comp_okr2_ro, title="OKR2: original vs variation", subtitle="Cumulated retention after 14 days")
+   })
+   
 }
+
+  
 
 # Run the application 
 shinyApp(ui = ui, server = server)

@@ -6,6 +6,9 @@ library("data.table")
 library("dplyr")
 library("dtplyr")
 library("lubridate")
+library("ggthemes")
+library("gridExtra")
+library("grid")
 
 # Load personal credentials ---------------------------------------------------
 load("~/credentials.Rdata")
@@ -114,7 +117,7 @@ s3saveRDS(x = dfAll,
 gh <-
   ggplot(df)+
   geom_smooth(aes(x = day, y = perLystingByDay, color = platform), se = FALSE)+
-  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-15")))+
+  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-31")))+
   scale_y_continuous(limits = c(0, 0.20), labels = percent)+
   ggtitle("% Cars' Listings without Description")+
   theme_fivethirtyeight()
@@ -145,7 +148,7 @@ ggplot(data = dfLiquidityCarspt)+
               se = FALSE
             )+
   scale_y_continuous(limits = c(0, 0.40), labels = percent)+
-  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-01")))+
+  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-31")))+
   theme_fivethirtyeight() + theme(legend.position="none")+
   ggtitle("Standvirtual")
 
@@ -172,7 +175,7 @@ ggplot(data = dfLiquidityOtomotoPL)+
   ), se = FALSE
   )+
   scale_y_continuous(limits = c(0, 0.15), labels = percent)+
-  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-01")))+
+  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-31")))+
   theme_fivethirtyeight() + theme(legend.position="none")+
   ggtitle("Otomoto")
 
@@ -202,7 +205,7 @@ ggplot(data = dfLiquidityAutovitRO)+
   ), se = FALSE
   )+
   scale_y_continuous(limits = c(0, 0.25), labels = percent)+
-  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-01")))+
+  scale_x_date(limits = c(as.Date("2017-07-01"), as.Date("2017-10-31")))+
   theme_fivethirtyeight() + theme(legend.position="none")+
   ggtitle("Autovit")
 

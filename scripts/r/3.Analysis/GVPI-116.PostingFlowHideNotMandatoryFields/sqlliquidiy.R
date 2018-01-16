@@ -9,7 +9,7 @@ WITH ads AS (
   FROM olxgroupbi.livesync.verticals_ads A
   INNER JOIN olxgroupbi.livesync.verticals_categories C
   ON A.category_id = C.id
-  WHERE created_at_first BETWEEN '2017-06-01 00:00:00' AND '2017-09-29 00:00:00'
+  WHERE created_at_first BETWEEN '2017-06-01 00:00:00' AND '2017-11-01 00:00:00'
   AND A.livesync_dbname = 'carspt' AND C.livesync_dbname = 'carspt'
   AND name_en = 'Cars'
 ),

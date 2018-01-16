@@ -1,108 +1,53 @@
-library(RMixpanel)
+###################################################################################################
+# OKR 1 processing                                                                                #
+###################################################################################################
+
+
+# Load libraries
 library(dplyr)
 library(tidyr)
-#
-# MixPanel account authentication --------------------------------------------------------------------
-## Fill in here the API token, key and secret as found on 
-## www.mixpanel.com - Account -> Projects. 
 
-## Otomoto PL
-oto_auth = mixpanelCreateAccount("otomoto.pl",
-                                 token="b2b9c69bb88736c7e833e9d609004e6a",
-                                 secret="ed06fd545816f0ef5c79f4936e603870", key="" 
-                                )
-## Standvirtual PT
-sta_auth <- mixpanelCreateAccount("standvirtual.pt",
-                                  token="b605c76ba537a8c09202d3b04c5acfa5",
-                                  secret="4b51dbcc5f322d07f0ac40ea490813b8", key="" 
-                                 )
-## Autovit RO
-aut_auth <- mixpanelCreateAccount("autovit.ro",
-                                  token="adfe0536b9eb9cc099f7f35a4c7c9a02",
-                                  secret="79e6da126de6456734165fa9fc1dc98a", key="" 
-                                 )
+# Import required functions
+source("functions.R")
 
 
-# Extract Retention data --------------------------------------------------------------------------
-## Will send a query for each account
+# Clean & prepare datasets for OKR1 retention analysis --------------------------------------------
 
-## Define timerange 
-from_date <- "20170904"
-to_date <- "20171119"
-
-device_vec <- c("rwd", "desktop", "ios", "android")
-
-## Otomoto PL --------------------
-df_any_pl <- data.frame()
-for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
-  tmp <- 
-    as.data.frame(
-      mixpanelGetRetention (oto_auth, 
-                            segment_method= "first",
-                            retention_type= "birth",
-                            born_event="home",
-                            born_where= string_where,
-                            from= from_date, to= to_date, unit= "day", intervalCount = 15
-                           )
-                )
-  
-  tmp$platform <- device_vec[i]
-  df_any_pl <- rbind(df_any_pl, tmp)
-}
-
-
-## Standvirtual PT ----------------------------------
-df_any_pt <- data.frame()
-for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
-  tmp <- 
-    as.data.frame(
-      mixpanelGetRetention (sta_auth, 
-                            segment_method= "first",
-                            retention_type= "birth",
-                            born_event="home",
-                            born_where= string_where,
-                            from=from_date, to=to_date, unit="day", intervalCount = 15
-                           )
-                )
-  
-  tmp$platform <- device_vec[i]
-  df_any_pt <- rbind(df_any_pt, tmp)
-}
-
-## Autovit RO ----------------------------------
-df_any_ro <- data.frame()
-for (i in seq_along(device_vec)) {
-  string_where <- paste0('properties["cl"] == 1 and properties["platform"] == "', device_vec[i] ,'"')
-  tmp <- 
-    as.data.frame(
-      mixpanelGetRetention (aut_auth, 
-                            segment_method= "first",
-                            retention_type= "birth",
-                            born_event="home",
-                            born_where= string_where,
-                            from=from_date, to=to_date, unit="day", intervalCount = 15
-                           )
-                )
-  
-  tmp$platform <- device_vec[i]
-  df_any_ro <- rbind(df_any_ro, tmp)
-}
-
-## Without platform segmentation? (only use this for old dash, with consolidated countries) -------
-## or see if I can sum up each country df
-
-
-# Clean & prepare datasets for retention analysis -------------------------------------------------
+# PL
 ret_any_pl <- prepare_for_retention(df_any_pl)
 ret_any_table_pl <- to_wide_table(ret_any_pl)
 
+ret_any_pl_pwa <- prepare_for_retention(df_any_pl_pwa)
+ret_any_table_pl_pwa <- to_wide_table(ret_any_pl_pwa)
+
+## compare daily okr1 7 days retention
+daily_okr1_pl <- daily_okr1 (df_any_pl)
+daily_okr1_pl_pwa <- daily_okr1 (df_any_pl_pwa)
+comp_okr1_pl <- left_join(daily_okr1_pl, daily_okr1_pl_pwa, by=c("platform", "dates"))
+
+# PT
 ret_any_pt <- prepare_for_retention(df_any_pt)
 ret_any_table_pt <- to_wide_table(ret_any_pt)
 
+ret_any_pt_pwa <- prepare_for_retention(df_any_pt_pwa)
+ret_any_table_pt_pwa <- to_wide_table(ret_any_pt_pwa)
+
+## compare daily okr1 7 days retention
+daily_okr1_pt <- daily_okr1 (df_any_pt)
+daily_okr1_pt_pwa <- daily_okr1 (df_any_pt_pwa)
+comp_okr1_pt <- left_join(daily_okr1_pt, daily_okr1_pt_pwa, by=c("platform", "dates"))
+
+# RO
 ret_any_ro <- prepare_for_retention(df_any_ro)
 ret_any_table_ro <- to_wide_table(ret_any_ro)
+
+ret_any_ro_pwa <- prepare_for_retention(df_any_ro_pwa)
+ret_any_table_ro_pwa <- to_wide_table(ret_any_ro_pwa)
+
+## compare daily okr1 7 days retention
+daily_okr1_ro <- daily_okr1 (df_any_ro)
+daily_okr1_ro_pwa <- daily_okr1 (df_any_ro_pwa)
+comp_okr1_ro <- left_join(daily_okr1_ro, daily_okr1_ro_pwa, by=c("platform", "dates"))
 
 
 # Save it into Amazon S3 -------------------------------------------------------------------------
@@ -110,3 +55,15 @@ ret_any_table_ro <- to_wide_table(ret_any_ro)
 ## Save ret_any_2 PT (with column platform)
 ## Save ret_any_2 RO (with column platform)
 ## Save ret_any_2 consolidated (no country neither platform)
+
+# keep only weeks from 20 Nov for PWA data
+# week_test <- c("2017-11-20", "2017-11-27", "2017-12-04", "2017-12-11", "2017-12-18", "2017-12-25")
+# 
+# ret_any_pl_pwa <- filter(ret_any_pl_pwa, week %in% week_test)
+# ret_any_table_pl_pwa <- filter(ret_any_table_pl_pwa, week %in% week_test)
+# 
+# ret_any_pt_pwa <- filter(ret_any_pt_pwa, week %in% week_test)
+# ret_any_table_pt_pwa <- filter(ret_any_table_pt_pwa, week %in% week_test)
+# 
+# ret_any_ro_pwa <- filter(ret_any_ro_pwa, week %in% week_test)
+# ret_any_table_ro_pwa <- filter(ret_any_table_ro_pwa, week %in% week_test)

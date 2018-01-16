@@ -34,7 +34,7 @@ if(!exists("vertical")){
 vertical <- "xvz"
 }
 
-dbUser <- get(paste0("cf", vertical, "DbUser")) 
+dbUser <- cfOtomotPLDbUser 
 dbPass <- biUserPassword
 dbHost <- as.character(
 ifelse(Sys.info()["nodename"] == "bisb", "127.0.0.1"
@@ -68,7 +68,7 @@ dates <- dates[!(dates %in% existingdates)]
 
 # start loop for every missing date -----------------------------------------
 
-for (i in dates){
+for (i in dates) {
 
 print(i)
 filename <- 
@@ -86,32 +86,54 @@ print(filename)
 conDB <-  
   dbConnect(
     RMySQL::MySQL(),
-    username = dbUser,
+    username = cfOtomotoPLDbUser,
     password = bi_team_pt_password,
-    host = dbHost,
-    port = dbPort, 
-    dbname = dbName
+    host = "127.0.0.1",
+    port = 3317, 
+    dbname = cfOtomotoPLDbName
   )
 
 # get data ------------------------------------------------------------------
 dbSqlQuery <-
   paste(
-"SELECT * ",
+"SELECT *, 'ads' AS tablename",
 "FROM otomotopl.ads",
-"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59',
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'",
 "UNION ALL",
-"SELECT *",
+"SELECT *, 'ads_archive' AS tablename",
 "FROM otomotopl.ads_archive",
-"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'"
 )
 
-dbSqlQuery <-
-  dbGetQuery(conDB,dbSqlQuery)
+dfSqlQuery <-
+  dbGetQuery(conDB, dbSqlQuery)
 
 
 # disconnect from database  -------------------------------------------------
 dbDisconnect(conDB)
 
+# fix columns with switched values region_id e category_id ------------------
+
+## create tmp columns ----
+dfSqlQuery$region_id_tmp <- as.numeric(0)
+dfSqlQuery$category_id_tmp <- as.numeric(0)
+
+dfSqlQuery$category_id_tmp[dfSqlQuery$tablename =="ads_archive"] <-
+  dfSqlQuery$region_id[dfSqlQuery$tablename =="ads_archive"]
+
+dfSqlQuery$region_id_tmp[dfSqlQuery$tablename =="ads_archive"] <-
+  dfSqlQuery$category_id[dfSqlQuery$tablename =="ads_archive"] 
+
+dfSqlQuery$category_id[dfSqlQuery$tablename =="ads_archive"] <-
+  dfSqlQuery$category_id_tmp[dfSqlQuery$tablename =="ads_archive"]
+  
+dfSqlQuery$region_id[dfSqlQuery$tablename =="ads_archive"] <-
+  dfSqlQuery$region_id_tmp[dfSqlQuery$tablename =="ads_archive"]
+
+## delete tmp colums
+dfSqlQuery$region_id_tmp <- NULL
+dfSqlQuery$category_id_tmp <- NULL
+
 # write file to disk --------------------------------------------------------
-write_feather(x = dbSqlQuery, path = filename)
+write_feather(x = dfSqlQuery, path = filename)
 }
