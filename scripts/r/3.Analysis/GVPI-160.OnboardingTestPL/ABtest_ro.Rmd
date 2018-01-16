@@ -1,0 +1,233 @@
+---
+title: "Onboarding Otomoto PL - A/B Test Evaluation"
+output: html_document
+---
+
+# ##############################################################################################################
+# Retention analysis OKR1, OKR2                                                                                #
+# Test users that did "home" vs users entered onboarding ("welcome_screen")                                    #
+# use datasets created in `ret_any_D.R` and `ret_lead_D.R` files     
+# Analysing longer period as I have more data available                                                        #
+# ##############################################################################################################
+
+
+
+```{r}
+setwd("~/verticals-bi/scripts/r/3.Analysis/GVPI-160.OnboardingTestPL")
+source("pop_suc_test.R")   #source functions needed to evaluate the test
+```
+
+# ################################################################################################
+# OKR 1:
+# Increase % of new users that return to the website after 7 days by 10%
+# ################################################################################################
+
+
+# ##############################################################################
+# Mon 27 Nov - Sun 31 Dic 
+```{r}
+# First import pop_suc() function with specific period set
+control <- pop_suc_okr1(df_any_ro, "2017-11-27", "2017-12-31", "rwd")
+experiment <- pop_suc_okr1(df_any_ro_pwa, "2017-11-27", "2017-12-31", "rwd")
+```
+
+
+# Test dataset
+```{r cars}
+popA <- control$pop
+popB <- experiment$pop
+sucA <- control$suc
+sucB <- experiment$suc
+
+dfOnboarding <-
+    data.frame(
+        id = c("01", "02"),
+        name = c("Original", "Variation with Onboarding"),
+        period = c("2nd week", "2nd week"),
+        PopulationMetric = c("new_users","new_users"),
+        PopulationValue = c(popA, popB),
+        SucessMetric = c("okr_1","okr_1"),
+        SucessValue = c(sucA, sucB)
+    )
+
+dfOnboarding$ctr <- 
+    dfOnboarding$SucessValue / dfOnboarding$PopulationValue
+```
+
+# Power analysis
+```{r}
+testResultsOnboarding <- 
+    power.prop.test(
+        n = dfOnboarding$PopulationValue, 
+        p1 = dfOnboarding$ctr[1],
+        p2 = dfOnboarding$ctr[2],
+        sig.level = 0.05,
+        alternative = "two.sided"
+    )
+
+testResultsOnboarding
+```
+
+Test is not significant, it doesn't have enough power to to detect a significant different
+Difference is very tiny.
+```{r}
+(testResultsOnboarding$p2 - testResultsOnboarding$p1) / testResultsOnboarding$p1
+```
+
+
+
+# ################################################################################################
+# OKR 2:
+# Increase % of new users with 1+ reply after 14 days by 10%
+# ################################################################################################
+
+
+# ##############################################################################
+# Mon 27 Nov - Sun 31 Dic 
+```{r}
+# First import pop_suc() function with specific period set
+control <- pop_suc_okr2 (df_lead_ro, "2017-11-27", "2017-12-31", "rwd")
+experiment <- pop_suc_okr2 (df_lead_ro_pwa, "2017-11-27", "2017-12-31", "rwd")
+```
+
+
+# Test dataset
+```{r cars}
+popA <- control$pop
+popB <- experiment$pop
+sucA <- control$suc
+sucB <- experiment$suc
+
+dfOnboarding <-
+    data.frame(
+        id = c("01", "02"),
+        name = c("Original", "Variation with Onboarding"),
+        period = c("2nd week", "2nd week"),
+        PopulationMetric = c("new_users","new_users"),
+        PopulationValue = c(popA, popB),
+        SucessMetric = c("okr_2","okr_2"),
+        SucessValue = c(sucA, sucB)
+    )
+
+dfOnboarding$ctr <- 
+    dfOnboarding$SucessValue / dfOnboarding$PopulationValue
+```
+
+# Power analysis
+```{r}
+testResultsOnboarding <- 
+    power.prop.test(
+        n = dfOnboarding$PopulationValue, 
+        p1 = dfOnboarding$ctr[1],
+        p2 = dfOnboarding$ctr[2],
+        sig.level = 0.05,
+        alternative = "two.sided"
+    )
+
+testResultsOnboarding
+```
+
+
+Variation is -9% below original. Test has enough power.
+```{r}
+(testResultsOnboarding$p2 - testResultsOnboarding$p1) / testResultsOnboarding$p1
+```
+
+
+# #############################################################################
+# Analyse OKR2 only on same day from 1st interaction
+```{r}
+# First import pop_suc() function with specific period set
+control <- pop_suc_okr2_0 (df_lead_ro, "2017-11-27", "2017-12-31", "rwd")
+experiment <- pop_suc_okr2_0 (df_lead_ro_pwa, "2017-11-27", "2017-12-31", "rwd")
+```
+
+# Test dataset
+```{r cars}
+popA <- control$pop
+popB <- experiment$pop
+sucA <- control$suc
+sucB <- experiment$suc
+
+dfOnboarding <-
+    data.frame(
+        id = c("01", "02"),
+        name = c("Original", "Variation with Onboarding"),
+        period = c("2nd week", "2nd week"),
+        PopulationMetric = c("new_users","new_users"),
+        PopulationValue = c(popA, popB),
+        SucessMetric = c("okr_2_same_day","okr_2_same_day"),
+        SucessValue = c(sucA, sucB)
+    )
+
+dfOnboarding$ctr <- 
+    dfOnboarding$SucessValue / dfOnboarding$PopulationValue
+```
+
+# Power analysis
+```{r}
+testResultsOnboarding <- 
+    power.prop.test(
+        n = dfOnboarding$PopulationValue, 
+        p1 = dfOnboarding$ctr[1],
+        p2 = dfOnboarding$ctr[2],
+        sig.level = 0.05,
+        alternative = "two.sided"
+    )
+
+testResultsOnboarding
+```
+
+When considering only the same day, variation is - 15% below original. Test is significant.
+```{r}
+(testResultsOnboarding$p2 - testResultsOnboarding$p1) / testResultsOnboarding$p1
+```
+
+# Analyse OKR2 only on days 1-14 from 1st interaction (not considering same day)
+```{r}
+# First import pop_suc() function with specific period set
+control <- pop_suc_okr2_1_14 (df_lead_ro, "2017-11-27", "2017-12-31", "rwd")
+experiment <- pop_suc_okr2_1_14 (df_lead_ro_pwa, "2017-11-27", "2017-12-31", "rwd")
+```
+
+# Test dataset
+```{r cars}
+popA <- control$pop
+popB <- experiment$pop
+sucA <- control$suc
+sucB <- experiment$suc
+
+dfOnboarding <-
+    data.frame(
+        id = c("01", "02"),
+        name = c("Original", "Variation with Onboarding"),
+        period = c("2nd week", "2nd week"),
+        PopulationMetric = c("new_users","new_users"),
+        PopulationValue = c(popA, popB),
+        SucessMetric = c("okr_2_1-14","okr_2_1-14"),
+        SucessValue = c(sucA, sucB)
+    )
+
+dfOnboarding$ctr <- 
+    dfOnboarding$SucessValue / dfOnboarding$PopulationValue
+```
+
+# Power analysis
+```{r}
+testResultsOnboarding <- 
+    power.prop.test(
+        n = dfOnboarding$PopulationValue, 
+        p1 = dfOnboarding$ctr[1],
+        p2 = dfOnboarding$ctr[2],
+        sig.level = 0.05,
+        alternative = "two.sided"
+    )
+
+testResultsOnboarding
+```
+
+When considering days 1 to 14, variation -0.5% below original (on dame day was -15%), tough test is not significant.
+```{r}
+(testResultsOnboarding$p2 - testResultsOnboarding$p1) / testResultsOnboarding$p1
+```
+
