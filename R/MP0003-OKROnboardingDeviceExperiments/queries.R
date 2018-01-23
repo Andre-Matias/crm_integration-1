@@ -5,7 +5,7 @@
 
 
 # Set working directory
-setwd("~/verticals-bi/R/MP0003-OKROnboardingDeviceExperiments")
+## setwd("~/verticals-bi/R/MP0003-OKROnboardingDeviceExperiments")
 
 # Load mixpanel library
 library(RMixpanel)
