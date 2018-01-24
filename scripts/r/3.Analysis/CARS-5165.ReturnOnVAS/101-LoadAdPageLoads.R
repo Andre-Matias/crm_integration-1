@@ -1,6 +1,12 @@
 #load libraries
 library("aws.s3")
 library("feather")
+library("data.table")
+library("dplyr")
+library("dtplyr")
+library("magrittr")
+library("ggplot2")
+library("fasttime")
 
 # Load personal credentials ---------------------------------------------------
 load("~/credentials.Rdata")
@@ -32,4 +38,10 @@ dat_list <-
   lapply(file.list$Key, function(x) s3ReadAndPrint(x))
 
 dat <- 
-  rbindlist(dat_list, fill = TRUE)
+  rbindlist(dat_list, fill = TRUE, )
+
+stats <-
+  dat %>%
+  mutate(d_time_date = as.Date(d_time_date)) %>%
+  group_by(d_time_date, cd_platfv2) %>%
+  summarise(qtyAdViews = sum(32399))
