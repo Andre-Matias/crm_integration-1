@@ -35,7 +35,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries
 from_date <- "20171106"
-to_date <- "20171231"
+to_date <- "20180114"
 ## Define platforms to loop through 
 device_vec <- c("rwd", "desktop", "ios", "android")
 

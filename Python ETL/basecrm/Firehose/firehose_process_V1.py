@@ -97,7 +97,7 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 				print("done sub_getDataApi")
 				print(var_subject)			
 def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, keyId, sKeyId, var_s3_data_path_sync, bucketName):
-		while qty_pages>=0 and rows>0 and i<8:
+		while qty_pages>=0 and rows>0 and i<9:
 			diayhora=('{:%Y%m%d}'.format(datetime.datetime.now()))
 			fileName="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+"_"+str(qty_pages)+"_"+diayhora+".txt.gz"
 			anio=('{:%Y}'.format(datetime.datetime.now()))

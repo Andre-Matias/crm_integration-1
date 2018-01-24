@@ -10,6 +10,7 @@ import psycopg2
 from boto.s3.connection import S3Connection, Bucket, Key
 
 
+
 def getS3Keys(conf_file):
 	data = json.load(open(conf_file))
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
