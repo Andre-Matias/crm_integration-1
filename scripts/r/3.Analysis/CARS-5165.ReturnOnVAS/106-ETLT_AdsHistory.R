@@ -78,6 +78,7 @@ df <- arrange(dat, id, primary)
 # make intervals
 df <- 
   df %>%
+  filter(!is.na(status))%>%
   group_by(id) %>%
   select(-params) %>%
   mutate(
@@ -91,3 +92,12 @@ df <-
 s3saveRDS(x = df,
           object = "CARS-5165/dfAdsHistoryNextStatusAIO.RDS",
           bucket = s3BucketName)
+
+# read active ads df ----------------------------------------------------------
+dfActive <- 
+  as_tibble(
+    s3readRDS(
+      object = "CARS-5165/dfAdsHistoryNextStatusAIO.RDS",
+      bucket = s3BucketName)
+  )
+
