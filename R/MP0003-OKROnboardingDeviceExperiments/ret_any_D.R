@@ -2,6 +2,8 @@
 # OKR 1 processing                                                                                #
 ###################################################################################################
 
+# Set working directory
+## setwd("~/verticals-bi/R/MP0003-OKROnboardingDeviceExperiments")
 
 # Load libraries ----------------------------------------------------------------------------------
 library(dplyr)
@@ -14,6 +16,7 @@ source("functions.R")
 # Clean & prepare datasets for OKR1 retention analysis --------------------------------------------
 
 # PL
+## -- add new versions if needed
 df_any_pl <- rbind(df_any_pl_a, df_any_pl_b, df_any_pl_c1, df_any_pl_c2)
 ret_any_pl <- prepare_for_retention(df_any_pl, same_day="no")
 ret_any_table_pl <- to_wide_table(ret_any_pl)

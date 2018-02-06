@@ -7,11 +7,12 @@
 # Set working directory
 ## setwd("~/verticals-bi/R/MP0003-OKROnboardingDeviceExperiments")
 
-# Load mixpanel library
+# Load mixpanel library ---------------------------------------------------------------------------
 library(RMixpanel)
+library(dplyr)
 
 
-# MixPanel account authentication --------------------------------------------------------------------
+# MixPanel account authentication -----------------------------------------------------------------
 ## Fill in here the API token, key and secret as found on 
 ## www.mixpanel.com - Account -> Projects. 
 
@@ -35,7 +36,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries -------------------------------------------------------
 from_date <- "20171113"
-to_date <- "20180121"
+to_date <- "20180203"
 ## Define platforms to loop through in case of original version (no experiment id assigned)
 device_vec <- c("rwd", "desktop", "ios", "android")
 

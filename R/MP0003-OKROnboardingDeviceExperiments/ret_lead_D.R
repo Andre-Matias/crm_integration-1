@@ -2,6 +2,8 @@
 # OKR 2 processing                                                                                #
 ###################################################################################################
 
+# Set working directory
+## setwd("~/verticals-bi/R/MP0003-OKROnboardingDeviceExperiments")
 
 # Clean & prepare datasets for OKR2 leads analysis ---------------------------------------------
 
