@@ -20,9 +20,8 @@ CUSTOM_FIELD_VALUE_IDX = 2
 	
 # Create Base Connection
 print('Connecting to Base...')
-#base_api_token = 'dbba48886bd80475d1e5866ab0aff777c3f100635626c95f4d4fef7d41bd4bd7'	# Sandbox
-#base_api_token = '91304eb568e4a46333f0e93b355b1f83d638e700120aec621a5e8b8a5c766404'	# Real deal
-base_api_token = 'ea0efe0628f3f5d4826eb2152cddd37bcc2c214cf9098c6069151fda5be157aa'		# Real deal 2 (testing if fewer API privileges means better performance)
+
+base_api_token = 'FILLHERE'
 client = basecrm.Client(access_token=base_api_token)
 
 # Create Redshift Connection
