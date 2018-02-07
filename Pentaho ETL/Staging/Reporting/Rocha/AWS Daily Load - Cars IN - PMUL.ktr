@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value>JUN</default_value>
+        <default_value>JAN</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -21,17 +21,17 @@
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value>2017-06-01</default_value>
+        <default_value>2018-01-01</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value>2017-06-21</default_value>
+        <default_value>2018-01-31</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value>2017&#x2f;06&#x2f;01</default_value>
+        <default_value>2018&#x2f;01&#x2f;01</default_value>
         <description/>
       </parameter>
     </parameters>

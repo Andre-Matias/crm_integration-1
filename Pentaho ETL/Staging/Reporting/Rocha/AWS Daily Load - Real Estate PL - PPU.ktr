@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value>2018-01-01</default_value>
+        <default_value>JAN</default_value>
         <description/>
       </parameter>
       <parameter>
