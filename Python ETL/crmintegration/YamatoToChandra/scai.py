@@ -31,10 +31,7 @@ def updateIntegrationStart(conf_file, cod_integration, cod_country):
 	print('SCAI Step #1')
 	sql_script = \
 		"update sandbox_andre_matias.t_rel_scai_country_integration "\
-		"	set dat_processing = case "\
-		"						when trunc(sysdate) - to_date(dat_processing,'yyyymmdd') > 1 then cast(to_char(to_date(dat_processing,'yyyymmdd') + 1,'yyyymmdd') as int) "\
-		"						else dat_processing "\
-		"						end, "\
+		"	set dat_processing = cast(to_char(trunc(sysdate),'yyyymmdd') as int), "\
 		"	execution_nbr = case "\
 		"						when trunc(sysdate) - to_date(dat_processing,'yyyymmdd') > 1 then 1 "\
 		"	  					else execution_nbr + 1 "\
