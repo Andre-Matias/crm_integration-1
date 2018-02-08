@@ -11,22 +11,22 @@
     <parameters>
       <parameter>
         <name>CATEGORY</name>
-        <default_value/>
+        <default_value>Cars</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>COUNTRY</name>
-        <default_value/>
+        <default_value>PL</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE</name>
-        <default_value/>
+        <default_value>2018-02-06</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_PATH</name>
-        <default_value/>
+        <default_value>2018&#x2f;02&#x2f;06</default_value>
         <description/>
       </parameter>
     </parameters>
