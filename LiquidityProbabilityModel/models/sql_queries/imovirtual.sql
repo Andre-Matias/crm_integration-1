@@ -1,4 +1,6 @@
--- select  nnls ads
+
+-- SECTION 1, nnls listings' attributes
+
 select
     a.id as ad_id,
     a.region_id,
@@ -46,22 +48,38 @@ select
     and cast(created_at_first as date) BETWEEN '2017-06-01' and '2017-12-31'
     and net_ad_counted = 1;
 
--- select images information
+
+-- SECTION 2, replies table
 
 select
-    a.id as ad_id,
-    a.riak_mapping as images_counter,
-    count(*) as n_records
-    from
-    olxgroupbi.livesync.verticals_ads_history a
-    WHERE
-    a.livesync_dbname = 'imovirtualpt'
-    and cast(created_at_first as date) between '2017-06-01' and '2017-12-31'
-    and status = 'active'
-    and net_ad_counted = 1
-    GROUP BY  1, 2;
+    a.ad_id as ad_id,
+    a.created as ad_created,
+    b.reply_id as reply_id,
+    b.reply_parent_id as reply_parent_id,
+    b.reply_sender_id as reply_sender_id,
+    b.reply_posted as reply_posted_at
+FROM
+(select id as ad_id, created_at_first as created
+from livesync.verticals_ads
+where  cast(created_at_first as date) BETWEEN '2017-06-01' and '2017-12-31'
+and livesync_dbname = 'imovirtualpt') a
+JOIN
+(select
+  id as reply_id,
+  ad_id,
+  parent_id as reply_parent_id,
+  sender_id as reply_sender_id,
+  posted as reply_posted,
+  len(message) as len_reply_message
+from livesync.verticals_answers
+where livesync_dbname = 'imovirtualpt'
+and cast(posted as date) >= '2017-06-01') b
+on a.ad_id = b.ad_id;
 
--- js events in 1 week
+
+
+
+-- SECTION 3, get js events, within 1 week
 
 SELECT
   a.ad_id,
@@ -603,35 +621,25 @@ and (b.server_date - a.created)/(24*60*60) < 7
 and (b.server_date - a.created)/(24*60*60) >= 0
 GROUP BY ad_id;
 
--- replies table
+
+
+-- SECTION 4, get historical images
 
 select
-    a.ad_id as ad_id,
-    a.created as ad_created,
-    b.reply_id as reply_id,
-    b.reply_parent_id as reply_parent_id,
-    b.reply_sender_id as reply_sender_id,
-    b.reply_posted as reply_posted_at
-FROM
-(select id as ad_id, created_at_first as created
-from livesync.verticals_ads
-where  cast(created_at_first as date) BETWEEN '2017-06-01' and '2017-12-31'
-and livesync_dbname = 'imovirtualpt') a
-JOIN
-(select
-  id as reply_id,
-  ad_id,
-  parent_id as reply_parent_id,
-  sender_id as reply_sender_id,
-  posted as reply_posted,
-  len(message) as len_reply_message
-from livesync.verticals_answers
-where livesync_dbname = 'imovirtualpt'
-and cast(posted as date) >= '2017-06-01') b
-on a.ad_id = b.ad_id;
+    a.id as ad_id,
+    a.riak_mapping as images_counter,
+    count(*) as n_records
+    from
+    olxgroupbi.livesync.verticals_ads_history a
+    WHERE
+    a.livesync_dbname = 'imovirtualpt'
+    and cast(created_at_first as date) between '2017-06-01' and '2017-12-31'
+    and status = 'active'
+    and net_ad_counted = 1
+    GROUP BY  1, 2;
 
--- views in 1 week
 
+-- [OPTIONAL] SECTION 5, views in one week
 
 SELECT
   a.ad_id,

@@ -1,3 +1,6 @@
+
+-- SECTION 1, nnls listings' attributes
+
 select
     a.id as ad_id,
     a.region_id,
@@ -46,20 +49,7 @@ select
     and a.net_ad_counted = 1;
 
 
--- select text for description and title
-
-select
-    count(*)
-    --a.id as ad_id,
-    --a.description as description
-    from
-    olxgroupbi.livesync.verticals_ads a
-    WHERE
-    a.livesync_dbname = 'otodompl'
-    and cast(created_at_first as date) between '2017-08-01' and '2017-09-01'
-    and net_ad_counted = 1;
-
--- replies table
+-- SECTION 2, replies table
 
 select
     a.ad_id as ad_id,
@@ -86,72 +76,8 @@ where livesync_dbname = 'otodompl'
 and cast(posted as date) >= '2017-06-01') b
 on a.ad_id = b.ad_id;
 
--- test
 
-SELECT
-  server_path,
-  server_date,
-  server_date_trunc,
-  item_id,
-  item_images_count,
-  eventname,
-  CASE
-    WHEN accept_cookies = TRUE THEN session_long
-    ELSE ip_address + user_agent
-    END
-  AS visitor_id
-FROM  hydra.verticals_ninja_android_201710
-WHERE
-eventname IN
-('reply_phone_show',
-'reply_phone_call',
-'reply_phone_sms',
-'reply_phone_cancel',
-'reply_message_sent',
-'reply_message_click',
-'reply_chat_sent'
-)
-and server_path = '/h/v-otodom-android'
-and item_id is not null
-limit 10;
-
-
-
-
-
-
-
-select
-server_date,
-server_date_trunc,
-item_id,
-item_images_count,
-eventname,
-CASE
-    WHEN accept_cookies = TRUE THEN session_long
-      ELSE ip_address + user_agent
-    END
-  AS visitor_id
-from hydra.verticals_ninja_web_201710
-where
---trackpage = 'ad_page'and
-eventname in
-('reply_phone_show',
-'reply_phone_call',
-'reply_phone_sms',
-'reply_phone_cancel',
-'reply_message_sent',
-'reply_message_click',
-'reply_chat_sent'
-) and
-current_page LIKE '%oferta%'
-limit 10;
-
-
-
-
-
---- get js events, within 1 week
+-- SECTION 3, get js events, within 1 week
 SELECT
   a.ad_id,
   count(DISTINCT visitor_id) as unique_contacts_one_week,
@@ -695,8 +621,7 @@ GROUP BY ad_id;
 
 
 
--- views in one week
--- CV views in 1 week
+-- [OPTIONAL] SECTION 4, views in one week
 
 SELECT
   a.ad_id,
@@ -870,38 +795,10 @@ and (b.server_date - a.created)/(24*60*60) >= 0
 GROUP BY ad_id;
 
 
--- get historical images
-
-select
-    a.id as ad_id,
-    a.riak_mapping as images_counter,
-    count(*) as n_records
-    from
-    olxgroupbi.livesync.verticals_ads_history a
-    WHERE
-    a.livesync_dbname = 'otodompl'
-    and cast(created_at_first as date) between '2017-06-01' and '2017-09-23'
-    and status = 'active'
-    and net_ad_counted = 1
-    GROUP BY  1, 2;
 
 
 
 
-select
-    a.id as ad_id,
-    title,
-    len(title),
-    status
-    from
-    olxgroupbi.livesync.verticals_ads a
-    WHERE
-    a.livesync_dbname = 'otodompl'
-    --and cast(created_at_first as date) >= '2017-11-01'
-    and status = 'active'
-    and net_ad_counted = 1
-    and ad_id = 44329658
-    limit 30;
 
 
 
