@@ -93,11 +93,15 @@ curl http://127.0.0.1:5000/predict -X POST -H "Content-Type: application/json" -
 	}]}'
 ```
 
+**Note.**  Required input attributes for models are:
+
+* city_id
+* rooms_num
 
 
 ### How do I can reproduce/retrain models? ###
 
-You can find jupyter notebooks in the models directory.
+You can find jupyter notebooks in the `models` directory.
 
 ### Authors ###
 
