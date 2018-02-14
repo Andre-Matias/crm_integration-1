@@ -4,12 +4,6 @@ Here you can find a service for prediction listing probability to be liquid.
 This service works for Otodom.pl and Imovirtual.pt, apartments for sell and
 and apartments for rent. 
 
-### What is this repository for? ###
-
-* Quick summary
-* Version
-
-
 ### How do I get set up? ###
 
 You need 
@@ -23,7 +17,6 @@ You need
 build new version: `sh docker-build.sh`
 
 start generic docker container: `sh docker-up.sh `
-
 
 
 ### How do I can use it? ###
@@ -106,6 +99,6 @@ curl http://127.0.0.1:5000/predict -X POST -H "Content-Type: application/json" -
 
 You can find jupyter notebooks in the models directory.
 
-### AUTHORS ###
+### Authors ###
 
 Anastasiia Kornilova `anastasiia.kornilova@rebbix.com`
