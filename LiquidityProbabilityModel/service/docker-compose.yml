@@ -1,0 +1,10 @@
+version: '2'
+services:
+  scorer:
+    image: stasykornilova/liquidityprob
+    environment:
+      MAIN_MARKET: "pt"
+      MAIN_SECTION: "rent"
+      PORT: 5000
+    ports:
+      - "5000:5000"
