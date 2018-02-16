@@ -375,40 +375,17 @@
       <yloc>464</yloc>
     </entry>
     <entry>
-      <name>copy to OLD</name>
-      <description/>
-      <type>SHELL</type>
-      <filename/>
-      <work_directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <set_append_logfile>N</set_append_logfile>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <insertScript>Y</insertScript>
-      <script>aws s3 cp s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;reports-sami&#x2f;report-data s3&#x3a;&#x2f;&#x2f;vertical-services-poland-2&#x2f;reports-sami&#x2f;old&#x2f; --recursive</script>
-      <loglevel>Basic</loglevel>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>272</xloc>
-      <yloc>48</yloc>
-    </entry>
-    <entry>
-      <name>mail with file</name>
+      <name>mail - log ok</name>
       <description/>
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc/>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
-      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d;</subject>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; - bkp saved in S3 success</subject>
       <include_date>Y</include_date>
       <contact_person>Samy Bencherif</contact_person>
       <contact_phone/>
@@ -487,31 +464,13 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>copy to OLD</from>
-      <to>report -sami - QUERY GIGANTE</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>mail with file</from>
+      <from>mail - log ok</from>
       <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>report -sami - QUERY GIGANTE</from>
-      <to>mail with file</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>START</from>
@@ -534,6 +493,15 @@
     <hop>
       <from>Escribir al log</from>
       <to>report -sami - QUERY GIGANTE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>report -sami - QUERY GIGANTE</from>
+      <to>mail - log ok</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

@@ -303,8 +303,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>112</xloc>
-      <yloc>416</yloc>
+      <xloc>48</xloc>
+      <yloc>400</yloc>
     </entry>
     <entry>
       <name>get dates</name>
@@ -338,11 +338,11 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>240</xloc>
-      <yloc>336</yloc>
+      <xloc>112</xloc>
+      <yloc>208</yloc>
     </entry>
     <entry>
-      <name>AWS Daily Load - Vertical Services - query - Download Data Sami CSV for Base - Report &#x28;file in S3&#x29;</name>
+      <name>save history in s3</name>
       <description/>
       <type>JOB</type>
       <specification_method>filename</specification_method>
@@ -373,7 +373,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>512</xloc>
-      <yloc>192</yloc>
+      <yloc>224</yloc>
     </entry>
     <entry>
       <name>&#xc9;xito</name>
@@ -382,8 +382,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>912</xloc>
-      <yloc>160</yloc>
+      <xloc>1168</xloc>
+      <yloc>192</yloc>
     </entry>
     <entry>
       <name>Escribir al log</name>
@@ -395,8 +395,269 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>320</xloc>
-      <yloc>128</yloc>
+      <xloc>272</xloc>
+      <yloc>96</yloc>
+    </entry>
+    <entry>
+      <name>Report to send by mail</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;AWS Daily Load - Vertical Services - Download Data Sami CSV for Base - Report .ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>Y</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>DATE_FROM</name>
+          <stream_name>todayis</stream_name>
+          <value/>
+        </parameter>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>688</xloc>
+      <yloc>80</yloc>
+    </entry>
+    <entry>
+      <name>mail with file - csv to stakeholders</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>samy.bencherif&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; - File attached</subject>
+      <include_date>Y</include_date>
+      <contact_person>Samy Bencherif</contact_person>
+      <contact_phone/>
+      <comment/>
+      <include_files>Y</include_files>
+      <zip_files>N</zip_files>
+      <zip_name>Report.zip</zip_name>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses>samy.bencherif&#x40;olx.com</replyToAddresses>
+      <filetypes>        <filetype>GENERAL</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>912</xloc>
+      <yloc>96</yloc>
+    </entry>
+    <entry>
+      <name>mail error</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>florencia.amonsky&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; -  Error saving bkp in S3</subject>
+      <include_date>Y</include_date>
+      <contact_person>florencia.amonsky&#x40;olx.com</contact_person>
+      <contact_phone/>
+      <comment/>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name/>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses>florencia.amonsky&#x40;olx.com</replyToAddresses>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>512</xloc>
+      <yloc>304</yloc>
+    </entry>
+    <entry>
+      <name>mail with file error - send to samy the zip</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>samy.bencherif&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; - ZIP only for you</subject>
+      <include_date>Y</include_date>
+      <contact_person>Samy Bencherif</contact_person>
+      <contact_phone/>
+      <comment>Because the CSV was so heavy, was not sent&#x3b; But we send to you the compressed file.</comment>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name>Report.zip</zip_name>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses>samy.bencherif&#x40;olx.com</replyToAddresses>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>912</xloc>
+      <yloc>260</yloc>
+    </entry>
+    <entry>
+      <name>mail error 2</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>florencia.amonsky&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; -  Error sending csv or zip file</subject>
+      <include_date>Y</include_date>
+      <contact_person>florencia.amonsky&#x40;olx.com</contact_person>
+      <contact_phone/>
+      <comment>We tried to send the csv file and also a zip, but we had some error. Check the logs, and the size of the files, please.&#xd;&#xa;Thanks&#x21;&#xd;&#xa;Florencia</comment>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name/>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses>florencia.amonsky&#x40;olx.com</replyToAddresses>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>912</xloc>
+      <yloc>400</yloc>
+    </entry>
+    <entry>
+      <name>mail error 2 2</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>florencia.amonsky&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly &#x24;&#x7b;DATE_FROM&#x7d; -  Report not generated</subject>
+      <include_date>Y</include_date>
+      <contact_person>florencia.amonsky&#x40;olx.com</contact_person>
+      <contact_phone/>
+      <comment>Check the data in the report.</comment>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name/>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses>florencia.amonsky&#x40;olx.com</replyToAddresses>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>688</xloc>
+      <yloc>144</yloc>
     </entry>
   </entries>
   <hops>
@@ -410,15 +671,6 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>AWS Daily Load - Vertical Services - query - Download Data Sami CSV for Base - Report &#x28;file in S3&#x29;</from>
-      <to>&#xc9;xito</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>get dates</from>
       <to>Escribir al log</to>
       <from_nr>0</from_nr>
@@ -429,14 +681,107 @@
     </hop>
     <hop>
       <from>Escribir al log</from>
-      <to>AWS Daily Load - Vertical Services - query - Download Data Sami CSV for Base - Report &#x28;file in S3&#x29;</to>
+      <to>save history in s3</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
+    <hop>
+      <from>save history in s3</from>
+      <to>Report to send by mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Report to send by mail</from>
+      <to>mail with file - csv to stakeholders</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail with file - csv to stakeholders</from>
+      <to>&#xc9;xito</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>save history in s3</from>
+      <to>mail error</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail with file - csv to stakeholders</from>
+      <to>mail with file error - send to samy the zip</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail with file error - send to samy the zip</from>
+      <to>mail error 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail with file error - send to samy the zip</from>
+      <to>&#xc9;xito</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Report to send by mail</from>
+      <to>mail error 2 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
   </hops>
   <notepads>
+    <notepad>
+      <note>I dont use this&#xd;&#xa;Its just a backup</note>
+      <xloc>448</xloc>
+      <yloc>144</yloc>
+      <width>139</width>
+      <heigth>58</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>192</backgroundcolorred>
+      <backgroundcolorgreen>192</backgroundcolorgreen>
+      <backgroundcolorblue>192</backgroundcolorblue>
+      <bordercolorred>192</bordercolorred>
+      <bordercolorgreen>192</bordercolorgreen>
+      <bordercolorblue>192</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
 </job>
