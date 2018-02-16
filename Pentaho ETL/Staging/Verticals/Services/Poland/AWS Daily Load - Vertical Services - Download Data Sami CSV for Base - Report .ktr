@@ -470,7 +470,7 @@
     <hop>
       <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
       <to>mail file - local test</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
