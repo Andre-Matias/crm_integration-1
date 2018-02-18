@@ -109,14 +109,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: TM Volume
   output$transvBox <- renderValueBox({
-        valueBox("11", "Last Week TM Purchases",
+        valueBox("18", "Last Week TM Purchases",
            icon = icon("shopping-cart"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: TM Revenue 
   output$transrBox <- renderValueBox({
-    valueBox("1577 zl",
+    valueBox("2 221 zl",
              "Last Week TM Revenue",
              icon = icon("money"),
              color = "aqua")
@@ -133,7 +133,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: TM Funnel 
   output$transfunnelBox <- renderValueBox({
-    valueBox("0.20%",
+    valueBox("0.17%",
              "Overall TM Payment Funnel",
              icon = icon("filter"),
              color = "maroon")
@@ -142,7 +142,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 5: B2C Funnel 
   output$b2cfunnelBox <- renderValueBox({
-    valueBox("44%",
+    valueBox("26%",
              "Overall B2C Payment Funnel",
              icon = icon("filter"),
              color = "yellow")
@@ -325,7 +325,7 @@ b2cfunnel
 #Top 3 Otodom Vas plot 
 
 output$vasOnboarding <- renderGvis({
-  vas <- gvisAreaChart(otodomvas,
+  vas <- gvisAreaChart(otodomvasv,
                        xvar = 'Week', yvar = c('export_olx','pushup','topads'),
                        options = list(
                          legend = 'yes', 
@@ -349,7 +349,7 @@ output$totalvasOnboarding <- renderGvis({
   total <- gvisComboChart(otodomvastotal,
                          xvar="Vas", 
                          yvar=c("Purchases", "Users"),
-                         options=list(title="Total VAS Last 5 Weeks",
+                         options=list(title="Total VAS Last 6 Weeks",
                                       titleTextStyle="{color:'black',
                                       fontName:'Courier',
                                       fontSize:16}",
@@ -386,7 +386,7 @@ output$totalrevenueOnboarding <- renderGvis({
  revenue <-gvisColumnChart(otodomrevenuetotal, 
                 xvar = 'Vas', yvar = 'Revenue', options = list(
                   legend = 'yes', 
-                  title="B2C VAS Revenue Last 5 Weeks",
+                  title="B2C VAS Revenue Last 6 Weeks",
                   #vAxes="[{viewWindowMode:'explicit',
                   #viewWindow:{min:0, max:370000}}]",
                   width=1200, height=500, 
