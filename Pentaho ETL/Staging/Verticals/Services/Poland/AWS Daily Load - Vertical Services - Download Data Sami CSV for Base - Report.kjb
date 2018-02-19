@@ -381,7 +381,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationCc/>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>

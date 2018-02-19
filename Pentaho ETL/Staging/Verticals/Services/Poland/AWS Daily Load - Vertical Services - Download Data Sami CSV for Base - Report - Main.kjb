@@ -390,7 +390,7 @@
       <description/>
       <type>WRITE_TO_LOG</type>
       <logmessage>RUN GET DATES - OK</logmessage>
-      <loglevel/>
+      <loglevel>Basic</loglevel>
       <logsubject/>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -445,7 +445,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationCc/>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
@@ -659,6 +659,17 @@
       <xloc>688</xloc>
       <yloc>144</yloc>
     </entry>
+    <entry>
+      <name>Abortar trabajo</name>
+      <description/>
+      <type>ABORT</type>
+      <message/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>704</xloc>
+      <yloc>448</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -759,6 +770,15 @@
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail error 2</from>
+      <to>Abortar trabajo</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
