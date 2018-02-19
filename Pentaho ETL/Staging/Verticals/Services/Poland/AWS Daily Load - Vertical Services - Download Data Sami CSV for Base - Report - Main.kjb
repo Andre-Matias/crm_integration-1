@@ -444,9 +444,9 @@
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
-      <destination>florencia.amonsky&#x40;olx.com antonio.costa&#x40;olx.com samy.bencherif&#x40;olx.com</destination>
-      <destinationCc/>
-      <destinationBCc/>
+      <destination>samy.bencherif&#x40;olx.com</destination>
+      <destinationCc>antonio.costa&#x40;olx.com</destinationCc>
+      <destinationBCc>florencia.amonsky&#x40;olx.com</destinationBCc>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
       <subject>Report Fixly  - File attached</subject>
@@ -530,9 +530,9 @@
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
-      <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc>antonio.costa&#x40;olx.com samy.bencherif&#x40;olx.com</destinationCc>
-      <destinationBCc/>
+      <destination>samy.bencherif&#x40;olx.com</destination>
+      <destinationCc>antonio.costa&#x40;olx.com</destinationCc>
+      <destinationBCc>florencia.amonsky&#x40;olx.com</destinationBCc>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
       <subject>Report Fixly  - ZIP only for you</subject>
