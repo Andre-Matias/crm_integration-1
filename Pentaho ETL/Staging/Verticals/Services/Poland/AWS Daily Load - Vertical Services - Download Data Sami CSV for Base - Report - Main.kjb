@@ -444,7 +444,7 @@
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
-      <destination>florencia.amonsky&#x40;olx.com samy.bencherif&#x40;olx.com antonio.costa&#x40;olx.com</destination>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
       <destinationCc/>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
@@ -530,7 +530,7 @@
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
-      <destination>florencia.amonsky&#x40;olx.com samy.bencherif&#x40;olx.com antonio.costa&#x40;olx.com</destination>
+      <destination>florencia.amonsky&#x40;olx.com</destination>
       <destinationCc/>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
