@@ -445,7 +445,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc/>
+      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
@@ -657,7 +657,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>688</xloc>
-      <yloc>144</yloc>
+      <yloc>160</yloc>
     </entry>
     <entry>
       <name>Abortar trabajo</name>

@@ -470,7 +470,7 @@
     <hop>
       <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
       <to>mail file - local test</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
@@ -559,7 +559,7 @@
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>
-    <create_parent_folder>N</create_parent_folder>
+    <create_parent_folder>Y</create_parent_folder>
     <file>
       <name>&#x2f;home&#x2f;ubuntu&#x2f;github-etl&#x2f;Reports&#x2f;&#x24;&#x7b;DATE_FROM&#x7d;&#x2f;report_&#x24;&#x7b;DATE_FROM&#x7d;_data</name>
       <is_command>N</is_command>
