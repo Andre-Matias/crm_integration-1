@@ -445,7 +445,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc/>
+      <destinationCc>antonio.costa&#x40;olx.com samy.bencherif&#x40;olx.com</destinationCc>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
@@ -469,7 +469,7 @@
       <importance>high</importance>
       <sensitivity>normal</sensitivity>
       <secureconnectiontype>TLS</secureconnectiontype>
-      <replyToAddresses>samy.bencherif&#x40;olx.com</replyToAddresses>
+      <replyToAddresses/>
       <filetypes>        <filetype>GENERAL</filetype>
       </filetypes>      <embeddedimages>
       </embeddedimages>
@@ -531,7 +531,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc/>
+      <destinationCc>antonio.costa&#x40;olx.com samy.bencherif&#x40;olx.com</destinationCc>
       <destinationBCc/>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
@@ -576,7 +576,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destinationCc>antonio.costa&#x40;olx.com samy.bencherif&#x40;olx.com</destinationCc>
       <destinationBCc/>
       <replyto>florencia.amonsky&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
