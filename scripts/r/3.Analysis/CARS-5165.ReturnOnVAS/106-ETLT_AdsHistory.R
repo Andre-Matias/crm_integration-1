@@ -137,10 +137,3 @@ for (i in daily){
   x <- as.POSIXlt(i, origin = '1970-01-01 00:00:00')
   fDay(x)
 }
-
-tmp <-
-  as_tibble(
-    s3readRDS(
-      object = "CARS-5165/DailyActiveAds/Active_2017-01-01.RDS",
-      bucket = s3BucketName)
-   )
