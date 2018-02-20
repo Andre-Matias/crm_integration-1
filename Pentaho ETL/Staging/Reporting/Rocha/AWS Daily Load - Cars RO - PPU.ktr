@@ -567,7 +567,7 @@
       <schema_name/>
     </partitioning>
     <connection>Autovit RO</connection>
-    <sql>select &#x27;&#x24;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month,642,1, count&#x28;distinct ub.id&#x29; as cnt&#xa;from autovitro.fk_invoices fi&#xa;  inner join&#xa;  autovitro.users_business ub&#xa;on ub.id &#x3d; fi.user_id&#xa;where fi.created_at between &#x27;&#x24;&#x7b;DATE_FROM&#x7d; 00&#x3a;00&#x3a;00&#x27; and &#x27;&#x24;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#xa;and fi.gross_amount_cents &#x3e; 0&#xa;and ub.id not in &#x28;521225,521223,521213,521215,522479,&#xa;522495,24280,419691,522665,18964,1030125,522513,&#xa;1057085,1058565,1066171,1285659,1285679,829479,&#xa;17628&#x29;&#xa;and not &#x28;ub.email like &#x22;&#x25;&#x40;autovit&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;sunfra.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;olx.&#x25;&#x22; &#xa;or ub.email like &#x22;&#x25;&#x40;tablica.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;fixeads.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;otomoto.&#x25;&#x22; &#xa;or ub.email like &#x22;&#x25;&#x40;otodom.&#x25;&#x22; or ub.email like &#x22;&#x25;&#x40;slando.&#x25;&#x22; &#x29;&#xa;group by 1&#xa;order by 1 asc&#x3b;&#xa;&#xa;&#xa;</sql>
+    <sql>SELECT &#x27;&#x7b;DATE_FROM&#x7d;&#x27; as time,&#x27;&#x24;&#x7b;AGG&#x7d;&#x27; as month, 642,1,count&#x28;distinct ub.id&#x29; as cnt&#xa;FROM autovitro.sap_invoices fi&#xa;INNER JOIN autovitro.users_business ub on ub.id &#x3d; fi.user_id&#xa;WHERE fi.created_at BETWEEN &#x27;&#x7b;DATE_FROM&#x7d;&#x27; AND &#x27;&#x7b;DATE_TO&#x7d; 23&#x3a;59&#x3a;59&#x27;&#xa;and fi.total_gross_amount &#x3e; 0&#xa;and ub.id not in&#x28;521225, 521223, 521213, 521215, 522479,&#xa;522495, 24280, 419691, 522665, 18964, 1030125, 522513,&#xa;1057085, 1058565, 1066171, 1285659, 1285679, 829479,&#xa;17628&#x29;&#xa;and not &#x28;ub.email LIKE &#x22;&#x25;&#x40;autovit&#x25;&#x22; AND ub.email LIKE &#x22;&#x25;&#x40;sunfra.&#x25;&#x22; OR ub.email LIKE &#x22;&#x25;&#x40;olx.&#x25;&#x22; OR ub.email LIKE &#x22;&#x25;&#x40;tablica.&#x25;&#x22; OR ub.email LIKE &#x22;&#x25;&#x40;fixeads.&#x25;&#x22; OR ub.email LIKE&#x22;&#x25;&#x40;otomoto.&#x25;&#x22; OR ub.email LIKE &#x22;&#x25;&#x40;otodom.&#x25;&#x22; OR ub.email LIKE &#x22;&#x25;&#x40;slando.&#x25;&#x22;&#x29;&#xa;group by 1&#xa;order by 1 ASC&#x3b;&#xa;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -582,7 +582,7 @@
     </remotesteps>
     <GUI>
       <xloc>288</xloc>
-      <yloc>224</yloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

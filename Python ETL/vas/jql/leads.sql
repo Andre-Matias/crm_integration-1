@@ -1,4 +1,4 @@
-repliesReference = ['reply_phone_show','reply_message_sent','reply_chat_sent','reply_phone_call','reply_phone_sms'];
+repliesReference = ['reply_message_sent','reply_chat_sent','reply_phone_call','reply_phone_sms'];
 function getDay(event) {return (new Date(event.time)).toISOString().split('T')[0];}
 function main() {
   return Events({

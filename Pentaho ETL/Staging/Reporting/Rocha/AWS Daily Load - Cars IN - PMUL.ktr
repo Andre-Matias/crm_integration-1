@@ -11,7 +11,7 @@
     <parameters>
       <parameter>
         <name>AGG</name>
-        <default_value>JUN</default_value>
+        <default_value>JAN</default_value>
         <description/>
       </parameter>
       <parameter>
@@ -21,17 +21,17 @@
       </parameter>
       <parameter>
         <name>DATE_FROM</name>
-        <default_value>2017-06-01</default_value>
+        <default_value>2018-01-01</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>DATE_TO</name>
-        <default_value>2017-06-21</default_value>
+        <default_value>2018-01-31</default_value>
         <description/>
       </parameter>
       <parameter>
         <name>PATH</name>
-        <default_value>2017&#x2f;06&#x2f;01</default_value>
+        <default_value>2018&#x2f;01&#x2f;01</default_value>
         <description/>
       </parameter>
     </parameters>
@@ -467,7 +467,7 @@
     <type>MYSQL</type>
     <access>Native</access>
     <database>crm_cars_in</database>
-    <port>53302</port>
+    <port>53320</port>
     <username>biuser</username>
     <password>Encrypted 2be98afc86aa7f2e49829b9558bc5a1e2</password>
     <servername/>
@@ -479,7 +479,7 @@
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
-      <attribute><code>PORT_NUMBER</code><attribute>53302</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>53320</attribute></attribute>
       <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
       <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
       <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>

@@ -151,6 +151,9 @@ if(sys.argv[4] == 're'):
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/loads_re.sql',
 	'/home/ubuntu/github-etl/Python ETL/vas/jql/leads_re.sql']
 
+
+
+
 workspace = "/home/ubuntu/github-etl/Python ETL/vas/"
 
 
@@ -174,5 +177,5 @@ for i in range(len(contexts)):
 
 getMixpanelData(contexts,jql_scripts,workspace,project_name,key,skey,from_date,to_date)
 
-loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests/",project_name)
+#loadFilesToRedshift(conf_file,"verticals-raw-data","/vas/mixpanel/" + project_name,contexts,to_date,"/vas/mixpanel/manifests/",project_name)
 
