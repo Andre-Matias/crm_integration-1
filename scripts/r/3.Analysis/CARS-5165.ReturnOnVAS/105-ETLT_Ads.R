@@ -8,6 +8,8 @@ library("fasttime")
 library("magrittr")
 library("ggplot2")
 library("parallel")
+library("tidyr")
+
 options(scipen = 9999)
 
 # Load personal credentials ---------------------------------------------------
@@ -44,7 +46,7 @@ file.list <- as.data.frame(
 )
 
 # save feather as RDS ---------------------------------------------------------
-mclapply(mc.cores = 7, file.list$Key,
+lapply(file.list$Key,
        function(x) s3FeatherToRDS(x, "/ads/", "/ads/RDS/"))
 
 # read RDS files --------------------------------------------------------------
@@ -67,3 +69,54 @@ dat <-
 s3saveRDS(x = dat,
           object = "CARS-5165/dfAdsAIO.RDS",
           bucket = s3BucketName)
+
+dat29 <-
+  dat %>%
+  filter(created_at_first >= '2017-01-01 00:00:00',
+         created_at_first < '2017-07-01 00:00:00',
+         category_id == 29
+         )
+
+# save active ads df ----------------------------------------------------------
+s3saveRDS(x = dat29,
+          object = "CARS-5165/dfAds_cat29_AIO.RDS",
+          bucket = s3BucketName)
+
+# save active ads df ----------------------------------------------------------
+s3saveRDS(x = dat29[, c("id")],
+          object = "CARS-5165/dfAds_cat29_id_list.RDS",
+          bucket = s3BucketName)
+
+# load ads df -----------------------------------------------------------------
+dat29 <-
+  s3readRDS(
+          object = "CARS-5165/dfAds_cat29_AIO.RDS",
+          bucket = s3BucketName)
+
+t0 <-
+  dat29 %>%
+  unnest(params = strsplit(params, "<br>")) %>%
+  mutate(new = strsplit(params, "<=>"),
+         length = lapply(new, length)) %>%
+  filter(length >=2 ) %>%
+  mutate(paramName = unlist(lapply(new, function(x) x[1])),
+         paramValue = unlist(lapply(new, function(x) x[2]))
+  ) %>%
+  select(ad_id, paramName, paramValue)
+
+t0[t0$paramName=="price" & !is.na(as.numeric(t0$paramValue)), c("paramName")] <- "priceValue"
+
+t0$paramName <- gsub("price\\[currency\\]", "price_currency", t0$paramName, perl = TRUE)
+t0$paramName <- gsub("price\\[gross_net\\]", "price_gross_net", t0$paramName, perl = TRUE)
+
+print(paste(as.POSIXct(Sys.time()), as.POSIXct(Sys.time()) - rt0, 
+            "params to wide"))
+dfParams <- 
+  t0 %>% 
+  filter(paramName != "features") %>%
+  group_by(ad_id, paramName) %>%
+  summarise(paramValue = max(paramValue)) %>%
+  spread(key = paramName, value = paramValue)
+
+gc()
+

@@ -45,3 +45,20 @@ dfAll <-
   left_join(dfShowPhone)%>%
   left_join(dfMessages)
   
+dfRepliesByAdID <- 
+  as_tibble(
+  dfAll %>%
+  mutate(ad_id = as.numeric(cd_adidv2))%>%
+  group_by(ad_id) %>%
+  summarise(qtyAdImpressions = sum(qtyAdImpressions, na.rm = TRUE),
+            qtyAdPageLoads = sum(qtyAdPageLoad, na.rm = TRUE),
+            qtyShowPhone = sum(qtyShowPhone, na.rm = TRUE),
+            qtyAdMessages = sum(qtyMessages, na.rm = TRUE)
+            )
+)
+
+# save active ads df ----------------------------------------------------------
+s3saveRDS(x = dfRepliesByAdID,
+          object = "CARS-5165/dfRepliesByAdID.RDS",
+          bucket = s3BucketName)
+  
