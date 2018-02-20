@@ -8,9 +8,6 @@ library("fasttime")
 library("magrittr")
 library("ggplot2")
 library("parallel")
-library(foreach)
-library(doMC)
-registerDoMC(7)  #change the 2 to your number of CPU cores  
 
 options(scipen = 9999)
 
