@@ -27,12 +27,14 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # 
-rangeDate <- as.character(seq(as.Date('2018-01-01'),as.Date('2018-01-01'),by = 1))
+rangeDate <- as.character(seq(as.Date('2018-01-01'),as.Date('2018-02-01'),by = 1))
 
 # connect to silver ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
 
 for(i in rangeDate){
+
+  print (paste(i, "=> started at:", Sys.time()))
 
 conDB <- 
   dbConnect(
@@ -56,7 +58,7 @@ sqlQuery <-
   "
 
 sqlQuery <- as.character(gsub("##Date##", i,  sqlQuery))
-print(sqlQuery)
+
 requestDB <- 
   dbSendQuery(
     conDB,
