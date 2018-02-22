@@ -32,6 +32,8 @@ rangeDate <- as.character(seq(as.Date('2018-01-01'),as.Date('2018-02-01'),by = 1
 # connect to silver ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
 
+hosts <- c("www.otomoto.pl", "", "")
+for(host in hosts){
 for(i in rangeDate){
 
   print (paste(i, "=> started at:", Sys.time()))
@@ -51,13 +53,13 @@ sqlQuery <-
   SELECT *
   FROM hydra.verticals_ninja_web_201801
   WHERE trackpage = 'listing'
-  AND country_code = 'PL'
-  AND host = 'www.otomoto.pl'
+  AND host = '##host##'
   AND user_id IS NOT NULL AND server_date_trunc = date_part(epoch, '##Date##')
   ;
   "
 
 sqlQuery <- as.character(gsub("##Date##", i,  sqlQuery))
+sqlQuery <- as.character(gsub("##host##", host,  sqlQuery))
 
 requestDB <- 
   dbSendQuery(
@@ -81,7 +83,8 @@ dfHydraResults$a <- purrr::map(dfHydraResults$extra, jsonlite::validate)
 dfHydraResults <- dfHydraResults[dfHydraResults$a == TRUE, ]
 
 s3saveRDS(x = dfHydraResults,
-          object = paste0("Results_", i, ".RDS"),
+          object = paste0("Results_", host, "_", i, ".RDS"),
           bucket = "pyrates-data-ocean/CARS/CARS-5597")
+}
 }
 
