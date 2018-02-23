@@ -28,7 +28,7 @@ def connect():
 		
 		#QUERY 1
 		# individuals table
-		cur.execute('SELECT id, regexp_replace(  replace (replace( replace(details, "''", "") ,";","-"), """, "" ), "\r|\n", "", "g") as details, settings, created_at, updated_at, deleted_at, '' as info, offer_quote_limit, regexp_replace(replace(company_name,"''",""), "\r|\n", "", "g") as company_name, vat_number, id_number, wizard_step FROM individuals')
+		cur.execute('SELECT id, regexp_replace(  replace (replace( replace(details, \'\'\'\', \'\') ,\';\',\'-\'), \'"\', \'\' ), \'\r|\n\', \'\', \'g\') as details, settings, created_at, updated_at, deleted_at, \'\' as info, offer_quote_limit, regexp_replace(replace(company_name,\'\'\'\',\'\'), \'\r|\n\', \'\', \'g\') as company_name, vat_number, id_number, wizard_step FROM individuals')
 
 		# display the PostgreSQL database server version
 		db_result = cur.fetchall()
