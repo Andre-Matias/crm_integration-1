@@ -30,6 +30,7 @@ def connect():
 		# individuals table
 		cur.execute('SELECT id, regexp_replace(  replace (replace( replace(details, \'\'\'\', \'\') ,\';\',\'-\'), \'"\', \'\' ), \'\r|\n\', \'\', \'g\') as details, settings, created_at, updated_at, deleted_at, \'\' as info, offer_quote_limit, regexp_replace(REPLACE(replace(company_name,\'\'\'\',\'\'), \'"\', \'\' ), \'\r|\n\', \'\', \'g\') as company_name, vat_number, id_number, wizard_step, user_id FROM individuals')
 
+		
 		# display the PostgreSQL database server version
 		db_result = cur.fetchall()
 		lista=db_result
