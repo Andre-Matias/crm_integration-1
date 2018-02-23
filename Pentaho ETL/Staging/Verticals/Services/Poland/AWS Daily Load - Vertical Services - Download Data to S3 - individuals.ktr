@@ -658,6 +658,18 @@
         <length>9</length>
         <precision>0</precision>
       </field>
+      <field>
+        <name>user_id</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
     </fields>
       <access_key>Encrypted 414b4943f4ae9b8d3af0a6b39e3bfd48ffa39bfb</access_key>
       <secret_key>Encrypted 695965616e566c674d76484b73536b356970534d544c4d47c4e084a33ce29ddc9d168a76ef8498c9</secret_key>
@@ -687,7 +699,7 @@
       <schema_name/>
     </partitioning>
     <connection>Fixly Poland Production</connection>
-    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , regexp_replace&#x28;  replace &#x28;replace&#x28; replace&#x28;details, &#x27;&#x27;&#x27;&#x27;, &#x27;&#x27;&#x29; ,&#x27;&#x3b;&#x27;,&#x27;-&#x27;&#x29;, &#x27;&#x22;&#x27;, &#x27;&#x27; &#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , &#x27;&#x27; as info&#xd;&#xa;, offer_quote_limit&#xd;&#xa; , regexp_replace&#x28;replace&#x28;company_name,&#x27;&#x27;&#x27;&#x27;,&#x27;&#x27;&#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step&#xd;&#xa;FROM individuals</sql>
+    <sql>SELECT&#xd;&#xa;  id&#xd;&#xa; , regexp_replace&#x28;  replace &#x28;replace&#x28; replace&#x28;details, &#x27;&#x27;&#x27;&#x27;, &#x27;&#x27;&#x29; ,&#x27;&#x3b;&#x27;,&#x27;-&#x27;&#x29;, &#x27;&#x22;&#x27;, &#x27;&#x27; &#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as details&#xd;&#xa;, settings&#xd;&#xa;, created_at&#xd;&#xa;, updated_at&#xd;&#xa;, deleted_at&#xd;&#xa; , &#x27;&#x27; as info&#xd;&#xa;, offer_quote_limit&#xd;&#xa; , regexp_replace&#x28; replace &#x28;replace&#x28;company_name,&#x27;&#x27;&#x27;&#x27;,&#x27;&#x27;&#x29;, &#x27;&#x22;&#x27;, &#x27;&#x27; &#x29;, &#x27;&#x5c;r&#x7c;&#x5c;n&#x27;, &#x27;&#x27;, &#x27;g&#x27;&#x29; as company_name&#xd;&#xa;, vat_number&#xd;&#xa;, id_number&#xd;&#xa;, wizard_step, user_id&#xd;&#xa;FROM individuals</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
