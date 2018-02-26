@@ -453,7 +453,7 @@
       <include_date>Y</include_date>
       <contact_person>Samy Bencherif</contact_person>
       <contact_phone/>
-      <comment/>
+      <comment>version logic-file&#x3a;v3</comment>
       <include_files>Y</include_files>
       <zip_files>N</zip_files>
       <zip_name>Report.zip</zip_name>
@@ -695,7 +695,7 @@
       <to>save history in s3</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -704,7 +704,7 @@
       <to>Report to send by mail</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -779,6 +779,15 @@
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Escribir al log</from>
+      <to>Report to send by mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
