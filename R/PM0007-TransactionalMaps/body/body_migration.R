@@ -349,7 +349,7 @@ output$totalvasOnboarding <- renderGvis({
   total <- gvisComboChart(otodomvastotal,
                          xvar="Vas", 
                          yvar=c("Purchases", "Users"),
-                         options=list(title="Total VAS Last 6 Weeks",
+                         options=list(title="Total VAS Last 7 Weeks",
                                       titleTextStyle="{color:'black',
                                       fontName:'Courier',
                                       fontSize:16}",
@@ -386,7 +386,7 @@ output$totalrevenueOnboarding <- renderGvis({
  revenue <-gvisColumnChart(otodomrevenuetotal, 
                 xvar = 'Vas', yvar = 'Revenue', options = list(
                   legend = 'yes', 
-                  title="B2C VAS Revenue Last 6 Weeks",
+                  title="B2C VAS Revenue Last 7 Weeks",
                   #vAxes="[{viewWindowMode:'explicit',
                   #viewWindow:{min:0, max:370000}}]",
                   width=1200, height=500, 
