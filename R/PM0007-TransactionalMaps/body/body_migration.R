@@ -109,14 +109,14 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: TM Volume
   output$transvBox <- renderValueBox({
-        valueBox("18", "Last Week TM Purchases",
+        valueBox("15", "Last Week TM Purchases",
            icon = icon("shopping-cart"),
        color = "orange")
  })
   
   # fluid row 1, kpi 2: TM Revenue 
   output$transrBox <- renderValueBox({
-    valueBox("2 221 zl",
+    valueBox("1 173 zl",
              "Last Week TM Revenue",
              icon = icon("money"),
              color = "aqua")
@@ -133,7 +133,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: TM Funnel 
   output$transfunnelBox <- renderValueBox({
-    valueBox("0.17%",
+    valueBox("1%",
              "Overall TM Payment Funnel",
              icon = icon("filter"),
              color = "maroon")
@@ -142,7 +142,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 5: B2C Funnel 
   output$b2cfunnelBox <- renderValueBox({
-    valueBox("26%",
+    valueBox("46%",
              "Overall B2C Payment Funnel",
              icon = icon("filter"),
              color = "yellow")
