@@ -616,7 +616,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>select &#x2a; from odl_global_verticals.v_vert_services_fixly_report_base_csv_import_v3</sql>
+    <sql>select &#x2a; from odl_global_verticals.v_vert_services_fixly_report_base_csv_import_v4</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>
