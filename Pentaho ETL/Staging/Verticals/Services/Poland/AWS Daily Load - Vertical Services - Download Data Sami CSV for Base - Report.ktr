@@ -475,6 +475,16 @@
     <hop>
       <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
       <to>mail file - server</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
+      <to>mail file - local test 2</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>odl_global_verticals.v_vert_services_fixly_report_base_csv_import</from>
+      <to>mail file - server 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -537,6 +547,64 @@
     </step>
 
   <step>
+    <name>mail file - local test 2</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>&#x3b;</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>C&#x3a;&#x5c;Users&#x5c;Florencia Amonsky&#x5c;Documents&#x5c;REPOSITORIO&#x5c;verticals-bi&#x5c;Reports&#x5c;&#x24;&#x7b;DATE_FROM&#x7d;&#x5c;report_&#x24;&#x7b;DATE_FROM&#x7d;_data2</name>
+      <is_command>N</is_command>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>Y</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>757</xloc>
+      <yloc>386</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
     <name>mail file - server</name>
     <type>TextFileOutput</type>
     <description/>
@@ -588,8 +656,66 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>886</xloc>
-      <yloc>264</yloc>
+      <xloc>896</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>mail file - server 2</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>&#x3b;</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>&#x2f;home&#x2f;ubuntu&#x2f;github-etl&#x2f;Reports&#x2f;&#x24;&#x7b;DATE_FROM&#x7d;&#x2f;report_&#x24;&#x7b;DATE_FROM&#x7d;_data</name>
+      <is_command>N</is_command>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>csv</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>Y</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>832</xloc>
+      <yloc>288</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -606,7 +732,7 @@
       <schema_name/>
     </partitioning>
     <connection>Chandra Redshift</connection>
-    <sql>select &#x2a; from odl_global_verticals.v_vert_services_fixly_report_base_csv_import</sql>
+    <sql>select &#x2a; from odl_global_verticals.v_vert_services_fixly_report_base_csv_import_v5</sql>
     <limit/>
     <lookup/>
     <execute_each_row>N</execute_each_row>

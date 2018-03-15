@@ -35,8 +35,8 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 
 ## Define timerange: valid across countries -------------------------------------------------------
-from_date <- "20171113"
-to_date <- "20180203"
+from_date <- "20171127"
+to_date <- "20180225"
 ## Define platforms to loop through in case of original version (no experiment id assigned)
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -188,7 +188,7 @@ df_any_pt_c1 <- as.data.frame(
                        born_event="welcome_screen", 
                        born_where= '"47658:1269381" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
+                       from=20180205, to=to_date, unit="day", intervalCount = 15 
   )
 )
 df_any_pt_c1 <- mutate(df_any_pt_c1, platform="ios", version="variation C1 (47658:1269381)")
@@ -205,7 +205,7 @@ df_any_pt_c2 <- as.data.frame(
                        born_event="welcome_screen", 
                        born_where= '"47658:1269391" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
+                       from=20180205, to=to_date, unit="day", intervalCount = 15 
   )
 )
 
@@ -405,7 +405,7 @@ df_lead_pt_a <- mutate(df_lead_pt_a, version="original A")
 ## started "20171122"
 
 df_lead_pt_b <- as.data.frame(
-  mixpanelGetRetention (oto_auth, 
+  mixpanelGetRetention (sta_auth, 
                         segment_method= "first",
                         retention_type= "birth",
                         born_event="welcome_screen",
@@ -422,14 +422,14 @@ df_lead_pt_b <- mutate(df_lead_pt_b, platform="rwd", version="variation B")
 ## experiments: "47658:1269381"
 ## started ""
 df_lead_pt_c1 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
+  mixpanelGetRetention(sta_auth, 
                        segment_method= "first", 
                        retention_type= "birth", 
                        born_event="welcome_screen", 
                        born_where= '"47658:1269381" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
                        event="$custom_event:753501",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
+                       from=20180205, to=to_date, unit="day", intervalCount = 15 
   )
 )
 df_lead_pt_c1 <- mutate(df_lead_pt_c1, platform="ios", version="variation C1 (47658:1269381)")
@@ -440,14 +440,14 @@ df_lead_pt_c1 <- mutate(df_lead_pt_c1, platform="ios", version="variation C1 (47
 ## experiments: "47658:1269391"
 ## started ""
 df_lead_pt_c2 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
+  mixpanelGetRetention(sta_auth, 
                        segment_method= "first", 
                        retention_type= "birth", 
                        born_event="welcome_screen", 
                        born_where= '"47658:1269391" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
                        event="$custom_event:753501",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
+                       from=20180205, to=to_date, unit="day", intervalCount = 15 
   )
 )
 

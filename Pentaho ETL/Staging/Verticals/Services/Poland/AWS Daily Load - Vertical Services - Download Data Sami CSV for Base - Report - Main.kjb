@@ -445,15 +445,15 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>samy.bencherif&#x40;olx.com</destination>
-      <destinationCc>antonio.costa&#x40;olx.com</destinationCc>
-      <destinationBCc>florencia.amonsky&#x40;olx.com</destinationBCc>
+      <destinationCc>ijedrzejczak&#x40;fixly.pl dczermak&#x40;fixly.pl kjankowiak&#x40;fixly.pl khalicka&#x40;fixly.pl</destinationCc>
+      <destinationBCc>florencia.amonsky&#x40;olx.com antonio.costa&#x40;olx.com</destinationBCc>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
       <subject>Report Fixly  - File attached</subject>
       <include_date>Y</include_date>
       <contact_person>Samy Bencherif</contact_person>
       <contact_phone/>
-      <comment/>
+      <comment>You will find attached the fixly file to upload it into base.&#xd;&#xa;&#xd;&#xa;log&#x3a; version logic-file&#x3a;v5 &#x28;edited 27-03-02&#x29;&#xd;&#xa;log&#x3a; emails added 07-03-2018</comment>
       <include_files>Y</include_files>
       <zip_files>N</zip_files>
       <zip_name>Report.zip</zip_name>
@@ -485,8 +485,8 @@
       <type>MAIL</type>
       <server>smtp.gmail.com</server>
       <port>587</port>
-      <destination>florencia.amonsky&#x40;olx.com</destination>
-      <destinationCc>samy.bencherif&#x40;olx.com</destinationCc>
+      <destination>samy.bencherif&#x40;olx.com</destination>
+      <destinationCc/>
       <destinationBCc/>
       <replyto>florencia.amonsky&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
@@ -779,6 +779,15 @@
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Escribir al log</from>
+      <to>Report to send by mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
