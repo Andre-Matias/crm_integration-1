@@ -31,17 +31,6 @@ module_CARS5999_UI <- function(id){
   
   fluidRow(
     box(plotOutput(ns("graph")))
-    # box(checkboxGroupInput(
-    #   inputId = ns("gvpi116SelectPlatform"),
-    #   label = "Project",
-    #   choices = unique(rawDf$platform)
-    #   )),
-    # 
-    # box(checkboxGroupInput(
-    #   inputId = ns("gvpi116SelectCategories"),
-    #   label = "Category",
-    #   choices = unique(rawDf$name_en)
-    #   ))
   )
     
 # end of UI module ------------------------------------------------------------

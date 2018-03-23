@@ -32,8 +32,6 @@ ui <-
         menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
                  menuItem('Posting Flow', tabName = 'tabPostingFlow', 
                           menuSubItem('Drop Reasons',
-                                      tabName = 'tabDropReasons'),
-                          menuSubItem('Hide Description Field',
                                       tabName = 'tabHideDescriptionField')
                           )
                  )
@@ -54,20 +52,11 @@ ui <-
 # dashboardbody start ---------------------------------------------------------
   dashboardBody(
     tabItems(
-      
       # Global 
       tabItem(tabName = "tabGlobal"),
       #Monetization - Posting Flow - Hide Description Field
       tabItem(tabName = "tabHideDescriptionField",
-              module_CARS5999_UI("HideDescription"))
-      #        ),
-      # Business Tool - Messages - Sync Time Stockars/Stradia
-      #tabItem(tabName = "tabSyncTimeStkStr",
-      #        module_GVPI88_UI("MessageSyncTime")
-      #),
-      #tabItem(tabName = "tabSyncTimeStkOLX",
-      #        module_GVPI85_UI("MessageSyncTime")
-      #)
+              module_CARS5999_UI("AdsRanking"))
     )
   )
 # dashboardbody end -----------------------------------------------------------
