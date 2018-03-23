@@ -13,6 +13,7 @@ CARS5999_df <-
   invalidateLater(1000, session)
   dfAll <- 
     s3readRDS(object = "CARS-5999/dfDAU_AutovitRO.RDS", 
-              bucket = "pyrates-data-ocean/GVPI-112"
+              bucket = "s3://pyrates-data-ocean/"
     )
+  return(dfAll)
 })
