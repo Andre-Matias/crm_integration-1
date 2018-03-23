@@ -9,6 +9,8 @@ library("dplyr")
 library("dtplyr")
 library("scales")
 library("ggthemes")
+library("plotly")
+
 
 # load mixpanel user's credentials --------------------------------------------
 load("~/GlobalConfig.Rdata")
@@ -22,7 +24,7 @@ source("Module_CARS-5999.PercentageOfUsersThatSeeAdsRanking.R")
 
 ui <- 
   dashboardPage(
-  dashboardHeader(title = "Adventure Galley"),
+  dashboardHeader(title = "Royal Fortune"),
 
 # dashboardSidebar start ------------------------------------------------------
 
@@ -37,12 +39,11 @@ ui <-
                  )
       ),
       sidebarMenu(
-        menuItem("Business Tool", tabName = "bt", icon = icon("wrench"),
-                 menuItem('Messages', tabName = 'tabStockarsMessages',
-                          menuSubItem('Sync Time: Stockars/Stradia',
-                                      tabName = 'tabSyncTimeStkStr'),
-                          menuSubItem('Sync Time: Stockars/OLX',
-                                      tabName = 'tabSyncTimeStkOLX')
+        menuItem("Pro Tools", tabName = "bt", icon = icon("wrench"),
+                 menuItem('OKR', tabName = 'tabProtoolsOKR',
+                          menuSubItem('FY18Q4 KR2.1\nAd Ranking Usage',
+                                      tabName = 'tabFY2018AdsRanking'
+                                      )
                           )
         )
       )
@@ -55,7 +56,7 @@ ui <-
       # Global 
       tabItem(tabName = "tabGlobal"),
       #Monetization - Posting Flow - Hide Description Field
-      tabItem(tabName = "tabHideDescriptionField",
+      tabItem(tabName = "tabFY2018AdsRanking",
               module_CARS5999_UI("AdsRanking"))
     )
   )
