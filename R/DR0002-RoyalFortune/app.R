@@ -18,7 +18,7 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # load modules ----------------------------------------------------------------
-source("R/DR0002-RoyalFortune/Module_CARS-5999.PercentageOfUsersThatSeeAdsRanking.R")
+source("Module_CARS-5999.PercentageOfUsersThatSeeAdsRanking.R")
 
 ui <- 
   dashboardPage(
