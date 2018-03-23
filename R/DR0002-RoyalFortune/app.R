@@ -31,17 +31,13 @@ ui <-
   dashboardSidebar(
       sidebarMenu(
         menuItem("Global", tabName = 'tabGlobal', icon = icon('dashboard')),
-        menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
-                 menuItem('Posting Flow', tabName = 'tabPostingFlow', 
-                          menuSubItem('Drop Reasons',
-                                      tabName = 'tabHideDescriptionField')
-                          )
+        menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money')
                  )
       ),
       sidebarMenu(
         menuItem("Pro Tools", tabName = "bt", icon = icon("wrench"),
                  menuItem('OKR', tabName = 'tabProtoolsOKR',
-                          menuSubItem('FY18Q4 KR2.1\nAd Ranking Usage',
+                          menuSubItem('FY18Q4 Ad Ranking Usage',
                                       tabName = 'tabFY2018AdsRanking'
                                       )
                           )
