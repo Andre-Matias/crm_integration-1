@@ -445,7 +445,7 @@
       <server>smtp.gmail.com</server>
       <port>587</port>
       <destination>samy.bencherif&#x40;olx.com</destination>
-      <destinationCc>ijedrzejczak&#x40;fixly.pl dczermak&#x40;fixly.pl kjankowiak&#x40;fixly.pl khalicka&#x40;fixly.pl</destinationCc>
+      <destinationCc>ijedrzejczak&#x40;fixly.pl dczermak&#x40;fixly.pl kjankowiak&#x40;fixly.pl khalicka&#x40;fixly.pl jkaczmarek&#x40;fixly.pl</destinationCc>
       <destinationBCc>florencia.amonsky&#x40;olx.com antonio.costa&#x40;olx.com</destinationBCc>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
