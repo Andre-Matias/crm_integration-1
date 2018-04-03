@@ -111,21 +111,21 @@ dfAdsPhones$Mobile1[dfAdsPhones$phone1==""] <- NA
 dfAdsPhones$Mobile2[dfAdsPhones$phone2==""] <- NA
 dfAdsPhones$Mobile3[dfAdsPhones$phone3==""] <- NA
 
-dfLiquidy14 <-
+dfLiquidy7 <-
   dfAdsPhones %>%
   select(id, created_at_first) %>%
   mutate(created_at_first = as.POSIXct(created_at_first)) %>%
   inner_join(dfLeadsByAd, by = c("id"="item_id")) %>%
   filter(eventname %in% c("reply_phone_call", "reply_phone_sms")) %>% #, "reply_message_sent", "reply_chat_sent", "reply_phone_show")) %>%
-  filter(date < created_at_first + days(14)) %>%
+  filter(date < created_at_first + days(7)) %>%
   group_by(id)%>%
   summarise(qtyEvents = sum(qtyEvents, na.rm = TRUE)) #%>%
   #spread(key = eventname, value = qtyEvents, fill = 0)
 
 
-dfFinal <-
+dfFinal7<-
   dfAdsPhones %>%
-  left_join(dfLiquidy14, by = c("id" = "id")) %>%
+  left_join(dfLiquidy7, by = c("id" = "id")) %>%
   mutate(isLiquid = !is.na(qtyEvents)) %>%
   group_by(Mobile1, Mobile2) %>%
   summarise(qtyIsLiquid = sum(isLiquid == T),
@@ -133,11 +133,27 @@ dfFinal <-
             ) %>%
   mutate(Liquidity = qtyIsLiquid / (qtyIsLiquid + qtyIsNotLiquid))
 
-dfMakeModelStats <-
+dfLiquidy21 <-
   dfAdsPhones %>%
-  group_by(make, model) %>%
-  summarise(qtyAds = sum(n())) %>%
-  arrange(-qtyAds)
-  
+  select(id, created_at_first) %>%
+  mutate(created_at_first = as.POSIXct(created_at_first)) %>%
+  inner_join(dfLeadsByAd, by = c("id"="item_id")) %>%
+  filter(eventname %in% c("reply_phone_call", "reply_phone_sms")) %>% #, "reply_message_sent", "reply_chat_sent", "reply_phone_show")) %>%
+  filter(date < created_at_first + days(21)) %>%
+  group_by(id)%>%
+  summarise(qtyEvents = sum(qtyEvents, na.rm = TRUE)) #%>%
+#spread(key = eventname, value = qtyEvents, fill = 0)
+
+
+dfFinal21<-
+  dfAdsPhones %>%
+  left_join(dfLiquidy21, by = c("id" = "id")) %>%
+  mutate(isLiquid = !is.na(qtyEvents)) %>%
+  group_by(Mobile1, Mobile2) %>%
+  summarise(qtyIsLiquid = sum(isLiquid == T),
+            qtyIsNotLiquid = sum(isLiquid == F)
+  ) %>%
+  mutate(Liquidity = qtyIsLiquid / (qtyIsLiquid + qtyIsNotLiquid))
+
 
 

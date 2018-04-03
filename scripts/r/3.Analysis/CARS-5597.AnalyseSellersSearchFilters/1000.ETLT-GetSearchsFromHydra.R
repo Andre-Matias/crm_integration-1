@@ -27,16 +27,16 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # 
-rangeDate <- as.character(seq(as.Date('2018-01-01'),as.Date('2018-02-01'),by = 1))
+rangeDate <- as.character(seq(as.Date('2018-02-21'),as.Date('2018-02-26'),by = 1))
 
 # connect to silver ---------------------------------------------------------
 drv <- dbDriver("PostgreSQL")
 
-hosts <- c("www.otomoto.pl", "", "")
+hosts <- c("/h/v-otomoto-web", "/h/v-standvirtual-web", "/h/v-autovit-web")
 for(host in hosts){
 for(i in rangeDate){
 
-  print (paste(i, "=> started at:", Sys.time()))
+  print (paste(host, "=>", i, "=> started at:", Sys.time()))
 
 conDB <- 
   dbConnect(
@@ -51,15 +51,17 @@ conDB <-
 sqlQuery <-
   "
   SELECT *
-  FROM hydra.verticals_ninja_web_201801
+  FROM hydra.verticals_ninja_web_##partition##
   WHERE trackpage = 'listing'
-  AND host = '##host##'
+  AND server_path = '##host##'
   AND user_id IS NOT NULL AND server_date_trunc = date_part(epoch, '##Date##')
   ;
   "
 
 sqlQuery <- as.character(gsub("##Date##", i,  sqlQuery))
 sqlQuery <- as.character(gsub("##host##", host,  sqlQuery))
+
+sqlQuery <- as.character(gsub("##partition##", gsub("-", "", substr(i, 1, 7)), sqlQuery))
 
 requestDB <- 
   dbSendQuery(
@@ -83,8 +85,9 @@ dfHydraResults$a <- purrr::map(dfHydraResults$extra, jsonlite::validate)
 dfHydraResults <- dfHydraResults[dfHydraResults$a == TRUE, ]
 
 s3saveRDS(x = dfHydraResults,
-          object = paste0("Results_", host, "_", i, ".RDS"),
-          bucket = "pyrates-data-ocean/CARS/CARS-5597")
+          object = paste0("Results_", gsub("/h/", "", host), "_", i, ".RDS"),
+          bucket = paste0("pyrates-data-ocean/CARS/CARS-5597/", gsub("/h/", "", host))
+          )
 }
 }
 

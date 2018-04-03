@@ -7,7 +7,7 @@ library("anytime")
 
 # lists ads files from datalake -----------------------------------------------
 files <-
-  list.files(path = '~/CT', pattern = 'v-otodom.*',
+  list.files(path = '~/CT', pattern = 'v-aut.*',
              full.names = TRUE)
 
 # read all files to a list ----------------------------------------------------

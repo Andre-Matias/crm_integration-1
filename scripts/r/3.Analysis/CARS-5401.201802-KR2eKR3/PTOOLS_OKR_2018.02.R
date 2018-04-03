@@ -10,7 +10,8 @@ library("dtplyr")
 library("magrittr")
 library("ggplot2")
 library("ggthemes")
-options(scipen=9999)
+library("anytime")
+options(scipen = 9999)
 
 
 # config ---------------------------------------------------------------------
@@ -177,7 +178,7 @@ plotit(actuals = dfTotalByWeek,
        actual = "totalQTY",
        metric = "baselineQTY", 
        goal = "goalQty", 
-       kr = "KR1 - Increase VAS Quantity in 20%", 
+       kr = "KR2 - Increase VAS Quantity in 20%", 
        ylabel = "Quantity VAS"
 )
 
@@ -188,6 +189,6 @@ plotit(actuals = dfTotalByWeek,
        actual = "totalAmount_USD",
        metric = "baselineUSD", 
        goal = "goalAmount", 
-       kr = "KR2 - Increase VAS Revenue in 5%", 
+       kr = "KR3 - Increase VAS Revenue in 5%", 
        ylabel = "VAS Revenue - Fixed USD"
        )
