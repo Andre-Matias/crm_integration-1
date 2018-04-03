@@ -1,8 +1,15 @@
-# libraries -------------------------------------------------------------------
-library("RMySQL")
+#load libraries
+library("aws.s3")
 library("feather")
-library("stringr")
-
+library("dplyr")
+library("data.table")
+library("dtplyr")
+library("fasttime")
+library("magrittr")
+library("ggplot2")
+library("parallel")
+library("lubridate")
+library("tidyr")
 
 # config ---------------------------------------------------------------------
 load("~/credentials.Rdata")
@@ -72,3 +79,39 @@ dbDisconnect(conDB)
 s3saveRDS(x = dfSqlQuery,
           object = "CARS-5165/OtomotoVAS.RDS",
           bucket = s3BucketName)
+
+# read VAS df -----------------------------------------------------------------
+dfVAS <- 
+  s3readRDS(object = "CARS-5165/OtomotoVAS.RDS",
+            bucket = s3BucketName)
+
+# only paid VAS or included in packages ---------------------------------------
+dfVAS <- dfVAS[dfVAS$price <= 0, ]
+
+dfVAS[is.na(dfVAS$duration), c("duration")] <- 0
+
+dfVAS$start_VAS <- fastPOSIXct(dfVAS$date)
+
+dfVAS<-
+  dfVAS %>%
+  mutate(end_VAS = start_VAS + days(duration))
+
+dfVASByAdIdCode <-
+  dfVAS %>%
+  mutate(ad_id = as.numeric(id_ad)) %>%
+  group_by(ad_id, code) %>%
+  summarise(qtyActions = sum(n()))%>%
+  spread(key=code, value=qtyActions)
+
+dfVASByAdIdType <-
+  dfVAS %>%
+  mutate(ad_id = as.numeric(id_ad)) %>%
+  group_by(ad_id, type) %>%
+  summarise(qtyActions = sum(n()))%>%
+  spread(key=type, value=qtyActions)
+
+# save active ads df ----------------------------------------------------------
+s3saveRDS(x = dfVASByAdIdType,
+          object = "CARS-5165/dfVASByAdIdType.RDS",
+          bucket = s3BucketName)
+  

@@ -8,6 +8,7 @@ library("fasttime")
 library("magrittr")
 library("ggplot2")
 library("parallel")
+
 options(scipen = 9999)
 
 # Load personal credentials ---------------------------------------------------
@@ -44,7 +45,7 @@ file.list <- as.data.frame(
 )
 
 # save feather as RDS ---------------------------------------------------------
-mclapply(mc.cores = 7, file.list$Key,
+lapply(file.list$Key,
        function(x) s3FeatherToRDS(x, "/ads_history/", "/ads_history/RDS/"))
 
 # read RDS files --------------------------------------------------------------
@@ -72,6 +73,13 @@ s3saveRDS(x = dat,
 dat <- 
   s3readRDS(object = "CARS-5165/dfAdsHistoryAIO.RDS",
             bucket = s3BucketName)
+
+# read only cars and and created at first 2017-01-01-01 and 2017-06-30 -------
+list29 <- 
+  s3readRDS(object = "CARS-5165/dfAds_cat29_id_list.RDS",
+            bucket = s3BucketName)
+
+dat <- dat[dat$id %in% list29$id, ]
 
 df <- arrange(dat, id, primary)
 
@@ -101,3 +109,28 @@ dfActive <-
       bucket = s3BucketName)
   )
 
+# only active intervals -------------------------------------------------------
+dfActive <- dfActive[dfActive$status=='active', ]
+
+daily <- seq(from = as.POSIXct('2017-01-01 00:00:00'), 
+             to = as.POSIXct('2017-09-30 00:00:00'), by='day')
+
+fDay <- 
+  function(x){
+    start <- as.POSIXct(x)
+    end <- as.POSIXct(start + as.difftime(1, unit="days"))
+    print(paste(start, "=>", end))
+    dfActive$start <- start
+    dfActive$end <- end
+    dfActive$overlap <- !(dfActive$next.changed_at <= dfActive$start | dfActive$changed_at > dfActive$end)
+    dfActiveByDay <- dfActive[dfActive$overlap==TRUE, ]
+    
+    s3saveRDS(x = dfActiveByDay,
+              object = paste0("CARS-5165/DailyActiveAds/Active_", substr(x, 1, 10), ".RDS"),
+              bucket = s3BucketName)
+}
+
+for (i in daily){
+  x <- as.POSIXlt(i, origin = '1970-01-01 00:00:00')
+  fDay(x)
+}
