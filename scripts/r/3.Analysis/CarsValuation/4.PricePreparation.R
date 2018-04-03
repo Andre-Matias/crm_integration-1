@@ -5,7 +5,7 @@ library("data.table")
 library("dtplyr")
 library("magrittr")
 
-# load credentials ------------------------------------------------------------
+# load credentials -------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
 

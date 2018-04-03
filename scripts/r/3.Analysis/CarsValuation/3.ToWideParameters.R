@@ -33,4 +33,4 @@ dfCarsAdsWide[, id:=NULL]
 dfCarsAdsWide <- 
   dfCarsAdsWide[dfCarsAdsWide$net_ad_counted == "1", ]
 return(dfCarsAdsWide)
-}
+  }
