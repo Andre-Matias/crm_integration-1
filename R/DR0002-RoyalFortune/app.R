@@ -20,7 +20,9 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 # load modules ----------------------------------------------------------------
-source("Module_CARS-5999.PercentageOfUsersThatSeeAdsRanking.R")
+source("./Module_CARS-5999.PercentageOfUsersThatSeeAdsRanking.R")
+source("./Module_CARS-6200.ScheduleVasFakeTest.R")
+
 
 ui <- 
   dashboardPage(
@@ -31,7 +33,12 @@ ui <-
   dashboardSidebar(
       sidebarMenu(
         menuItem("Global", tabName = 'tabGlobal', icon = icon('dashboard')),
-        menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money')
+        menuItem("Monetization", tabName = 'tabMonetization', icon = icon('money'),
+                 menuItem('Tests', tabName = 'tabMonetizationTests',
+                          menuSubItem('VAS Scheduler Test',
+                                      tabName = 'tabSchedulerVASTest'
+                          )
+                 )
                  )
       ),
       sidebarMenu(
@@ -53,13 +60,16 @@ ui <-
       tabItem(tabName = "tabGlobal"),
       #Monetization - Posting Flow - Hide Description Field
       tabItem(tabName = "tabFY2018AdsRanking",
-              module_CARS5999_UI("AdsRanking"))
+              module_CARS5999_UI("AdsRanking")),
+      tabItem(tabName = "tabSchedulerVASTest",
+              module_CARS6200_UI("SchedulerVASTest"))
     )
   )
 # dashboardbody end -----------------------------------------------------------
 )
 server <- function(input, output) { 
 callModule(module_CARS5999, "AdsRanking")
+callModule(module_CARS6200, "SchedulerVASTest")
 }
 # Run the application 
 shinyApp(ui = ui, server = server)

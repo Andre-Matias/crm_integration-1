@@ -11,6 +11,7 @@ library("showtext")
 library("glue")
 library("aws.s3")
 library("lubridate")
+library("ggplot2")
 
 # load configs --------------------------------------------------------------
 load("~/credentials.Rdata")
@@ -102,24 +103,3 @@ s3saveRDS(x = dfWeekly,
           object = "dfWeekly.RDS",
           bucket = "pyrates-data-ocean/CARS-6200"
           )
-
-ggplot(dfDaily)+
-  geom_line(aes(x = day ,y = CTR, color = platform ))+
-  geom_point(aes(x = day ,y = CTR, color = platform ))+
-  geom_text(aes(x = day ,y = CTR, label = scales::percent(round(CTR, 3)), color = platform), vjust = -0.4)+
-  scale_x_datetime(date_breaks = "day")+
-  scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
-  scale_colour_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
-  theme_fivethirtyeight(base_family = "opensans")+
-  ggtitle("VAS Scheduler - Fake Test", subtitle = "")
-
-ggplot(dfWeekly)+
-  geom_bar( stat = "identity", aes(x = platform ,y = CTR, fill = platform ))+
-  geom_text(aes(x = platform ,y = CTR, label = scales::percent(round(CTR, 3)), color = platform), vjust = -0.2)+
-  scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
-  scale_fill_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
-  scale_color_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
-  ggtitle("VAS Scheduler - Fake Test", subtitle = "")+
-  theme_fivethirtyeight(base_family = "opensans")
-  
-  
