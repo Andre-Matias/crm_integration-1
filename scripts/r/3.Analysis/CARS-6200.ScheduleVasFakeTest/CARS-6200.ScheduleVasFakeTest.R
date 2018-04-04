@@ -98,5 +98,13 @@ ggplot(dfDaily)+
   scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
   ggtitle("Schedule VAS - Fake Test", subtitle = "")+
   theme_fivethirtyeight(base_family = "opensans")
+
+ggplot(dfWeekly)+
+  geom_bar( stat = "identity", aes(x = day ,y = CTR, color = platform ))+
+  geom_text(aes(x = day ,y = CTR, label = scales::percent(round(CTR, 3)), color = platform), vjust = -0.4)+
+  scale_x_datetime(date_breaks = "day")+
+  scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
+  ggtitle("Schedule VAS - Fake Test", subtitle = "")+
+  theme_fivethirtyeight(base_family = "opensans")
   
   
