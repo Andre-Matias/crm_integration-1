@@ -8939,7 +8939,7 @@ where
 
 analyze crm_integration_anlt.tmp_pt_load_ad;
 	
-	--$$$ -- 129
+	--$$$
 	
 delete from crm_integration_anlt.t_lkp_ad
 using crm_integration_anlt.tmp_pt_load_ad
@@ -9098,7 +9098,7 @@ insert into crm_integration_anlt.t_lkp_ad
 
 analyze crm_integration_anlt.t_lkp_ad;
 	  
-	--$$$ -- 131
+	--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -9427,7 +9427,7 @@ delete from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pt_load_answer_step3_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_answer_step3_outgoing);
 
---$$$
+--$$$ -- 140
 
 insert into crm_integration_anlt.t_fac_answer_outgoing
     select
@@ -9686,7 +9686,7 @@ as
 
 analyze crm_integration_anlt.tmp_pt_load_answer_step1_incoming;
 
---$$$ -- 140
+--$$$
 
 create table crm_integration_anlt.tmp_pt_load_answer_step2_incoming
 distkey(opr_ad)
@@ -10210,7 +10210,7 @@ insert into crm_integration_anlt.t_fac_paidad_user_payment
 
 analyze crm_integration_anlt.t_fac_paidad_user_payment;
 	  
-	--$$$ -- 150
+	--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -10601,7 +10601,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_pt_load_payment_session;
 
-	--$$$
+	--$$$ -- 160
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -10866,7 +10866,7 @@ insert into crm_integration_anlt.t_hst_payment_basket
       target.cod_payment_basket = source.cod_payment_basket
       and source.dml_type = 'U';
 
-	--$$$ -- 160
+	--$$$
 	
 delete from crm_integration_anlt.t_fac_payment_basket
 using crm_integration_anlt.tmp_pt_load_payment_basket

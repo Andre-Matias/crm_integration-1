@@ -79,7 +79,7 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: Total VAS Volume
   output$totalvasBox <- renderValueBox({
-        valueBox("-19%", "Total B2C VAS Purchases (vs Last Week)",
+        valueBox("-1%", "Total B2C VAS Purchases (vs Last Week)",
            icon = icon("shopping-cart"),
        color = "orange")
  })
@@ -95,7 +95,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 3: B2C Funnel 
   output$b2cfunnelBox <- renderValueBox({
-    valueBox("45%",
+    valueBox("37%",
              "Overall B2C Payment Funnel",
              icon = icon("filter"),
              color = "green")
@@ -103,7 +103,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: Total Revenue 
   output$totalrevBox <- renderValueBox({
-    valueBox("-19%",
+    valueBox("+4%",
              "Total B2C VAS Revenue (vs Last Week)",
              icon = icon("money"),
              color = "purple")
@@ -116,7 +116,6 @@ server_migration <- function(input, output, session) {
              icon = icon("money"),
              color = "blue")
   })
-  
 
 #    on click
 #    # # on click of a tab1 valuebox
@@ -155,7 +154,7 @@ shinyjs::onclick('revenueBox',expr={
 
 
 output$totalvasOnboarding <- renderGvis({
-  total <- gvisAreaChart(otodomvastotalv,
+  total <- gvisAreaChart(imovastotalv,
                          xvar = 'Week', yvar = c('Total VAS'), options = list(
                            legend = 'yes',
                            title="Total VAS by Week",
@@ -180,8 +179,8 @@ output$totalvasOnboarding <- renderGvis({
 #VAS B2C Volume plot 
 
 output$vasOnboarding <- renderGvis({
-vas <- gvisLineChart(otodomvasv,
-                         xvar = 'Week', yvar = c('ad_homepage','export_olx','header','pushup','topads','transactional_maps'), options = list(
+vas <- gvisLineChart(imovasv,
+                         xvar = 'Week', yvar = c('ad_homepage','highlight','header','pushup','mirror'), options = list(
                             legend = 'yes',
                             title="VAS by Week",
                             #vAxes="[{viewWindowMode:'explicit',
@@ -203,7 +202,7 @@ vas
 
 output$b2cfunnelOnboarding <- renderGvis({
 
-b2cfunnel <- gvisSankey(funnel_b2c_payment_otpl, from="origin", 
+b2cfunnel <- gvisSankey(funnel_b2c_payment_imo, from="origin", 
            to="to",weight="Step conversion",
            options=list(
              height=500,width=1200,
@@ -225,7 +224,7 @@ b2cfunnel
 
 
 output$totalrevOnboarding <- renderGvis({
-  totalrevenue <-gvisAreaChart(otodomrevtotal,
+  totalrevenue <-gvisAreaChart(imorevtotal,
                                  xvar = 'Week', yvar = c('Total Revenue'), options = list(
                                    legend = 'yes',
                                    title="Total Revenue by Week",
@@ -248,8 +247,8 @@ output$totalrevOnboarding <- renderGvis({
 
 output$revenueOnboarding <- renderGvis({
   
-  revenue <- gvisLineChart(otodomrevas,
-                        xvar = 'Week', yvar = c('ad_homepage','export_olx','header','pushup','topads','transactional_maps'), options = list(
+  revenue <- gvisLineChart(imorevas,
+                        xvar = 'Week', yvar = c('ad_homepage','highlight','header','pushup','mirror'), options = list(
                           legend = 'yes',
                           title="Revenue by Week",
                           #vAxes="[{viewWindowMode:'explicit',

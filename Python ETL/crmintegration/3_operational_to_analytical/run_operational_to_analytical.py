@@ -20,7 +20,7 @@ def main(conf_file, dml_file):
 
 	i = 1
 	for dml in dml_scripts:
-		#if i < 158:  # Remove comments to make this run starting from a certain block
+		#if i < 150:  # Remove comments to make this run starting from a certain block
 		#	i = i + 1
 		#	continue
 		print('Running block #' + str(i))
