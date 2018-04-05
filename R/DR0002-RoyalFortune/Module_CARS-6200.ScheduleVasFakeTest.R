@@ -69,7 +69,9 @@ observeEvent(input$do, {
     renderPlot({
   ggplot(dfWeekly)+
     geom_bar( stat = "identity", aes(x = platform ,y = CTR, fill = platform ))+
-    geom_text(aes(x = platform ,y = CTR, label = scales::percent(round(CTR, 3)), color = platform), vjust = -0.2)+
+    geom_text(
+      aes(x = platform ,y = CTR, label = paste(scales::percent(round(CTR, 3)), "(#", ""),
+          color = platform), vjust = -0.2)+
     scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
     scale_fill_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
     scale_color_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+

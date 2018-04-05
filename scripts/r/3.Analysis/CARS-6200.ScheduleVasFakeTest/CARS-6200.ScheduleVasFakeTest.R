@@ -43,8 +43,8 @@ jqlQuery<-
           && e.properties.$referring_domain.includes("fixeads") === false 
           || !e.properties.$referring_domain)
         )
-      .groupByUser([mixpanel.numeric_bucket("time", mixpanel.daily_time_buckets), "name"], mixpanel.reducer.count())
-      .groupBy(["key.1", "key.2"], mixpanel.reducer.count())
+      .groupByUser([mixpanel.numeric_bucket("time", mixpanel.daily_time_buckets), "name", "properties.experiments"], mixpanel.reducer.count())
+      .groupBy(["key.1", "key.2", "key.3"], mixpanel.reducer.count())
       ;
     }
   '
@@ -56,8 +56,8 @@ for(i in listAccounts){
   dfJqlQuery <- 
     as_tibble(
       mixpanelJQLQuery(account = i[[2]], 
-                       jqlQuery, columnNames = c("epoch_day", "event", "quantity" ),
-                       toNumeric = c(1, 3)
+                       jqlQuery, columnNames = c("epoch_day", "event", "experiment_id", "quantity"),
+                       toNumeric = c(1, 4)
       )
     )
   
@@ -78,6 +78,7 @@ dfDaily <-
   dfAll %>%
   mutate(day = anytime(as.numeric(epoch_day)/1000)) %>%
   select(-epoch_day) %>%
+  filter( experiment_id %in% c("10491163383:10494470283", "10514851624:10514851625", "10516481454:10522071191")) %>%
   spread(key = event, value = quantity) %>%
   mutate(CTR = schedule_vas_button / my_ads_1_click_vas_modal)
 
@@ -85,6 +86,7 @@ dfWeekly <-
   dfAll %>%
   mutate(day = anytime(as.numeric(epoch_day)/1000)) %>%
   select(-epoch_day) %>%
+  filter( experiment_id %in% c("10491163383:10494470283", "10514851624:10514851625", "10516481454:10522071191")) %>%
   group_by(platform, event) %>%
   spread(key = event, value = quantity) %>%
   filter(!is.na(schedule_vas_button)) %>%
@@ -103,3 +105,5 @@ s3saveRDS(x = dfWeekly,
           object = "dfWeekly.RDS",
           bucket = "pyrates-data-ocean/CARS-6200"
           )
+
+
