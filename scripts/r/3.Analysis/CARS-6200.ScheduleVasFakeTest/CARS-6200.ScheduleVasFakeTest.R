@@ -97,7 +97,7 @@ dfWeekly <-
 s3saveRDS(x = dfDaily,
           object = "dfDaily.RDS",
           bucket = "pyrates-data-ocean/CARS-6200"
-)
+          )
 
 s3saveRDS(x = dfWeekly,
           object = "dfWeekly.RDS",

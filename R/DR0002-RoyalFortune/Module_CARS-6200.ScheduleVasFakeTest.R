@@ -40,7 +40,7 @@ module_CARS6200 <- function(input, output, session){
 
 observeEvent(input$do, {
   progress <- Progress$new(session)
-  progress$set(value = 0.15, message = 'Loading Otomoto DAU')
+  progress$set(value = 0.33, message = 'Loading daily values...')
   
   dfDaily <-
     s3readRDS(object = "CARS-6200/dfDaily.RDS",
@@ -59,10 +59,10 @@ observeEvent(input$do, {
         ggtitle("VAS Scheduler - Fake Test", subtitle = "")
     })
   
-  progress$set(value = 0.30, message = 'Loading Otomoto WAU')
+  progress$set(value = 0.66, message = 'Loading total values...')
   
   dfWeekly <-
-    s3readRDS(object = "CARS-6200/dfDaily.RDS",
+    s3readRDS(object = "CARS-6200/dfWeekly.RDS",
               bucket = "s3://pyrates-data-ocean/")
   
   output$ghWeekly <-
