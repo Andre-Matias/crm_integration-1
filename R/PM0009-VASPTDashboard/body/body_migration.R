@@ -103,7 +103,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: Total Revenue 
   output$totalrevBox <- renderValueBox({
-    valueBox("-19%",
+    valueBox("+4%",
              "Total B2C VAS Revenue (vs Last Week)",
              icon = icon("money"),
              color = "purple")
