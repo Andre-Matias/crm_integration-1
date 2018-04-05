@@ -56,7 +56,7 @@ observeEvent(input$do, {
         scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
         scale_colour_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
         theme_fivethirtyeight(base_family = "opensans")+
-        ggtitle("VAS Scheduler - Fake Test", subtitle = "")
+        ggtitle("VAS Scheduler - Fake Test", subtitle = "Daily")
     })
   
   progress$set(value = 0.66, message = 'Loading total values...')
@@ -73,7 +73,7 @@ observeEvent(input$do, {
     scale_y_continuous(limits = c(0, NA), labels = scales::percent)+
     scale_fill_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
     scale_color_manual(values = c("#C62F1B", "#1C2B4F", "#0471CD"))+
-    ggtitle("VAS Scheduler - Fake Test", subtitle = "")+
+    ggtitle("VAS Scheduler - Fake Test", subtitle = "2018-04-02 => 2018-04-08")+
     theme_fivethirtyeight(base_family = "opensans")
     })
   
