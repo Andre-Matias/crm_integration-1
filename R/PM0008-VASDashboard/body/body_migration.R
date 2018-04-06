@@ -232,7 +232,7 @@ output$totalrevOnboarding <- renderGvis({
                                    #vAxes="[{viewWindowMode:'explicit',
                                    #viewWindow:{min:0, max:370000}}]",
                                    width=1200, height=600,
-                                   vAxes="[{title:'Purchases',
+                                   vAxes="[{title:'Revenue',
                                    format:'##'}]",
                                    hAxes="[{title:'Week',
                                    textPosition: 'out'}]",
