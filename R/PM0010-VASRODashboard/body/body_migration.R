@@ -180,7 +180,7 @@ output$totalvasOnboarding <- renderGvis({
 
 output$vasOnboarding <- renderGvis({
 vas <- gvisLineChart(rovasv,
-                         xvar = 'Week', yvar = c('ad_homepage','highlight','header','pushup','mirror'), options = list(
+                         xvar = 'Week', yvar = c('ad_homepage','header','pushup','topads'), options = list(
                             legend = 'yes',
                             title="VAS by Week",
                             #vAxes="[{viewWindowMode:'explicit',
@@ -248,7 +248,7 @@ output$totalrevOnboarding <- renderGvis({
 output$revenueOnboarding <- renderGvis({
   
   revenue <- gvisLineChart(rorevas,
-                        xvar = 'Week', yvar = c('ad_homepage','highlight','header','pushup','mirror'), options = list(
+                        xvar = 'Week', yvar = c('ad_homepage','header','pushup','topads'), options = list(
                           legend = 'yes',
                           title="Revenue by Week",
                           #vAxes="[{viewWindowMode:'explicit',
