@@ -154,7 +154,7 @@ shinyjs::onclick('revenueBox',expr={
 
 
 output$totalvasOnboarding <- renderGvis({
-  total <- gvisAreaChart(imovastotalv,
+  total <- gvisAreaChart(rovastotalv,
                          xvar = 'Week', yvar = c('Total VAS'), options = list(
                            legend = 'yes',
                            title="Total VAS by Week",
@@ -179,7 +179,7 @@ output$totalvasOnboarding <- renderGvis({
 #VAS B2C Volume plot 
 
 output$vasOnboarding <- renderGvis({
-vas <- gvisLineChart(imovasv,
+vas <- gvisLineChart(rovasv,
                          xvar = 'Week', yvar = c('ad_homepage','highlight','header','pushup','mirror'), options = list(
                             legend = 'yes',
                             title="VAS by Week",
@@ -202,7 +202,7 @@ vas
 
 output$b2cfunnelOnboarding <- renderGvis({
 
-b2cfunnel <- gvisSankey(funnel_b2c_payment_imo, from="origin", 
+b2cfunnel <- gvisSankey(funnel_b2c_payment_str, from="origin", 
            to="to",weight="Step conversion",
            options=list(
              height=500,width=1200,
@@ -224,7 +224,7 @@ b2cfunnel
 
 
 output$totalrevOnboarding <- renderGvis({
-  totalrevenue <-gvisAreaChart(imorevtotal,
+  totalrevenue <-gvisAreaChart(rorevtotal,
                                  xvar = 'Week', yvar = c('Total Revenue'), options = list(
                                    legend = 'yes',
                                    title="Total Revenue by Week",
