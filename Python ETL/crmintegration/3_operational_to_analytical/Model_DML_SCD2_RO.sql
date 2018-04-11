@@ -91,7 +91,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$	
 
 -- #############################################
--- # 			 BASE - Portugal               #
+-- # 			 BASE - Romania                #
 -- #		 LOADING t_lkp_base_source         #
 -- #############################################
 
@@ -342,8 +342,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$
 	
 -- #############################################
--- # 			 BASE - Portugal               #
--- #		 LOADING t_lkp_base_user          #
+-- # 			 BASE - Romania                #
+-- #		 LOADING t_lkp_base_user           #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_ro_load_base_user;
@@ -434,7 +434,7 @@ as
   where
     coalesce(source_table.opr_base_user,-1) = target.opr_base_user(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231; -- Portugal
+    and target.valid_to(+) = 20991231; -- Romania
 
 analyze crm_integration_anlt.tmp_ro_load_base_user;
 
@@ -602,7 +602,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$
 	
 -- #############################################
--- # 			  BASE - Portugal              #
+-- # 			  BASE - Romania               #
 -- #		    LOADING t_lkp_task             #
 -- #############################################
 
@@ -885,7 +885,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$ -- 20
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Romania               #
 -- #        LOADING t_lkp_call_outcome         #
 -- #############################################
 
@@ -1137,7 +1137,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     BASE - PORTUGAL               #
+-- # 		     BASE - ROMANIA                #
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
@@ -1492,7 +1492,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	     BASE - Portugal                   #
+-- # 	     BASE - Romania                    #
 -- #       LOADING t_lkp_custom_field          #
 -- #############################################
 
@@ -1737,7 +1737,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	  BASE - Portugal                      #
+-- # 	  BASE - Romania                       #
 -- #    LOADING t_rel_contact_custom_field     #
 -- #############################################
 
@@ -1953,8 +1953,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_lkp_lead             #
+-- # 	          BASE - Romania               #
+-- #           LOADING t_lkp_lead              #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_ro_load_lead;
@@ -2281,7 +2281,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Romania               #
 -- #        LOADING t_lkp_loss_reason          #
 -- #############################################
 
@@ -2531,7 +2531,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Romania               #
 -- #		   LOADING t_lkp_pipeline          #
 -- #############################################
 
@@ -2777,7 +2777,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Romania               #
 -- #		   LOADING t_lkp_stage             #
 -- #############################################
 
@@ -3034,7 +3034,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Romania               #
 -- #           LOADING t_lkp_deal              #
 -- #############################################
 
@@ -3375,8 +3375,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_fac_call             #
+-- # 	          BASE - Romania               #
+-- #           LOADING t_fac_call              #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_ro_load_calls;
@@ -3812,8 +3812,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_fac_order            #
+-- # 	          BASE - Romania               #
+-- #           LOADING t_fac_order             #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_ro_load_orders;
@@ -4059,8 +4059,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #      LOADING t_fac_order_line_item       #
+-- # 	          BASE - Romania               #
+-- #      LOADING t_fac_order_line_item        #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_ro_load_order_line_items;
@@ -4334,7 +4334,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #          LOADING t_lkp_category           #
 -- #############################################
 
@@ -5429,7 +5429,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #		LOADING t_lkp_paidad_index  	   #
 -- #############################################
 
@@ -7079,7 +7079,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		      ATLAS - PORTUGAL             #
+-- # 		      ATLAS - ROMANIA              #
 -- #	      LOADING t_lkp_atlas_user     	   #
 -- #############################################
 
@@ -7709,7 +7709,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and rel_country_integr.cod_country = 4 -- Portugal
+    and rel_country_integr.cod_country = 4 -- Romania
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
@@ -7882,7 +7882,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and rel_country_integr.cod_country = 4 -- Portugal
+    and rel_country_integr.cod_country = 4 -- Romania
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
@@ -7960,7 +7960,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 		
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #             LOADING t_lkp_ad              #
 -- #############################################
 
@@ -9220,7 +9220,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		   ATLAS - PORTUGAL                #
+-- # 		   ATLAS - ROMANIA                 #
 -- #       LOADING t_fac_answer_outgoing       #
 -- #############################################
 
@@ -9575,7 +9575,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 
 -- #############################################
--- # 		   ATLAS - PORTUGAL                #
+-- # 		   ATLAS - ROMANIA                 #
 -- #       LOADING t_fac_answer_incoming       #
 -- #############################################
 
@@ -9931,17 +9931,17 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #    LOADING t_fac_paidad_user_payment      #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment;
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
 
-create table crm_integration_anlt.tmp_ro_load_paidad_user_payment 
-distkey(opr_paidad_user_payment)
-sortkey(opr_paidad_user_payment, dml_type, cod_source_system)
+create table crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1 
+distkey(opr_atlas_user)
+sortkey(opr_atlas_user, opr_paidad_user_payment, dml_type, cod_source_system)
 as
-  select source.*, coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index, coalesce(lkp_ad.cod_ad,-2) cod_ad, coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+  select source.*, coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index, coalesce(lkp_ad.cod_ad,-2) cod_ad
 	from
 		(
 	  select
@@ -10135,20 +10135,34 @@ as
     and source_table.rn = 1
 ) source,
 	crm_integration_anlt.t_lkp_paidad_index lkp_paidad_index,
-	crm_integration_anlt.t_lkp_ad lkp_ad,
-	crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+	crm_integration_anlt.t_lkp_ad lkp_ad
 where
 	coalesce(source.opr_paidad_index,-1) = lkp_paidad_index.opr_paidad_index(+)
 	and source.cod_source_system = lkp_paidad_index.cod_source_system(+) -- new
     and lkp_paidad_index.valid_to(+) = 20991231
     and coalesce(source.opr_ad,-1) = lkp_ad.opr_ad(+)
 	and source.cod_source_system = lkp_ad.cod_source_system(+) -- new
-    and lkp_ad.valid_to(+) = 20991231
-    and coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
-	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+    and lkp_ad.valid_to(+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
+
+create table crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
+distkey(opr_paidad_user_payment)
+sortkey(opr_paidad_user_payment, dml_type, cod_source_system)
+as
+	select
+		source.*, coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+	from
+		crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1 source,
+		crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+	where
+    coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+		and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
     and lkp_atlas_user.valid_to(+) = 20991231;
 
-analyze crm_integration_anlt.tmp_ro_load_paidad_user_payment;
+analyze crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
 	
 	--$$$
 	
@@ -10157,7 +10171,7 @@ insert into crm_integration_anlt.t_hst_paidad_user_payment
       target.*
     from
       crm_integration_anlt.t_fac_paidad_user_payment target,
-      crm_integration_anlt.tmp_ro_load_paidad_user_payment source
+      crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2 source
     where
       target.cod_paidad_user_payment = source.cod_paidad_user_payment
       and source.dml_type = 'U';
@@ -10165,9 +10179,9 @@ insert into crm_integration_anlt.t_hst_paidad_user_payment
 	--$$$
 	
 delete from crm_integration_anlt.t_fac_paidad_user_payment
-using crm_integration_anlt.tmp_ro_load_paidad_user_payment
-where crm_integration_anlt.t_fac_paidad_user_payment.cod_paidad_user_payment=crm_integration_anlt.tmp_ro_load_paidad_user_payment.cod_paidad_user_payment
-and crm_integration_anlt.tmp_ro_load_paidad_user_payment.dml_type = 'U';
+using crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
+where crm_integration_anlt.t_fac_paidad_user_payment.cod_paidad_user_payment=crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2.cod_paidad_user_payment
+and crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2.dml_type = 'U';
 
 	--$$$
 	
@@ -10205,7 +10219,7 @@ insert into crm_integration_anlt.t_fac_paidad_user_payment
 	  hash_paidad_user_payment,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_ro_load_paidad_user_payment
+      crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
     where
       dml_type in ('U','I');
 
@@ -10248,7 +10262,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_paidad_user_payment),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -10269,7 +10283,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
-drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment;
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
 
 	--$$$
 	
@@ -10327,7 +10342,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #       LOADING t_fac_payment_session       #
 -- #############################################
 
@@ -10658,21 +10673,20 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - ROMANIA               #
 -- #       LOADING t_fac_payment_basket        #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket;
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step1;
 
-create table crm_integration_anlt.tmp_ro_load_payment_basket 
-distkey(cod_payment_basket)
-sortkey(cod_payment_basket, dml_type, cod_source_system)
+create table crm_integration_anlt.tmp_ro_load_payment_basket_step1 
+distkey(opr_atlas_user)
+sortkey(opr_atlas_user, cod_payment_basket, dml_type, cod_source_system)
 as
   select source.*,
     coalesce(lkp_payment_session.cod_payment_session,-2) cod_payment_session,
     coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index,
-    coalesce(lkp_ad.cod_ad,-2) cod_ad,
-    coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+    coalesce(lkp_ad.cod_ad,-2) cod_ad
   from
     (
 	select
@@ -10838,8 +10852,7 @@ as
 ) source,
     crm_integration_anlt.t_fac_payment_session lkp_payment_session,
     crm_integration_anlt.t_lkp_paidad_index lkp_paidad_index,
-    crm_integration_anlt.t_lkp_ad lkp_ad,
-    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+    crm_integration_anlt.t_lkp_ad lkp_ad
   where
     coalesce(source.opr_payment_session,-1) = lkp_payment_session.opr_payment_session (+)
 	and source.cod_source_system = lkp_payment_session.cod_source_system (+) -- new
@@ -10848,12 +10861,27 @@ as
     and lkp_paidad_index.valid_to (+) = 20991231
     and coalesce(source.opr_ad,-1) = lkp_ad.opr_ad (+)
 	and source.cod_source_system = lkp_ad.cod_source_system (+) -- new
-    and lkp_ad.valid_to (+) = 20991231
-    and coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+    and lkp_ad.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_payment_basket_step1;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step2;
+
+create table crm_integration_anlt.tmp_ro_load_payment_basket_step2
+distkey(cod_payment_basket)
+sortkey(cod_payment_basket, dml_type, cod_source_system)
+as
+select
+	source.*, coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+from
+	crm_integration_anlt.tmp_ro_load_payment_basket_step1 source,
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+where
+	coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
 	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
     and lkp_atlas_user.valid_to (+) = 20991231;
-
-analyze crm_integration_anlt.tmp_ro_load_payment_basket;
+	
+analyze crm_integration_anlt.tmp_ro_load_payment_basket_step2;
 	
 	--$$$
 	
@@ -10862,7 +10890,7 @@ insert into crm_integration_anlt.t_hst_payment_basket
       target.*
     from
       crm_integration_anlt.t_fac_payment_basket target,
-      crm_integration_anlt.tmp_ro_load_payment_basket source
+      crm_integration_anlt.tmp_ro_load_payment_basket_step2 source
     where
       target.cod_payment_basket = source.cod_payment_basket
       and source.dml_type = 'U';
@@ -10870,9 +10898,9 @@ insert into crm_integration_anlt.t_hst_payment_basket
 	--$$$
 	
 delete from crm_integration_anlt.t_fac_payment_basket
-using crm_integration_anlt.tmp_ro_load_payment_basket
-where crm_integration_anlt.t_fac_payment_basket.cod_payment_basket=crm_integration_anlt.tmp_ro_load_payment_basket.cod_payment_basket
-and crm_integration_anlt.tmp_ro_load_payment_basket.dml_type = 'U';
+using crm_integration_anlt.tmp_ro_load_payment_basket_step2
+where crm_integration_anlt.t_fac_payment_basket.cod_payment_basket=crm_integration_anlt.tmp_ro_load_payment_basket_step2.cod_payment_basket
+and crm_integration_anlt.tmp_ro_load_payment_basket_step2.dml_type = 'U';
 
 	--$$$
 	
@@ -10906,7 +10934,7 @@ insert into crm_integration_anlt.t_fac_payment_basket
       hash_payment_basket,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_ro_load_payment_basket
+      crm_integration_anlt.tmp_ro_load_payment_basket_step2
     where
       dml_type in ('U','I');
 
@@ -10949,7 +10977,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_payment_basket),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_payment_basket_step2),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -10970,7 +10998,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
-drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket;
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step1;
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step2;
 
 	--$$$
 	
@@ -11028,7 +11057,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- #     HYDRA - PORTUGAL                      #
+-- #     HYDRA - ROMANIA                       #
 -- #       LOADING t_fac_web                   #
 -- #############################################
 
@@ -11244,8 +11273,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
     (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution)
   where
     cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 4
-	and ind_active = 1; -- Portugal
+    and cod_country = 4 -- Romania
+	and ind_active = 1;
 
 -- #######################
 -- ####    PASSO 8    ####
@@ -11255,5 +11284,5 @@ update crm_integration_anlt.t_rel_scai_country_integration
       cod_status = 1 -- Ok
 where
     cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 4
-	and ind_active = 1; -- Portugal
+    and cod_country = 4 -- Romania
+	and ind_active = 1; 

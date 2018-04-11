@@ -91,7 +91,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$	
 
 -- #############################################
--- # 			 BASE - Portugal               #
+-- # 			 BASE - Poland                 #
 -- #		 LOADING t_lkp_base_source         #
 -- #############################################
 
@@ -342,8 +342,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$
 	
 -- #############################################
--- # 			 BASE - Portugal               #
--- #		 LOADING t_lkp_base_user          #
+-- # 			 BASE - Poland                 #
+-- #		 LOADING t_lkp_base_user           #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_base_user;
@@ -434,7 +434,7 @@ as
   where
     coalesce(source_table.opr_base_user,-1) = target.opr_base_user(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231; -- Portugal
+    and target.valid_to(+) = 20991231; -- Poland
 
 analyze crm_integration_anlt.tmp_pl_load_base_user;
 
@@ -602,7 +602,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 --$$$
 	
 -- #############################################
--- # 			  BASE - Portugal              #
+-- # 			  BASE - Poland                #
 -- #		    LOADING t_lkp_task             #
 -- #############################################
 
@@ -885,7 +885,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$ -- 20
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Poland                #
 -- #        LOADING t_lkp_call_outcome         #
 -- #############################################
 
@@ -1137,7 +1137,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     BASE - PORTUGAL               #
+-- # 		     BASE - POLAND                 #
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
@@ -1492,7 +1492,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	     BASE - Portugal                   #
+-- # 	     BASE - Poland                     #
 -- #       LOADING t_lkp_custom_field          #
 -- #############################################
 
@@ -1737,7 +1737,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	  BASE - Portugal                      #
+-- # 	  BASE - Poland                        #
 -- #    LOADING t_rel_contact_custom_field     #
 -- #############################################
 
@@ -1953,8 +1953,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_lkp_lead             #
+-- # 	          BASE - Poland                #
+-- #           LOADING t_lkp_lead              #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_lead;
@@ -2281,7 +2281,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Poland                #
 -- #        LOADING t_lkp_loss_reason          #
 -- #############################################
 
@@ -2531,7 +2531,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Poland                #
 -- #		   LOADING t_lkp_pipeline          #
 -- #############################################
 
@@ -2777,7 +2777,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Poland                #
 -- #		   LOADING t_lkp_stage             #
 -- #############################################
 
@@ -3034,7 +3034,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
+-- # 	          BASE - Poland                #
 -- #           LOADING t_lkp_deal              #
 -- #############################################
 
@@ -3375,8 +3375,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_fac_call             #
+-- # 	          BASE - Poland                #
+-- #           LOADING t_fac_call              #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_calls;
@@ -3812,8 +3812,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #           LOADING t_fac_order            #
+-- # 	          BASE - Poland                #
+-- #           LOADING t_fac_order             #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_orders;
@@ -4059,8 +4059,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 	          BASE - Portugal              #
--- #      LOADING t_fac_order_line_item       #
+-- # 	          BASE - Poland                #
+-- #      LOADING t_fac_order_line_item        #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_order_line_items;
@@ -4334,13 +4334,13 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #          LOADING t_lkp_category           #
 -- #############################################
 
 drop table if exists crm_integration_anlt.tmp_pl_load_category;
 
-create table crm_integration_anlt.tmp_pl_load_category 
+create table crm_integration_anlt.tmp_pl_load_category
 distkey(cod_source_system)
 sortkey(cod_category, opr_category)
 as
@@ -4903,30 +4903,30 @@ as
 		'olxpl' opr_source_system,
 		operation_type,
 		operation_timestamp,
-		null dsc_category_pl,
+		name_pl dsc_category_pl,
 		null dsc_category_pt, -- não existe de todo
 		null dsc_category_en,
-		name_ro dsc_category_ro,
+		null dsc_category_ro,
 		null dsc_category_ru, -- não existe de todo
 		null dsc_category_hi, -- não existe de todo
 		null dsc_category_uk, -- não existe de todo
 		parent_id opr_category_parent,
 		code category_code,
-		null offer_name_pl,
+		offer_name_pl,
 		null offer_name_en,
-		null seek_name_pl,
+		seek_name_pl,
 		null seek_name_en,
-		null private_name_pl,
+		private_name_pl,
 		null private_name_en,
-		null private_name_adding_pl,
+		private_name_adding_pl,
 		null private_name_adding_en,
-		null business_name_pl,
+		business_name_pl,
 		null business_name_en,
-		null business_name_adding_pl,
+		business_name_adding_pl,
 		null business_name_adding_en,
-		null offer_name_adding_pl,
+		offer_name_adding_pl,
 		null offer_name_adding_en,
-		null seek_name_adding_pl,
+		seek_name_adding_pl,
 		null seek_name_adding_en,
 		premoderated flg_premoderated,
 		display_order,
@@ -4936,7 +4936,7 @@ as
 		max_photos,
 		extend_days,
 		null default_currency,
-		null filter_label_pl,
+		filter_label_pl,
 		null filter_label_en,
 		search_category,
 		search_args,
@@ -4946,7 +4946,7 @@ as
 		rmoderation_hotkey,
 		rmoderation_block_new_price flg_rmoderation_block_new_price,
 		rmoderation_can_accept_automaticly flg_rmoderation_can_accept_automatically,
-		null address_label_pl,
+		address_label_pl,
 		null address_label_en,
 		meta_category_id cod_category_meta, -- SERGIO ALERTA
 		topads_count,
@@ -5000,20 +5000,20 @@ as
 		null dsc_category_singular_ro,
 		null dsc_category_singular_ru, -- não existe de todo
 		null dsc_category_singular_uk, -- não existe de todo
-		seek_name_ro,
-		seek_name_adding_ro,
-		private_name_ro,
-		private_name_adding_ro,
-		offer_name_ro,
-		offer_name_adding_ro,
-		name_ro,
+		null seek_name_ro,
+		null seek_name_adding_ro,
+		null private_name_ro,
+		null private_name_adding_ro,
+		null offer_name_ro,
+		null offer_name_adding_ro,
+		null name_ro,
 		null dsc_category_long_ro,
 		null dsc_category_long_ru, -- não existe de todo
 		null dsc_category_long_uk, -- não existe de todo
-		filter_label_ro,
-		business_name_ro,
-		business_name_adding_ro,
-		address_label_ro,
+		null filter_label_ro,
+		null business_name_ro,
+		null business_name_adding_ro,
+		null address_label_ro,
 		null genitive_name_pl,
 		null short_name_pl,
 		null short_name_with_pronoun_pl,
@@ -5429,7 +5429,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #		LOADING t_lkp_paidad_index  	   #
 -- #############################################
 
@@ -5605,10 +5605,10 @@ select
 		   operation_timestamp,
            code paidad_index_code,
           type opr_paidad_index_type,
-           null name_pl,
+           name_pl,
            null name_en,
            null name_pt,
-           name_ro,
+           null name_ro,
            null name_ru,
            null name_uk,
            null name_hi,
@@ -6057,13 +6057,13 @@ as
 		id opr_region,
         null dsc_region_pt,
         null dsc_region_en,
-        null dsc_region_pl,
-        name_ro dsc_region_ro,
+        name_pl dsc_region_pl,
+        null dsc_region_ro,
         null dsc_region_ru,
         null dsc_region_hi,
         'olxpl' opr_source_system,
-		    operation_timestamp,
-		    operation_type,
+		operation_timestamp,
+		operation_type,
         code,
         domain,
         lon,
@@ -6072,26 +6072,26 @@ as
         zoom,
         null locative_pt,
         null locative_en,
-        null locative_pl,
-        locative_ro,
+        locative_pl,
+        null locative_ro,
         null locative_ru,
         null locative_hi,
         null possessive_pt,
         null possessive_en,
-        null possessive_pl,
-        possessive_ro,
+        possessive_pl,
+        null possessive_ro,
         null possessive_ru,
         null possessive_hi,
         null search_combo_label_pt,
         null search_combo_label_en,
-        null search_combo_label_pl,
-        search_combo_label_ro,
+        search_combo_label_pl,
+        null search_combo_label_ro,
         null search_combo_label_ru,
         null search_combo_label_hi,
         null aliases_pt,
         null aliases_en,
-        null aliases_pl,
-        aliases_ro,
+        aliases_pl,
+        null aliases_ro,
         null aliases_ru,
         null aliases_hi,
         null country_id,
@@ -6834,11 +6834,11 @@ as
 		'olxpl' opr_source_system,
 		a.operation_timestamp,
 		a.operation_type,
-		null dsc_city_pl,
-		a.name_ro dsc_city_en,
+		a.name_pl dsc_city_pl,
+		a.name_pl dsc_city_en,
 		a.url,
 		a.county,
-		a.municipality_ro municipality,
+		a.municipality_pl municipality,
 		a.is_unique flg_unique,
 		a.zip,
 		a.city_id,
@@ -7079,7 +7079,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		      ATLAS - PORTUGAL             #
+-- # 		      ATLAS - POLAND               #
 -- #	      LOADING t_lkp_atlas_user     	   #
 -- #############################################
 
@@ -7446,9 +7446,9 @@ select a.*, coalesce(b.cod_city,-2) cod_city from (
 		bonus_credits_expire_at,
 		hermes_dirty,
 		uses_crm flg_uses_crm,
-		sms_verification_phone,
-		sms_verification_status,
-		sms_verification_code,
+		null sms_verification_phone,
+		null sms_verification_status,
+		null sms_verification_code,
     scai_execution.cod_execution
 	  FROM
 		crm_integration_stg.stg_pl_db_atlas_olxpl_users,
@@ -7709,7 +7709,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and rel_country_integr.cod_country = 2 -- Portugal
+    and rel_country_integr.cod_country = 2 -- Poland
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
@@ -7721,7 +7721,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
   --$$$
 
 -- ##########################################################
--- #        ATLAS / BASE - ROMANIA                          #
+-- #        ATLAS / BASE - POLAND                          #
 -- #        LOADING t_lkp_contact - Update COD_ATLAS_USER   #
 -- ##########################################################
 
@@ -7752,10 +7752,10 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 10
+      atlas_user.cod_source_system = 9
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-      and base_contact.cod_source_system = 20
+      and base_contact.cod_source_system = 13
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
@@ -7763,7 +7763,7 @@ where
   and t_lkp_contact.valid_from = source.valid_from
   and t_lkp_contact.cod_source_system = source.cod_source_system;
 
--- Updating BASE CONTACT - Autovit
+-- Updating BASE CONTACT - Otomoto
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = source.cod_atlas_user
 from
@@ -7790,10 +7790,10 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 5
+      atlas_user.cod_source_system = 7
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-      and base_contact.cod_source_system = 18
+      and base_contact.cod_source_system = 12
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
@@ -7801,7 +7801,7 @@ where
   and t_lkp_contact.valid_from = source.valid_from
   and t_lkp_contact.cod_source_system = source.cod_source_system;
 
--- Updating BASE CONTACT - Storia
+-- Updating BASE CONTACT - Otodom
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = source.cod_atlas_user
 from
@@ -7828,10 +7828,10 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 1
+      atlas_user.cod_source_system = 6
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-      and base_contact.cod_source_system = 19
+      and base_contact.cod_source_system = 14
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
@@ -7882,7 +7882,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and rel_country_integr.cod_country = 2 -- Portugal
+    and rel_country_integr.cod_country = 2 -- Poland
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
@@ -7960,7 +7960,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 		
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #             LOADING t_lkp_ad              #
 -- #############################################
 
@@ -8154,7 +8154,7 @@ SELECT
 				riak_validate,
 				riak_sizes,
 				paidads_valid_to,
-				ad_homepage_to,
+				cast(null as timestamp) ad_homepage_to,
 				cast(null as timestamp) ad_bighomepage_to,
 				coalesce(rmoderation_status,'Unknown') opr_rmoderation_status,
 				rmoderation_ranking,
@@ -9220,7 +9220,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		   ATLAS - PORTUGAL                #
+-- # 		   ATLAS - POLAND                  #
 -- #       LOADING t_fac_answer_outgoing       #
 -- #############################################
 
@@ -9575,7 +9575,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 
 -- #############################################
--- # 		   ATLAS - PORTUGAL                #
+-- # 		   ATLAS - POLAND                  #
 -- #       LOADING t_fac_answer_incoming       #
 -- #############################################
 
@@ -9931,7 +9931,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #    LOADING t_fac_paidad_user_payment      #
 -- #############################################
 
@@ -10327,7 +10327,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #       LOADING t_fac_payment_session       #
 -- #############################################
 
@@ -10658,7 +10658,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- # 		     ATLAS - PORTUGAL              #
+-- # 		     ATLAS - POLAND                #
 -- #       LOADING t_fac_payment_basket        #
 -- #############################################
 
@@ -11028,7 +11028,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	--$$$
 	
 -- #############################################
--- #     HYDRA - PORTUGAL                      #
+-- #     HYDRA - POLAND                        #
 -- #       LOADING t_fac_web                   #
 -- #############################################
 
@@ -11244,8 +11244,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
     (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution)
   where
     cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 2
-	and ind_active = 1; -- Portugal
+    and cod_country = 2 -- Poland
+	and ind_active = 1;
 
 -- #######################
 -- ####    PASSO 8    ####
@@ -11255,5 +11255,5 @@ update crm_integration_anlt.t_rel_scai_country_integration
       cod_status = 1 -- Ok
 where
     cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 2
-	and ind_active = 1; -- Portugal
+    and cod_country = 2 -- Poland
+	and ind_active = 1;
