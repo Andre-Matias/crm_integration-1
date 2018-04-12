@@ -70,7 +70,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 	name = "/home/ubuntu/Reports/contacts_"
 	while 1:
 		
-		if(aux == 800): sleep(10)
+		sleep(1)
 		print("Getting page #" +str(aux)) 
 		data = client.contacts.list(page = aux, per_page = 100)
 
