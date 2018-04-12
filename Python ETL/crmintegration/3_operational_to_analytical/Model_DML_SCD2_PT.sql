@@ -5494,6 +5494,7 @@ select
     source_table.free_refresh_frequency,
     source_table.makes_account_premium,
     source_table.recurrencies,
+	target.flg_aut_deal_exclude,
     source_table.cod_execution,
     case
       --when target.cod_paidad_index is null then 'I'
@@ -5764,6 +5765,7 @@ insert into crm_integration_anlt.t_lkp_paidad_index
       cast(recurrencies as bigint)            recurrencies,
       cod_source_system,
       hash_paidad_index,
+	  flg_aut_deal_exclude,
 	  cod_execution
     from
       crm_integration_anlt.tmp_pt_load_paidad_index
