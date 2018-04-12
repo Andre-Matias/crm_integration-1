@@ -1,0 +1,45 @@
+node {
+    try {
+        stage('checkout code') {
+
+            // Get fresh code from our GitHub repository for job logic
+                dir('eu-yamato') {
+                    git url: 'git@github.com:naspersclassifieds-regional/eu-yamato.git'
+                }
+
+        }
+
+        stage('load data') {
+            sh "python3.6 eu-yamato/tools/spedytor/code/spedytor.py --date_from brak --date_to brak --run_mode R --source yamato --target yamato --target_table brak --s3prefix brak --s3prefixsub brak --filename brak --credentials brak --sql 'eu-yamato/layers/operational/fact/fact_listings/ETL - Run listing fact.sql' --sql_columns brak --force_date_hierarchy N --slack_login \"\" --hive_columns_types brak --extra RunAsAdmin" 
+        }
+
+        stage('load data. without row_number') {
+            sh "python3.6 eu-yamato/tools/spedytor/code/spedytor.py --date_from brak --date_to brak --run_mode R --source yamato --target yamato --target_table brak --s3prefix brak --s3prefixsub brak --filename brak --credentials brak --sql 'eu-yamato/layers/operational/fact/fact_listings/ETL - Run listing fact with duplicates.sql' --sql_columns brak --force_date_hierarchy N --slack_login \"\" --hive_columns_types brak --extra RunAsAdmin" 
+        }
+
+        stage('Pagerduty') {
+            mail (
+                from: 'noreply@onap.io',
+                to: 'miguel.chin@olx.com',
+            /*subject: "PASS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",*/
+                subject: "Successful job: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "ETL has finished successfully! ",
+                mimeType:'text/html');
+            deleteDir()
+        }
+    }
+    catch (err){
+        stage 'Pagerduty'
+        mail (
+            from: 'noreply@onap.io',
+            to: 'miguel.chin@olx.com',
+            subject: "Failed job: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "It appears that ${env.BUILD_URL} is failing, somebody should do something about that",
+            mimeType:'text/html'
+            );
+        currentBuild.result = 'FAILURE'
+        deleteDir()
+    }
+}
+
+
