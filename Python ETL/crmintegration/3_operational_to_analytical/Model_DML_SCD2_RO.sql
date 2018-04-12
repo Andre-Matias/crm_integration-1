@@ -5763,9 +5763,9 @@ insert into crm_integration_anlt.t_lkp_paidad_index
       cast(free_refresh_frequency as bigint)            free_refresh_frequency,
       cast(makes_account_premium as bigint)            makes_account_premium,
       cast(recurrencies as bigint)            recurrencies,
+	  flg_aut_deal_exclude,
       cod_source_system,
       hash_paidad_index,
-	  flg_aut_deal_exclude,
 	  cod_execution
     from
       crm_integration_anlt.tmp_ro_load_paidad_index
