@@ -678,16 +678,16 @@ from
       (
         select
           a.cod_atlas_user,
-          h.opr_atlas_user,
+          --h.opr_atlas_user,
           h.dsc_atlas_user,
-          a.cod_payment_basket,
+          --a.cod_payment_basket,
           d.dsc_source_system,
-          b.last_status_date,
-          c.paidad_index_code,
-          i.val_price price_user_payment,
-          a.price price_basket,
+          --b.last_status_date,
+          --c.paidad_index_code,
+          --i.val_price price_user_payment,
+          --a.price price_basket,
           i.val_current_credits,
-          a.from_account,
+          --a.from_account,
           a.from_bonus_credits,
           a.from_refund_credits,
           row_number() over (partition by a.cod_atlas_user order by last_status_date desc) rn
@@ -700,7 +700,21 @@ from
           crm_integration_anlt.t_lkp_payment_status f,
           crm_integration_anlt.t_lkp_payment_provider g,
           crm_integration_anlt.t_lkp_atlas_user h,
-          crm_integration_anlt.t_fac_paidad_user_payment i
+          (
+            SELECT
+              *
+            FROM
+              (
+                SELECT
+                  fac.opr_payment_session,
+                  fac.cod_source_system,
+                  fac.val_current_credits,
+                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+                FROM
+                  crm_integration_anlt.t_fac_paidad_user_payment fac
+            )
+          WHERE rn = 1
+          ) i
         where
           a.cod_source_system = b.cod_source_system
           and a.cod_payment_session = b.cod_payment_session
@@ -718,10 +732,8 @@ from
           and a.cod_source_system = 8
           and h.valid_to = 20991231
           and lower(f.dsc_payment_status) = 'finished'
-          and lower(g.dsc_payment_provider) != 'admin'
-          and lower(h.type) not like 'topup%'
+          and lower(g.dsc_payment_provider) not in ('admin','volume')
           and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
-          --and h.opr_atlas_user in (1808696,11758671,22914719)
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
       crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -743,7 +755,7 @@ from
       and base_contact.cod_source_system = 16
       and scai.cod_integration = 50000
       and (inner_core.rn = 1 or inner_core.rn is null)
-			and scai.cod_country = 1
+      and scai.cod_country = 1
   ) core,
  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
