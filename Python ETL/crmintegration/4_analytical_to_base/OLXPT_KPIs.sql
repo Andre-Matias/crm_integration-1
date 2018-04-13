@@ -732,7 +732,8 @@ from
           and a.cod_source_system = 8
           and h.valid_to = 20991231
           and lower(f.dsc_payment_status) = 'finished'
-          and lower(g.dsc_payment_provider) not in ('admin','volume')
+          and lower(g.dsc_payment_provider) != 'admin'
+          and lower(h.type) not like 'topup%'
           and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
@@ -1754,17 +1755,17 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue as
 				(
 				select
 					a.cod_atlas_user,
-					h.opr_atlas_user,
+					--h.opr_atlas_user,
 					h.dsc_atlas_user,
-					a.cod_payment_basket,
-					d.dsc_source_system,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
 					b.last_status_date,
 					e.cod_index_type,
-					c.paidad_index_code,
-					i.val_price price_user_payment,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
 					a.price price_basket,
-					i.val_current_credits,
-					a.from_account,
+					--i.val_current_credits,
+					--a.from_account,
 					a.from_bonus_credits,
 					a.from_refund_credits
 				from
@@ -1776,7 +1777,21 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue as
 					crm_integration_anlt.t_lkp_payment_status f,
 					crm_integration_anlt.t_lkp_payment_provider g,
 					crm_integration_anlt.t_lkp_atlas_user h,
-					crm_integration_anlt.t_fac_paidad_user_payment i
+					(
+						SELECT
+						  *
+						FROM
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
+					) i
 				where
 					a.cod_source_system = b.cod_source_system
 					and a.cod_payment_session = b.cod_payment_session
@@ -1810,7 +1825,7 @@ where
 	and base_contact.valid_to = 20991231
 	and base_contact.cod_source_system = 16
 	and scai.cod_integration = 50000
-  and scai.cod_country = 1;
+	and scai.cod_country = 1;
 
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)

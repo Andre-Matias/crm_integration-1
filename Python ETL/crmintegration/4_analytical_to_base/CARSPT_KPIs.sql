@@ -1468,16 +1468,16 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
 						(
 				select
 					a.cod_atlas_user,
-					h.opr_atlas_user,
+					--h.opr_atlas_user,
 					h.dsc_atlas_user,
-					a.cod_payment_basket,
-					d.dsc_source_system,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
 					b.last_status_date,
 					e.cod_index_type,
-					c.paidad_index_code,
-					i.val_price price_user_payment,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
 					a.price price_basket,
-					i.val_current_credits,
+					--i.val_current_credits,
 					a.from_account,
 					a.from_bonus_credits,
 					a.from_refund_credits
@@ -1490,7 +1490,21 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
 					crm_integration_anlt.t_lkp_payment_status f,
 					crm_integration_anlt.t_lkp_payment_provider g,
 					crm_integration_anlt.t_lkp_atlas_user h,
-					crm_integration_anlt.t_fac_paidad_user_payment i
+					(
+						SELECT
+						  *
+						FROM
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
+					) i
 				where
 					a.cod_source_system = b.cod_source_system
 					and a.cod_payment_session = b.cod_payment_session
