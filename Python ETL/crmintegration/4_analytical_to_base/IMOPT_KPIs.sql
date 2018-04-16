@@ -1138,7 +1138,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies;
 
---$$$
+/*$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (# Views)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_views as
@@ -1236,7 +1236,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_views;
 
---$$$
+$$*/
 
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Expiry Date)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date as

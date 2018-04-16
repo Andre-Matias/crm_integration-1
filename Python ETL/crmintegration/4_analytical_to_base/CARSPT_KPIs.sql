@@ -1165,13 +1165,24 @@ from
           lkp_contact.cod_source_system,
           cast(sum(nbr_occurrences) as varchar) custom_field_value
         from
-          crm_integration_anlt.t_fac_web fac,
+          (
+            select
+              *
+            from
+              crm_integration_anlt.t_fac_web
+            where
+              cod_source_system = 4
+              and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+              and cod_event = 170
+          ) fac,
           crm_integration_anlt.t_lkp_ad lkp,
           crm_integration_anlt.t_lkp_atlas_user lkp_user,
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
         where
           lkp_user.cod_source_system = 4
+          and lkp_user.cod_source_system = fac.cod_source_system
+          and lkp_user.cod_source_system = lkp.cod_source_system
           and lkp_contact.cod_source_system = 15
           and fac.cod_ad = lkp.cod_ad
           and lkp.valid_to = 20991231
@@ -1180,9 +1191,7 @@ from
           and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
           and lkp_contact.valid_to = 20991231
           and scai.cod_integration = 50000
-          and cod_event = 170
-          and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
-					and scai.cod_country = 1
+          and scai.cod_country = 1
         group by
           lkp_contact.cod_contact,
           scai.dat_processing,
@@ -1207,8 +1216,8 @@ from
       and b.valid_to = 20991231
       and b.cod_source_system = 15
       and scai.cod_integration = 50000
-	  	and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 1
+	  and kpi_custom_field.flg_active = 1
+		and scai.cod_country = 1
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)

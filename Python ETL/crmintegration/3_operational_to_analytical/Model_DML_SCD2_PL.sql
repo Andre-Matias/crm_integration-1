@@ -5494,6 +5494,7 @@ select
     source_table.free_refresh_frequency,
     source_table.makes_account_premium,
     source_table.recurrencies,
+	target.flg_aut_deal_exclude,
     source_table.cod_execution,
     case
       --when target.cod_paidad_index is null then 'I'
@@ -5762,6 +5763,7 @@ insert into crm_integration_anlt.t_lkp_paidad_index
       cast(free_refresh_frequency as bigint)            free_refresh_frequency,
       cast(makes_account_premium as bigint)            makes_account_premium,
       cast(recurrencies as bigint)            recurrencies,
+	  flg_aut_deal_exclude,
       cod_source_system,
       hash_paidad_index,
 	  cod_execution
@@ -9165,7 +9167,7 @@ drop table if exists crm_integration_anlt.tmp_pl_load_ad_aux_horz;
 
 	--$$$
 
-
+/*
 -- #######################
 -- ####    PASSO 3    ####
 -- #######################
@@ -9216,14 +9218,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_outgoing';
-
+*/
 	--$$$
 	
 -- #############################################
 -- # 		   ATLAS - POLAND                  #
 -- #       LOADING t_fac_answer_outgoing       #
 -- #############################################
-
+/*
 create table crm_integration_anlt.tmp_pl_load_answer_step1_outgoing
 distkey(opr_atlas_user_receiver)
 sortkey(opr_atlas_user_receiver, opr_source, cod_source_system)
@@ -9331,9 +9333,9 @@ as
 );
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step1_outgoing;
-
+*/
 --$$$
-
+/*
 create table crm_integration_anlt.tmp_pl_load_answer_step2_outgoing
 distkey(opr_ad)
 sortkey(opr_ad, cod_source_system)
@@ -9376,9 +9378,9 @@ as
   and lkp_source.valid_to = 20991231;
  
 analyze crm_integration_anlt.tmp_pl_load_answer_step2_outgoing;
- 
+*/
 --$$$
- 
+/* 
 create table crm_integration_anlt.tmp_pl_load_answer_step3_outgoing
 distkey(opr_answer)
 sortkey(opr_answer, cod_source_system)
@@ -9416,9 +9418,9 @@ as
     and lkp_ad.valid_to = 20991231;
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step3_outgoing;
-	
+*/	
 	--$$$
-	
+/*	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step3_outgoing)
@@ -9427,9 +9429,9 @@ and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select dist
 delete from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step3_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pl_load_answer_step3_outgoing);
-
+*/
 --$$$ -- 140
-
+/*
 insert into crm_integration_anlt.t_fac_answer_outgoing
     select
       max_cod + new_cod cod_answer,
@@ -9504,7 +9506,7 @@ last_processing_datetime = coalesce((select max(operation_timestamp) from crm_in
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_country = 2
-  ) source*/
+  ) source*//*
 from crm_integration_anlt.t_lkp_scai_process proc 
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
@@ -9513,14 +9515,14 @@ and proc.dsc_process_short = 't_fac_answer_outgoing'
 and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
-and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*//*;
 
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step1_outgoing;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step2_outgoing;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step3_outgoing;
-
+*/
 	--$$$
-	
+/*	
 -- #######################
 -- ####    PASSO 3    ####
 -- #######################
@@ -9571,14 +9573,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_incoming';
-
+*/
 	--$$$
 
 -- #############################################
 -- # 		   ATLAS - POLAND                  #
 -- #       LOADING t_fac_answer_incoming       #
 -- #############################################
-
+/*
 create table crm_integration_anlt.tmp_pl_load_answer_step1_incoming
 distkey(opr_atlas_user_sender)
 sortkey(opr_atlas_user_sender, opr_source, cod_source_system)
@@ -9686,9 +9688,9 @@ as
 );
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step1_incoming;
-
+*/
 --$$$
-
+/*
 create table crm_integration_anlt.tmp_pl_load_answer_step2_incoming
 distkey(opr_ad)
 sortkey(opr_ad, cod_source_system)
@@ -9730,9 +9732,9 @@ as
     and lkp_source.valid_to = 20991231;
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step2_incoming;
-	
+*/	
 	--$$$
-
+/*
 create table crm_integration_anlt.tmp_pl_load_answer_step3_incoming
 distkey(opr_answer)
 sortkey(opr_answer, cod_source_system)
@@ -9770,9 +9772,9 @@ as
     and lkp_ad.valid_to = 20991231;
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step3_incoming;
-	
+*/	
 	--$$$
-
+/*
 insert into crm_integration_anlt.t_hst_answer_incoming
 select * from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step2_incoming)
@@ -9781,9 +9783,9 @@ and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select dist
 delete from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step2_incoming)
 and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pl_load_answer_step2_incoming);
-
+*/
 --$$$
-
+/*
 insert into crm_integration_anlt.t_fac_answer_incoming
     select
       max_cod + new_cod cod_answer,
@@ -9812,9 +9814,9 @@ insert into crm_integration_anlt.t_fac_answer_incoming
       crm_integration_anlt.tmp_pl_load_answer_step3_incoming;
 
 analyze crm_integration_anlt.t_fac_answer_incoming;
-	  
+*/	  
 	  --$$$
-
+/*
 -- #######################
 -- ####    PASSO 5    ####
 -- #######################
@@ -9860,7 +9862,7 @@ last_processing_datetime = coalesce((select max(operation_timestamp) from crm_in
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_country = 2
-  ) source*/
+  ) source*//*
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
@@ -9869,12 +9871,12 @@ and proc.dsc_process_short = 't_fac_answer_incoming'
 and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
-and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*//*;
 
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step1_incoming;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step2_incoming;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step3_incoming;
-
+*/
 	--$$$
 	
 -- #######################
