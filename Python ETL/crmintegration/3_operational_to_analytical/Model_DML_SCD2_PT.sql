@@ -8607,354 +8607,921 @@ as
 analyze crm_integration_anlt.tmp_pt_load_ad_md5_step1;
 
 
-drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2;
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_0;
 
-create table crm_integration_anlt.tmp_pt_load_ad_md5_step2
-distkey(opr_ad)
-sortkey(opr_ad, opr_source_system, opr_category, opr_city, opr_atlas_user, opr_ad_status, opr_offer_seek, opr_solr_archive_status, opr_solr_status, opr_rmoderation_status, opr_source, opr_new_used)
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_0
+--distkey(opr_ad_status)
+sortkey(opr_ad_status)
 as
-SELECT
-		source.*,
-		md5
-		(
-			coalesce(dsc_ad_title                                                            ,'') +
-			coalesce(dsc_ad                                                                  ,'') +
-			coalesce(opr_category                                                            ,0) +
-			coalesce(opr_city                                                                ,0) +
-			coalesce(opr_atlas_user                                                          ,0) +
-			--coalesce(bump_date                                                               ,'2099-12-31 00:00:00.000000') +
-			coalesce(ad_valid_to                                                             ,'2099-12-31 00:00:00.000000') +
-			coalesce(opr_ad_status                                                           ,'') +
-			coalesce(reason_id                                                               ,0) +
-			coalesce(remove_reason_details                                                   ,'') +
-			coalesce(phone                                                                   ,'') +
-			coalesce(params                                                                  ,'') +
-			coalesce(contact_form                                                            ,0) +
-			coalesce(ip                                                                      ,0) +
-			coalesce(port                                                                    ,0) +
-			coalesce(search_tags                                                             ,'') +
-			coalesce(map_address                                                             ,'') +
-			coalesce(opr_offer_seek                                                          ,'') +
-			coalesce(opr_solr_archive_status                                                 ,'') +
-			coalesce(opr_solr_status                                                         ,'') +
-			coalesce(external_partner_code                                                   ,'') +
-			coalesce(external_id                                                             ,'') +
-			coalesce(partner_offer_url                                                       ,'') +
-			coalesce(private_business                                                        ,'') +
-			coalesce(map_zoom                                                                ,0) +
-			coalesce(map_radius                                                              ,0) +
-			coalesce(skype                                                                   ,'') +
-			coalesce(gg                                                                      ,'') +
-			coalesce(person                                                                  ,'') +
-			coalesce(visible_in_profile                                                      ,0) +
-			coalesce(riak_ring                                                               ,0) +
-			coalesce(riak_key                                                                ,0) +
-			coalesce(riak_mapping                                                            ,0) +
-			coalesce(riak_order                                                              ,'') +
-			coalesce(riak_revision                                                           ,0) +
-			coalesce(riak_old                                                                ,0) +
-			coalesce(riak_validate                                                           ,0) +
-			coalesce(riak_sizes                                                              ,'') +
-			--coalesce(paidads_valid_to                                                        ,'2099-12-31 00:00:00.000000') +
-			--coalesce(ad_homepage_to                                                          ,'2099-12-31 00:00:00.000000') +
-			--coalesce(ad_bighomepage_to                                                       ,'2099-12-31 00:00:00.000000') +
-			coalesce(opr_rmoderation_status                                                  ,'') +
-			coalesce(rmoderation_ranking                                                     ,0) +
-			coalesce(rmoderation_previous_description                                        ,'') +
-			coalesce(rmoderation_reasons                                                     ,'') +
-			coalesce(rmoderation_ip_country                                                  ,'') +
-			--coalesce(rmoderation_moderation_started_at                                       ,'2099-12-31 00:00:00.000000') +
-			--coalesce(rmoderation_moderation_ended_at                                         ,'2099-12-31 00:00:00.000000') +
-			--coalesce(rmoderation_removed_at                                                  ,'2099-12-31 00:00:00.000000') +
-			coalesce(rmoderation_verified_by                                                 ,0) +
-			coalesce(rmoderation_forwarded_by                                                ,0) +
-			coalesce(rmoderation_bann_reason_id                                              ,0) +
-			coalesce(rmoderation_parent                                                      ,0) +
-			coalesce(rmoderation_duplicate_type                                              ,'') +
-			coalesce(rmoderation_markprice                                                   ,0) +
-			coalesce(rmoderation_paid                                                        ,0) +
-			coalesce(rmoderation_revision                                                    ,0) +
-			coalesce(moderation_disable_attribute                                            ,'') +
-			coalesce(opr_source                                                              ,'') +
-			coalesce(flg_net_ad_counted                                                      ,0) +
-			coalesce(flg_was_paid_for_post                                                   ,0) +
-			coalesce(flg_paid_for_post                                                    ,0) +
-			coalesce(id_legacy                                                               ,'') +
-			coalesce(email                                                                   ,'') +
-			--coalesce(highlight_to                                                            ,'2099-12-31 00:00:00.000000') +
-			coalesce(opr_new_used                                                            ,'') +
-			--coalesce(export_olx_to                                                           ,'2099-12-31 00:00:00.000000') +
-			coalesce(olx_id                                                                  ,0) +
-			coalesce(olx_image_collection_id                                                 ,0) +
-			--coalesce(migration_last_updated                                                  ,'2099-12-31 00:00:00.000000') +
-			coalesce(allegro_id                                                              ,0) +
-			coalesce(mysql_search_title                                                      ,'') +
-			coalesce(flg_autorenew                                                           ,0) +
-			coalesce(brand_program_id                                                        ,0) +
-			--coalesce(wp_to                                                                   ,'2099-12-31 00:00:00.000000') +
-			coalesce(walkaround                                                              ,'') +
-			cast(coalesce(user_quality_score                                                 ,0) as varchar) +
-			--coalesce(updated_at                                                              ,'2099-12-31 00:00:00.000000') +
-			coalesce(street_name                                                             ,'') +
-			coalesce(street_id                                                               ,0) +
-			coalesce(reference_id                                                            ,'') +
-			coalesce(punish_no_image_enabled                                                 ,0) +
-			coalesce(parent_id                                                               ,0) +
-			coalesce(panorama                                                                ,'') +
-			--coalesce(olx_last_updated                                                        ,'2099-12-31 00:00:00.000000') +
-			coalesce(mysql_search_rooms_num                                                  ,'') +
-			cast(coalesce(mysql_search_price_per_m                                           ,0) as varchar) +
-			cast(coalesce(mysql_search_price                                                 ,0) as varchar) +
-			coalesce(movie                                                                   ,'') +
-			--coalesce(mirror_to                                                               ,'2099-12-31 00:00:00.000000') +
-			coalesce(mailing_promotion_count                                                 ,0) +
-			coalesce(local_plan                                                              ,'') +
-			--coalesce(header_to                                                               ,'2099-12-31 00:00:00.000000') +
-			coalesce(header_category_id                                                      ,0) +
-			coalesce(hash                                                                    ,'') +
-			coalesce(flg_extend_automatically                                                ,0) +
-			coalesce(agent_id                                                                ,0) +
-			cast(coalesce(ad_quality_score                                                   ,0) as varchar) +
-			coalesce(view_3d                                                                 ,'') +
-			coalesce(stand_id                                                                ,0) +
-			cast(coalesce(map_lat                                                            ,0) as varchar) +
-			cast(coalesce(map_lon                                                            ,0) as varchar) +
-			cast(coalesce(mysql_search_m                                                     ,0) as varchar) +
-			coalesce(accurate_location                                                       ,0) +
-			--coalesce(created_at_pushup                                                       ,'2099-12-31 00:00:00.000000') +
-			coalesce(overlimit                                                               ,'') +
-			coalesce(net_ad_counted                                                          ,0) +
-			coalesce(was_paid_for_post                                                       ,0) +
-			coalesce(is_paid_for_post                                                        ,0) +
-			coalesce(hermes_dirty                                                            ,0) +
-			coalesce(hide_adverts                                                            ,0) +
-			coalesce(urgent                                                                  ,0) +
-			--coalesce(highlight                                                               ,'2099-12-31 00:00:00.000000') +
-			--coalesce(topads_to                                                               ,'2099-12-31 00:00:00.000000') +
-			--coalesce(topads_reminded_at                                                      ,'2099-12-31 00:00:00.000000') +
-			--coalesce(urgent_to                                                               ,'2099-12-31 00:00:00.000000') +
-			coalesce(pushup_recurrencies                                                     ,0)
-			--coalesce(pushup_next_recurrency                                                  ,'2099-12-31 00:00:00.000000') +
-			--coalesce(image_upload_monetization_to                                            ,'2099-12-31 00:00:00.000000')
-	    ) hash_ad
-	  FROM
-		crm_integration_anlt.tmp_pt_load_ad_md5_step1 source;
+select
+   source.opr_ad,
+   source.dsc_ad_title,
+   source.dsc_ad,
+   source.opr_category,
+   source.opr_city,
+   source.opr_atlas_user,
+   source.ad_valid_to,
+   source.opr_ad_status,
+   source.reason_id,
+   source.remove_reason_details,
+   source.opr_offer_seek,
+   source.opr_solr_archive_status,
+   source.opr_solr_status,
+   source.external_partner_code,
+   source.external_id,
+   source.partner_offer_url,
+   source.private_business,
+   source.visible_in_profile,
+   source.opr_rmoderation_status,
+   source.rmoderation_ranking,
+   source.rmoderation_previous_description,
+   source.rmoderation_reasons,
+   source.rmoderation_bann_reason_id,
+   source.rmoderation_parent,
+   source.rmoderation_duplicate_type,
+   source.rmoderation_markprice,
+   source.rmoderation_paid,
+   source.rmoderation_revision,
+   source.moderation_disable_attribute,
+   source.opr_source,
+   source.flg_net_ad_counted,
+   source.flg_was_paid_for_post,
+   source.flg_paid_for_post,
+   source.id_legacy,
+   source.opr_new_used,
+   source.flg_autorenew,
+   source.flg_extend_automatically,
+   source.agent_id,
+   source.ad_quality_score,
+   source.net_ad_counted,
+   source.was_paid_for_post,
+   source.is_paid_for_post,
+   source.urgent,
+   source.pushup_recurrencies,
+   source.cod_source_system,
+   source.operation_type,
+   source.cod_execution,
+   row_number() over (order by source.opr_ad desc) new_cod,
+  md5
+  (
+   coalesce(dsc_ad_title                                                            ,'') +
+   coalesce(dsc_ad                                                                  ,'') +
+   coalesce(opr_category                                                            ,0) +
+   --coalesce(opr_city                                                                ,0) +
+   coalesce(opr_atlas_user                                                          ,0) +
+   --coalesce(bump_date                                                               ,'2099-12-31 00:00:00.000000') +
+   coalesce(ad_valid_to                                                             ,'2099-12-31 00:00:00.000000') +
+   coalesce(opr_ad_status                                                           ,'') +
+   coalesce(reason_id                                                               ,0) +
+   coalesce(remove_reason_details                                                   ,'') +
+   --coalesce(phone                                                                   ,'') +
+   --coalesce(params                                                                  ,'') +
+   --coalesce(contact_form                                                            ,0) +
+   --coalesce(ip                                                                      ,0) +
+   --coalesce(port                                                                    ,0) +
+   --coalesce(search_tags                                                             ,'') +
+   --coalesce(map_address                                                             ,'') +
+   coalesce(opr_offer_seek                                                          ,'') +
+   coalesce(opr_solr_archive_status                                                 ,'') +
+   coalesce(opr_solr_status                                                         ,'') +
+   coalesce(external_partner_code                                                   ,'') +
+   coalesce(external_id                                                             ,'') +
+   coalesce(partner_offer_url                                                       ,'') +
+   coalesce(private_business                                                        ,'') +
+   --coalesce(map_zoom                                                                ,0) +
+   --coalesce(map_radius                                                              ,0) +
+   --coalesce(skype                                                                   ,'') +
+   --coalesce(gg                                                                      ,'') +
+   --coalesce(person                                                                  ,'') +
+   coalesce(visible_in_profile                                                      ,0) +
+   --coalesce(riak_ring                                                               ,0) +
+   --coalesce(riak_key                                                                ,0) +
+   --coalesce(riak_mapping                                                            ,0) +
+   --coalesce(riak_order                                                              ,'') +
+   --coalesce(riak_revision                                                           ,0) +
+   --coalesce(riak_old                                                                ,0) +
+   --coalesce(riak_validate                                                           ,0) +
+   --coalesce(riak_sizes                                                              ,'') +
+   --coalesce(paidads_valid_to                                                        ,'2099-12-31 00:00:00.000000') +
+   --coalesce(ad_homepage_to                                                          ,'2099-12-31 00:00:00.000000') +
+   --coalesce(ad_bighomepage_to                                                       ,'2099-12-31 00:00:00.000000') +
+   coalesce(opr_rmoderation_status                                                  ,'') +
+   coalesce(rmoderation_ranking                                                     ,0) +
+   coalesce(rmoderation_previous_description                                        ,'') +
+   coalesce(rmoderation_reasons                                                     ,'') +
+   --coalesce(rmoderation_ip_country                                                  ,'') +
+   --coalesce(rmoderation_moderation_started_at                                       ,'2099-12-31 00:00:00.000000') +
+   --coalesce(rmoderation_moderation_ended_at                                         ,'2099-12-31 00:00:00.000000') +
+   --coalesce(rmoderation_removed_at                                                  ,'2099-12-31 00:00:00.000000') +
+   --coalesce(rmoderation_verified_by                                                 ,0) +
+   --coalesce(rmoderation_forwarded_by                                                ,0) +
+   coalesce(rmoderation_bann_reason_id                                              ,0) +
+   coalesce(rmoderation_parent                                                      ,0) +
+   coalesce(rmoderation_duplicate_type                                              ,'') +
+   coalesce(rmoderation_markprice                                                   ,0) +
+   coalesce(rmoderation_paid                                                        ,0) +
+   coalesce(rmoderation_revision                                                    ,0) +
+   coalesce(moderation_disable_attribute                                            ,'') +
+   coalesce(opr_source                                                              ,'') +
+   coalesce(flg_net_ad_counted                                                      ,0) +
+   coalesce(flg_was_paid_for_post                                                   ,0) +
+   coalesce(flg_paid_for_post                                                    ,0) +
+   coalesce(id_legacy                                                               ,'') +
+   --coalesce(email                                                                   ,'') +
+   --coalesce(highlight_to                                                            ,'2099-12-31 00:00:00.000000') +
+   coalesce(opr_new_used                                                            ,'') +
+   --coalesce(export_olx_to                                                           ,'2099-12-31 00:00:00.000000') +
+   --coalesce(olx_id                                                                  ,0) +
+   --coalesce(olx_image_collection_id                                                 ,0) +
+   --coalesce(migration_last_updated                                                  ,'2099-12-31 00:00:00.000000') +
+   --coalesce(allegro_id                                                              ,0) +
+   --coalesce(mysql_search_title                                                      ,'') +
+   coalesce(flg_autorenew                                                           ,0) +
+   --coalesce(brand_program_id                                                        ,0) +
+   --coalesce(wp_to                                                                   ,'2099-12-31 00:00:00.000000') +
+   --coalesce(walkaround                                                              ,'') +
+   --cast(coalesce(user_quality_score                                                 ,0) as varchar) +
+   --coalesce(updated_at                                                              ,'2099-12-31 00:00:00.000000') +
+   --coalesce(street_name                                                             ,'') +
+   --coalesce(street_id                                                               ,0) +
+   --coalesce(reference_id                                                            ,'') +
+   --coalesce(punish_no_image_enabled                                                 ,0) +
+   --coalesce(parent_id                                                               ,0) +
+   --coalesce(panorama                                                                ,'') +
+   --coalesce(olx_last_updated                                                        ,'2099-12-31 00:00:00.000000') +
+   --coalesce(mysql_search_rooms_num                                                  ,'') +
+   --cast(coalesce(mysql_search_price_per_m                                           ,0) as varchar) +
+   --cast(coalesce(mysql_search_price                                                 ,0) as varchar) +
+   --coalesce(movie                                                                   ,'') +
+   --coalesce(mirror_to                                                               ,'2099-12-31 00:00:00.000000') +
+   --coalesce(mailing_promotion_count                                                 ,0) +
+   --coalesce(local_plan                                                              ,'') +
+   --coalesce(header_to                                                               ,'2099-12-31 00:00:00.000000') +
+   --coalesce(header_category_id                                                      ,0) +
+   --coalesce(hash                                                                    ,'') +
+   coalesce(flg_extend_automatically                                                ,0) +
+   coalesce(agent_id                                                                ,0) +
+   cast(coalesce(ad_quality_score                                                   ,0) as varchar) +
+   --coalesce(view_3d                                                                 ,'') +
+   --coalesce(stand_id                                                                ,0) +
+   --cast(coalesce(map_lat                                                            ,0) as varchar) +
+   --cast(coalesce(map_lon                                                            ,0) as varchar) +
+   --cast(coalesce(mysql_search_m                                                     ,0) as varchar) +
+   --coalesce(accurate_location                                                       ,0) +
+   --coalesce(created_at_pushup                                                       ,'2099-12-31 00:00:00.000000') +
+   --coalesce(overlimit                                                               ,'') +
+   coalesce(net_ad_counted                                                          ,0) +
+   coalesce(was_paid_for_post                                                       ,0) +
+   coalesce(is_paid_for_post                                                        ,0) +
+   --coalesce(hermes_dirty                                                            ,0) +
+   --coalesce(hide_adverts                                                            ,0) +
+   coalesce(urgent                                                                  ,0) +
+   --coalesce(highlight                                                               ,'2099-12-31 00:00:00.000000') +
+   --coalesce(topads_to                                                               ,'2099-12-31 00:00:00.000000') +
+   --coalesce(topads_reminded_at                                                      ,'2099-12-31 00:00:00.000000') +
+   --coalesce(urgent_to                                                               ,'2099-12-31 00:00:00.000000') +
+   coalesce(pushup_recurrencies                                                     ,0)
+   --coalesce(pushup_next_recurrency                                                  ,'2099-12-31 00:00:00.000000') +
+   --coalesce(image_upload_monetization_to                                            ,'2099-12-31 00:00:00.000000')
+     ) hash_ad
+   FROM
+  crm_integration_anlt.tmp_pt_load_ad_md5_step1 source;
 
-analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2;
-	
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_0;
+
 	--$$$
-	
-drop table if exists crm_integration_anlt.tmp_pt_load_ad;
 
-create table crm_integration_anlt.tmp_pt_load_ad 
-distkey(cod_ad)
-sortkey(cod_ad, opr_ad, dml_type, cod_source_system)
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_1;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_1
+--distkey(opr_offer_seek)
+sortkey(opr_offer_seek)
 as
-  select source.*, coalesce(lkp_city.cod_city,-1) cod_city, coalesce(lkp_atlas_user.cod_atlas_user,-1) cod_atlas_user, coalesce(lkp_category.cod_category,-1) cod_category
-		from
-	(
  select
-  source_table.opr_ad,
-	source_table.dsc_ad_title,
-	source_table.dsc_ad,
-	--lkp_category.cod_category,
-	source_table.opr_category,
-	--lkp_city.cod_city,
-	source_table.opr_city,
-	--lkp_atlas_user.cod_atlas_user,
-	source_table.opr_atlas_user,
-	source_table.operation_type,
-	source_table.operation_timestamp,
-	source_table.last_update_date,
-	source_table.created_at,
-	source_table.created_at_first,
-	source_table.bump_date,
-	source_table.ad_valid_to,
-	coalesce(lkp_ad_status.cod_ad_status,-2) cod_ad_status,
-	source_table.reason_id,
-	source_table.remove_reason_details,
-	source_table.phone,
-	source_table.params,
-	source_table.contact_form,
-	source_table.ip,
-	source_table.port,
-	source_table.search_tags,
-	source_table.map_address,
-	coalesce(lkp_offer_seek.cod_offer_seek,-2) cod_offer_seek,
-	coalesce(lkp_solr_archive_status.cod_solr_archive_status,-2) cod_solr_archive_status,
-	coalesce(lkp_solr_status.cod_solr_status,-2) cod_solr_status,
-	source_table.external_partner_code,
-	source_table.external_id,
-	source_table.partner_offer_url,
-	source_table.private_business,
-	source_table.map_zoom,
-	source_table.map_radius,
-	source_table.skype,
-	source_table.gg,
-	source_table.person,
-	source_table.visible_in_profile,
-	source_table.riak_ring,
-	source_table.riak_key,
-	source_table.riak_mapping,
-	source_table.riak_order,
-	source_table.riak_revision,
-	source_table.riak_old,
-	source_table.riak_validate,
-	source_table.riak_sizes,
-	source_table.paidads_valid_to,
-	source_table.ad_homepage_to,
-	source_table.ad_bighomepage_to,
-	coalesce(lkp_rmoderation_status.cod_rmoderation_status,-2) cod_rmoderation_status,
-	source_table.rmoderation_ranking,
-	source_table.rmoderation_previous_description,
-	source_table.rmoderation_reasons,
-	source_table.rmoderation_ip_country,
-	source_table.rmoderation_moderation_started_at,
-	source_table.rmoderation_moderation_ended_at,
-	source_table.rmoderation_removed_at,
-	source_table.rmoderation_verified_by,
-	source_table.rmoderation_forwarded_by,
-	source_table.rmoderation_bann_reason_id,
-	source_table.rmoderation_parent,
-	source_table.rmoderation_duplicate_type,
-	source_table.rmoderation_markprice,
-	source_table.rmoderation_paid,
-	source_table.rmoderation_revision,
-	source_table.moderation_disable_attribute,
-	coalesce(lkp_source.cod_source,-2) cod_source,
-	source_table.flg_net_ad_counted,
-	source_table.flg_was_paid_for_post,
-	source_table.flg_paid_for_post,
-	source_table.id_legacy,
-	source_table.email,
-	source_table.highlight_to,
-	coalesce(lkp_new_used.cod_new_used,-2) cod_new_used,
-	source_table.export_olx_to,
-	source_table.olx_id,
-	source_table.olx_image_collection_id,
-	source_table.migration_last_updated,
-	source_table.allegro_id,
-	source_table.mysql_search_title,
-	source_table.flg_autorenew,
-	source_table.brand_program_id,
-	source_table.wp_to,
-	source_table.walkaround,
-	source_table.user_quality_score,
-	source_table.updated_at,
-	source_table.street_name,
-	source_table.street_id,
-	source_table.reference_id,
-	source_table.punish_no_image_enabled,
-	source_table.parent_id,
-	source_table.panorama,
-	source_table.olx_last_updated,
-	source_table.mysql_search_rooms_num,
-	source_table.mysql_search_price_per_m,
-	source_table.mysql_search_price,
-	source_table.movie,
-	source_table.mirror_to,
-	source_table.mailing_promotion_count,
-	source_table.local_plan,
-	source_table.header_to,
-	source_table.header_category_id,
-	source_table.hash_ad,
-	source_table.flg_extend_automatically,
-	source_table.agent_id,
-	source_table.ad_quality_score,
-	source_table.view_3d,
-	source_table.stand_id,
-	source_table.map_lat,
-	source_table.map_lon,
-	source_table.mysql_search_m,
-	source_table.accurate_location,
-	source_table.created_at_pushup,
-	source_table.overlimit,
-	source_table.net_ad_counted,
-	source_table.was_paid_for_post,
-	source_table.is_paid_for_post,
-	source_table.hermes_dirty,
-	source_table.hide_adverts,
-	source_table.urgent,
-	source_table.highlight,
-	source_table.topads_to,
-	source_table.topads_reminded_at,
-	source_table.urgent_to,
-	source_table.pushup_recurrencies,
-	source_table.pushup_next_recurrency,
-	source_table.image_upload_monetization_to,
-	source_table.hash,
-    source_table.cod_source_system,
-	source_table.cod_execution,
-    max_cod_ad.max_cod,
-    row_number() over (order by source_table.opr_ad desc) new_cod,
-    target.cod_ad,
-    case
-      --when target.cod_ad is null then 'I'
-	  when target.cod_ad is null or (source_table.hash_ad != target.hash_ad and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')) then 'I'
-	  when source_table.operation_type = 'delete' then 'D'
-      when source_table.hash_ad != target.hash_ad then 'U'
-        else 'X'
-    end dml_type
-  from
-	crm_integration_anlt.tmp_pt_load_ad_md5_step2 source_table,
-	crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
-	crm_integration_anlt.t_lkp_offer_seek lkp_offer_seek,
-	crm_integration_anlt.t_lkp_solr_archive_status lkp_solr_archive_status,
-	crm_integration_anlt.t_lkp_solr_status lkp_solr_status,
-	crm_integration_anlt.t_lkp_rmoderation_status lkp_rmoderation_status,
-	crm_integration_anlt.t_lkp_source lkp_source,
-	crm_integration_anlt.t_lkp_new_used lkp_new_used,
-    (select coalesce(max(cod_ad),0) max_cod from crm_integration_anlt.t_lkp_ad) max_cod_ad,
-    crm_integration_anlt.t_lkp_ad target
-  where
-    source_table.opr_ad = target.opr_ad(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
-	and source_table.opr_ad_status = lkp_ad_status.opr_ad_status
-	and lkp_ad_status.valid_to = 20991231
-	and source_table.opr_offer_seek = lkp_offer_seek.opr_offer_seek
-	and lkp_offer_seek.valid_to = 20991231
-	and source_table.opr_solr_archive_status = lkp_solr_archive_status.opr_solr_archive_status
-	and lkp_solr_archive_status.valid_to = 20991231
-	and source_table.opr_solr_status = lkp_solr_status.opr_solr_status
-	and lkp_solr_status.valid_to = 20991231
-	and source_table.opr_rmoderation_status = lkp_rmoderation_status.opr_rmoderation_status
-	and lkp_rmoderation_status.valid_to = 20991231
-	and source_table.opr_source = lkp_source.opr_source
-	and lkp_source.valid_to = 20991231
-	and source_table.opr_new_used = lkp_new_used.opr_new_used
-	and lkp_new_used.valid_to = 20991231
-) source,
-	crm_integration_anlt.t_lkp_city lkp_city,
-	crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
-	crm_integration_anlt.t_lkp_category lkp_category
-where 
-	coalesce(source.opr_city,-1) = lkp_city.opr_city (+)
-	and source.cod_source_system = lkp_city.cod_source_system (+) -- new
-	and lkp_city.valid_to (+) = 20991231
-	and coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
-	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
-	and lkp_atlas_user.valid_to (+) = 20991231
-	and coalesce(source.opr_category,-1) = lkp_category.opr_category (+)
+  source.opr_ad,
+  source.new_cod,
+  coalesce(lkp_ad_status.cod_ad_status,-2) cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_0 source,
+  crm_integration_anlt.t_lkp_ad_status lkp_ad_status
+ where
+  source.opr_ad_status = lkp_ad_status.opr_ad_status
+  and lkp_ad_status.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_1;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_2;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_2
+--distkey(opr_solr_archive_status)
+sortkey(opr_solr_archive_status)
+as
+ select
+  source.opr_ad,
+  coalesce(lkp_offer_seek.cod_offer_seek,-2) cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_1 source,
+  crm_integration_anlt.t_lkp_offer_seek lkp_offer_seek
+ where
+  source.opr_offer_seek = lkp_offer_seek.opr_offer_seek
+  and lkp_offer_seek.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_2;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_3;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_3
+--distkey(opr_solr_status)
+sortkey(opr_solr_status)
+as
+ select
+  source.opr_ad,
+  coalesce(lkp_solr_archive_status.cod_solr_archive_status,-2) cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_2 source,
+  crm_integration_anlt.t_lkp_solr_archive_status lkp_solr_archive_status
+ where
+  source.opr_solr_archive_status = lkp_solr_archive_status.opr_solr_archive_status
+  and lkp_solr_archive_status.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_3;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_4;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_4
+--distkey(opr_rmoderation_status)
+sortkey(opr_rmoderation_status)
+as
+ select
+  source.opr_ad,
+  coalesce(lkp_solr_status.cod_solr_status,-2) cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_3 source,
+  crm_integration_anlt.t_lkp_solr_status lkp_solr_status
+ where
+  source.opr_solr_status = lkp_solr_status.opr_solr_status
+  and lkp_solr_status.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_4;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_5;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_5
+--distkey(opr_source)
+sortkey(opr_source)
+ as
+ select
+  source.opr_ad,
+  coalesce(lkp_rmoderation_status.cod_rmoderation_status,-2) cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_4 source,
+  crm_integration_anlt.t_lkp_rmoderation_status lkp_rmoderation_status
+ where
+  source.opr_rmoderation_status = lkp_rmoderation_status.opr_rmoderation_status
+  and lkp_rmoderation_status.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_5;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_6;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_6
+--distkey(opr_new_used)
+sortkey(opr_new_used)
+as
+ select
+  source.opr_ad,
+  coalesce(lkp_source.cod_source,-2) cod_source,
+  source.cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_5 source,
+  crm_integration_anlt.t_lkp_source lkp_source
+ where
+  source.opr_source = lkp_source.opr_source
+  and lkp_source.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_6;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_7;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_7
+--distkey(opr_category)
+sortkey(opr_category)
+as
+ select
+  source.opr_ad,
+  coalesce(lkp_new_used.cod_new_used,-2) cod_new_used,
+  source.cod_source,
+  source.cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_6 source,
+  crm_integration_anlt.t_lkp_new_used lkp_new_used
+ where
+  source.opr_new_used = lkp_new_used.opr_new_used
+  and lkp_new_used.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_7;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_8;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_8
+--distkey(opr_atlas_user)
+sortkey(opr_atlas_user)
+as
+ select
+  source.opr_ad,
+  source.cod_new_used,
+  source.cod_source,
+  source.cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  coalesce(lkp_category.cod_category,-1) cod_category,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_7 source,
+  crm_integration_anlt.t_lkp_category lkp_category
+ where
+	coalesce(source.opr_category,-1) = lkp_category.opr_category (+)
 	and source.cod_source_system = lkp_category.cod_source_system (+) -- new
 	and lkp_category.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_ad;
-	
-	--$$$
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_8;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_9;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_9
+--distkey(opr_ad)
+sortkey(opr_ad)
+as
+ select
+  source.opr_ad,
+  source.cod_new_used,
+  source.cod_source,
+  source.cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.cod_category,
+  coalesce(lkp_atlas_user.cod_atlas_user,-1) cod_atlas_user,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_8 source,
+  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+ where
+	coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+	and lkp_atlas_user.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_9;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_ad_md5_step2_10;
+
+create table crm_integration_anlt.tmp_pt_load_ad_md5_step2_10
+--distkey(cod_ad)
+sortkey(cod_ad)
+as
+ select
+  source.opr_ad,
+  source.cod_new_used,
+  source.cod_source,
+  source.cod_rmoderation_status,
+  source.cod_solr_status,
+  source.cod_solr_archive_status,
+  source.cod_offer_seek,
+  source.cod_category,
+  source.cod_atlas_user,
+  source.new_cod,
+  source.cod_ad_status,
+  source.dsc_ad_title,
+  source.dsc_ad,
+  source.opr_category,
+  source.opr_city,
+  source.opr_atlas_user,
+  source.ad_valid_to,
+  source.opr_ad_status,
+  source.reason_id,
+  source.remove_reason_details,
+  source.opr_offer_seek,
+  source.opr_solr_archive_status,
+  source.opr_solr_status,
+  source.external_partner_code,
+  source.external_id,
+  source.partner_offer_url,
+  source.private_business,
+  source.visible_in_profile,
+  source.opr_rmoderation_status,
+  source.rmoderation_ranking,
+  source.rmoderation_previous_description,
+  source.rmoderation_reasons,
+  source.rmoderation_bann_reason_id,
+  source.rmoderation_parent,
+  source.rmoderation_duplicate_type,
+  source.rmoderation_markprice,
+  source.rmoderation_paid,
+  source.rmoderation_revision,
+  source.moderation_disable_attribute,
+  source.opr_source,
+  source.flg_net_ad_counted,
+  source.flg_was_paid_for_post,
+  source.flg_paid_for_post,
+  source.id_legacy,
+  source.opr_new_used,
+  source.flg_autorenew,
+  source.flg_extend_automatically,
+  source.agent_id,
+  source.ad_quality_score,
+  source.net_ad_counted,
+  source.was_paid_for_post,
+  source.is_paid_for_post,
+  source.urgent,
+  source.pushup_recurrencies,
+  source.cod_source_system,
+  source.operation_type,
+  source.hash_ad,
+  source.cod_execution,
+  target.cod_ad,
+  max_cod_ad.max_cod,
+  case
+   --when target.cod_ad is null then 'I'
+   when target.cod_ad is null or (source.hash_ad != target.hash_ad and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')) then 'I'
+   when source.operation_type = 'delete' then 'D'
+   when source.hash_ad != target.hash_ad then 'U'
+   else 'X'
+  end dml_type
+ from
+  crm_integration_anlt.tmp_pt_load_ad_md5_step2_9 source,
+  crm_integration_anlt.t_lkp_ad target,
+  (select coalesce(max(cod_ad),0) max_cod from crm_integration_anlt.t_lkp_ad) max_cod_ad
+ where
+  source.opr_ad = target.opr_ad(+)
+	and source.cod_source_system = target.cod_source_system (+)
+  and target.valid_to(+) = 20991231;
+
+analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_10;
+
+	--$$$ 
 	
 delete from crm_integration_anlt.t_lkp_ad
-using crm_integration_anlt.tmp_pt_load_ad
+using crm_integration_anlt.tmp_pt_load_ad_md5_step2_10
 where 
-	tmp_pt_load_ad.dml_type = 'I' 
-	and t_lkp_ad.cod_ad = tmp_pt_load_ad.cod_ad
+	tmp_pt_load_ad_md5_step2_10.dml_type = 'I' 
+	and t_lkp_ad.cod_ad = tmp_pt_load_ad_md5_step2_10.cod_ad
 	and t_lkp_ad.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad');
 	
 	--$$$
 	
 update crm_integration_anlt.t_lkp_ad
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')
-from crm_integration_anlt.tmp_pt_load_ad source
+from crm_integration_anlt.tmp_pt_load_ad_md5_step2_10 source
 where source.cod_ad = crm_integration_anlt.t_lkp_ad.cod_ad
 and crm_integration_anlt.t_lkp_ad.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -8972,23 +9539,23 @@ insert into crm_integration_anlt.t_lkp_ad
 		20991231 valid_to,
 		cod_source_system,
 		cod_category,
-		cod_city,
+		null cod_city,
 		cod_atlas_user,
-		last_update_date,
-		created_at,
-		created_at_first,
-		bump_date,
+		null last_update_date,
+		null created_at,
+		null created_at_first,
+		null bump_date,
 		ad_valid_to,
 		cod_ad_status,
 		reason_id,
 		remove_reason_details,
-		phone,
-		params,
-		contact_form,
-		ip,
-		port,
-		search_tags,
-		map_address,
+		null phone,
+		null params,
+		null contact_form,
+		null ip,
+		null "port",
+		null search_tags,
+		null map_address,
 		cod_offer_seek,
 		cod_solr_archive_status,
 		cod_solr_status,
@@ -8996,33 +9563,33 @@ insert into crm_integration_anlt.t_lkp_ad
 		external_id,
 		partner_offer_url,
 		private_business,
-		map_zoom,
-		map_radius,
-		skype,
-		gg,
-		person,
+		null map_zoom,
+		null map_radius,
+		null skype,
+		null gg,
+		null person,
 		visible_in_profile,
-		riak_ring,
-		riak_key,
-		riak_mapping,
-		riak_order,
-		riak_revision,
-		riak_old,
-		riak_validate,
-		riak_sizes,
-		paidads_valid_to,
-		ad_homepage_to,
-		ad_bighomepage_to,
+		null riak_ring,
+		null riak_key,
+		null riak_mapping,
+		null riak_order,
+		null riak_revision,
+		null riak_old,
+		null riak_validate,
+		null riak_sizes,
+		null paidads_valid_to,
+		null ad_homepage_to,
+		null ad_bighomepage_to,
 		cod_rmoderation_status,
-		rmoderation_ranking,
+		null rmoderation_ranking,
 		rmoderation_previous_description,
 		rmoderation_reasons,
-		rmoderation_ip_country,
-		rmoderation_moderation_started_at,
-		rmoderation_moderation_ended_at,
-		rmoderation_removed_at,
-		rmoderation_verified_by,
-		rmoderation_forwarded_by,
+		null rmoderation_ip_country,
+		null rmoderation_moderation_started_at,
+		null rmoderation_moderation_ended_at,
+		null rmoderation_removed_at,
+		null rmoderation_verified_by,
+		null rmoderation_forwarded_by,
 		rmoderation_bann_reason_id,
 		rmoderation_parent,
 		rmoderation_duplicate_type,
@@ -9035,66 +9602,66 @@ insert into crm_integration_anlt.t_lkp_ad
 		flg_was_paid_for_post,
 		flg_paid_for_post,
 		id_legacy,
-		email,
-		highlight_to,
+		null email,
+		null highlight_to,
 		cod_new_used,
-		export_olx_to,
-		olx_id,
-		olx_image_collection_id,
-		migration_last_updated,
-		allegro_id,
-		mysql_search_title,
+		null export_olx_to,
+		null olx_id,
+		null olx_image_collection_id,
+		null migration_last_updated,
+		null allegro_id,
+		null mysql_search_title,
 		flg_autorenew,
-		brand_program_id,
-		wp_to,
-		walkaround,
-		user_quality_score,
-		updated_at,
-		street_name,
-		street_id,
-		reference_id,
-		punish_no_image_enabled,
-		parent_id,
-		panorama,
-		olx_last_updated,
-		mysql_search_rooms_num,
-		mysql_search_price_per_m,
-		mysql_search_price,
-		movie,
-		mirror_to,
-		mailing_promotion_count,
-		local_plan,
-		header_to,
-		header_category_id,
-		hash,
+		null brand_program_id,
+		null wp_to,
+		null walkaround,
+		null user_quality_score,
+		null updated_at,
+		null street_name,
+		null street_id,
+		null reference_id,
+		null punish_no_image_enabled,
+		null parent_id,
+		null panorama,
+		null olx_last_updated,
+		null mysql_search_rooms_num,
+		null mysql_search_price_per_m,
+		null mysql_search_price,
+		null movie,
+		null mirror_to,
+		null mailing_promotion_count,
+		null local_plan,
+		null header_to,
+		null header_category_id,
+		null hash,
 		flg_extend_automatically,
 		agent_id,
 		ad_quality_score,
-		view_3d,
-		stand_id,
-		map_lat,
-		map_lon,
-		mysql_search_m,
-		accurate_location,
-		created_at_pushup,
-		overlimit,
+		null view_3d,
+		null stand_id,
+		null map_lat,
+		null map_lon,
+		null mysql_search_m,
+		null accurate_location,
+		null created_at_pushup,
+		null overlimit,
 		net_ad_counted,
 		was_paid_for_post,
 		is_paid_for_post,
-		hermes_dirty,
-		hide_adverts,
+		null hermes_dirty,
+		null hide_adverts,
 		urgent,
-		highlight,
-		topads_to,
-		topads_reminded_at,
-		urgent_to,
+		null highlight,
+		null topads_to,
+		null topads_reminded_at,
+		null urgent_to,
 		pushup_recurrencies,
-		pushup_next_recurrency,
-		image_upload_monetization_to,
+		null pushup_next_recurrency,
+		null image_upload_monetization_to,
 		hash_ad,
 		cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_ad
+      crm_integration_anlt.tmp_pt_load_ad_md5_step2_10
     where
       dml_type in ('U','I');
 
