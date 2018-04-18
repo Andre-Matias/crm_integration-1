@@ -66,7 +66,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 	
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
-	aux = 2000
+	aux = 1
 	name = "/home/ubuntu/Reports/contacts_"
 	while 1:
 		
