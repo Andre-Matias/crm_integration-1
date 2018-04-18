@@ -6692,7 +6692,7 @@ create table crm_integration_anlt.tmp_ro_load_city
 distkey(cod_source_system)
 sortkey(cod_city, opr_city)
 as
-  select
+select
     source_table.opr_city,
     source_table.dsc_city_pl,
     source_table.dsc_city_en,
@@ -6718,8 +6718,8 @@ as
     source_table.external_type,
     source_table.dsc_city_normalized_pl,
     source_table.hash_city,
-    source_table.cod_subregion,
-	source_table.cod_region,
+    coalesce(lkp_subregion.cod_subregion,-1) cod_subregion,
+	coalesce(lkp_region.cod_region,-1) cod_region,
     source_table.cod_source_system,
     source_table.cod_execution,
     max_cod_city.max_cod,
@@ -6782,9 +6782,7 @@ as
 		a.zoom,
 		a.citizens_count,
 		a.citizens_weight,
-		d.cod_region,
 		a.region_id opr_region,
-		c.cod_subregion,
 		a.subregion_id opr_subregion,
 		a.main flg_main,
 		a.import_approximation flg_import_approximation,
@@ -6795,13 +6793,10 @@ as
 		a.external_id,
 		a.external_type,
 		a.name_normalized_pl dsc_city_normalized_pl,
-		b.cod_source_system,
 		scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_ro_db_atlas_verticals_cities a,
         crm_integration_anlt.t_lkp_source_system b,
-		    crm_integration_anlt.t_lkp_subregion c,
-		    crm_integration_anlt.t_lkp_region d,
         (
           select
             max(fac.cod_execution) cod_execution
@@ -6823,51 +6818,42 @@ as
         ) scai_execution
     where
        a.livesync_dbname = b.opr_source_system
-       and a.region_id = d.opr_region
-       and d.cod_source_system = b.cod_source_system
-       and a.subregion_id = c.opr_subregion
-       and c.cod_source_system = b.cod_source_system
        and b.cod_business_type = 1 -- Verticals
        and b.cod_country = 4 -- Romania
        --and 1 = 0
 	  union all
 	  select
 	    a.id opr_city,
-		'olxro' opr_source_system,
-		a.operation_timestamp,
-		a.operation_type,
-		null dsc_city_pl,
-		a.name_ro dsc_city_en,
-		a.url,
-		a.county,
-		a.municipality_ro municipality,
-		a.is_unique flg_unique,
-		a.zip,
-		a.city_id,
-		a.lat,
-		a.lon,
-		a.zoom,
-		a.citizens_count,
-		a.citizens_weight,
-		c.cod_region,
-		region_id opr_region,
-		-1 cod_subregion,
-		-1 opr_subregion,
-		a.main flg_main,
-		a.import_approximation flg_import_approximation,
-		a.show_on_mainpage flg_show_on_mainpage,
-		a.radius,
-		a.polygon,
-		a.group_id,
-		null external_id,
-		null external_type,
-		null dsc_city_normalized_pl,
-		b.cod_source_system,
-		scai_execution.cod_execution
+			'olxro' opr_source_system,
+			a.operation_timestamp,
+			a.operation_type,
+			null dsc_city_pl,
+			a.name_ro dsc_city_en,
+			a.url,
+			a.county,
+			a.municipality_ro municipality,
+			a.is_unique flg_unique,
+			a.zip,
+			a.city_id,
+			a.lat,
+			a.lon,
+			a.zoom,
+			a.citizens_count,
+			a.citizens_weight,
+			region_id opr_region,
+			-1 opr_subregion,
+			a.main flg_main,
+			a.import_approximation flg_import_approximation,
+			a.show_on_mainpage flg_show_on_mainpage,
+			a.radius,
+			a.polygon,
+			a.group_id,
+			null external_id,
+			null external_type,
+			null dsc_city_normalized_pl,
+			scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_ro_db_atlas_olxro_cities a,
-        crm_integration_anlt.t_lkp_source_system b,
-	      crm_integration_anlt.t_lkp_region c,
         (
           select
             max(fac.cod_execution) cod_execution
@@ -6887,19 +6873,25 @@ as
             and rel_integr_proc.dat_processing = fac.dat_processing
             and fac.cod_status = 2
         ) scai_execution
-	where
-		'olxro' = b.opr_source_system
-		and a.region_id = c.opr_region
-		and c.cod_source_system = b.cod_source_system
-		--and 1 = 0
-    )
+		--where and 1 = 0
+    ) source,
+		crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
 	) source_table,
+		crm_integration_anlt.t_lkp_subregion lkp_subregion,
+		crm_integration_anlt.t_lkp_region lkp_region,
     (select coalesce(max(cod_city),0) max_cod from crm_integration_anlt.t_lkp_city) max_cod_city,
     crm_integration_anlt.t_lkp_city target
   where
     coalesce(source_table.opr_city,-1) = target.opr_city(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231;
+    and target.valid_to(+) = 20991231
+	and coalesce(source_table.opr_region,-1) = lkp_region.opr_region (+)
+	and source_table.cod_source_system = lkp_region.cod_source_system (+)
+	and lkp_region.valid_to (+) = 20991231
+	and coalesce(source_table.opr_subregion,-1) = lkp_subregion.opr_subregion (+)
+	and source_table.cod_source_system = lkp_subregion.cod_source_system (+)
+	and lkp_subregion.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_ro_load_city;
 	

@@ -6692,7 +6692,7 @@ create table crm_integration_anlt.tmp_pl_load_city
 distkey(cod_source_system)
 sortkey(cod_city, opr_city)
 as
-  select
+select
     source_table.opr_city,
     source_table.dsc_city_pl,
     source_table.dsc_city_en,
@@ -6718,8 +6718,8 @@ as
     source_table.external_type,
     source_table.dsc_city_normalized_pl,
     source_table.hash_city,
-    source_table.cod_subregion,
-	source_table.cod_region,
+    coalesce(lkp_subregion.cod_subregion,-1) cod_subregion,
+	coalesce(lkp_region.cod_region,-1) cod_region,
     source_table.cod_source_system,
     source_table.cod_execution,
     max_cod_city.max_cod,
@@ -6782,9 +6782,7 @@ as
 		a.zoom,
 		a.citizens_count,
 		a.citizens_weight,
-		d.cod_region,
 		a.region_id opr_region,
-		c.cod_subregion,
 		a.subregion_id opr_subregion,
 		a.main flg_main,
 		a.import_approximation flg_import_approximation,
@@ -6795,13 +6793,10 @@ as
 		a.external_id,
 		a.external_type,
 		a.name_normalized_pl dsc_city_normalized_pl,
-		b.cod_source_system,
 		scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_pl_db_atlas_verticals_cities a,
         crm_integration_anlt.t_lkp_source_system b,
-		    crm_integration_anlt.t_lkp_subregion c,
-		    crm_integration_anlt.t_lkp_region d,
         (
           select
             max(fac.cod_execution) cod_execution
@@ -6823,51 +6818,42 @@ as
         ) scai_execution
     where
        a.livesync_dbname = b.opr_source_system
-       and a.region_id = d.opr_region
-       and d.cod_source_system = b.cod_source_system
-       and a.subregion_id = c.opr_subregion
-       and c.cod_source_system = b.cod_source_system
        and b.cod_business_type = 1 -- Verticals
        and b.cod_country = 2 -- Poland
        --and 1 = 0
 	  union all
 	  select
 	    a.id opr_city,
-		'olxpl' opr_source_system,
-		a.operation_timestamp,
-		a.operation_type,
-		a.name_pl dsc_city_pl,
-		a.name_pl dsc_city_en,
-		a.url,
-		a.county,
-		a.municipality_pl municipality,
-		a.is_unique flg_unique,
-		a.zip,
-		a.city_id,
-		a.lat,
-		a.lon,
-		a.zoom,
-		a.citizens_count,
-		a.citizens_weight,
-		c.cod_region,
-		region_id opr_region,
-		-1 cod_subregion,
-		-1 opr_subregion,
-		a.main flg_main,
-		a.import_approximation flg_import_approximation,
-		a.show_on_mainpage flg_show_on_mainpage,
-		a.radius,
-		a.polygon,
-		a.group_id,
-		null external_id,
-		null external_type,
-		null dsc_city_normalized_pl,
-		b.cod_source_system,
-		scai_execution.cod_execution
+			'olxpl' opr_source_system,
+			a.operation_timestamp,
+			a.operation_type,
+			a.name_pl dsc_city_pl,
+			a.name_pl dsc_city_en,
+			a.url,
+			a.county,
+			a.municipality_pl municipality,
+			a.is_unique flg_unique,
+			a.zip,
+			a.city_id,
+			a.lat,
+			a.lon,
+			a.zoom,
+			a.citizens_count,
+			a.citizens_weight,
+			region_id opr_region,
+			-1 opr_subregion,
+			a.main flg_main,
+			a.import_approximation flg_import_approximation,
+			a.show_on_mainpage flg_show_on_mainpage,
+			a.radius,
+			a.polygon,
+			a.group_id,
+			null external_id,
+			null external_type,
+			null dsc_city_normalized_pl,
+			scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_pl_db_atlas_olxpl_cities a,
-        crm_integration_anlt.t_lkp_source_system b,
-	      crm_integration_anlt.t_lkp_region c,
         (
           select
             max(fac.cod_execution) cod_execution
@@ -6887,19 +6873,25 @@ as
             and rel_integr_proc.dat_processing = fac.dat_processing
             and fac.cod_status = 2
         ) scai_execution
-	where
-		'olxpl' = b.opr_source_system
-		and a.region_id = c.opr_region
-		and c.cod_source_system = b.cod_source_system
-		--and 1 = 0
-    )
+		--where and 1 = 0
+    ) source,
+		crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
 	) source_table,
+	crm_integration_anlt.t_lkp_subregion lkp_subregion,
+	crm_integration_anlt.t_lkp_region lkp_region,
     (select coalesce(max(cod_city),0) max_cod from crm_integration_anlt.t_lkp_city) max_cod_city,
     crm_integration_anlt.t_lkp_city target
   where
     coalesce(source_table.opr_city,-1) = target.opr_city(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231;
+    and target.valid_to(+) = 20991231
+	and coalesce(source_table.opr_region,-1) = lkp_region.opr_region (+)
+	and source_table.cod_source_system = lkp_region.cod_source_system (+)
+	and lkp_region.valid_to (+) = 20991231
+	and coalesce(source_table.opr_subregion,-1) = lkp_subregion.opr_subregion (+)
+	and source_table.cod_source_system = lkp_subregion.cod_source_system (+)
+	and lkp_subregion.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pl_load_city;
 	
@@ -9494,7 +9486,7 @@ as
   max_cod_ad.max_cod,
   case
    --when target.cod_ad is null then 'I'
-   when target.cod_ad is null or (source.hash_ad != target.hash_ad and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')) then 'I'
+   when target.cod_ad is null or (source.hash_ad != target.hash_ad and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')) then 'I'
    when source.operation_type = 'delete' then 'D'
    when source.hash_ad != target.hash_ad then 'U'
    else 'X'
@@ -9706,7 +9698,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pl_load_ad),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pl_load_ad_aux),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
