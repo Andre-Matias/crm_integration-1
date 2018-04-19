@@ -23,12 +23,12 @@ while i < len(sys.argv):
 
 COD_COUNTRY = int(json.load(open(conf_files[0]))['cod_country'])	# Global variable; all configuration files should have the same country code, so we only get the first
 	
-scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
+#scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
 
 # Calculate KPIs with data from the Analytical Model
-for i in range(0, len(conf_files)):
-	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
-	calculate_kpis.main(db_conf_file, kpi_files[i])
+#for i in range(0, len(conf_files)):
+#	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
+#	calculate_kpis.main(db_conf_file, kpi_files[i])
 	#input('Ready for next set of KPIs?')
 
 # Send all KPIs to Base
