@@ -109,5 +109,4 @@ s3saveRDS(
   bucket = bucket_path, 
   object = filename
 )
-
 }
