@@ -77,7 +77,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 				data = client.contacts.list(page = aux, per_page = 100)
 				break
 			except basecrm.errors.ServerError as err:
-				print("Error: " + err + ". Trying again...")
+				print("Error: " + str(err) + ". Trying again...")
 
 		if len(data) > 0: empty = False
 		else:
