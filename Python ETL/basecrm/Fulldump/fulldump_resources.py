@@ -70,8 +70,14 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 	name = "/home/ubuntu/Reports/contacts_"
 	while 1:
 		
-		print("Getting page #" +str(aux)) 
-		data = client.contacts.list(page = aux, per_page = 100)
+		print("Getting page #" +str(aux))
+		
+		while True:
+			try:
+				data = client.contacts.list(page = aux, per_page = 100)
+				break
+			except basecrm.errors.ServerError as err:
+				print("Error: " + err + ". Trying again...")
 
 		if len(data) > 0: empty = False
 		else:
