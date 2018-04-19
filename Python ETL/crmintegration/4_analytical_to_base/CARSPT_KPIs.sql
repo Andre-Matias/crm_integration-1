@@ -19,6 +19,8 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
+
 -- #######################
 -- ####    PASSO 4    ####
 -- #######################
@@ -887,7 +889,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_standvirtual_calc_replies);
 
---$$$
+--$$$ -- 10
 
 -- SNAP DELETE - KPI OLX.BASE.023 (# Replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
@@ -902,7 +904,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_standvirtual_calc_replies;
 
---$$$ -- 10
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
 create table crm_integration_anlt.tmp_pt_standvirtual_calc_replies_per_ad as
@@ -1874,7 +1876,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1_vas;
 
---$$$
+--$$$ -- 20
 
 -- CREATE TMP - KPI OLX.BASE.100 (Revenue (0) - Listings)
 create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0_listings as
@@ -1956,7 +1958,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0_listings;
 
---$$$ -- 20
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1_listings as
@@ -2367,6 +2369,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_base_integration_snap_ptcars';
 
+-- $$$
+	
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
