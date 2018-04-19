@@ -79,7 +79,7 @@ server_migration <- function(input, output, session) {
  
  # fluid row 1, kpi 1: Total VAS Volume
   output$totalvasBox <- renderValueBox({
-        valueBox("-19%", "Total B2C VAS Purchases (vs Last Week)",
+        valueBox("+6%", "Total B2C VAS Purchases (vs Last Week)",
            icon = icon("shopping-cart"),
        color = "orange")
  })
@@ -95,7 +95,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 3: B2C Funnel 
   output$b2cfunnelBox <- renderValueBox({
-    valueBox("45%",
+    valueBox("56%",
              "Overall B2C Payment Funnel",
              icon = icon("filter"),
              color = "green")
@@ -103,7 +103,7 @@ server_migration <- function(input, output, session) {
   
   # fluid row 1, kpi 4: Total Revenue 
   output$totalrevBox <- renderValueBox({
-    valueBox("-19%",
+    valueBox("-33%",
              "Total B2C VAS Revenue (vs Last Week)",
              icon = icon("money"),
              color = "purple")
@@ -232,7 +232,7 @@ output$totalrevOnboarding <- renderGvis({
                                    #vAxes="[{viewWindowMode:'explicit',
                                    #viewWindow:{min:0, max:370000}}]",
                                    width=1200, height=600,
-                                   vAxes="[{title:'Purchases',
+                                   vAxes="[{title:'Revenue',
                                    format:'##'}]",
                                    hAxes="[{title:'Week',
                                    textPosition: 'out'}]",

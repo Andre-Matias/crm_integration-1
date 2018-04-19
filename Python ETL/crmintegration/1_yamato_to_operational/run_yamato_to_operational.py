@@ -4,7 +4,7 @@ import copy_tables_atlas
 import copy_tables_hydra
 from datetime import date, datetime
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))  # Change this later to a package import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
 COD_INTEGRATION = 10000							# Yamato to Operational

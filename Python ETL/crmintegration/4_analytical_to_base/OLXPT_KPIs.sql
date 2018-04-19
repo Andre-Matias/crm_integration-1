@@ -678,16 +678,16 @@ from
       (
         select
           a.cod_atlas_user,
-          h.opr_atlas_user,
+          --h.opr_atlas_user,
           h.dsc_atlas_user,
-          a.cod_payment_basket,
+          --a.cod_payment_basket,
           d.dsc_source_system,
-          b.last_status_date,
-          c.paidad_index_code,
-          i.val_price price_user_payment,
-          a.price price_basket,
+          --b.last_status_date,
+          --c.paidad_index_code,
+          --i.val_price price_user_payment,
+          --a.price price_basket,
           i.val_current_credits,
-          a.from_account,
+          --a.from_account,
           a.from_bonus_credits,
           a.from_refund_credits,
           row_number() over (partition by a.cod_atlas_user order by last_status_date desc) rn
@@ -700,7 +700,21 @@ from
           crm_integration_anlt.t_lkp_payment_status f,
           crm_integration_anlt.t_lkp_payment_provider g,
           crm_integration_anlt.t_lkp_atlas_user h,
-          crm_integration_anlt.t_fac_paidad_user_payment i
+          (
+            SELECT
+              *
+            FROM
+              (
+                SELECT
+                  fac.opr_payment_session,
+                  fac.cod_source_system,
+                  fac.val_current_credits,
+                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+                FROM
+                  crm_integration_anlt.t_fac_paidad_user_payment fac
+            )
+          WHERE rn = 1
+          ) i
         where
           a.cod_source_system = b.cod_source_system
           and a.cod_payment_session = b.cod_payment_session
@@ -721,7 +735,6 @@ from
           and lower(g.dsc_payment_provider) != 'admin'
           and lower(h.type) not like 'topup%'
           and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
-          --and h.opr_atlas_user in (1808696,11758671,22914719)
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
       crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -743,7 +756,7 @@ from
       and base_contact.cod_source_system = 16
       and scai.cod_integration = 50000
       and (inner_core.rn = 1 or inner_core.rn is null)
-			and scai.cod_country = 1
+      and scai.cod_country = 1
   ) core,
  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1443,13 +1456,24 @@ from
           lkp_contact.cod_source_system,
           cast(sum(nbr_occurrences) as varchar) custom_field_value
         from
-          crm_integration_anlt.t_fac_web fac,
+          (
+            select
+              *
+            from
+              crm_integration_anlt.t_fac_web
+            where
+              cod_source_system = 8
+              and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+              and cod_event = 170
+          ) fac,
           crm_integration_anlt.t_lkp_ad lkp,
           crm_integration_anlt.t_lkp_atlas_user lkp_user,
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
         where
           lkp_user.cod_source_system = 8
+          and lkp_user.cod_source_system = fac.cod_source_system
+          and lkp_user.cod_source_system = lkp.cod_source_system
           and lkp_contact.cod_source_system = 16
           and fac.cod_ad = lkp.cod_ad
           and lkp.valid_to = 20991231
@@ -1458,9 +1482,7 @@ from
           and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
           and lkp_contact.valid_to = 20991231
           and scai.cod_integration = 50000
-          and cod_event = 170
-          and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
-					and scai.cod_country = 1
+          and scai.cod_country = 1
         group by
           lkp_contact.cod_contact,
           scai.dat_processing,
@@ -1742,17 +1764,17 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue as
 				(
 				select
 					a.cod_atlas_user,
-					h.opr_atlas_user,
+					--h.opr_atlas_user,
 					h.dsc_atlas_user,
-					a.cod_payment_basket,
-					d.dsc_source_system,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
 					b.last_status_date,
 					e.cod_index_type,
-					c.paidad_index_code,
-					i.val_price price_user_payment,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
 					a.price price_basket,
-					i.val_current_credits,
-					a.from_account,
+					--i.val_current_credits,
+					--a.from_account,
 					a.from_bonus_credits,
 					a.from_refund_credits
 				from
@@ -1764,7 +1786,21 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue as
 					crm_integration_anlt.t_lkp_payment_status f,
 					crm_integration_anlt.t_lkp_payment_provider g,
 					crm_integration_anlt.t_lkp_atlas_user h,
-					crm_integration_anlt.t_fac_paidad_user_payment i
+					(
+						SELECT
+						  *
+						FROM
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
+					) i
 				where
 					a.cod_source_system = b.cod_source_system
 					and a.cod_payment_session = b.cod_payment_session
@@ -1798,7 +1834,7 @@ where
 	and base_contact.valid_to = 20991231
 	and base_contact.cod_source_system = 16
 	and scai.cod_integration = 50000
-  and scai.cod_country = 1;
+	and scai.cod_country = 1;
 
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)

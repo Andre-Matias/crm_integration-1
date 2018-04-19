@@ -17,7 +17,7 @@ def getDates():
 
 
 def evaluateS3(conf):
-	s3 = hydraS3('live-temp','hydra_verticals',conf['hydra_s3_key'],conf['hydra_s3_skey'])
+	s3 = hydraS3('live-temp-eu','hydra_verticals',conf['hydra_s3_key'],conf['hydra_s3_skey'])
 
 	output = gzip.open("./tmp/cassiopeia_s3.gz", 'wb')
 
@@ -43,7 +43,7 @@ def evaluateS3(conf):
 			"Yamato",
 			"S3",
 			"Storage",
-			"live-temp/hydra_verticals",
+			"live-temp-eu/hydra_verticals",
 			"Verticals",
 			data_date,
 			counter,
@@ -55,7 +55,7 @@ def evaluateS3(conf):
 			"Yamato",
 			"S3",
 			"Storage",
-			"live-temp/hydra_verticals",
+			"live-temp-eu/hydra_verticals",
 			"Verticals",
 			data_date,
 			counter,
@@ -89,17 +89,17 @@ def evaluateDWH(conf):
 		else:
 			evaluate = "OK"
 
-		print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
-			"Hikari",
-			"MsSQL",
-			"DWH",
-			table,
-			"otomoto.pl",
-			row[0],
-			row[1],
-			'',
-			evaluate
-			))
+		# print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
+		# 	"Hikari",
+		# 	"MsSQL",
+		# 	"DWH",
+		# 	table,
+		# 	"otomoto.pl",
+		# 	row[0],
+		# 	row[1],
+		# 	'',
+		# 	evaluate
+		# 	))
 
 		output.write("{0},{1},{2},{3},{4},{5},{6},{7},{8}\n".format(
 			"Hikari",
@@ -120,6 +120,7 @@ def evaluateDWH(conf):
 def evaluateStaging(conf):
 	mssql = MsSQL('10.98.8.38',conf['mssql_user'],conf['mssql_pass'],1433)
 	table = "[Staging].[hydra].[AdImpressions_verticals]"
+	
 	output = gzip.open("./tmp/cassiopeia_stg.gz", 'wb')
 
 	mssql.connect()
@@ -139,17 +140,17 @@ def evaluateStaging(conf):
 		else:
 			evaluate = "OK"
 
-		print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
-			"Hikari",
-			"MsSQL",
-			"Staging",
-			table,
-			"Verticals",
-			row[0],
-			row[1],
-			'',
-			evaluate
-			))
+		# print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
+		# 	"Hikari",
+		# 	"MsSQL",
+		# 	"Staging",
+		# 	table,
+		# 	"Verticals",
+		# 	row[0],
+		# 	row[1],
+		# 	'',
+		# 	evaluate
+		# 	))
 
 		output.write(
 			"{0},{1},{2},{3},{4},{5},{6},{7},{8}\n".format(
@@ -196,17 +197,32 @@ def evaluateOLAP(conf):
 		else:
 			qty_check = row[1]	
 
-		print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
-			"Ariadne",
-			"OLAP",
-			"Tabular Model",
-			"[Measures].[Ad Impressions (Big Data)]",
-			"otomoto.pl",
-			row[0],
-			row[1],
-			'',
-			evaluate
-			))
+		# print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(
+		# 	"Ariadne",
+		# 	"OLAP",
+		# 	"Tabular Model",
+		# 	"[Measures].[Ad Impressions (Big Data)]",
+		# 	"otomoto.pl",
+		# 	row[0],
+		# 	row[1],
+		# 	'',
+		# 	evaluate
+		# 	))
+
+		# with gzip.open('./tmp/cassiopeia_olap.gz', 'wb') as output:
+		# 	output.write(
+		# 		"{0},{1},{2},{3},{4},{5},{6},{7},{8}\n".format(
+		# 		"Ariadne",
+		# 		"OLAP",
+		# 		"Tabular Model",
+		# 		"[Measures].[Ad Impressions (Big Data)]",
+		# 		"otomoto.pl",
+		# 		row[0],
+		# 		qty_check,
+		# 		'',
+		# 		evaluate
+		# 		)
+		# 	)
 
 		output.write(
 			"{0},{1},{2},{3},{4},{5},{6},{7},{8}\n".format(
@@ -239,7 +255,7 @@ def sendAllResultsToS3(conf):
 def loadResultsToReshift(conf):
 
 	print("Inserting results")
-	rs = redshift('10.101.5.159','5671','main',conf['yamato_user'],conf['yamato_pass'])
+	rs = redshift('10.101.5.237','5671','main',conf['yamato_user'],conf['yamato_pass'])
 
 	rs.connect()
 
@@ -250,6 +266,7 @@ def loadResultsToReshift(conf):
 		access_key_id '{0}' \
 		secret_access_key '{1}' \
 		gzip \
+		region 'us-west-2' \
 		delimiter ',' escape;".format(conf['aux_s3_key'],conf['aux_s3_skey']))
 
 	rs.runQuery("copy miguel_chin.cassiopeia_results \
@@ -257,6 +274,7 @@ def loadResultsToReshift(conf):
 		access_key_id '{0}' \
 		secret_access_key '{1}' \
 		gzip \
+		region 'us-west-2' \
 		delimiter ',' escape;".format(conf['aux_s3_key'],conf['aux_s3_skey']))
 
 	rs.runQuery("copy miguel_chin.cassiopeia_results \
@@ -264,6 +282,7 @@ def loadResultsToReshift(conf):
 		access_key_id '{0}' \
 		secret_access_key '{1}' \
 		gzip \
+		region 'us-west-2' \
 		delimiter ',' escape;".format(conf['aux_s3_key'],conf['aux_s3_skey']))
 
 	rs.runQuery("copy miguel_chin.cassiopeia_results \
@@ -271,6 +290,7 @@ def loadResultsToReshift(conf):
 		access_key_id '{0}' \
 		secret_access_key '{1}' \
 		gzip \
+		region 'us-west-2' \
 		delimiter ',' escape;".format(conf['aux_s3_key'],conf['aux_s3_skey']))
 
 	rs.disconnect()

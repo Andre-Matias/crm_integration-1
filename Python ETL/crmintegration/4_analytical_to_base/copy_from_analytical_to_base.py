@@ -10,7 +10,7 @@ import queue
 from retry import retry
 import logging
 from datetime import date, datetime
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))  # Change this later to a package import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
 

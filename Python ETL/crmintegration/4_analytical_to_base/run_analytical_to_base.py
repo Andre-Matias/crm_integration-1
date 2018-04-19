@@ -3,7 +3,7 @@ import simplejson as json
 import calculate_kpis
 import copy_from_analytical_to_base
 from datetime import date, datetime
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))  # Change this later to a package import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
 COD_INTEGRATION = 50000					# Analytical to Base
