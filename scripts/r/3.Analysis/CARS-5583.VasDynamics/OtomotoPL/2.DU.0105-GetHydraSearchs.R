@@ -1,20 +1,8 @@
 # load libraries --------------------------------------------------------------
-
-library("dplyr")
-library("data.table")
-library("dtplyr")
-library("magrittr")
-library("RMySQL")
 library("RPostgreSQL")
-library("tidyr")
-library("scales")
-library("ggplot2")
-library("ggthemes")
-library("fasttime")
-library("forcats")
-library("RColorBrewer")
-library("gridExtra")
 library("aws.s3")
+library("purrr")
+library("jsonlite")
 
 # config ----------------------------------------------------------------------
 options(scipen=999)
