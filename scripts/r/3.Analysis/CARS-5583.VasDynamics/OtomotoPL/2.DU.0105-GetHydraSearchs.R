@@ -46,7 +46,7 @@ listDatesToGet <-
 drv <- dbDriver("PostgreSQL")
 
 for(host in hosts){
-  for(i in rangeDate){
+  for(i in listDatesToGet){
     
     print (paste(host, "=>", i, "=> started at:", Sys.time()))
     
