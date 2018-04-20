@@ -82,6 +82,14 @@ jqlWAURanking <-
 jqlWAUMyAccount <-
   gsub("mixpanel.daily_time_buckets", "mixpanel.weekly_time_buckets", jqlDAUMyAccount)
 
+# all time ---
+
+jqlRanking <-
+  gsub('mixpanel.numeric_bucket("time", mixpanel.daily_time_buckets), ', '', jqlDAURanking)
+
+jqlMyAccount <-
+  gsub('mixpanel.numeric_bucket("time", mixpanel.daily_time_buckets), ', '', jqlDAUMyAccount)
+
 
 print(paste(Sys.time(), "Looping accounts"))
 
@@ -121,6 +129,14 @@ for(i in listMixpanelAccounts){
       )
     )
   
+  dfJqlMyAccount <- 
+    as_tibble(
+      mixpanelJQLQuery(account = i[[2]], 
+                       jqlMyAccount
+                       #columnNames = c("distinct_id", "business_status", "platform", "event", "quantity"),
+                       #toNumeric = c(1, 6) 
+      )
+    )
   
   print(paste(Sys.time(), "Getting JQL WAU Account", i[[1]]))
   
@@ -132,6 +148,18 @@ for(i in listMixpanelAccounts){
                        toNumeric = c(1, 7) 
       )
     )
+  
+  
+  
+  dfJqlRanking <- 
+    as_tibble(
+      mixpanelJQLQuery(account = i[[2]], 
+                       jqlRanking
+                       #columnNames = c("distinct_id", "business_status", "platform", "ad_id", "event", "quantity"),
+                       #toNumeric = c(6) 
+      )
+    )
+  
   
   # daily values-----------------------------------------------------------------
   print(paste(Sys.time(), "Summarizing Daily Values", i[[1]]))
