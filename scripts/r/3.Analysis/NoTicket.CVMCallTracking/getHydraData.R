@@ -14,7 +14,6 @@ library("glue")
 
 # load mixpanel user's credentials --------------------------------------------
 load("~/credentials.Rdata")
-font_add_google("Open Sans", "opensans")
 
 # 
 startDate <- as.POSIXct("2018-02-01")
