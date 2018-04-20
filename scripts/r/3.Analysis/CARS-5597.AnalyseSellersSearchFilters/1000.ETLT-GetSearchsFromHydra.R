@@ -14,7 +14,6 @@ library("fasttime")
 library("forcats")
 library("RColorBrewer")
 library("gridExtra")
-library("grid")
 library("aws.s3")
 
 # config ----------------------------------------------------------------------
@@ -51,7 +50,7 @@ conDB <-
 sqlQuery <-
   "
   SELECT *
-  FROM hydra.verticals_ninja_web_##partition##
+  FROM hydra.verticals_ninja_android_##partition##
   WHERE trackpage = 'listing'
   AND server_path = '##host##'
   AND user_id IS NOT NULL AND server_date_trunc = date_part(epoch, '##Date##')
