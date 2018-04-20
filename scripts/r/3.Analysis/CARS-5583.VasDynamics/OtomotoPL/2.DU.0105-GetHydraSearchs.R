@@ -3,6 +3,7 @@ library("RPostgreSQL")
 library("aws.s3")
 library("purrr")
 library("jsonlite")
+library("stringr")
 
 # config ----------------------------------------------------------------------
 options(scipen = 999)
@@ -21,7 +22,6 @@ hosts <- c("/h/v-otomoto-web")
 # define range
 startDate <- "2017-10-01"
 endDate <- as.character(Sys.Date()-1)
-endDate <- "2017-10-02"
 
 rangeDate <- as.character(seq(as.Date(startDate),as.Date(endDate),by = 1))
 
@@ -95,14 +95,14 @@ for(host in hosts){
     dfHydraResults$a <- purrr::map(dfHydraResults$extra, jsonlite::validate)
     dfHydraResults <- dfHydraResults[dfHydraResults$a == TRUE, ]
     
-    print (paste(host, "=>", i, "=> started at:", Sys.time()), "Saving to AWS")
+    print (paste(host, "=>", i, "=> started at:", Sys.time(), "Saving to AWS"))
     
     s3saveRDS(x = dfHydraResults,
               object = paste0("Results_", gsub("/h/", "", host), "_", i, ".RDS"),
               bucket = paste0("pyrates-data-ocean/datalake/otomotoPL/searches/", gsub("/h/", "", host))
     )
 
-    print (paste(host, "=>", i, "=> started at:", Sys.time()), "Saved to AWS")
+    print (paste(host, "=>", i, "=> started at:", Sys.time(), "Saved to AWS"))
   }
 }
 
