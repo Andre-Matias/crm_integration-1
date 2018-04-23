@@ -1496,6 +1496,55 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_lkp_custom_field          #
 -- #############################################
 
+drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field_1;
+
+create table crm_integration_anlt.tmp_ro_contact_custom_field_1 as
+select
+            *
+          from
+            (
+              select (1000 * t1.num) + (100 * t2.num) + (10 * t3.num) + t4.num AS gen_num
+              from
+                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t1,
+                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t2,
+                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t3,
+                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
+            )
+          where
+            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_ro_load_contact);
+
+drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field_2;
+			
+create table crm_integration_anlt.tmp_ro_contact_custom_field_2 as
+select
+        ts.opr_contact,
+        ts.custom_fields,
+        s.gen_num,
+        ts.cod_source_system,
+        split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
+      from
+        crm_integration_anlt.tmp_ro_load_contact ts,
+        crm_integration_anlt.tmp_ro_contact_custom_field_teste1 s
+      where
+        split_part(custom_fields, '","', s.gen_num) != ''
+        and custom_fields != '{}';
+
+drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field;
+		
+create table crm_integration_anlt.tmp_ro_contact_custom_field
+distkey(cod_source_system)
+sortkey(custom_field_name, cod_source_system)
+as
+  select
+    opr_contact,
+    custom_fields,
+    cod_source_system,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',1),'{"',''),'"}','') end custom_field_name,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',2),'{"',''),'"}','') end custom_field_value
+  from
+    crm_integration_anlt.tmp_ro_contact_custom_field_2
+;
+/*		
 drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field;
 
 create table crm_integration_anlt.tmp_ro_contact_custom_field 
@@ -1538,6 +1587,7 @@ as
         and custom_fields != '{}'
     )
 ;
+*/
 
 analyze crm_integration_anlt.tmp_ro_contact_custom_field;
 
