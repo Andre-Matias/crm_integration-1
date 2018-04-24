@@ -9788,7 +9788,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_outgoing';
 */
-	--$$$
+	--$$
 	
 -- #############################################
 -- # 		   ATLAS - POLAND                  #
@@ -9903,7 +9903,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step1_outgoing;
 */
---$$$
+--$$
 /*
 create table crm_integration_anlt.tmp_pl_load_answer_step2_outgoing
 distkey(opr_ad)
@@ -9948,7 +9948,7 @@ as
  
 analyze crm_integration_anlt.tmp_pl_load_answer_step2_outgoing;
 */
---$$$
+--$$
 /* 
 create table crm_integration_anlt.tmp_pl_load_answer_step3_outgoing
 distkey(opr_answer)
@@ -9988,7 +9988,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step3_outgoing;
 */	
-	--$$$
+	--$$
 /*	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
@@ -9999,7 +9999,7 @@ delete from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step3_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pl_load_answer_step3_outgoing);
 */
---$$$ -- 140
+--$$ -- 140
 /*
 insert into crm_integration_anlt.t_fac_answer_outgoing
     select
@@ -10090,7 +10090,7 @@ drop table if exists crm_integration_anlt.tmp_pl_load_answer_step1_outgoing;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step2_outgoing;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step3_outgoing;
 */
-	--$$$
+	--$$
 /*	
 -- #######################
 -- ####    PASSO 3    ####
@@ -10143,7 +10143,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_incoming';
 */
-	--$$$
+	--$$
 
 -- #############################################
 -- # 		   ATLAS - POLAND                  #
@@ -10258,7 +10258,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step1_incoming;
 */
---$$$
+--$$
 /*
 create table crm_integration_anlt.tmp_pl_load_answer_step2_incoming
 distkey(opr_ad)
@@ -10302,7 +10302,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step2_incoming;
 */	
-	--$$$
+	--$$
 /*
 create table crm_integration_anlt.tmp_pl_load_answer_step3_incoming
 distkey(opr_answer)
@@ -10342,7 +10342,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_answer_step3_incoming;
 */	
-	--$$$
+	--$$
 /*
 insert into crm_integration_anlt.t_hst_answer_incoming
 select * from crm_integration_anlt.t_fac_answer_incoming
@@ -10353,7 +10353,7 @@ delete from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pl_load_answer_step2_incoming)
 and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pl_load_answer_step2_incoming);
 */
---$$$
+--$$
 /*
 insert into crm_integration_anlt.t_fac_answer_incoming
     select
@@ -10384,7 +10384,7 @@ insert into crm_integration_anlt.t_fac_answer_incoming
 
 analyze crm_integration_anlt.t_fac_answer_incoming;
 */	  
-	  --$$$
+	  --$$
 /*
 -- #######################
 -- ####    PASSO 5    ####
@@ -10446,7 +10446,7 @@ drop table if exists crm_integration_anlt.tmp_pl_load_answer_step1_incoming;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step2_incoming;
 drop table if exists crm_integration_anlt.tmp_pl_load_answer_step3_incoming;
 */
-	--$$$
+	--$$
 	
 -- #######################
 -- ####    PASSO 3    ####
