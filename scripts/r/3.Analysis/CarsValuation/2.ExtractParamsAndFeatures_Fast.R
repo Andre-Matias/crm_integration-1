@@ -5,6 +5,9 @@ library("dplyr")
 library("tidyr")
 library("dtplyr")
 
+
+# Function to extract parameters ------------------------------------------
+
 fExtract <-
   function(t){
 
@@ -23,6 +26,8 @@ fExtract <-
     
     print(paste(as.POSIXct(Sys.time()), as.POSIXct(Sys.time()) - rt0,
                 "extracting from params field"))
+    
+    # tidy dataset format and clean parameters ----------------------------
     t0 <-
       t %>%
       unnest(params = strsplit(params, "<br>")) %>%
@@ -41,6 +46,9 @@ fExtract <-
 
     print(paste(as.POSIXct(Sys.time()), as.POSIXct(Sys.time()) - rt0, 
                 "params to wide"))
+    
+
+    # create a data frame for parameters --------------------------------------
     dfParams <- 
       t0 %>% 
       filter(paramName != "features") %>%
@@ -52,7 +60,8 @@ fExtract <-
     
     print(paste(as.POSIXct(Sys.time()), as.POSIXct(Sys.time()) - rt0, 
                 "features to wide"))
-          
+    
+    # create a data frame for features     ------------------------------------  
     dfFeatures <-
       t0 %>% 
       filter(paramName == "features") %>%
@@ -66,7 +75,7 @@ fExtract <-
     print(paste(as.POSIXct(Sys.time()), as.POSIXct(Sys.time()) - rt0, 
                 "getting price"))
           
-    # extract price ---------------------------------------------------------------
+    # extract price -----------------------------------------------------------
     t$priceValue <- 
       str_extract(t$params, paste0("price", "<=>([0-9].*?)\\<br\\>"))
     
@@ -91,5 +100,8 @@ fExtract <-
     print("end")
     
   }
+
+
+
 
 

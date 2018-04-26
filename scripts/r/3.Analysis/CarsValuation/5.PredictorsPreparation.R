@@ -27,7 +27,11 @@ dfCarsAdsWideWithPrice <-
 dfCarsAdsWideWithPrice$damaged <- 
   factor(dfCarsAdsWideWithPrice$damaged, levels = unique(dfCarsAdsWideWithPrice$damaged))
 
-# get outliers values for price -----------------------------------------------
+
+
+# prepare price PLN -------------------------------------------------------
+
+# get outliers values for price
 dfTmp <-
   dfCarsAdsWideWithPrice %>%
   group_by(make, model, damaged) %>%
@@ -44,12 +48,12 @@ dfTmp <-
   select(ad_id)
 
   
-# price_PLN -------------------------------------------------------------------
+
 #remove ads with price outliers
 dfCarsAdsWideWithPrice <-
   dfCarsAdsWideWithPrice[!(dfCarsAdsWideWithPrice$ad_id %in% dfTmp$ad_id), ]
 
-# make ------------------------------------------------------------------------
+# prepare make ----------------------------------------------------------------
 sum(is.na(dfCarsAdsWideWithPrice$make))
 
 dfCarsAdsWideWithPrice$make <- 
@@ -60,7 +64,7 @@ sum(nchar(dfCarsAdsWideWithPrice$make) < 1)
 dfCarsAdsWideWithPrice$make <- 
   factor(dfCarsAdsWideWithPrice$make, levels = unique(dfCarsAdsWideWithPrice$make))
 
-# model
+# prepare model --------------------------------------------------------------
 sum(is.na(dfCarsAdsWideWithPrice$model))
 
 dfCarsAdsWideWithPrice$model <- 
@@ -77,43 +81,50 @@ df_model <-
   arrange(desc(qtyAds)) %>%
   mutate(shareAds = qtyAds / sum(qtyAds), cumShareAds = cumsum(shareAds))
 
-# version
+
+# prepare version ---------------------------------------------------------
 dfCarsAdsWideWithPrice$version <- 
   as.character(dfCarsAdsWideWithPrice$version)
 
 sum(is.na(dfCarsAdsWideWithPrice$version) 
     | nchar(dfCarsAdsWideWithPrice$version) <1)
 
-# mileage 
+
+# prepare mileage ---------------------------------------------------------
 dfCarsAdsWideWithPrice$mileage <-
   as.numeric(as.character(dfCarsAdsWideWithPrice$mileage))
 
 sum(is.na(dfCarsAdsWideWithPrice$mileage))
 
-# remove NA mileage -----------------------------------------------------------
 
+# prepare mileage ---------------------------------------------------------
 dfCarsAdsWideWithPrice <- 
   dfCarsAdsWideWithPrice[!is.na(dfCarsAdsWideWithPrice$mileage), ]
 
+
+# get outliers values for mileage
 dfTmp <-
-  df %>%
-  group_by(make, model) %>%
+  # modified to "dfCarsAdsWideWithPrice"
+  dfCarsAdsWideWithPrice %>%
+  group_by(make, model, damaged) %>%
   summarise(LowerValue = quantile(mileage,probs = c(0.05), na.rm = TRUE),
             UpperValue = quantile(mileage,probs = c(0.95), na.rm = TRUE),
             qty = sum(!is.na(ad_id))
   )%>%
   inner_join(dfCarsAdsWideWithPrice,
-             by = c("make", "model")) %>%
+             by = c("make", "model", "damaged")) %>%
   mutate(outlier = ifelse(
     mileage <= LowerValue | mileage >= UpperValue, TRUE, FALSE)
   ) %>%
   filter(outlier == TRUE) %>%
   select(ad_id)
 
+#remove ads mileage outliers
 dfCarsAdsWideWithPrice <-
   dfCarsAdsWideWithPrice[!(dfCarsAdsWideWithPrice$ad_id %in% dfTmp$ad_id), ]
 
-# year
+
+# prepare year ------------------------------------------------------------
 dfCarsAdsWideWithPrice$year <-
   as.numeric(as.character(dfCarsAdsWideWithPrice$year))
 
@@ -121,21 +132,26 @@ dfCarsAdsWideWithPrice <-
 dfCarsAdsWideWithPrice[dfCarsAdsWideWithPrice$year >= 1990
                        & dfCarsAdsWideWithPrice$year <= year(Sys.Date()), ]
 
-#age
+
+# prepare age -------------------------------------------------------------
 dfCarsAdsWideWithPrice$age <-
 as.numeric(year(dfCarsAdsWideWithPrice$created_at_first)-dfCarsAdsWideWithPrice$year)
 
-# body_type
+
+# prepare body type -------------------------------------------------------
 dfCarsAdsWideWithPrice$body_type <- 
   as.character(dfCarsAdsWideWithPrice$body_type)
 
 dfCarsAdsWideWithPrice$body_type <- 
   factor(dfCarsAdsWideWithPrice$body_type, levels = unique(dfCarsAdsWideWithPrice$body_type))
 
-#engine_capacity
+
+# prepare engine_capacity -------------------------------------------------
 dfCarsAdsWideWithPrice$engine_capacity <-
   as.numeric(as.character(dfCarsAdsWideWithPrice$engine_capacity))
 
+
+# get outliers values for engine capacity
 dfTmp <-
   dfCarsAdsWideWithPrice %>%
   group_by(make, model) %>%
@@ -152,14 +168,17 @@ dfTmp <-
   filter(outlier == TRUE) %>%
   select(ad_id, make, model, engine_capacity, LowerValue, UpperValue)
 
+#remove engine capacity outliers
 dfCarsAdsWideWithPrice <-
   dfCarsAdsWideWithPrice[!(dfCarsAdsWideWithPrice$ad_id %in% dfTmp$ad_id), ]
 
-#engine_power
+
+
+# prepare engine power ----------------------------------------------------
 dfCarsAdsWideWithPrice$engine_power <-
   as.numeric(as.character(dfCarsAdsWideWithPrice$engine_power))
 
-
+# get outliers values for engine power
 dfTmp <-
   dfCarsAdsWideWithPrice %>%
   group_by(make, model) %>%
@@ -175,30 +194,40 @@ dfTmp <-
   filter(outlier == TRUE) %>%
   select(ad_id, model, engine_power, LowerValue, UpperValue)
 
+#remove engine power outliers
 dfCarsAdsWideWithPrice <-
   dfCarsAdsWideWithPrice[!(dfCarsAdsWideWithPrice$ad_id %in% dfTmp$ad_id), ]
 
-#gearbox
+
+# prepare gearbox ---------------------------------------------------------
 dfCarsAdsWideWithPrice$gearbox <- 
   factor(dfCarsAdsWideWithPrice$gearbox, levels = unique(dfCarsAdsWideWithPrice$gearbox))
 
 dfCarsAdsWideWithPrice <- 
   dfCarsAdsWideWithPrice[!(dfCarsAdsWideWithPrice$gearbox==""), ]
 
-#nr_seats
+
+# nr_seats ----------------------------------------------------------------
 dfCarsAdsWideWithPrice <-
   dfCarsAdsWideWithPrice[dfCarsAdsWideWithPrice$nr_seats!="", ]
 
 dfCarsAdsWideWithPrice$nr_seats <- 
   factor(dfCarsAdsWideWithPrice$nr_seats, levels = unique(dfCarsAdsWideWithPrice$nr_seats))
 
-#new_used
+
+# new_used ----------------------------------------------------------------
 dfCarsAdsWideWithPrice$new_used <- 
   factor(dfCarsAdsWideWithPrice$new_used, levels = unique(dfCarsAdsWideWithPrice$new_used))
 
-#fuel_type
+
+# fuel_type ---------------------------------------------------------------
 dfCarsAdsWideWithPrice$fuel_type <- 
   factor(dfCarsAdsWideWithPrice$fuel_type, levels = unique(dfCarsAdsWideWithPrice$fuel_type))
+
+
+
+
+# Subset only variables needed for modelling -----------------------------
 
 dfInputForModel <-
   dfCarsAdsWideWithPrice[,
@@ -208,6 +237,9 @@ dfInputForModel <-
     ]
 
 dfInputForModel <- dfInputForModel[complete.cases(dfInputForModel),]
+
+
+# Split into training and test --------------------------------------------
 
 train_idx <- sample(x = nrow(dfInputForModel), size = 2/3 * nrow(dfInputForModel))
 dfInputForModel_train <- dfInputForModel[train_idx, ]
