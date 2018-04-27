@@ -78,7 +78,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./Reports/aut_imopt_base_to_bd_contact_"
+	name = "./aut_imopt_base_to_bd_contact_"
 	while 1:
 		
 		data = client.contacts.list(page = aux, per_page = 100)

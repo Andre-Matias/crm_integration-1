@@ -78,7 +78,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./Reports/aut_stvpt_base_to_bd_deal_"
+	name = "./aut_stvpt_base_to_bd_deal_"
 	while 1:
 		
 		data = client.deals.list(page = aux, per_page = 100)
