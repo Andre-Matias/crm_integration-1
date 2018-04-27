@@ -51,8 +51,8 @@ print('Start Truncate aut_imopt_base_to_bd_deal: ' + time.strftime("%H:%M:%S"))
 cur.execute("truncate table crm_integration_anlt.aut_imopt_base_to_bd_deal; ")
 print('End Truncate aut_imopt_base_to_bd_deal: ' + time.strftime("%H:%M:%S"))
 
-aut_imopt_base_to_bd_contact.main(conf_file)
-aut_imopt_base_to_bd_deal.main(conf_file)
+aut_imopt_base_to_bd_contacts_full.main(conf_file)
+aut_imopt_base_to_bd_deals_full.main(conf_file)
 
 print('Starting Query: ' + time.strftime("%H:%M:%S"))
 
