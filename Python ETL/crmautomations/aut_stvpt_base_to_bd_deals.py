@@ -68,8 +68,8 @@ def deletePreviousS3Files(conf_file, keyId, sKeyId):
 	conf = json.load(open(conf_file))
 
 	conn = S3Connection(keyId, sKeyId)
-	b = Bucket(conn, 'pyrates-data-ocean')
-	for x in b.list(prefix = 'renato-teixeira/deals/stvpt/'):
+	b = Bucket(conn, 'pyrates-eu-data-ocean')
+	for x in b.list(prefix = 'crm-automations/deals/stvpt/'):
 		x.delete()	
 
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)		
