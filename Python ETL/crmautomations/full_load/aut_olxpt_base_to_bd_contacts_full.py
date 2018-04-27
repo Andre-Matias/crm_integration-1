@@ -80,7 +80,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./Reports/aut_olxpt_base_to_bd_contacts_"
+	name = "./Reports/aut_olxpt_base_to_bd_contact_"
 	while 1:
 		
 		data = client.contacts.list(page = aux, per_page = 100)
@@ -115,7 +115,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 				contact.user_id = ''
 			contact.country = country
 			contact.category = category
-			output.write(json.dumps(contact,use_decimal=True)+"\n")
+			output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -123,7 +123,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 		#Upload file to S3
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
-		fileName="aut_olxpt_base_to_bd_contacts_" + str(aux).zfill(10) + ".txt.gz"
+		fileName="aut_olxpt_base_to_bd_contact_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(data_path+"contacts/olxpt/", fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
@@ -149,7 +149,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 		cur.execute(
 			getCopySql(
 				schema, \
-				'aut_olxpt_base_to_bd_contacts', #alterar tabelas na BD 'aux_olxpt_contacts'
+				'aut_olxpt_base_to_bd_contact', #alterar tabelas na BD 'aux_olxpt_contacts'
 				's3://%(bucketName)s%(data_path)scontacts/olxpt/' \
 					% {
 					'bucketName':bucketName,

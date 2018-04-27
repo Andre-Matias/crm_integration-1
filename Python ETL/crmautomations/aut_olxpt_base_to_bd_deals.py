@@ -78,7 +78,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./Reports/aut_olxpt_base_to_bd_deals_"
+	name = "./Reports/aut_olxpt_base_to_bd_deal_"
 	while 1:
 		
 		data = client.deals.list(page = aux, per_page = 100)
@@ -123,7 +123,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 					deal.user_id = ''
 				deal.country = country
 				deal.category = category
-				output.write(json.dumps(deal,use_decimal=True)+"\n")
+				output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -131,7 +131,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 		#Upload file to S3
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
-		fileName="aut_olxpt_base_to_bd_deals_" + str(aux).zfill(10) + ".txt.gz"
+		fileName="aut_olxpt_base_to_bd_deal_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(data_path+"deals/olxpt/", fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
@@ -157,7 +157,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 		cur.execute(
 			getCopySql(
 				schema, \
-				'aut_olxpt_base_to_bd_deals', #'aux_olxpt_deals',
+				'aut_olxpt_base_to_bd_deal', #'aux_olxpt_deals',
 				's3://%(bucketName)s%(data_path)sdeals/olxpt/' \
 					% {
 					'bucketName':bucketName,

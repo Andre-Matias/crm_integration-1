@@ -43,44 +43,44 @@ client = basecrm.Client(access_token=base_api_token)
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
 
-print('Start Truncate aut_imopt_base_to_bd_contacts: ' + time.strftime("%H:%M:%S"))
-cur.execute("truncate table crm_integration_anlt.aut_imopt_base_to_bd_contacts; ")
-print('End Truncate aut_imopt_base_to_bd_contacts: ' + time.strftime("%H:%M:%S"))
+print('Start Truncate aut_imopt_base_to_bd_contact: ' + time.strftime("%H:%M:%S"))
+cur.execute("truncate table crm_integration_anlt.aut_imopt_base_to_bd_contact; ")
+print('End Truncate aut_imopt_base_to_bd_contact: ' + time.strftime("%H:%M:%S"))
 
-print('Start Truncate aut_imopt_base_to_bd_deals: ' + time.strftime("%H:%M:%S"))
-cur.execute("truncate table crm_integration_anlt.aut_imopt_base_to_bd_deals; ")
-print('End Truncate aut_imopt_base_to_bd_deals: ' + time.strftime("%H:%M:%S"))
+print('Start Truncate aut_imopt_base_to_bd_deal: ' + time.strftime("%H:%M:%S"))
+cur.execute("truncate table crm_integration_anlt.aut_imopt_base_to_bd_deal; ")
+print('End Truncate aut_imopt_base_to_bd_deal: ' + time.strftime("%H:%M:%S"))
 
-aut_imopt_base_to_bd_contacts.main(conf_file)
-aut_imopt_base_to_bd_deals.main(conf_file)
+aut_imopt_base_to_bd_contact.main(conf_file)
+aut_imopt_base_to_bd_deal.main(conf_file)
 
 print('Starting Query: ' + time.strftime("%H:%M:%S"))
 
 #Contact Differences
 cur.execute(
 			"select "\
-              "aut_imopt_base_to_bd_contacts.contacts_id, "\
-              "aut_imopt_base_to_bd_contacts.deals_id, "\
-              "aut_imopt_base_to_bd_contacts.nif, "\
-              "aut_imopt_base_to_bd_contacts.user_id, "\
-              "aut_imopt_base_to_bd_contacts.designacao_fiscal, "\
-              "aut_imopt_base_to_bd_contacts.fiscal_address, "\
-              "aut_imopt_base_to_bd_contacts.email_address, "\
-              "aut_imopt_base_to_bd_contacts.natureza "\
+              "aut_imopt_base_to_bd_contact.contacts_id, "\
+              "aut_imopt_base_to_bd_contact.deals_id, "\
+              "aut_imopt_base_to_bd_contact.nif, "\
+              "aut_imopt_base_to_bd_contact.user_id, "\
+              "aut_imopt_base_to_bd_contact.designacao_fiscal, "\
+              "aut_imopt_base_to_bd_contact.fiscal_address, "\
+              "aut_imopt_base_to_bd_contact.email_address, "\
+              "aut_imopt_base_to_bd_contact.natureza "\
             "from "\
               "( "\
                 "select "\
-                  "aut_imopt_base_to_bd_contacts.id contacts_id, "\
-                  "aut_imopt_base_to_bd_deals.id deals_id, "\
-                  "aut_imopt_base_to_bd_contacts.nif, "\
-                  "aut_imopt_base_to_bd_contacts.user_id, "\
-                  "aut_imopt_base_to_bd_contacts.designacao_fiscal, "\
+                  "aut_imopt_base_to_bd_contact.id contacts_id, "\
+                  "aut_imopt_base_to_bd_deal.id deals_id, "\
+                  "aut_imopt_base_to_bd_contact.nif, "\
+                  "aut_imopt_base_to_bd_contact.user_id, "\
+                  "aut_imopt_base_to_bd_contact.designacao_fiscal, "\
                   "contacts_address.fiscal_address, "\
-                  "aut_imopt_base_to_bd_contacts.email_address, "\
-                  "replace(replace(replace(aut_imopt_base_to_bd_contacts.natureza,'\\\"',''),'[',''),']','') as natureza "\
+                  "aut_imopt_base_to_bd_contact.email_address, "\
+                  "replace(replace(replace(aut_imopt_base_to_bd_contact.natureza,'\\\"',''),'[',''),']','') as natureza "\
                 "from "\
-                  "crm_integration_anlt.aut_imopt_base_to_bd_contacts, "\
-                  "crm_integration_anlt.aut_imopt_base_to_bd_deals, "\
+                  "crm_integration_anlt.aut_imopt_base_to_bd_contact, "\
+                  "crm_integration_anlt.aut_imopt_base_to_bd_deal, "\
                   "( "\
                     "select id, replace(replace(replace(listagg(address_value, ', ') within group (order by id, cod_address_name),', null',''),'null, ',''),'null',' ') fiscal_address "\
                     "from ( "\
@@ -103,7 +103,7 @@ cur.execute(
                           "s.gen_num, "\
                           "split_part(replace(replace(replace(replace(replace(fiscal_address,':null',':\\\"null\\\"'),':false,',':\\\"false\\\",'),':true,',':\\\"true\\\",'),':false}',':\\\"false\\\"}'),':true}',':\\\"true\\\"}'),'\\\",\\\"', s.gen_num) AS segment "\
                         "from "\
-                          "crm_integration_anlt.aut_imopt_base_to_bd_contacts ts, "\
+                          "crm_integration_anlt.aut_imopt_base_to_bd_contact ts, "\
                           "( "\
                           "select "\
                             "* "\
@@ -117,7 +117,7 @@ cur.execute(
                               "(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4 "\
                             ") "\
                           "where "\
-                          "gen_num between 1 and (select max(regexp_count(replace(fiscal_address,':null',':\\\"null\\\"'), '\\\",\\\"') + 1) from crm_integration_anlt.aut_imopt_base_to_bd_contacts /*where id = 117058292*/) "\
+                          "gen_num between 1 and (select max(regexp_count(replace(fiscal_address,':null',':\\\"null\\\"'), '\\\",\\\"') + 1) from crm_integration_anlt.aut_imopt_base_to_bd_contact /*where id = 117058292*/) "\
                           ") s "\
                         "where "\
                           "split_part(replace(fiscal_address,':null',':\\\"null\\\"'), '\\\",\\\"', s.gen_num) != '' "\
@@ -127,22 +127,22 @@ cur.execute(
                     "group by id "\
                     ") contacts_address "\
                 "where  "\
-                  "aut_imopt_base_to_bd_contacts.id = aut_imopt_base_to_bd_deals.contacts_id "\
-                "and aut_imopt_base_to_bd_contacts.id = contacts_address.id (+) "\
-				#"and aut_imopt_base_to_bd_contacts.id = 200682693 "\
-				#"and aut_imopt_base_to_bd_deals.id in(49245232,49245233) "\
-              ") aut_imopt_base_to_bd_contacts, "\
-              "crm_integration_anlt.aut_imopt_base_to_bd_deals "\
+                  "aut_imopt_base_to_bd_contact.id = aut_imopt_base_to_bd_deal.contacts_id "\
+                "and aut_imopt_base_to_bd_contact.id = contacts_address.id (+) "\
+				#"and aut_imopt_base_to_bd_contact.id = 200682693 "\
+				#"and aut_imopt_base_to_bd_deal.id in(49245232,49245233) "\
+              ") aut_imopt_base_to_bd_contact, "\
+              "crm_integration_anlt.aut_imopt_base_to_bd_deal "\
             "where "\
-              "aut_imopt_base_to_bd_contacts.contacts_id = aut_imopt_base_to_bd_deals.contacts_id (+) "\
-              "and aut_imopt_base_to_bd_contacts.deals_id = aut_imopt_base_to_bd_deals.id (+) "\
-              "and aut_imopt_base_to_bd_contacts.nif = aut_imopt_base_to_bd_deals.nif (+) "\
-              "and aut_imopt_base_to_bd_contacts.user_id = aut_imopt_base_to_bd_deals.user_id (+) "\
-              "and aut_imopt_base_to_bd_contacts.designacao_fiscal = aut_imopt_base_to_bd_deals.designacao_fiscal (+) "\
-              "and aut_imopt_base_to_bd_contacts.fiscal_address = aut_imopt_base_to_bd_deals.fiscal_address (+) "\
-              "and aut_imopt_base_to_bd_contacts.email_address = aut_imopt_base_to_bd_deals.email_address (+) "\
-              "and aut_imopt_base_to_bd_contacts.natureza = aut_imopt_base_to_bd_deals.natureza (+) "\
-              "and aut_imopt_base_to_bd_deals.id is null;")
+              "aut_imopt_base_to_bd_contact.contacts_id = aut_imopt_base_to_bd_deal.contacts_id (+) "\
+              "and aut_imopt_base_to_bd_contact.deals_id = aut_imopt_base_to_bd_deal.id (+) "\
+              "and aut_imopt_base_to_bd_contact.nif = aut_imopt_base_to_bd_deal.nif (+) "\
+              "and aut_imopt_base_to_bd_contact.user_id = aut_imopt_base_to_bd_deal.user_id (+) "\
+              "and aut_imopt_base_to_bd_contact.designacao_fiscal = aut_imopt_base_to_bd_deal.designacao_fiscal (+) "\
+              "and aut_imopt_base_to_bd_contact.fiscal_address = aut_imopt_base_to_bd_deal.fiscal_address (+) "\
+              "and aut_imopt_base_to_bd_contact.email_address = aut_imopt_base_to_bd_deal.email_address (+) "\
+              "and aut_imopt_base_to_bd_contact.natureza = aut_imopt_base_to_bd_deal.natureza (+) "\
+              "and aut_imopt_base_to_bd_deal.id is null;")
 result_list = cur.fetchall()
 
 print('End Query: ' + time.strftime("%H:%M:%S"))
