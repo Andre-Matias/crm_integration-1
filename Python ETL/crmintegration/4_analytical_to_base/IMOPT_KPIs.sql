@@ -1261,7 +1261,7 @@ from
         select
           coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
           inner_core.dat_snap,
-          cast(max(dat_valid_to) as varchar) custom_field_value
+          cast(max(dateadd(day,duration,dat_payment)) as varchar) custom_field_value
         from
           (
             select
@@ -1269,10 +1269,13 @@ from
               idx_type.dsc_index_type,
               scai.dat_processing dat_snap,
               fac.dat_valid_to,
-              dat_paidad_user_payment
+              dat_paidad_user_payment,
+			  dat_payment,
+			  duration
             from
               crm_integration_anlt.t_lkp_atlas_user atlas_user,
               crm_integration_anlt.t_fac_paidad_user_payment fac,
+			  crm_integration_anlt.t_lkp_paidad_index paidad_index,
               crm_integration_anlt.t_rel_scai_country_integration scai,
               crm_integration_anlt.v_lkp_paidad_index idx,
               crm_integration_anlt.v_lkp_paidad_index_type idx_type
@@ -1283,9 +1286,10 @@ from
               and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
               and fac.cod_paidad_index = idx.cod_paidad_index (+)
               and fac.cod_source_system = idx.cod_source_system (+)
+			  and fac.cod_paidad_index = paidad_index.cod_paidad_index (+)
               and idx.cod_index_type = idx_type.cod_index_type(+)
               and lower(idx_type.dsc_index_type) = 'package'
-							and scai.cod_country = 1
+			  and scai.cod_country = 1
 			) inner_core
         group by
           coalesce(dsc_atlas_user,'unknown'),

@@ -4,7 +4,7 @@ library("feather")
 
 # lists ads files from datalake -----------------------------------------------
 files <-
-  list.files(path = '/data/lake', pattern = '^.*_ads_2.*feather$',
+  list.files(path = '/data/lake/ads/', pattern = '^.*_ads_2.*feather$',
              full.names = TRUE)
 
 # read all files to a list ---------------------------------------------------- 

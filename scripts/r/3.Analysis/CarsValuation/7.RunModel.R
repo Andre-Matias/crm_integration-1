@@ -75,7 +75,7 @@ dfInputForModel_cv <-
 #save(object = dfInputForModel_cv, file = "~/tmp/dfInputForModel_cv.RDS")
 
 for (iNtrees in c(100, 200, 300, 400, 500, 1000)){
-for (iMtry in seq(1, length(selected_predictors), 1)){
+for (iMtry in seq(1, length(selected_predictors)-1, 1)){
   
 a <- NULL
 aT <- NULL
@@ -97,6 +97,7 @@ print(formula)
 print(paste("Trees", iNtrees, "Mtry", iMtry))
 dfInputForModel_train$predictedPrice_PLN <- RF_model$predictions
 
+# Calculate mean error, mean absolute error, mean squared error, etc.
 a <- gof(dfInputForModel_train$predictedPrice_PLN, dfInputForModel_train$price_PLN)
 
 a <- data.frame(dataset = "train",
@@ -126,6 +127,11 @@ saveRDS(object = e,
 
 print("Train Results")
 #print(a)
+
+
+
+
+# Predict price using TRAIN folds from cross validation dataset ----------
 
 p <- predict(RF_model, data = dfInputForModel_cv, num.threads = 7)
 
@@ -162,6 +168,10 @@ saveRDS(object = eT,
 
 print("CV Results")
 #print(aT)
+
+
+
+# Predict price using TEST dataset ----------------------------------------
 
 p <- predict(RF_model, data = dfDataForModel_test, num.threads = 8)
 
@@ -208,3 +218,4 @@ gc()
 #}
 
 print("The End")
+Sys.time()

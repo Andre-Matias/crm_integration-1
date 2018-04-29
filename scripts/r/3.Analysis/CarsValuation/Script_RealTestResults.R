@@ -48,16 +48,16 @@ as.POSIXct(Sys.time()) - rt0
 
 
 dfFeaturesWide <- as.data.table(df$features)
-saveRDS(object = dfFeaturesWide, file = cfgFileFeatures)
+saveRDS(object = dfFeaturesWide, file = "cfgFileFeatures.rds")
 rm(dfFeaturesWide)
 gc()
 
 dfParamsWide <- as.data.table(df$params)
-saveRDS(object = dfParamsWide, file = cfgFileParams )
+saveRDS(object = dfParamsWide, file = "cfgFileParams.rds" )
 rm(dfParamsWide)
 gc()
 
-saveRDS(object = rawData %>% select(-params), file = cfgFileMain)
+saveRDS(object = rawData %>% select(-params), file = "cfgFileMain.rds")
 rm(rawData)
 gc()
 
@@ -173,7 +173,7 @@ print(paste("Complete Cases", sum(complete.cases(dfFileMainAIOwPriceFMO[, vars, 
 sapply(dfFileMainAIOwPriceFMO[, vars, with=FALSE], function(x) sum(is.na(x)))
 
 #--------------------
-  
+# We are going to use "dfFileMainAIOwPriceFMO" dataset for modelling in RunModel.R   
 saveRDS(object = dfFileMainAIOwPriceFMO, file = cfgFileMainAIOwPriceFMO)
 rm(dfFileMainAIOwPriceFMO)
 gc()
