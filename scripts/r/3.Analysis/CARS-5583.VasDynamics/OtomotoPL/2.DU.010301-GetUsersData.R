@@ -18,9 +18,9 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 vertical <- "otomotoPL"
-file <- "ads_history"
+file <- "ads"
 
-startDate <- "2018-01-01"
+startDate <- "2017-01-01"
 endDate <- as.character(Sys.Date()-1)
 
 AllDates <- seq.Date(as.Date(startDate), as.Date(endDate), 1)
@@ -49,22 +49,7 @@ listDatesToGet <-
 for (i in listDatesToGet) {
 filename <- paste0("/datalake/", vertical,"/", file, "/", "RDS/",
                    "RDL_",vertical, "_", file ,"_",  i, ".RDS")
-print(
-  paste(
-    Sys.time(),
-    filename,
-    sep = " | "
-  )
-)
-
-
-text_slackr(channel = c("gv-bi-reporting"), 
-            text = paste(
-              Sys.time(),
-              filename,
-              sep = " | "
-            )
-              )
+print(filename)
 
 # connect to database  ------------------------------------------------------
 conDB <-  
@@ -76,95 +61,52 @@ host = "127.0.0.1",
 port = 3317, 
 dbname = cfOtomotoPLDbName
 )
+
 # get data ------------------------------------------------------------------
 dbSqlQuery <-
-  paste(
-    "SELECT `primary`, changed_at, id, `status`, params",
-    "FROM ads_history.ads_history_otomotopl", 
-    "WHERE changed_at", 
-    "BETWEEN '", i, " 00:00:00'", 
-    "AND '", i, " 23:59:59';"
-  )
+paste(
+"SELECT *, 'ads' AS tablename",
+"FROM otomotopl.ads",
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'",
+"UNION ALL",
+"SELECT *, 'ads_archive' AS tablename",
+"FROM otomotopl.ads_archive",
+"WHERE created_at_first >= '", i, "00:00:00' AND created_at_first <= '", i,"23:59:59'"
+)
 
-dbSqlQuery <-
-  dbSendQuery(conDB,dbSqlQuery)
+dfSqlQuery <-
+dbGetQuery(conDB, dbSqlQuery)
 
-dfSqlQuery <- data.frame()
-
-chunk <- data.frame()
-
-while (!dbHasCompleted(dbSqlQuery)) {
-  
-  chunk <- dbFetch(dbSqlQuery, n = 100000)
-  
-  print(
-    paste(
-      Sys.time(),
-      nrow(chunk),
-      sep = " | "
-    )
-  )
-  
-  
-  text_slackr(channel = c("gv-bi-reporting"), 
-              text = paste(
-                Sys.time(),
-                nrow(chunk),
-                sep = " | "
-              )
-  )
-  
-  
-  if(nrow(dfSqlQuery)==0){
-    dfSqlQuery <- chunk
-  } else {
-    dfSqlQuery <- rbind(dfSqlQuery, chunk)
-  }
-  
-}
-# free the result set
-dbClearResult(dbSqlQuery)
 
 # disconnect from database  -------------------------------------------------
 dbDisconnect(conDB)
 
+# fix columns with switched values region_id e category_id ------------------
+
+## create tmp columns ----
+dfSqlQuery$region_id_tmp <- as.numeric(0)
+dfSqlQuery$category_id_tmp <- as.numeric(0)
+
+dfSqlQuery$category_id_tmp[dfSqlQuery$tablename =="ads_archive"] <-
+dfSqlQuery$region_id[dfSqlQuery$tablename =="ads_archive"]
+
+dfSqlQuery$region_id_tmp[dfSqlQuery$tablename =="ads_archive"] <-
+dfSqlQuery$category_id[dfSqlQuery$tablename =="ads_archive"] 
+
+dfSqlQuery$category_id[dfSqlQuery$tablename =="ads_archive"] <-
+dfSqlQuery$category_id_tmp[dfSqlQuery$tablename =="ads_archive"]
+
+dfSqlQuery$region_id[dfSqlQuery$tablename =="ads_archive"] <-
+dfSqlQuery$region_id_tmp[dfSqlQuery$tablename =="ads_archive"]
+
+## delete tmp colums
+dfSqlQuery$region_id_tmp <- NULL
+dfSqlQuery$category_id_tmp <- NULL
+
 # write file to disk --------------------------------------------------------
-text_slackr(channel = c("gv-bi-reporting"), 
-            text = 
-              paste(
-                Sys.time(),
-                "Saving to AWS",
-                sep = " | "
-              )
-)
-
-print(paste(
-  Sys.time(),
-  "Saving to AWS",
-  sep = " | "
-)
-)
-
 s3saveRDS(
   x = dfSqlQuery, 
   bucket = bucket_path, 
   object = filename
-)
-
-text_slackr(channel = c("gv-bi-reporting"), 
-            text = 
-              paste(
-                Sys.time(),
-                "Saved to AWS",
-                sep = " | "
-                )
-)
-
-print(
-paste(
-  Sys.time(),
-  "Saved to AWS",
-  sep = " | "
-)
 )
 }
