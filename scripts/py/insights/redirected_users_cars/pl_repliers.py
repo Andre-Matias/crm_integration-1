@@ -4,11 +4,11 @@ import psycopg2
 import numpy as np
 
 con = psycopg2.connect(
-        dbname='main',
-        host='10.101.5.159',
-        port='5671',
-        user='jeremy_castan',
-        password='dfgksjkDSGZKAjk35235SFAFkjkj'
+        dbname='DB_NAME',
+        host='HOST NAME',
+        port='PORT',
+        user='USER NAME',
+        password='PW'
         )
 
 cur = con.cursor()
