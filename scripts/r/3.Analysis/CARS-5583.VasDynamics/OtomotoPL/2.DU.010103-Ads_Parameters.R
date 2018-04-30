@@ -4,7 +4,9 @@ library("data.table")
 library("stringr")
 library("RMySQL")
 library("slackr")
-
+library("data.table")
+library("dplyr")
+library("dtplyr")
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
