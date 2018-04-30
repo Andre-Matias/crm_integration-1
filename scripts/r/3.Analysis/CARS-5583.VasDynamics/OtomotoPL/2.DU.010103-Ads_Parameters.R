@@ -7,6 +7,7 @@ library("slackr")
 library("data.table")
 library("dplyr")
 library("dtplyr")
+library("tidyr")
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
@@ -51,14 +52,12 @@ listExistingDates_Ads <-
 listExistingDates_Ads_Parameters <-
   as.Date(str_extract(s3Files_Ads_Parameters$Key, "[0-9]{4}-[0-9]{2}-[0-9]{2}"))
 
-# files to transform
-
 # dates to get ----------------------------------------------------------------
 
 filesToTransform <- 
   s3Files_Ads$Key[!(listExistingDates_Ads %in% listExistingDates_Ads_Parameters)]
 
-for(file in head(filesToTransform)){
+for(file in filesToTransform){
   
   dfTmp <- NULL
   
@@ -102,5 +101,4 @@ for(file in head(filesToTransform)){
     bucket = bucket_path,
     object =  fileParameters
   )
-  
 }
