@@ -148,9 +148,7 @@ for(i in listMixpanelAccounts){
                        toNumeric = c(1, 7) 
       )
     )
-  
-  
-  
+
   dfJqlRanking <- 
     as_tibble(
       mixpanelJQLQuery(account = i[[2]], 
