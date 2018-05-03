@@ -4904,8 +4904,8 @@ as
 		operation_type,
 		operation_timestamp,
 		null dsc_category_pl,
-		null dsc_category_pt, -- não existe de todo
-		null dsc_category_en,
+		name_pt dsc_category_pt, -- ALTERADO 20180503
+		name_pt dsc_category_en, -- ALTERADO 20180503
 		null dsc_category_ro, -- não existe de todo
 		null dsc_category_ru, -- não existe de todo
 		null dsc_category_hi, -- não existe de todo
