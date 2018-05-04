@@ -1507,18 +1507,13 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
 					crm_integration_anlt.t_lkp_atlas_user h,
 					(
 						SELECT
-						  *
+						  fac.opr_payment_session,
+						  fac.cod_source_system
+						  --fac.val_current_credits,
 						FROM
-						  (
-							SELECT
-							  fac.opr_payment_session,
-							  fac.cod_source_system,
-							  --fac.val_current_credits,
-							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
-							FROM
-							  crm_integration_anlt.t_fac_paidad_user_payment fac
-						)
-						WHERE rn = 1
+						  crm_integration_anlt.t_fac_paidad_user_payment fac
+						WHERE
+						  fac.cod_source_system = 4
 					) i
 				where
 					a.cod_source_system = b.cod_source_system
