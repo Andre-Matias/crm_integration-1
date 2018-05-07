@@ -1143,7 +1143,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 drop table if exists crm_integration_anlt.tmp_pt_load_contact;
 
-create table crm_integration_anlt.tmp_pt_load_contact 
+create table crm_integration_anlt.tmp_pt_load_contact
 distkey(cod_source_system)
 sortkey(cod_contact, opr_contact)
 as
@@ -1151,44 +1151,45 @@ select
     source_table.opr_contact,
     source_table.dsc_contact,
     source_table.cod_source_system,
-	source_table.meta_event_type,
-	source_table.meta_event_time,
-	coalesce(lkp_base_user_creator.cod_base_user,-2) cod_base_user_creator,
-	source_table.contact_id,
-	source_table.created_at,
-	source_table.updated_at,
-	source_table.title,
-	source_table.first_name,
-	source_table.last_name,
-	source_table.description,
-	coalesce(lkp_industry.cod_industry,-2) cod_industry,
-	source_table.website,
-	source_table.email,
-	source_table.phone,
-	source_table.mobile,
-	source_table.fax,
-	source_table.twitter,
-	source_table.facebook,
-	source_table.linkedin,
-	source_table.skype,
-	coalesce(lkp_base_user_owner.cod_base_user,-2) cod_base_user_owner,
-	source_table.flg_organization,
-	source_table.address,
-	source_table.custom_fields,
-	source_table.customer_status,
-	source_table.prospect_status,
-	source_table.tags,
+    source_table.meta_event_type,
+    source_table.meta_event_time,
+    coalesce(lkp_base_user_creator.cod_base_user,-2) cod_base_user_creator,
+    source_table.contact_id,
+    source_table.created_at,
+    source_table.updated_at,
+    source_table.title,
+    source_table.first_name,
+    source_table.last_name,
+    source_table.description,
+    coalesce(lkp_industry.cod_industry,-2) cod_industry,
+    source_table.website,
+    source_table.email,
+    source_table.phone,
+    source_table.mobile,
+    source_table.fax,
+    source_table.twitter,
+    source_table.facebook,
+    source_table.linkedin,
+    source_table.skype,
+    coalesce(lkp_base_user_owner.cod_base_user,-2) cod_base_user_owner,
+    source_table.flg_organization,
+    source_table.address,
+    source_table.custom_fields,
+    source_table.customer_status,
+    source_table.prospect_status,
+    source_table.tags,
     source_table.hash_contact,
     source_table.cod_execution,
     max_cod_contacts.max_cod,
     row_number() over (order by source_table.opr_contact desc) new_cod,
     target.cod_contact,
     case
-      --when target.cod_contact is null then 'I'
+    --when target.cod_contact is null then 'I'
+    when target.cod_contact is null and source_table.meta_event_type = 'deleted' then 'DI'
 	  when target.cod_contact is null or (source_table.hash_contact != target.hash_contact and target.valid_from = source_table.dat_processing) then 'I'
-	  when source_table.meta_event_type = 'deleted' then 'D'
-      when source_table.hash_contact != target.hash_contact then 'U'
-        else 'X'
+    when source_table.meta_event_type = 'deleted' then 'D'
+    when source_table.hash_contact != target.hash_contact then 'U'
+    else 'X'
     end dml_type
   from
     (
@@ -1281,7 +1282,7 @@ select
             and fac.cod_integration = rel_integr_proc.cod_integration
             and rel_integr_proc.dat_processing = fac.dat_processing
             and fac.cod_status = 2
-          group by 
+          group by
             rel_integr_proc.dat_processing
         ) scai_execution
 	) source,
@@ -1309,71 +1310,71 @@ select
 	and lkp_industry.valid_to = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_contact;
-	
+
 	--$$$
-	
+
 delete from crm_integration_anlt.t_lkp_contact
 using crm_integration_anlt.tmp_pt_load_contact
-where 
-	tmp_pt_load_contact.dml_type = 'I' 
-	and t_lkp_contact.opr_contact = tmp_pt_load_contact.opr_contact 
+where
+	tmp_pt_load_contact.dml_type = 'I'
+	and t_lkp_contact.opr_contact = tmp_pt_load_contact.opr_contact
 	and t_lkp_contact.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact');
 
 	--$$$
-	
--- update valid_to in the updated/deleted records on source	
+
+-- update valid_to in the updated/deleted records on source
 update crm_integration_anlt.t_lkp_contact
-set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') 
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact')
 from crm_integration_anlt.tmp_pt_load_contact source
 where source.cod_contact = crm_integration_anlt.t_lkp_contact.cod_contact
 and crm_integration_anlt.t_lkp_contact.valid_to = 20991231
 and source.dml_type in('U','D');
 
 	--$$$
-	
+
 insert into crm_integration_anlt.t_lkp_contact
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type in('I','DI') then max_cod + new_cod
         when dml_type = 'U' then cod_contact
       end cod_contact,
       opr_contact,
       dsc_contact,
       cod_source_system,
-      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') valid_from, 
-      20991231 valid_to,
-	  cod_base_user_creator cod_base_user,
-    null cod_atlas_user,
-	  contact_id,
-	  created_at,
-	  updated_at,
-	  title,
-	  first_name,
-	  last_name,
-	  description,
-	  cod_industry,
-	  website,
-	  email,
-	  phone,
-	  mobile,
-	  fax,
-	  twitter,
-	  facebook,
-	  linkedin,
-	  skype,
-	  cod_base_user_owner,
-	  flg_organization,
-	  address,
-	  custom_fields,
-	  customer_status,
-	  prospect_status,
-	  tags,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') valid_from,
+      case when dml_type in ('DI') then (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') else 20991231 end valid_to,
+      cod_base_user_creator cod_base_user,
+      null cod_atlas_user,
+      contact_id,
+      created_at,
+      updated_at,
+      title,
+      first_name,
+      last_name,
+      description,
+      cod_industry,
+      website,
+      email,
+      phone,
+      mobile,
+      fax,
+      twitter,
+      facebook,
+      linkedin,
+      skype,
+      cod_base_user_owner,
+      flg_organization,
+      address,
+      custom_fields,
+      customer_status,
+      prospect_status,
+      tags,
       hash_contact,
-	  cod_execution
+      cod_execution
     from
       crm_integration_anlt.tmp_pt_load_contact
     where
-      dml_type in ('U','I');
+      dml_type in ('U','I','DI');
 
 analyze crm_integration_anlt.t_lkp_contact;
 	  
