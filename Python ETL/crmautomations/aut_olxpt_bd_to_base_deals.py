@@ -28,6 +28,7 @@ def updateDealsInBase(client, result_list):
 		deal.custom_fields['NIF'] = result[5] 	
 		deal.custom_fields['Phone'] = result[6] 	
 		deal.custom_fields['User ID'] = result[7] 	
+		deal.custom_fields['Payment Date'] = result[8] 	
 		client.deals.update(deal.id, deal)
 	
 def getDatabaseConnection(conf_file):
@@ -66,7 +67,8 @@ cur.execute(
               "aut_olxpt_base_to_bd_contact.mobile, "\
               "aut_olxpt_base_to_bd_contact.nif, "\
               "aut_olxpt_base_to_bd_contact.phone, "\
-              "aut_olxpt_base_to_bd_contact.user_id "\
+              "aut_olxpt_base_to_bd_contact.user_id, "\
+              "aut_olxpt_base_to_bd_contact.last_stage_change_at "\
             "from "\
               "( "\
                 "select "\
@@ -77,14 +79,13 @@ cur.execute(
                   "aut_olxpt_base_to_bd_contact.mobile, "\
                   "aut_olxpt_base_to_bd_contact.nif, "\
                   "aut_olxpt_base_to_bd_contact.phone, "\
-                  "aut_olxpt_base_to_bd_contact.user_id "\
+                  "aut_olxpt_base_to_bd_contact.user_id, "\
+				  "aut_olxpt_base_to_bd_deal.last_stage_change_at "\
                 "from "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_contact, "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_deal "\
                 "where "\
                   "aut_olxpt_base_to_bd_contact.id = aut_olxpt_base_to_bd_deal.contacts_id "\
-				  #"and aut_olxpt_base_to_bd_contact.id = 200682721 "\
-				  #"and aut_olxpt_base_to_bd_deal.id in(49245239, 49245240) "\
               ") aut_olxpt_base_to_bd_contact, "\
               "crm_integration_anlt.aut_olxpt_base_to_bd_deal "\
             "where "\
