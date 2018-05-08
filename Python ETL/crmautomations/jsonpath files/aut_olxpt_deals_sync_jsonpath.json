@@ -8,6 +8,7 @@
 		"$['nif']",
 		"$['phone']",
 		"$['user_id']",
+		"$['last_stage_change_at']",
 		"$['country']",
 		"$['category']"
 	]
