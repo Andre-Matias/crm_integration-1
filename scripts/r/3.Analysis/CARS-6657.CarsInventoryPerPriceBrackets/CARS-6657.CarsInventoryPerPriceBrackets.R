@@ -9,6 +9,7 @@ library("showtext")
 library("glue")
 library("aws.s3")
 library("lubridate")
+library("quantmod")
 
 load("~/credentials.Rdata")
 load("~/GlobalConfig.Rdata")
@@ -18,7 +19,6 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 font_add_google("Open Sans", "opensans")
-
 
 listAccounts <- 
   list(otomotopl = list("OtomotoPL", mixpanelOtomotoAccount, 3317, "otomotopl"),
@@ -32,7 +32,7 @@ for(i in listAccounts){
   
   querySQl <-
     "
-    SELECT id, params 
+    SELECT id, user_id, params 
     FROM ads 
     WHERE status = 'active' 
     AND category_id = 29
@@ -63,3 +63,70 @@ for(i in listAccounts){
     dfAll <- rbind(dfAll, dfSqlQuery)
   }
 }
+
+s3saveRDS(
+  x = dfAll, 
+  bucket = bucket_path, 
+  object = "CARS/CARS-6657/dfAllActiveAds.RDS"
+)
+
+
+
+t0 <-
+  dfAll %>%
+  unnest(params = strsplit(params, "<br>")) %>%
+  mutate(new = strsplit(params, "<=>"),
+         length = lapply(new, length)) %>%
+  filter(length >= 2 ) %>%
+  mutate(paramName = unlist(lapply(new, function(x) x[1])),
+         paramValue = unlist(lapply(new, function(x) x[2]))
+  ) %>%
+  select(project, id, user_id, paramName, paramValue)
+
+t0[t0$paramName=="price" & !is.na(as.numeric(t0$paramValue)), c("paramName")] <- "priceValue"
+
+t0$paramName <- gsub("price\\[currency\\]", "price_currency", t0$paramName, perl = TRUE)
+t0$paramName <- gsub("price\\[gross_net\\]", "price_gross_net", t0$paramName, perl = TRUE)
+
+dfParams <- 
+  t0 %>% 
+  filter(paramName != "features") %>%
+  group_by(project, id, user_id, paramName) %>%
+  summarise(paramValue = max(paramValue)) %>%
+  filter(paramName %in% c("make", "model", "price_currency", "price_gross_net", "priceValue")) %>%
+  spread(key = paramName, value = paramValue)
+
+dfParams$priceValueGross <- 0 
+dfParams$priceValue <- as.numeric(dfParams$priceValue)
+
+dfParams$priceValueGross[dfParams$price_gross_net=="net" &dfParams$project == "AutovitRO"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="net" & dfParams$project == "AutovitRO"] * 1.19
+
+dfParams$priceValueGross[dfParams$price_gross_net=="gross" &dfParams$project == "AutovitRO"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="gross" & dfParams$project == "AutovitRO"]
+
+dfParams$priceValueGross[dfParams$price_gross_net=="net" &dfParams$project == "OtomotoPL"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="net" & dfParams$project == "OtomotoPL"] * 1.23
+
+dfParams$priceValueGross[dfParams$price_gross_net=="gross" &dfParams$project == "OtomotoPL"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="gross" & dfParams$project == "OtomotoPL"]
+
+dfParams$priceValueGross[dfParams$price_gross_net=="net" &dfParams$project == "StandvirtualPT"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="net" & dfParams$project == "StandvirtualPT"] * 1.23
+
+dfParams$priceValueGross[dfParams$price_gross_net=="gross" &dfParams$project == "StandvirtualPT"] <- 
+  dfParams$priceValue[dfParams$price_gross_net=="gross" & dfParams$project == "StandvirtualPT"]
+
+# PLN to EUR
+# 0.233804365
+# RON to EUR
+# 0.215112863
+
+dfParams$priceValueGross[dfParams$price_currency == "PLN"] <-
+  dfParams$priceValueGross[dfParams$price_currency == "PLN"] * 0.233804365
+
+dfParams$priceValueGross[dfParams$price_currency == "RON"] <-
+  dfParams$priceValueGross[dfParams$price_currency == "RON"] * 0.215112863
+
+
+
