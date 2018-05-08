@@ -736,7 +736,7 @@ from
           and h.valid_to = 20991231
           and lower(f.dsc_payment_status) = 'finished'
           and lower(g.dsc_payment_provider) != 'admin'
-          and lower(h.type) not like 'topup%'
+          --and lower(h.type) not like 'topup%'
           and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
