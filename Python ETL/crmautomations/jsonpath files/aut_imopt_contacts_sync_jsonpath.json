@@ -1,0 +1,13 @@
+{
+	"jsonpaths": [
+		"$['id']",
+		"$['nif']",
+		"$['user_id']",
+		"$['designacao_fiscal']",
+		"$['fiscal_address']",
+		"$['email_address']",
+		"$['natureza']",
+		"$['country']",
+		"$['category']"
+	]
+}
