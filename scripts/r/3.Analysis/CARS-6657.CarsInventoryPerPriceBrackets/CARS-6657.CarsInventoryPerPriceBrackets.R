@@ -11,6 +11,8 @@ library("aws.s3")
 library("lubridate")
 library("quantmod")
 
+options(scipen = 9999)
+
 load("~/credentials.Rdata")
 load("~/GlobalConfig.Rdata")
 rm(list = ls(pattern = "df"))
@@ -129,4 +131,56 @@ dfParams$priceValueGross[dfParams$price_currency == "RON"] <-
   dfParams$priceValueGross[dfParams$price_currency == "RON"] * 0.215112863
 
 
+dfParams_AutovitRO <-
+  dfParams %>%
+  filter(project == "AutovitRO") 
+
+dfParams_AutovitRO$segment <- 
+  cut(
+    dfParams_AutovitRO$priceValueGross, 
+    breaks=c(quantile(dfParams_AutovitRO$priceValueGross, probs = seq(0, 1, by = 0.25))),
+    include.lowest=TRUE, dig.lab = 7
+    )
+
+dfParams_AutovitRO_Stats <-
+  dfParams_AutovitRO %>%
+  group_by(project, make, segment) %>%
+  summarise(qtyListings = sum(n()),
+            qtyUniqueUsers = n_distinct(user_id))
+
+
+dfParams_OtomotoPL <-
+  dfParams %>%
+  filter(project == "OtomotoPL") 
+
+dfParams_OtomotoPL$segment <- 
+  cut(
+    dfParams_OtomotoPL$priceValueGross, 
+    breaks=c(quantile(dfParams_OtomotoPL$priceValueGross, probs = seq(0, 1, by = 0.25))),
+    include.lowest=TRUE, dig.lab = 7
+  )
+
+dfParams_OtomotoPL_Stats <-
+  dfParams_OtomotoPL %>%
+  group_by(project, make, segment) %>%
+  summarise(qtyListings = sum(n()),
+            qtyUniqueUsers = n_distinct(user_id))
+
+
+dfParams_StandvirtualPT <-
+  dfParams %>%
+  filter(project == "StandvirtualPT") 
+
+dfParams_StandvirtualPT$segment <- 
+  cut(
+    dfParams_StandvirtualPT$priceValueGross, 
+    breaks=c(quantile(dfParams_StandvirtualPT$priceValueGross, probs = seq(0, 1, by = 0.25))),
+    include.lowest=TRUE, dig.lab = 7
+  )
+
+dfParams_StandvirtualPT_Stats <-
+  dfParams_StandvirtualPT %>%
+  group_by(project, make, segment) %>%
+  summarise(qtyListings = sum(n()),
+            qtyUniqueUsers = n_distinct(user_id))
 
