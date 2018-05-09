@@ -46,7 +46,7 @@ dat <-
   rbindlist(dat_list, use.names = TRUE, fill = TRUE)
 
  s3saveRDS(
-   x = dat_wide, 
+   x = dat, 
    object = "datalake/autovitRO/AIO/Ads_AIO.RDS",
    bucket = bucket_path
  )
