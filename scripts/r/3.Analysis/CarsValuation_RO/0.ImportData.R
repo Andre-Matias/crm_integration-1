@@ -1,5 +1,5 @@
 #' ################################################################################################
-#' tmp step: eventually dataset will be available with created_at_first field and filtered with only live ads
+#' note: eventually dataset will be available with created_at_first field and filtered with only live ads
 #' 
 #' 1) Import data with all ads
 #' 2) tmp step: left_join with other dataset to get created_at_first field
@@ -93,3 +93,11 @@ ads_live <- filter(ads_net_counted, net_ad_counted=="1") %>%
 dfCarsAdsWideWithPrice <- inner_join(ads_all_param, ads_live, by= c("ad_id"="id"))
 
 
+rm(ads_net_counted, ads_live, dat, ads_all_param)
+
+
+
+# Resume of cleaning:
+# data since Jan 1 2017, 16 months of data
+# starting dataset: ads_all_param -> 800k
+# filtering live: dfCarsAdsWideWithPrice -> 620k

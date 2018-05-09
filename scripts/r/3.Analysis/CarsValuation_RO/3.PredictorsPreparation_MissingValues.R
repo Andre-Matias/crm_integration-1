@@ -1,3 +1,8 @@
+#' ################################################################################################
+#' Remove missing values and eventuially keep only complete cases
+#' 
+#' ################################################################################################
+
 #libraries
 library("data.table")
 library("dplyr")
@@ -50,12 +55,15 @@ fMissingValues <-
     
     # price_PLN ---------------------------------------------------------------
 
-    # select final vars -------------------------------------------------------
+    
+    #summary(df)
+    #View(head(filter(df, is.na(engine_capacity)), 100))
+    #map(df, ~sum(is.na(.)))
     
     
     
     # only observations without missings values -------------------------------
-    df <- df[complete.cases(df), vars, with = FALSE]   # will end up from 807446 rows (fron 1Jan 2017) to 219175 rows of data
+    df <- df[complete.cases(df), vars, with = FALSE]   # will end up from 620K rows (live ads fron 1Jan 2017) to 183K rows of data (30% of live ads)
     
     gc()
     

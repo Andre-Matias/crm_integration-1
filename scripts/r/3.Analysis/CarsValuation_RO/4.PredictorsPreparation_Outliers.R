@@ -1,4 +1,10 @@
-#libraries
+#' ################################################################################################
+#' Remove damaged cars (will not accept them for prediction / assumption: car must be not damaged)
+#' Remove outliers for each variables  => bear it in mind possible range on features dropdown
+#' 
+#' ################################################################################################
+
+# Libraries
 library("data.table")
 library("dplyr")
 library("dtplyr")
@@ -52,7 +58,7 @@ fOutliers <-
       as.numeric(as.character(df$year))
     
     df <-
-      df[df$year >= 1990
+      df[df$year >= 2000   # there are only 1400 cars between 1990-2000; left with 159K rows
          & df$year <= year(Sys.Date()), ]
 
     # body_type ---------------------------------------------------------------
@@ -76,8 +82,8 @@ fOutliers <-
     
     df <-
       df[!(df$ad_id %in% dfTmp$ad_id), ]
-    # engine_power ------------------------------------------------------------
     
+    # engine_power ------------------------------------------------------------
     dfTmp <-
       df %>%
       group_by(make, model) %>%
@@ -102,8 +108,8 @@ fOutliers <-
       df[!(df$gearbox==""), ]
     
     # nr_seats ----------------------------------------------------------------
-    df <-
-      df[df$nr_seats!="", ]
+    # df <-
+    #   df[df$nr_seats!="", ]
 
     # new_used ----------------------------------------------------------------
 
@@ -117,23 +123,25 @@ fOutliers <-
     dfTmp <-
       df %>%
       group_by(make, model) %>%
-      summarise(LowerValue = quantile(price_PLN,probs = c(0.05), na.rm = TRUE),
-                UpperValue = quantile(price_PLN,probs = c(0.95), na.rm = TRUE),
+      summarise(LowerValue = quantile(price_RON, probs = c(0.05), na.rm = TRUE),
+                UpperValue = quantile(price_RON, probs = c(0.95), na.rm = TRUE),
                 qty = sum(!is.na(ad_id))
       )%>%
       inner_join(df,
                  by = c("make", "model")) %>%
       mutate(outlier = ifelse(
-        price_PLN <= LowerValue | price_PLN >= UpperValue, TRUE, FALSE)
+        price_RON <= LowerValue | price_RON >= UpperValue, TRUE, FALSE)
       ) %>%
       filter(outlier == TRUE) %>%
       select(ad_id)
     
     df <-
-      df[!(df$ad_id %in% dfTmp$ad_id), ]
+      df[!(df$ad_id %in% dfTmp$ad_id), ]   # left with 138k rows
+    #min = 2281 RON ~= 495€
+    #max = 1211753 RON ~=263k € => given the reasonable range and also the small size will not filter further
     
-    df <-
-      df[df$price_PLN >= 500 & df$price_PLN <= 750000, ]
+    # df <-
+    #   df[df$price_PLN >= 500 & df$price_PLN <= 750000, ] # PLN values
     
     
 
@@ -141,11 +149,12 @@ fOutliers <-
     
     vars <- 
       c("ad_id", "make", "model", "mileage", "year",
-        "body_type", "engine_capacity", "engine_power", "gearbox", "nr_seats",
-        "new_used", "fuel_type", "damaged", "price_PLN", "age")
+        "body_type", "engine_capacity", "engine_power", "gearbox", 
+        # "nr_seats",
+        "fuel_type", "age", "price_RON")
     
     # only observations without missings values -------------------------------
-    df <- df[complete.cases(df), vars, with = FALSE]
+    df <- df[complete.cases(df), vars, with = FALSE]   # left with 138k rows
     
     gc()
     

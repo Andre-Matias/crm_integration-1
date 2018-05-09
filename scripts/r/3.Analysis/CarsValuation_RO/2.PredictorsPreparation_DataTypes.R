@@ -1,7 +1,5 @@
 #' ################################################################################################
-#' 
-#' Price Preparation considering weekly exchange rates EUR to RON since some prices are in EUR currency
-#' Also considering local VAT
+#' Convert data types
 #' 
 #' ################################################################################################
 
@@ -12,10 +10,12 @@ library("dplyr")
 library("dtplyr")
 library("magrittr")
 
+# df <- dfFunction
+
 fDataTypes <-
   function(df){
-    # select variables --------------------------------------------------------
     
+    # select variables --------------------------------------------------------
     ## nr_seats, new_used parameters are missing in the dataset
     vars <- 
     c("ad_id", "created_at_first", "make", "model", "mileage", "year",
@@ -69,6 +69,11 @@ fDataTypes <-
     # create var age ----------------------------------------------------------
     df$age <- as.numeric(year(df$created_at_first)-df$year)
     
+    #summary(df)
+    #View(head(filter(df, is.na(engine_capacity)), 100))
+    #map(df, ~sum(is.na(.)))
+    # Do more investigation on why/which are the NAs? at first glance it seems they are present across multiple variables, no pattern
+    # Shall we just keep cars that are not damaged?
 
     gc()
     

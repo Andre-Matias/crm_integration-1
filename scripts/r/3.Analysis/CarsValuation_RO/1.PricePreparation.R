@@ -22,6 +22,9 @@ dfHistoricalExchangeRates <- read_csv("rates_data.csv") # weekly rates (week sta
 
 ## calculate week number since exchange rates come weekly
 dfCarsAdsWideWithPrice$week <- cut(as.Date(dfCarsAdsWideWithPrice$created_at_first), "week")
+dfCarsAdsWideWithPrice$week <- as.Date(dfCarsAdsWideWithPrice$week)
+
+# dfFunction <- dfCarsAdsWideWithPrice
 
 fExchangeRates <-
   function(dfFunction){
@@ -44,7 +47,7 @@ fExchangeRates <-
                 by = "week")
     
     # currency conversion: if in eur convert to PLN, else leave it in PLN
-    dfFunction[price_currency == "EUR", price_RON := priceValue / EUR.RON]
+    dfFunction[price_currency == "EUR", price_RON := priceValue * EUR.RON]
     dfFunction[price_currency == "RON", price_RON := priceValue ]
     
     # gross/net cases: if is gross leave it as it is, else if net multiply by 1.19 (Romania VAT in 2017-2018= 19%)
