@@ -712,7 +712,7 @@ from
                   fac.opr_payment_session,
                   fac.cod_source_system,
                   fac.val_current_credits,
-                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.dat_payment DESC ) rn
+                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.dat_payment DESC, fac.opr_paidad_user_payment DESC ) rn
                 FROM
                   crm_integration_anlt.t_fac_paidad_user_payment fac
             )
@@ -736,8 +736,8 @@ from
           and h.valid_to = 20991231
           and lower(f.dsc_payment_status) = 'finished'
           and lower(g.dsc_payment_provider) != 'admin'
-          and lower(h.type) not like 'topup%'
-          and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
+          --and lower(h.type) not like 'topup%'
+          and to_char(b.last_status_date,'yyyymm') >= to_char(dateadd(months,-1,sysdate),'yyyymm')
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
       crm_integration_anlt.t_rel_scai_country_integration scai,
