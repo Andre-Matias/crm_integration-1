@@ -1344,7 +1344,7 @@ insert into crm_integration_anlt.t_lkp_contact
       20991231 valid_to,
 	  cod_base_user_creator cod_base_user,
     null cod_atlas_user,
-	  contact_id,
+	  contact_id, -- cod_contact_parent
 	  created_at,
 	  updated_at,
 	  title,
@@ -1378,6 +1378,48 @@ insert into crm_integration_anlt.t_lkp_contact
 analyze crm_integration_anlt.t_lkp_contact;
 	  
 	--$$$
+
+-- update do contact_id/cod_contact_parent - CARS RO
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 18
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$
+
+-- update do contact_id/cod_contact_parent - RE RO
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 19
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$
+
+-- update do contact_id/cod_contact_parent - OLX RO
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 20
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$	
 	
 -- #######################
 -- ####    PASSO 5    ####
