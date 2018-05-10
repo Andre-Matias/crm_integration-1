@@ -1391,6 +1391,8 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$
 
 -- update do contact_id/cod_contact_parent - OLX
 update crm_integration_anlt.t_lkp_contact
@@ -1403,6 +1405,8 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$
 
 -- update do contact_id/cod_contact_parent - IMO
 update crm_integration_anlt.t_lkp_contact
@@ -1415,6 +1419,8 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+	  
+	--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
