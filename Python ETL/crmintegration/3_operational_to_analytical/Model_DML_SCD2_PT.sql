@@ -1331,7 +1331,7 @@ and crm_integration_anlt.t_lkp_contact.valid_to = 20991231
 and source.dml_type in('U','D');
 
 	--$$$
-
+	
 insert into crm_integration_anlt.t_lkp_contact
     select
       case
@@ -1345,7 +1345,7 @@ insert into crm_integration_anlt.t_lkp_contact
       case when dml_type in ('DI') then (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') else 20991231 end valid_to,
       cod_base_user_creator cod_base_user,
       null cod_atlas_user,
-      contact_id,
+      contact_id, -- cod_contact_parent
       created_at,
       updated_at,
       title,
@@ -1379,6 +1379,42 @@ insert into crm_integration_anlt.t_lkp_contact
 analyze crm_integration_anlt.t_lkp_contact;
 	  
 	--$$$
+
+-- update do contact_id/cod_contact_parent - STV
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 15
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+
+-- update do contact_id/cod_contact_parent - OLX
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 16
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
+
+-- update do contact_id/cod_contact_parent - IMO
+update crm_integration_anlt.t_lkp_contact
+set cod_contact_parent = contact_parent.cod_contact
+from
+(
+select * from crm_integration_anlt.t_lkp_contact
+where cod_source_system = 17
+and cod_contact_parent is null
+) contact_parent
+where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
+and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	
 -- #######################
 -- ####    PASSO 5    ####
