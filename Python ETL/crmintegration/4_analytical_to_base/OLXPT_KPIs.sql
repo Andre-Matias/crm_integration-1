@@ -583,7 +583,8 @@ from
 									crm_integration_anlt.t_fac_paidad_user_payment fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
+									crm_integration_anlt.t_lkp_payment_provider provider
 								where
 									atlas_user.cod_source_system = 8
 									and atlas_user.valid_to = 20991231
@@ -592,6 +593,8 @@ from
 									and fac.cod_paidad_index = idx.cod_paidad_index (+)
 									and fac.cod_source_system = idx.cod_source_system (+)
 									and idx.cod_index_type = idx_type.cod_index_type(+)
+									and fac.cod_payment_provider = provider.cod_payment_provider (+)
+									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
 									and scai.cod_country = 1
 							) inner_core
