@@ -1380,7 +1380,7 @@ analyze crm_integration_anlt.t_lkp_contact;
 	  
 	--$$$
 
--- update do contact_id/cod_contact_parent - STV
+-- update do contact_id/cod_contact_parent - CARS PT
 update crm_integration_anlt.t_lkp_contact
 set cod_contact_parent = contact_parent.cod_contact
 from
@@ -1394,7 +1394,7 @@ and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	  
 	--$$$
 
--- update do contact_id/cod_contact_parent - OLX
+-- update do contact_id/cod_contact_parent - OLX PT
 update crm_integration_anlt.t_lkp_contact
 set cod_contact_parent = contact_parent.cod_contact
 from
@@ -1408,7 +1408,7 @@ and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	  
 	--$$$
 
--- update do contact_id/cod_contact_parent - IMO
+-- update do contact_id/cod_contact_parent - RE PT
 update crm_integration_anlt.t_lkp_contact
 set cod_contact_parent = contact_parent.cod_contact
 from
