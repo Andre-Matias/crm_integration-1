@@ -18,7 +18,7 @@ jqlQuery <-
   function main() {
     return Events({
   from_date: "2018-02-28",
-  to_date:   "2018-04-02"
+  to_date:   "2018-06-02"
   })
   .filter(e=>e.name.includes("my_ads_bulk_vas")===true && 
     e.properties.$referring_domain != "www.myautovit.fixeads.com" &&
@@ -48,7 +48,7 @@ jqlQuery <-
 function main() {
   return Events({
     from_date: "2018-02-28",
-    to_date:   "2018-04-02"
+    to_date:   "2018-06-02"
   })
   .filter(e=>e.name.includes("my_ads_bulk_vas")===true &&
             e.properties.$referring_domain != "www.myautovit.fixeads.com" &&
@@ -155,24 +155,24 @@ ggplot(df)+
   geom_bar(stat="identity", aes(x = day,y = my_ads_bulk_vas_modal_confirm), fill = "lightgreen")+
   geom_text(aes(x = day, y = my_ads_bulk_vas_modal_confirm, label = my_ads_bulk_vas_modal_confirm), color = "darkgreen", vjust  = 1.1 )+
   scale_y_continuous()+
-  scale_x_datetime(date_breaks = "day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-03-29")))+
-  ggtitle("Bump Bulk VAS - Started vs Finished Process", subtitle = "AUTOVIT (01/mar - 28/mar/18)")+
+  scale_x_datetime(date_breaks = "7 day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-05-08")))+
+  ggtitle("Bump Bulk VAS - Started vs Finished Process", subtitle = "AUTOVIT (01/mar - 08/may/18)")+
   theme_fivethirtyeight(base_family = "opensans")
 
 ggplot(df)+
   geom_line(aes(x = day,y = CTR))+
   geom_label(aes(x = day,y = CTR, label = scales::percent(round(CTR,2))))+
   scale_y_continuous(limits = c(0,1), labels = scales::percent)+
-  scale_x_datetime(date_breaks = "day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-03-29")))+
-  ggtitle("Bump Bulk VAS Convertion Rate", subtitle = "AUTOVIT (01/mar - 28/mar/18)")+
+  scale_x_datetime(date_breaks = "7 day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-05-08")))+
+  ggtitle("Bump Bulk VAS Convertion Rate", subtitle = "AUTOVIT (01/mar - 08/may/18)")+
   theme_fivethirtyeight(base_family = "opensans")
 
 ggplot(dfQueryResults_AutovitRO_Stats)+
   geom_bar(stat="identity", aes(x = Day,y = qtyVAS), fill = "navyblue")+
   geom_text(aes(x = Day, y = qtyVAS, label = qtyVAS), color = "navyblue", vjust  = - 0.5 )+
   scale_y_continuous()+
-  scale_x_datetime(date_breaks = "day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-03-29")))+
-  ggtitle("Bump Bulk VAS - Total Quantity", subtitle = "AUTOVIT (01/mar - 28/mar/18)")+
+  scale_x_datetime(date_breaks = "7 day", date_labels = "%d\n%b\n%y", limits = c(as.POSIXct("2018-02-28"), as.POSIXct("2018-05-08")))+
+  ggtitle("Bump Bulk VAS - Total Quantity", subtitle = "AUTOVIT (01/mar - 08/may/18)")+
   theme_fivethirtyeight(base_family = "opensans")
 
 dfQueryResults3_AutovitRO <- 
@@ -185,5 +185,5 @@ ggplot(dfQueryResults3_AutovitRO)+
   geom_text(aes(x = Month, y = DailyAvg, label = DailyAvg), color = "navyblue", vjust  = - 0.5 )+
   scale_x_datetime(date_breaks = "month", date_labels = "%b\n%y")+
   scale_y_continuous(limits = c(0, 125))+
-  ggtitle("VAS - Bump Up - Daily Average Quantity", subtitle = "AUTOVIT (01/mar - 18/mar/18)")+
+  ggtitle("VAS - Bump Up - Daily Average Quantity", subtitle = "AUTOVIT (01/mar - 08/may/18)")+
   theme_fivethirtyeight(base_family = "opensans")
