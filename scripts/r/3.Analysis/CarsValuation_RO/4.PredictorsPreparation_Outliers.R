@@ -83,6 +83,9 @@ fOutliers <-
     df <-
       df[!(df$ad_id %in% dfTmp$ad_id), ]
     
+    df <- filter(df, engine_capacity >500 & engine_capacity <7000)
+    
+    
     # engine_power ------------------------------------------------------------
     dfTmp <-
       df %>%
@@ -160,4 +163,6 @@ fOutliers <-
     
     return(df)
     
-    }
+  }
+
+write_csv(df, "dfDataForModel.csv")

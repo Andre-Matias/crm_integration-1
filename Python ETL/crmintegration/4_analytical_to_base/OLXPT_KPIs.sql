@@ -569,7 +569,7 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
 						from
 							(
 								select
@@ -577,13 +577,15 @@ from
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
 									fac.dsc_paidad_user_payment custom_field_value,
-									dat_paidad_user_payment
+									fac.dat_paidad_user_payment,
+									fac.opr_paidad_user_payment
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
 									crm_integration_anlt.t_fac_paidad_user_payment fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
+									crm_integration_anlt.t_lkp_payment_provider provider
 								where
 									atlas_user.cod_source_system = 8
 									and atlas_user.valid_to = 20991231
@@ -592,6 +594,8 @@ from
 									and fac.cod_paidad_index = idx.cod_paidad_index (+)
 									and fac.cod_source_system = idx.cod_source_system (+)
 									and idx.cod_index_type = idx_type.cod_index_type(+)
+									and fac.cod_payment_provider = provider.cod_payment_provider (+)
+									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
 									and scai.cod_country = 1
 							) inner_core
@@ -1676,7 +1680,12 @@ from
           lkp_contact.cod_contact,
           scai.dat_processing dat_snap,
           lkp_contact.cod_source_system,
-          cast(min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) as varchar) custom_field_value
+          case when (case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) = lkp_contact.cod_contact
+            then
+              cast(min(datediff(days, trunc(max(fac.updated_at)), trunc(sysdate))) over (partition by case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) as varchar)
+            ELSE
+              cast(min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) as varchar)
+          end custom_field_value
         from
           crm_integration_anlt.t_fac_call fac,
           crm_integration_anlt.t_lkp_contact lkp_contact,
