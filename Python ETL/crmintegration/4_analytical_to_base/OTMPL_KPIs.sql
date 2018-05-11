@@ -659,7 +659,7 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purch
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.091 (Wallet)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_wallet as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_wallet as
 select
  core.cod_contact,
  core.cod_custom_field,
@@ -672,7 +672,8 @@ from
       cod_contact,
       inner_core.cod_atlas_user,
       cod_custom_field,
-      nvl(cast(val_current_credits + from_bonus_credits + from_refund_credits as varchar),'0.00') custom_field_value,
+      --nvl(cast(val_current_credits + from_bonus_credits + from_refund_credits as varchar),'0') custom_field_value,
+	  round(nvl(cast(val_current_credits as varchar),'0'),0) custom_field_value,
       cod_source_system,
       dat_processing dat_snap
     from
@@ -710,7 +711,7 @@ from
                   fac.opr_payment_session,
                   fac.cod_source_system,
                   fac.val_current_credits,
-                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+                  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.dat_payment DESC, fac.opr_paidad_user_payment DESC  ) rn
                 FROM
                   crm_integration_anlt.t_fac_paidad_user_payment fac
             )
@@ -733,9 +734,8 @@ from
           and a.cod_source_system = 7
           and h.valid_to = 20991231
           and lower(f.dsc_payment_status) = 'finished'
-          and lower(g.dsc_payment_provider) != 'admin'
-          and lower(h.type) not like 'topup%'
-          and to_char(b.last_status_date,'yyyymm') = to_char(sysdate,'yyyymm')
+          and lower(g.dsc_payment_provider) not in ('admin','volume')
+          and to_char(b.last_status_date,'yyyymm') >= to_char(dateadd(months,-1,sysdate),'yyyymm')
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
       crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -757,7 +757,7 @@ from
       and base_contact.cod_source_system = 12
       and scai.cod_integration = 50000
       and (inner_core.rn = 1 or inner_core.rn is null)
-      and scai.cod_country = 2
+      and scai.cod_country = 1
   ) core,
  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
