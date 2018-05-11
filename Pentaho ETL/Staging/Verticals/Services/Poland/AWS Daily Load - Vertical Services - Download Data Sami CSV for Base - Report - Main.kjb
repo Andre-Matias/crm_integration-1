@@ -446,7 +446,7 @@
       <port>587</port>
       <destination>samy.bencherif&#x40;olx.com</destination>
       <destinationCc>ijedrzejczak&#x40;fixly.pl dczermak&#x40;fixly.pl kjankowiak&#x40;fixly.pl khalicka&#x40;fixly.pl jkaczmarek&#x40;fixly.pl</destinationCc>
-      <destinationBCc>florencia.amonsky&#x40;olx.com antonio.costa&#x40;olx.com jkaczmarek&#x40;fixly.pl</destinationBCc>
+      <destinationBCc>florencia.amonsky&#x40;olx.com antonio.costa&#x40;olx.com jkaczmarek&#x40;fixly.pl kprzepiera&#x40;fixly.pl</destinationBCc>
       <replyto>samy.bencherif&#x40;olx.com</replyto>
       <replytoname>BI Team Portugal</replytoname>
       <subject>Report Fixly  - File attached</subject>
@@ -670,6 +670,47 @@
       <xloc>704</xloc>
       <yloc>448</yloc>
     </entry>
+    <entry>
+      <name>mail with file - csv to stakeholders 2</name>
+      <description/>
+      <type>MAIL</type>
+      <server>smtp.gmail.com</server>
+      <port>587</port>
+      <destination>samy.bencherif&#x40;olx.com</destination>
+      <destinationCc>florencia.amonsky&#x40;olx.com</destinationCc>
+      <destinationBCc/>
+      <replyto>samy.bencherif&#x40;olx.com</replyto>
+      <replytoname>BI Team Portugal</replytoname>
+      <subject>Report Fixly  - File attached</subject>
+      <include_date>Y</include_date>
+      <contact_person>Samy Bencherif</contact_person>
+      <contact_phone/>
+      <comment>You will find attached the fixly file to upload it into base.&#xd;&#xa;&#xd;&#xa;log&#x3a; version logic-file&#x3a;v5 &#x28;edited 27-03-02&#x29;&#xd;&#xa;log&#x3a; emails added 07-03-2018</comment>
+      <include_files>Y</include_files>
+      <zip_files>N</zip_files>
+      <zip_name>Report.zip</zip_name>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>ChandraBIGV&#x40;gmail.com</auth_user>
+      <auth_password>Encrypted 2be98afc86af78b96aa0dab24d29ba9df</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>Y</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>high</priority>
+      <importance>high</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses/>
+      <filetypes>        <filetype>GENERAL</filetype>
+      </filetypes>      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>912</xloc>
+      <yloc>16</yloc>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -783,6 +824,24 @@
     <hop>
       <from>Escribir al log</from>
       <to>Report to send by mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Report to send by mail</from>
+      <to>mail with file - csv to stakeholders 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>mail with file - csv to stakeholders 2</from>
+      <to>&#xc9;xito</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>N</enabled>
