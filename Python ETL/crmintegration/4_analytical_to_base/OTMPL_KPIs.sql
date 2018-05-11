@@ -185,7 +185,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (Last login)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_last_login as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_last_login as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -239,8 +239,8 @@ FROM
 		  and b.valid_to = 20991231
 		  and b.cod_source_system = 12
 		  and scai.cod_integration = 50000
-		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
 	) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -541,7 +541,7 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_day
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.012 (Last package purchased)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purchased as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_last_package_purchased as
 select
 	source.cod_contact,
 	source.cod_custom_field,
@@ -568,7 +568,7 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
 						from
 							(
 								select
@@ -576,13 +576,15 @@ from
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
 									fac.dsc_paidad_user_payment custom_field_value,
-									dat_paidad_user_payment
+									fac.dat_paidad_user_payment,
+									fac.opr_paidad_user_payment
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
 									crm_integration_anlt.t_fac_paidad_user_payment fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
+									crm_integration_anlt.t_lkp_payment_provider provider
 								where
 									atlas_user.cod_source_system = 7
 									and atlas_user.valid_to = 20991231
@@ -591,6 +593,8 @@ from
 									and fac.cod_paidad_index = idx.cod_paidad_index (+)
 									and fac.cod_source_system = idx.cod_source_system (+)
 									and idx.cod_index_type = idx_type.cod_index_type(+)
+									and fac.cod_payment_provider = provider.cod_payment_provider (+)
+									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
 									and scai.cod_country = 2
 							) inner_core
@@ -757,7 +761,7 @@ from
       and base_contact.cod_source_system = 12
       and scai.cod_integration = 50000
       and (inner_core.rn = 1 or inner_core.rn is null)
-      and scai.cod_country = 1
+      and scai.cod_country = 2
   ) core,
  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1125,7 +1129,7 @@ from
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
@@ -1197,7 +1201,7 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_replies;
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_replies_per_ad as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1245,7 +1249,7 @@ from
               and lkp_ad_status.opr_ad_status = 'active'
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
 			  and scai.cod_country = 2
@@ -1281,8 +1285,8 @@ from
       and b.valid_to = 20991231
       and b.cod_source_system = 12
       and scai.cod_integration = 50000
-	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 2
+	  	and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1316,7 +1320,7 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad;
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.082 (# Ads with replies)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_ads_with_replies as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1362,12 +1366,12 @@ from
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and lkp_ad_status.opr_ad_status = 'active'
-			  and scai.cod_country = 2
+			  and scai.cod_country = 1
             group by
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
@@ -1400,8 +1404,8 @@ from
       and b.valid_to = 20991231
       and b.cod_source_system = 12
       and scai.cod_integration = 50000
-	  and scai.cod_country = 2
 	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1434,7 +1438,7 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies;
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (# Views)
-create table crm_integration_anlt.tmp_pl_otomoto_calc_views as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_views as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1480,7 +1484,7 @@ from
           and lkp.valid_to = 20991231
           and lkp.cod_atlas_user = lkp_user.cod_atlas_user
           and lkp_user.valid_to = 20991231
-          and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+          and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
           and lkp_contact.valid_to = 20991231
           and scai.cod_integration = 50000
           and scai.cod_country = 2
@@ -1509,7 +1513,7 @@ from
       and b.cod_source_system = 12
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 2
+	  and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
