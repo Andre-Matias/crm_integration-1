@@ -1394,7 +1394,12 @@ from
           lkp_contact.cod_contact,
           scai.dat_processing dat_snap,
           lkp_contact.cod_source_system,
-          cast(min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) as varchar) custom_field_value
+          case when (case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) = lkp_contact.cod_contact
+            then
+              cast(min(datediff(days, trunc(max(fac.updated_at)), trunc(sysdate))) over (partition by case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) as varchar)
+            ELSE
+              cast(min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) as varchar)
+          end custom_field_value
         from
           crm_integration_anlt.t_fac_call fac,
           crm_integration_anlt.t_lkp_base_user lkp_user,
