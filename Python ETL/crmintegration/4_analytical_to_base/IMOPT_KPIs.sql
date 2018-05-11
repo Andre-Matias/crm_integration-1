@@ -569,7 +569,7 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
 						from
 							(
 								select
@@ -577,7 +577,8 @@ from
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
 									fac.dsc_paidad_user_payment custom_field_value,
-									dat_paidad_user_payment
+									fac.dat_paidad_user_payment,
+									fac.opr_paidad_user_payment
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
 									crm_integration_anlt.t_fac_paidad_user_payment fac,
