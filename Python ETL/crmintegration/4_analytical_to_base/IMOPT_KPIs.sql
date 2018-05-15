@@ -1558,15 +1558,10 @@ from
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - total'
 							and rel.cod_source_system = 17
-					) kpi_custom_field,
-					(
-						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
-						from crm_integration_anlt.t_lkp_month
-						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					) calendar_month
+					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and calendar_month.revenue_month = 0
+					and rev_re.revenue_month = 0
 			) core
 		where
 			core.rn = 1
@@ -1717,15 +1712,10 @@ from
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - vas'
 							and rel.cod_source_system = 17
-					) kpi_custom_field,
-					(
-						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
-						from crm_integration_anlt.t_lkp_month
-						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					) calendar_month
+					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and calendar_month.revenue_month = 0
+					and rev_re.revenue_month = 0
 			) core
 		where
 			core.rn = 1
@@ -1799,15 +1789,10 @@ from
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (-1) - vas'
 							and rel.cod_source_system = 17
-					) kpi_custom_field,
-					(
-						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
-						from crm_integration_anlt.t_lkp_month
-						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					) calendar_month
+					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and calendar_month.revenue_month = -1
+					and rev_re.revenue_month = -1
 			) core
 		where
 			core.rn = 1
@@ -1881,15 +1866,10 @@ from
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - listings'
 							and rel.cod_source_system = 17
-					) kpi_custom_field,
-					(
-						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
-						from crm_integration_anlt.t_lkp_month
-						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					) calendar_month
+					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and calendar_month.revenue_month = 0
+					and rev_re.revenue_month = 0
 			) core
 		where
 			core.rn = 1
@@ -1964,15 +1944,10 @@ from
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (-1) - listings'
 							and rel.cod_source_system = 17
-					) kpi_custom_field,
-					(
-						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
-						from crm_integration_anlt.t_lkp_month
-						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					) calendar_month
+					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and calendar_month.revenue_month = -1
+					and rev_re.revenue_month = -1
 			) core
 		where
 			core.rn = 1
