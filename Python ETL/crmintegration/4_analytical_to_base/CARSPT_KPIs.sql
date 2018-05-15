@@ -1385,9 +1385,10 @@ from
           and scai.cod_integration = 50000
           and lkp_user.cod_base_user = fac.cod_base_user
           and fac.flg_missed = 0
-					and scai.cod_country = 1
+		  and scai.cod_country = 1
         group by
           lkp_contact.cod_source_system,
+		  lkp_contact.cod_contact_parent,
           lkp_contact.cod_contact,
           scai.dat_processing
       ) a,

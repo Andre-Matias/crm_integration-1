@@ -1375,6 +1375,7 @@ from
           and scai.cod_country = 1
         group by
           lkp_contact.cod_source_system,
+		  lkp_contact.cod_contact_parent,
           lkp_contact.cod_contact,
           scai.dat_processing
       ) a,
