@@ -11158,3 +11158,9 @@ where
     cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
     and cod_country = 2 -- Poland
 	and ind_active = 1;
+	
+	--$$$
+	
+GRANT USAGE ON SCHEMA crm_integration_anlt TO GROUP rs_verticals_users;
+GRANT SELECT ON ALL TABLES IN SCHEMA crm_integration_anlt TO GROUP rs_verticals_users;
+ALTER DEFAULT PRIVILEGES IN SCHEMA crm_integration_anlt GRANT SELECT ON TABLES TO GROUP rs_verticals_users;
