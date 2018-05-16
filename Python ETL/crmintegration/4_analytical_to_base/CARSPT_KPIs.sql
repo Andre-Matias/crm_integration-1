@@ -1444,38 +1444,30 @@ drop table if exists crm_integration_anlt.tmp_calc_max_days_since_last_call;
 
 
 --$$$
--- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings) and (Revenue (-1) - Total / VAS / Listings)
-create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
+-- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings)
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 as
 	select
 		base_contact.cod_contact,
 		base_contact.cod_source_system,
 		scai.dat_processing dat_snap,
 		inner_core.*,
-		case when cod_year_month = cast(to_char(sysdate,'yyyymm') as int) then 0 else -1 end revenue_month
+		0 revenue_month
 	from
 		(
 			select
 				cod_atlas_user,
 				dsc_atlas_user,
 				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
-				--sum(case when type_of_code = 'vas' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_revenue_vas_gross_com_account,
-				--sum(case when type_of_code = 'package' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_revenue_listings_gross_com_account,
 				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
 				round((sum(case when cod_index_type = 2 /* package */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_listings_net
 			from
 						(
 				select
 					a.cod_atlas_user,
-					--h.opr_atlas_user,
 					h.dsc_atlas_user,
-					--a.cod_payment_basket,
-					--d.dsc_source_system,
 					b.last_status_date,
 					e.cod_index_type,
-					--c.paidad_index_code,
-					--i.val_price price_user_payment,
 					a.price price_basket,
-					--i.val_current_credits,
 					a.from_account,
 					a.from_bonus_credits,
 					a.from_refund_credits
@@ -1492,7 +1484,6 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
 						SELECT
 						  fac.opr_payment_session,
 						  fac.cod_source_system
-						  --fac.val_current_credits,
 						FROM
 						  crm_integration_anlt.t_fac_paidad_user_payment fac
 						WHERE
@@ -1515,8 +1506,85 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue as
 					and h.valid_to = 20991231
 					and lower(f.dsc_payment_status) = 'finished'
 					and lower(g.dsc_payment_provider) not in ('admin','volume')
-					and b.last_status_date between date_trunc('month',add_months(sysdate,-1)) and sysdate
-					--and a.cod_atlas_user in (15790353,14495476,13925961,13955989)
+					and b.last_status_date = date_trunc('month',sysdate)
+			) core
+		group by
+			cod_atlas_user,
+			dsc_atlas_user,
+			cast(to_char(last_status_date,'yyyymm') as int)
+	) inner_core,
+	crm_integration_anlt.t_lkp_contact base_contact,
+	crm_integration_anlt.t_rel_scai_country_integration scai
+where
+	lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
+	and base_contact.valid_to = 20991231
+	and base_contact.cod_source_system = 15
+	and scai.cod_integration = 50000
+	and scai.cod_country = 1;
+
+-- CREATE TMP - KPI OLX.BASE.XXX (Revenue (-1) - Total / VAS / Listings)
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 as
+	select
+		base_contact.cod_contact,
+		base_contact.cod_source_system,
+		scai.dat_processing dat_snap,
+		inner_core.*,
+		-1 revenue_month
+	from
+		(
+			select
+				cod_atlas_user,
+				dsc_atlas_user,
+				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
+				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
+				round((sum(case when cod_index_type = 2 /* package */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_listings_net
+			from
+						(
+				select
+					a.cod_atlas_user,
+					h.dsc_atlas_user,
+					b.last_status_date,
+					e.cod_index_type,
+					a.price price_basket,
+					a.from_account,
+					a.from_bonus_credits,
+					a.from_refund_credits
+				from
+					crm_integration_anlt.t_fac_payment_basket a,
+					crm_integration_anlt.t_fac_payment_session b,
+					crm_integration_anlt.t_lkp_paidad_index c,
+					crm_integration_anlt.t_lkp_source_system d,
+					crm_integration_anlt.v_lkp_paidad_index e,
+					crm_integration_anlt.t_lkp_payment_status f,
+					crm_integration_anlt.t_lkp_payment_provider g,
+					crm_integration_anlt.t_lkp_atlas_user h,
+					(
+						SELECT
+						  fac.opr_payment_session,
+						  fac.cod_source_system
+						FROM
+						  crm_integration_anlt.t_fac_paidad_user_payment fac
+						WHERE
+						  fac.cod_source_system = 4
+					) i
+				where
+					a.cod_source_system = b.cod_source_system
+					and a.cod_payment_session = b.cod_payment_session
+					and b.cod_payment_provider = g.cod_payment_provider
+					and a.cod_source_system = c.cod_source_system
+					and a.cod_source_system = e.cod_source_system
+					and c.cod_paidad_index = e.cod_paidad_index
+					and a.cod_paidad_index = c.cod_paidad_index
+					and a.cod_source_system = d.cod_source_system
+					and a.cod_atlas_user = h.cod_atlas_user
+					and a.cod_source_system = h.cod_source_system
+					and b.opr_payment_session = i.opr_payment_session
+					and b.cod_source_system = i.cod_source_system
+					and a.cod_source_system = 4
+					and h.valid_to = 20991231
+					and lower(f.dsc_payment_status) = 'finished'
+					and lower(g.dsc_payment_provider) not in ('admin','volume')
+					and b.last_status_date = date_trunc('month',add_months(sysdate,-1))
 			) core
 		group by
 			cod_atlas_user,
@@ -1547,7 +1615,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1556,10 +1624,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month desc) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1574,10 +1641,7 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = 0
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1624,7 +1688,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1633,10 +1697,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1651,10 +1714,7 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = -1
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1701,7 +1761,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_vas_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1710,10 +1770,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month desc) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1728,7 +1787,6 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = 0
 			) core
 		where
 			core.rn = 1
@@ -1778,7 +1836,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_vas_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1787,10 +1845,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1805,10 +1862,7 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = -1
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1855,7 +1909,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_listings_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1864,10 +1918,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month desc) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1882,10 +1935,7 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = 0
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1932,7 +1982,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(nvl(val_revenue_listings_net,0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1941,10 +1991,9 @@ from
 					rev_cars.dat_snap,
 					rev_cars.cod_source_system,
 					rev_cars.val_revenue_listings_net,
-					rev_cars.val_revenue_vas_net,
-					row_number() over (partition by cod_contact order by cod_year_month) rn
+					rev_cars.val_revenue_vas_net
 				from
-					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue rev_cars,
+					crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 rev_cars,
 					(
 						select
 							rel.cod_custom_field,
@@ -1959,10 +2008,7 @@ from
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and rev_cars.revenue_month = -1
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
