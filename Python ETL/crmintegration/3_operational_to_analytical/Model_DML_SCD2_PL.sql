@@ -1776,7 +1776,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_rel_contact_custom_field';	
 
-	--$$$
+	--$$$ -- 40
 	
 -- #############################################
 -- # 	  BASE - Poland                        #
@@ -1877,7 +1877,7 @@ insert into crm_integration_anlt.t_rel_contact_custom_field
 
 analyze crm_integration_anlt.t_rel_contact_custom_field;
 	
-	--$$$ -- 40
+	--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -2762,7 +2762,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_pl_load_pipeline;
 
-	--$$$
+	--$$$ -- 60
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -2924,7 +2924,7 @@ where
 	and t_lkp_stage.opr_stage = tmp_pl_load_stage.opr_stage
 	and t_lkp_stage.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage');
 
-	--$$$ -- 60
+	--$$$
 	
 update crm_integration_anlt.t_lkp_stage
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage') 
@@ -3943,7 +3943,7 @@ as
 
 analyze crm_integration_anlt.tmp_pl_load_orders;
 	
-	--$$$
+	--$$$ -- 80
 	
 insert into crm_integration_anlt.t_hst_order
     select
@@ -4044,7 +4044,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_pl_load_orders;
 
-	--$$$ -- 80
+	--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -5748,7 +5748,7 @@ where source.cod_paidad_index = crm_integration_anlt.t_lkp_paidad_index.cod_paid
 and crm_integration_anlt.t_lkp_paidad_index.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+	--$$$ -- 100
 	
 insert into crm_integration_anlt.t_lkp_paidad_index
     select
@@ -5889,7 +5889,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_pl_load_paidad_index;
 
-	--$$$ -- 100
+	--$$$
 
 -- #######################
 -- ####    PASSO 3    ####
@@ -6999,7 +6999,7 @@ insert into crm_integration_anlt.t_lkp_city
 
 analyze crm_integration_anlt.t_lkp_city;
 	  
-	--$$$
+	--$$$ -- 120
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -7528,7 +7528,7 @@ select a.*, coalesce(b.cod_city,-2) cod_city from (
 
 analyze crm_integration_anlt.tmp_pl_load_atlas_user;	
 
-	--$$$ -- 120
+	--$$$
 	
 delete from crm_integration_anlt.t_lkp_atlas_user
 using crm_integration_anlt.tmp_pl_load_atlas_user
@@ -10051,7 +10051,7 @@ where
 
 analyze crm_integration_anlt.tmp_pl_load_paidad_user_payment;
 	
-	--$$$
+	--$$$ -- 140
 	
 insert into crm_integration_anlt.t_hst_paidad_user_payment
     select
@@ -10503,7 +10503,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_pl_load_payment_session;
 
-	--$$$ -- 160
+	--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
