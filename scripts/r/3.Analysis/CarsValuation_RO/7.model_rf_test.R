@@ -60,3 +60,39 @@ mean(dfDataForModel_test$error_per)   # 17.2%
 #' PL: 19.6% 
 
 
+# Check variables importance for predicting -----------------------------------
+importance.ranger(RF_model_best)
+sort(RF_model_best$variable.importance, decreasing=TRUE)
+##' in order or importance:
+##' 1) engine_power
+##' 2) age
+##' 3) engine_capacity
+##' 4) mileage
+##' 
+
+imp<- sort(RF_model_best$variable.importance, decreasing=TRUE)
+imp<- data.frame(variable=names(imp), importance=imp) 
+ggplot(imp, aes(x=reorder(variable, -importance), y=importance)) +
+  geom_point() 
+
+
+
+
+# some use cases: -------------------------------------------------------------
+# predict your own combination
+test<- sample_n(dfDataForModel_test,1) %>%
+  select (2:4, 6:11)
+test
+new_row<- data.frame(make="opel",
+                model="zafira",
+                mileage=180000,
+                body_type="minivan",
+                engine_capacity=1796,
+                engine_power=300,
+                gearbox=c("manual"),
+                fuel_type="petrol",
+                age=16)
+test<- rbind(test, new_row)
+test
+predict_test <- predict(RF_model_best, data=test)
+predict_test$predictions
