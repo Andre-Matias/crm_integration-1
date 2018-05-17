@@ -7,11 +7,11 @@ from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
     from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
-    where proc.dsc_process_short = 't_fac_base_integration_snap_pthorizontal'
+    where proc.dsc_process_short = 't_fac_base_integration_snap_plcars'
     and proc.cod_process = rel_integr_proc.cod_process
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
-    and rel_integr_proc.cod_country = 1
+    and rel_integr_proc.cod_country = 2
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
   ) source
@@ -42,17 +42,17 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 50000 -- Chandra (Analytical) to Base
-    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_country = 2 -- Poland
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
     and rel_integr_proc.cod_status = 2
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
-	and proc.dsc_process_short = 't_fac_base_integration_snap_pthorizontal';
+	and proc.dsc_process_short = 't_fac_base_integration_snap_plcars';
 
 --$$$
-
+"""
 --(--------REVENUE--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
@@ -66,10 +66,10 @@ select source.* from (
     crm_integration_anlt.t_lkp_contact base_contact,
     crm_integration_anlt.t_rel_scai_country_integration scai
   where
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     and base_contact.valid_to = 20991231
     and scai.cod_integration = 50000
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -92,10 +92,10 @@ select source.* from (
     crm_integration_anlt.t_lkp_contact base_contact,
     crm_integration_anlt.t_rel_scai_country_integration scai
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -103,7 +103,6 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and fac_snap.cod_contact is null
 );
-
 
 --(--------PACKAGE--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -118,10 +117,10 @@ select source.* from (
     crm_integration_anlt.t_lkp_contact base_contact,
     crm_integration_anlt.t_rel_scai_country_integration scai
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -144,10 +143,10 @@ select source.* from (
     crm_integration_anlt.t_lkp_contact base_contact,
     crm_integration_anlt.t_rel_scai_country_integration scai
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -170,10 +169,10 @@ select source.* from (
     crm_integration_anlt.t_lkp_contact base_contact,
     crm_integration_anlt.t_rel_scai_country_integration scai
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -181,12 +180,12 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and fac_snap.cod_contact is null
 );
-
+"""
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (Last login)
-create table crm_integration_anlt.tmp_pt_olx_calc_last_login as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_last_login as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -199,7 +198,7 @@ FROM
 		  b.cod_contact,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
-		  isnull(a.cod_source_system,16) cod_source_system,
+		  isnull(a.cod_source_system,12) cod_source_system,
 		  isnull(a.custom_field_value, '1900-01-01 00:00:00') custom_field_value
 		FROM
 		  (
@@ -213,13 +212,13 @@ FROM
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai
 		  WHERE
-			atlas_user.cod_source_system = 8
-			AND base_contact.cod_source_system = 16
+			atlas_user.cod_source_system = 7
+			AND base_contact.cod_source_system = 12
 			AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			AND atlas_user.valid_to = 20991231
 			AND base_contact.valid_to = 20991231
 			AND scai.cod_integration = 50000
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -233,15 +232,15 @@ FROM
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = 'last login'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field
 		WHERE
 		  B.cod_contact = A.cod_contact (+)
 		  and b.valid_to = 20991231
-		  and b.cod_source_system = 16
+		  and b.cod_source_system = 12
 		  and scai.cod_integration = 50000
-      and scai.cod_country = 1
 		  and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
 	) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -255,26 +254,26 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_login);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_last_login);
 
 -- SNAP DELETE - KPI OLX.BASE.085 (Last login)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_login);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_last_login);
 
 --KPI OLX.BASE.085 (Last login)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_last_login;
+		crm_integration_anlt.tmp_pl_otomoto_calc_last_login;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_last_login;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_last_login;
 
 
 --$$$
-
+"""
 -- CREATE TMP - KPI OLX.BASE.093 (City)
-create table crm_integration_anlt.tmp_pt_olx_calc_city as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_city as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -287,7 +286,7 @@ FROM
 		  B.COD_CONTACT,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
-		  ISNULL(A.COD_SOURCE_SYSTEM,16) COD_SOURCE_SYSTEM,
+		  ISNULL(A.COD_SOURCE_SYSTEM,12) COD_SOURCE_SYSTEM,
 		  ISNULL(A.custom_field_value, ' ') custom_field_value
 		FROM
 		  (
@@ -302,15 +301,15 @@ FROM
 			  crm_integration_anlt.t_rel_scai_country_integration scai,
 			  crm_integration_anlt.t_lkp_city city
 			where
-			  atlas_user.cod_source_system = 8
-			  and base_contact.cod_source_system = 16
+			  atlas_user.cod_source_system = 7
+			  and base_contact.cod_source_system = 12
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
 			  and base_contact.valid_to = 20991231
 			  and city.valid_to = 20991231
 			  and scai.cod_integration = 50000
 			  and city.cod_city = atlas_user.cod_city
-				and scai.cod_country = 1
+				and scai.cod_country = 2
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -324,15 +323,15 @@ FROM
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = 'city'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field
 		WHERE
 		  B.COD_CONTACT = A.COD_CONTACT (+)
 		  AND B.VALID_TO = 20991231
-		  AND B.cod_source_system = 16
+		  AND B.cod_source_system = 12
 		  and scai.cod_integration = 50000
 		  and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -346,25 +345,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_city);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_city);
 
 -- SNAP DELETE - KPI OLX.BASE.093 (City)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_city);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_city);
 
 --KPI OLX.BASE.093 (City)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_city;
+		crm_integration_anlt.tmp_pl_otomoto_calc_city;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_city;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_city;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.031 (Created date)
-create table crm_integration_anlt.tmp_pt_olx_calc_created_date as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_created_date as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -377,7 +376,7 @@ FROM
 		  B.COD_CONTACT,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
-		  ISNULL(A.COD_SOURCE_SYSTEM,16) COD_SOURCE_SYSTEM,
+		  ISNULL(A.COD_SOURCE_SYSTEM,12) COD_SOURCE_SYSTEM,
 		  ISNULL(A.custom_field_value, ' ') custom_field_value
 		FROM
 		  (
@@ -391,13 +390,13 @@ FROM
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai
 			where
-			  atlas_user.cod_source_system = 8
-			  and base_contact.cod_source_system = 16
+			  atlas_user.cod_source_system = 7
+			  and base_contact.cod_source_system = 12
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
 			  and base_contact.valid_to = 20991231
 			  and scai.cod_integration = 50000
-				and scai.cod_country = 1
+				and scai.cod_country = 2
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -411,15 +410,15 @@ FROM
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = 'created date'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field
 		WHERE
 		  B.COD_CONTACT = A.COD_CONTACT (+)
 		  AND B.VALID_TO = 20991231
-		  AND B.cod_source_system = 16
+		  AND B.cod_source_system = 12
 		  and scai.cod_integration = 50000
 		  and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -433,25 +432,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_created_date);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_created_date);
 
 -- SNAP DELETE - KPI OLX.BASE.031 (Created date)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_created_date);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_created_date);
 
 --KPI OLX.BASE.031 (Created date)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_created_date;
+		crm_integration_anlt.tmp_pl_otomoto_calc_created_date;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_created_date;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_created_date;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.086 (# Logins last 30 days)
-create table crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -464,7 +463,7 @@ FROM
 		  B.COD_CONTACT,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
-		  ISNULL(A.COD_SOURCE_SYSTEM,16) COD_SOURCE_SYSTEM,
+		  ISNULL(A.COD_SOURCE_SYSTEM,12) COD_SOURCE_SYSTEM,
 		  ISNULL(A.custom_field_value, ' ') custom_field_value
 		FROM
 		  (
@@ -478,14 +477,14 @@ FROM
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai
 			where
-			  atlas_user.cod_source_system = 8
-			  and base_contact.cod_source_system = 16
+			  atlas_user.cod_source_system = 7
+			  and base_contact.cod_source_system = 12
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and base_contact.valid_to = 20991231
 			  and scai.cod_integration = 50000
 			  and atlas_user.last_login_at is not null
 			  and trunc(last_login_at) between trunc(sysdate) - 30 and trunc(sysdate)
-				and scai.cod_country = 1
+				and scai.cod_country = 2
 			  group by base_contact.cod_contact,
 				scai.dat_processing,
 				base_contact.cod_source_system
@@ -502,15 +501,15 @@ FROM
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = '# logins last 30 days'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field
 		WHERE
 		  B.COD_CONTACT = A.COD_CONTACT (+)
 		  AND B.VALID_TO = 20991231
-		  AND B.cod_source_system = 16
+		  AND B.cod_source_system = 12
 		  and scai.cod_integration = 50000
 		  and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -524,25 +523,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days);
 
 -- SNAP DELETE - KPI OLX.BASE.086 (# Logins last 30 days)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days);
 
 --KPI OLX.BASE.086 (# Logins last 30 days)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days;
+		crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days;
-
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days;
+"""
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.012 (Last package purchased)
-create table crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_last_package_purchased as
 select
 	source.cod_contact,
 	source.cod_custom_field,
@@ -587,7 +586,7 @@ from
 									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
 									crm_integration_anlt.t_lkp_payment_provider provider
 								where
-									atlas_user.cod_source_system = 8
+									atlas_user.cod_source_system = 7
 									and atlas_user.valid_to = 20991231
 									and scai.cod_integration = 50000
 									and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
@@ -597,7 +596,7 @@ from
 									and fac.cod_payment_provider = provider.cod_payment_provider (+)
 									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
-									and scai.cod_country = 1
+									and scai.cod_country = 2
 							) inner_core
 					)
 				where
@@ -614,7 +613,7 @@ from
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = 'last package purchased'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field,
 			(
 				select
@@ -625,13 +624,13 @@ from
 					crm_integration_anlt.t_lkp_contact
 				where
 					valid_to = 20991231
-					and cod_source_system = 16
+					and cod_source_system = 12
 			) contact
 	where
 	  scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
 		and lower(contact.email) = lower(dsc_atlas_user (+))
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -645,11 +644,11 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purchased);
 
 -- SNAP DELETE - KPI OLX.BASE.012 (Last package purchased)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purchased);
 
 --KPI OLX.BASE.012 (Last package purchased)
 /*XXXXX: Como identificar um package?*/
@@ -657,14 +656,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	SELECT
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased;
+		crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purchased;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_last_package_purchased;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.091 (Wallet)
-create table crm_integration_anlt.tmp_pt_olx_calc_wallet as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_wallet as
 select
  core.cod_contact,
  core.cod_custom_field,
@@ -698,11 +697,13 @@ from
                 SELECT
                   fac.id_user opr_atlas_user,
                   fac.id_transaction opr_payment_session,
-                  8 cod_source_system,
+                  7 cod_source_system,
                   fac.current_credits val_current_credits,
                   row_number() OVER ( PARTITION BY fac.id_user ORDER BY fac.date DESC, fac.id DESC ) rn
                 FROM
-                  db_atlas.olxpt_paidads_user_payments fac
+                  db_atlas_verticals.paidads_user_payments fac
+				WHERE
+                  livesync_dbname = 'otomotopl'
             )
           WHERE rn = 1
           ) i
@@ -710,7 +711,7 @@ from
           i.cod_source_system = d.cod_source_system
           and i.opr_atlas_user = h.opr_atlas_user
           and i.cod_source_system = h.cod_source_system
-          and d.cod_source_system = 8
+          and d.cod_source_system = 7
           and h.valid_to = 20991231
       ) inner_core,
       crm_integration_anlt.t_lkp_contact base_contact,
@@ -725,14 +726,14 @@ from
         where
           kpi.cod_kpi = rel.cod_kpi
           and lower(kpi.dsc_kpi) = 'wallet'
-          and rel.cod_source_system = 16
+          and rel.cod_source_system = 12
       ) kpi_custom_field
     where
       lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
       and base_contact.valid_to = 20991231
-      and base_contact.cod_source_system = 16
+      and base_contact.cod_source_system = 12
       and scai.cod_integration = 50000
-      and scai.cod_country = 1
+      and scai.cod_country = 2
   ) core,
  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -747,25 +748,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_wallet);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_wallet);
 
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_wallet);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_wallet);
 
 -- KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_wallet;
+    crm_integration_anlt.tmp_pl_otomoto_calc_wallet;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_wallet;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_wallet;
 
 --$$$
-
+"""
 -- CREATE TMP - KPI OLX.BASE.006 (# Active ads per category)
-create table crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core as
 select
 	b.cod_contact,
 	lower(b.email) email,
@@ -788,8 +789,8 @@ from
 			crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
 			crm_integration_anlt.t_rel_scai_country_integration scai
 		where
-			atlas_user.cod_source_system = 8
-			and base_contact.cod_source_system = 16
+			atlas_user.cod_source_system = 7
+			and base_contact.cod_source_system = 12
 			and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			and atlas_user.valid_to = 20991231
 			and base_contact.valid_to = 20991231
@@ -799,7 +800,7 @@ from
 			and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
 			and lkp_ad.cod_atlas_user = atlas_user.cod_atlas_user
 			and lkp_ad_status.opr_ad_status = 'active'
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 		group by
 			base_contact.cod_contact,
 			base_contact.email,
@@ -809,7 +810,7 @@ from
 	crm_integration_anlt.t_lkp_contact b
 on
 	core.cod_contact = b.cod_contact,
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
 (
 	select
 		rel.cod_custom_field,
@@ -820,11 +821,11 @@ on
 	where
 		kpi.cod_kpi = rel.cod_kpi
 		and lower(kpi.dsc_kpi) = '# active ads per category'
-		and rel.cod_source_system = 16
+		and rel.cod_source_system = 12
 ) kpi_custom_field
 where
 	b.valid_to = 20991231
-	and b.cod_source_system = 16
+	and b.cod_source_system = 12
 	and kpi_custom_field.flg_active = 1;
 
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core as
@@ -861,7 +862,7 @@ from
 			and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
 			and lkp_ad.cod_atlas_user = atlas_user.cod_atlas_user
 			and lkp_ad_status.opr_ad_status = 'active'
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 		group by
 			base_contact.cod_contact,
 			base_contact.email,
@@ -871,7 +872,7 @@ from
 	crm_integration_anlt.t_lkp_contact b
 on
 	core.cod_contact = b.cod_contact,
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
 (
 	select
 		rel.cod_custom_field,
@@ -923,7 +924,7 @@ from
 			and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
 			and lkp_ad.cod_atlas_user = atlas_user.cod_atlas_user
 			and lkp_ad_status.opr_ad_status = 'active'
-			and scai.cod_country = 1
+			and scai.cod_country = 2
 		group by
 			base_contact.cod_contact,
 			base_contact.email,
@@ -933,7 +934,7 @@ from
 	crm_integration_anlt.t_lkp_contact b
 on
 	core.cod_contact = b.cod_contact,
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
 (
 	select
 		rel.cod_custom_field,
@@ -960,7 +961,7 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 		source_imo.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_olx,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 	 where
 		source_imo.email = source_olx.email(+)
@@ -979,7 +980,7 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 		source_stv.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_olx,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 	 where
 		source_stv.email = source_olx.email(+)
@@ -1005,7 +1006,7 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 					else ''
 			end custom_field_value
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_olx,
 		crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
 		crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
@@ -1048,7 +1049,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   from
     crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core;
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core;
 drop table crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core;
 drop table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final;
@@ -1056,7 +1057,7 @@ drop table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final;
 --$$$ -- 10
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
-create table crm_integration_anlt.tmp_pt_olx_calc_replies as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_replies as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1069,7 +1070,7 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,16) cod_source_system,
+      isnull(a.cod_source_system,12) cod_source_system,
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
@@ -1094,18 +1095,18 @@ from
               crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
-              lkp_user.cod_source_system = 8
-              and lkp_contact.cod_source_system = 16
+              lkp_user.cod_source_system = 7
+              and lkp_contact.cod_source_system = 12
               and fac.cod_ad = lkp_ad.cod_ad
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and fac.dat_posted between trunc(sysdate) - 30 and trunc(sysdate)
-							and scai.cod_country = 1
+							and scai.cod_country = 2
             group by
               lkp_contact.cod_contact,
               scai.dat_processing,
@@ -1129,15 +1130,15 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = '# replies'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
       b.cod_contact = a.cod_contact (+)
       and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      and b.cod_source_system = 12
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+		and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1152,27 +1153,27 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_replies);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.023 (# Replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_replies);
 
 -- OLX.BASE.023 (# Replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_replies;
+    crm_integration_anlt.tmp_pl_otomoto_calc_replies;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_replies;
-
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_replies;
+"""
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
-create table crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_replies_per_ad as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1185,7 +1186,7 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,16) cod_source_system,
+      isnull(a.cod_source_system,12) cod_source_system,
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
@@ -1212,18 +1213,18 @@ from
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
-              lkp_user.cod_source_system = 8
-              and lkp_contact.cod_source_system = 16
+              lkp_user.cod_source_system = 7
+              and lkp_contact.cod_source_system = 12
               and fac.cod_ad = lkp_ad.cod_ad
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and lkp_ad_status.opr_ad_status = 'active'
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
-							and scai.cod_country = 1
+			  and scai.cod_country = 2
             group by
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
@@ -1249,15 +1250,15 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = '# replies per ad'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
       b.cod_contact = a.cod_contact (+)
       and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      and b.cod_source_system = 12
       and scai.cod_integration = 50000
-	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+	  	and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1273,25 +1274,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad);
 
 -- SNAP DELETE - KPI OLX.BASE.081 (# Replies per Ad)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad);
 
 -- OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad;
+    crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_replies_per_ad;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.082 (# Ads with replies)
-create table crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_ads_with_replies as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1304,7 +1305,7 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,16) cod_source_system,
+      isnull(a.cod_source_system,12) cod_source_system,
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
@@ -1331,18 +1332,18 @@ from
               crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
-              lkp_user.cod_source_system = 8
-              and lkp_contact.cod_source_system = 16
+              lkp_user.cod_source_system = 7
+              and lkp_contact.cod_source_system = 12
               and fac.cod_ad = lkp_ad.cod_ad
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and lkp_ad_status.opr_ad_status = 'active'
-							and scai.cod_country = 1
+			  and scai.cod_country = 1
             group by
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
@@ -1368,15 +1369,15 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = '# ads with replies'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
       b.cod_contact = a.cod_contact (+)
       and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      and b.cod_source_system = 12
       and scai.cod_integration = 50000
-			and scai.cod_country = 1
 	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1391,25 +1392,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies);
 
 -- SNAP DELETE - KPI OLX.BASE.082 (# Ads with replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies);
 
  -- OLX.BASE.082 (# Ads with replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
       *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies;
+    crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_ads_with_replies;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (# Views)
-create table crm_integration_anlt.tmp_pt_olx_calc_views as
+create table crm_integration_anlt.tmp_pt_standvirtual_calc_views as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1422,7 +1423,7 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,16) cod_source_system,
+      isnull(a.cod_source_system,12) cod_source_system,
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
@@ -1438,7 +1439,7 @@ from
             from
               crm_integration_anlt.t_fac_web
             where
-              cod_source_system = 8
+              cod_source_system = 7
               and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
               and cod_event = 170
           ) fac,
@@ -1447,18 +1448,18 @@ from
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
         where
-          lkp_user.cod_source_system = 8
+          lkp_user.cod_source_system = 7
           and lkp_user.cod_source_system = fac.cod_source_system
           and lkp_user.cod_source_system = lkp.cod_source_system
-          and lkp_contact.cod_source_system = 16
+          and lkp_contact.cod_source_system = 12
           and fac.cod_ad = lkp.cod_ad
           and lkp.valid_to = 20991231
           and lkp.cod_atlas_user = lkp_user.cod_atlas_user
           and lkp_user.valid_to = 20991231
-          and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+          and lkp_contact.cod_atlas_userl) = lkp_user.cod_atlas_user
           and lkp_contact.valid_to = 20991231
           and scai.cod_integration = 50000
-          and scai.cod_country = 1
+          and scai.cod_country = 2
         group by
           lkp_contact.cod_contact,
           scai.dat_processing,
@@ -1476,15 +1477,15 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = '# views'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
       b.cod_contact = a.cod_contact (+)
       and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      and b.cod_source_system = 12
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+	  and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -1498,25 +1499,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_views);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_views);
 
 -- SNAP DELETE - KPI OLX.BASE.084 (# Views)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_views);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_views);
 
 -- OLX.BASE.084 (# Views)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_views;
+    crm_integration_anlt.tmp_pl_otomoto_calc_views;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_views;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_views;
 
 --$$$
-
+"""
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Active package expiry date)
-create table crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_active_package_expiry_date as
 select
 	source.cod_contact,
 	source.cod_custom_field,
@@ -1552,7 +1553,7 @@ from
               crm_integration_anlt.v_lkp_paidad_index idx,
               crm_integration_anlt.v_lkp_paidad_index_type idx_type
             where
-              atlas_user.cod_source_system = 8
+              atlas_user.cod_source_system = 7
               and atlas_user.valid_to = 20991231
               and scai.cod_integration = 50000
               and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
@@ -1560,7 +1561,7 @@ from
               and fac.cod_source_system = idx.cod_source_system (+)
               and idx.cod_index_type = idx_type.cod_index_type(+)
               and lower(idx_type.dsc_index_type) = 'package'
-							and scai.cod_country = 1
+							and scai.cod_country = 2
 					) inner_core
         group by
           coalesce(dsc_atlas_user,'unknown'),
@@ -1577,7 +1578,7 @@ from
 				where
 				  kpi.cod_kpi = rel.cod_kpi
 				  and lower(kpi.dsc_kpi) = 'active package expiry date'
-				  and rel.cod_source_system = 16
+				  and rel.cod_source_system = 12
 			) kpi_custom_field,
 			(
 				select
@@ -1588,13 +1589,13 @@ from
 					crm_integration_anlt.t_lkp_contact
 				where
 					valid_to = 20991231
-					and cod_source_system = 16
+					and cod_source_system = 12
 			) contact
 	where
 	  scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
 		and lower(contact.email) = lower(dsc_atlas_user (+))
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -1608,27 +1609,27 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_active_package_expiry_date);
 
 -- SNAP DELETE - KPI OLX.BASE.088 (Active package expiry date)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-  (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date);
+  (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_active_package_expiry_date);
 
 --KPI OLX.BASE.088 (Active package expiry date)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date;
+    crm_integration_anlt.tmp_pl_otomoto_calc_active_package_expiry_date;
 -- 8106 Active package expiry date
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date;
-
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_active_package_expiry_date;
+"""
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.014 (Max days since last call)
-create table crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_max_days_since_last_call as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1641,7 +1642,7 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,16) cod_source_system,
+      isnull(a.cod_source_system,12) cod_source_system,
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
@@ -1660,12 +1661,12 @@ from
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
         where
-          lkp_contact.cod_source_system = 16
+          lkp_contact.cod_source_system = 12
           and lkp_contact.cod_contact = fac.cod_contact
           and lkp_contact.valid_to = 20991231
           and scai.cod_integration = 50000
           and fac.flg_missed = 0
-          and scai.cod_country = 1
+          and scai.cod_country = 2
         group by
           lkp_contact.cod_source_system,
 		  lkp_contact.cod_contact_parent,
@@ -1684,14 +1685,14 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = 'max days since last call'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
       b.cod_contact = a.cod_contact (+)
       and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      and b.cod_source_system = 12
       and scai.cod_integration = 50000
-      and scai.cod_country = 1
+      and scai.cod_country = 2
 	  and kpi_custom_field.flg_active = 1
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
@@ -1707,47 +1708,148 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_max_days_since_last_call);
 
 -- SNAP DELETE - KPI OLX.BASE.014 (Max days since last call)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_max_days_since_last_call);
 
 --KPI OLX.BASE.014 (Max days since last call)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call;
+    crm_integration_anlt.tmp_pl_otomoto_calc_max_days_since_last_call;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_max_days_since_last_call;
 
+-- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package as
+SELECT
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+FROM
+	(
+		SELECT
+		  b.cod_contact,
+		  kpi_custom_field.cod_custom_field,
+		  scai.dat_processing dat_snap,
+		  isnull(a.cod_source_system,12) cod_source_system,
+		  isnull(a.custom_field_value, '') custom_field_value
+		FROM
+		  (
+		  SELECT
+			--fac.dat_payment,
+			base_contact.cod_contact,
+			scai.dat_processing dat_snap,
+			base_contact.cod_source_system,
+			cast(max(fac.val_price) as varchar) custom_field_value
+		  FROM
+			crm_integration_anlt.t_fac_paidad_user_payment fac,
+			crm_integration_anlt.t_lkp_atlas_user atlas_user,
+			crm_integration_anlt.t_lkp_contact base_contact,
+			crm_integration_anlt.t_rel_scai_country_integration scai
+		  WHERE
+				fac.cod_atlas_user = atlas_user.cod_atlas_user
+				and atlas_user.cod_source_system = 7
+				AND base_contact.cod_source_system = 12
+				AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+				and fac.dat_payment > dateadd(month,-3,to_date(sysdate,'yyyy-mm-dd'))
+				AND atlas_user.valid_to = 20991231
+				AND base_contact.valid_to = 20991231
+				AND scai.cod_integration = 50000
+				and scai.cod_country = 2
+			group BY
+				--fac.dat_payment,
+				base_contact.cod_contact,
+				scai.dat_processing,
+				base_contact.cod_source_system
+		  ) A,
+			crm_integration_anlt.t_lkp_contact B,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+				  rel.cod_custom_field,
+				  rel.flg_active
+				from
+				  crm_integration_anlt.t_lkp_kpi kpi,
+				  crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+				  kpi.cod_kpi = rel.cod_kpi
+				  and lower(kpi.dsc_kpi) = 'max value package'
+				  and rel.cod_source_system = 12
+			) kpi_custom_field
+		WHERE
+		  B.cod_contact = A.cod_contact (+)
+		  and b.valid_to = 20991231
+		  and b.cod_source_system = 12
+		  and scai.cod_integration = 50000
+		  and scai.cod_country = 2
+		  and kpi_custom_field.flg_active = 1
+	) source,
+    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+  
+ -- HST INSERT - KPI OLX.BASE.XYZ (Max Value Package)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package);
 
---$$$
--- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0 as
+-- SNAP DELETE - KPI OLX.BASE.XYZ (Max Value Package)
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package);
+
+--KPI OLX.BASE.XYZ (Max Value Package)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package;
+
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package;
+
+-- CREATE TMP - KPI OLX.BASE.XYZ (average_spending)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month as
 	select
 		base_contact.cod_contact,
 		base_contact.cod_source_system,
 		scai.dat_processing dat_snap,
 		inner_core.*,
-		0 revenue_month
+		case when cod_year_month = cast(to_char(sysdate,'yyyymm') as int) then 0 else -1 end average_spending_month
 	from
 		(
 			select
 				cod_atlas_user,
 				dsc_atlas_user,
 				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
-				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
-				round((sum(case when cod_index_type = 2 /* package */then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_listings_net
+				--sum(case when type_of_code = 'vas' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_average_spending_vas_gross_com_account,
+				--sum(case when type_of_code = 'package' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_average_spending_listings_gross_com_account,
+				round((avg(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_average_spending_vas_net,
+				round((avg(case when cod_index_type = 2 /* package */then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_average_spending_listings_net
 			from
 				(
 				select
 					a.cod_atlas_user,
+					--h.opr_atlas_user,
 					h.dsc_atlas_user,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
 					b.last_status_date,
 					e.cod_index_type,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
 					a.price price_basket,
+					--i.val_current_credits,
+					--a.from_account,
 					a.from_bonus_credits,
 					a.from_refund_credits
 				from
@@ -1761,12 +1863,18 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0 as
 					crm_integration_anlt.t_lkp_atlas_user h,
 					(
 						SELECT
-						  fac.opr_payment_session,
-						  fac.cod_source_system
+						  *
 						FROM
-						  crm_integration_anlt.t_fac_paidad_user_payment fac
-						WHERE
-						  fac.cod_source_system = 8
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
 					) i
 				where
 					a.cod_source_system = b.cod_source_system
@@ -1782,11 +1890,12 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0 as
 					and b.opr_payment_session = i.opr_payment_session
 					and b.cod_source_system = i.cod_source_system
 					and b.cod_payment_status = f.cod_payment_status
-					and a.cod_source_system = 8
+					and a.cod_source_system = 7
 					and h.valid_to = 20991231
 					and lower(f.dsc_payment_status) = 'finished'
 					and lower(g.dsc_payment_provider) != 'admin'
-					and b.last_status_date = date_trunc('month',sysdate)
+					and b.last_status_date between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					--and a.cod_atlas_user in (15743223,15760699)
 				) core
 		group by
 			cod_atlas_user,
@@ -1798,90 +1907,13 @@ create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0 as
 where
 	lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
 	and base_contact.valid_to = 20991231
-	and base_contact.cod_source_system = 16
-	and scai.cod_integration = 50000
-	and scai.cod_country = 1;
-	
--- CREATE TMP - KPI OLX.BASE.XXX (Revenue (-1) - Total / VAS / Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_1 as
-	select
-		base_contact.cod_contact,
-		base_contact.cod_source_system,
-		scai.dat_processing dat_snap,
-		inner_core.*,
-		-1 revenue_month
-	from
-		(
-			select
-				cod_atlas_user,
-				dsc_atlas_user,
-				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
-				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
-				round((sum(case when cod_index_type = 2 /* package */then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_listings_net
-			from
-				(
-				select
-					a.cod_atlas_user,
-					h.dsc_atlas_user,
-					b.last_status_date,
-					e.cod_index_type,
-					a.price price_basket,
-					a.from_bonus_credits,
-					a.from_refund_credits
-				from
-					crm_integration_anlt.t_fac_payment_basket a,
-					crm_integration_anlt.t_fac_payment_session b,
-					crm_integration_anlt.t_lkp_paidad_index c,
-					crm_integration_anlt.t_lkp_source_system d,
-					crm_integration_anlt.v_lkp_paidad_index e,
-					crm_integration_anlt.t_lkp_payment_status f,
-					crm_integration_anlt.t_lkp_payment_provider g,
-					crm_integration_anlt.t_lkp_atlas_user h,
-					(
-						SELECT
-						  fac.opr_payment_session,
-						  fac.cod_source_system
-						FROM
-						  crm_integration_anlt.t_fac_paidad_user_payment fac
-						WHERE
-						  fac.cod_source_system = 8
-					) i
-				where
-					a.cod_source_system = b.cod_source_system
-					and a.cod_payment_session = b.cod_payment_session
-					and b.cod_payment_provider = g.cod_payment_provider
-					and a.cod_source_system = c.cod_source_system
-					and a.cod_source_system = e.cod_source_system
-					and c.cod_paidad_index = e.cod_paidad_index
-					and a.cod_paidad_index = c.cod_paidad_index
-					and a.cod_source_system = d.cod_source_system
-					and a.cod_atlas_user = h.cod_atlas_user
-					and a.cod_source_system = h.cod_source_system
-					and b.opr_payment_session = i.opr_payment_session
-					and b.cod_source_system = i.cod_source_system
-					and b.cod_payment_status = f.cod_payment_status
-					and a.cod_source_system = 8
-					and h.valid_to = 20991231
-					and lower(f.dsc_payment_status) = 'finished'
-					and lower(g.dsc_payment_provider) != 'admin'
-					and b.last_status_date = date_trunc('month',add_months(sysdate,-1))
-				) core
-		group by
-			cod_atlas_user,
-			dsc_atlas_user,
-			cast(to_char(last_status_date,'yyyymm') as int)
-	) inner_core,
-	crm_integration_anlt.t_lkp_contact base_contact,
-	crm_integration_anlt.t_rel_scai_country_integration scai
-where
-	lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
-	and base_contact.valid_to = 20991231
-	and base_contact.cod_source_system = 16
+	and base_contact.cod_source_system = 12
 	and scai.cod_integration = 50000
 	and scai.cod_country = 1;
 
--- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_total as
+
+-- CREATE TMP - KPI OLX.BASE.XYZ (average_spending per month)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -1895,7 +1927,184 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_average_spending_listings_net,0) + nvl(val_average_spending_vas_net,0) as varchar) custom_field_value
+		from
+			(
+				select
+					rev_cars.cod_contact,
+					kpi_custom_field.cod_custom_field,
+					rev_cars.dat_snap,
+					rev_cars.cod_source_system,
+					rev_cars.val_average_spending_listings_net,
+					rev_cars.val_average_spending_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month desc) rn
+				from
+					crm_integration_anlt.tmp_pl_otomoto_calc_average_spending rev_cars,
+					(
+						select
+							rel.cod_custom_field,
+							rel.flg_active
+						from
+							crm_integration_anlt.t_lkp_kpi kpi,
+							crm_integration_anlt.t_rel_kpi_custom_field rel
+						where
+							kpi.cod_kpi = rel.cod_kpi
+							and lower(kpi.dsc_kpi) = 'average spending per month'
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) average_spending_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
+				where
+					kpi_custom_field.flg_active = 1
+					and calendar_month.average_spending_month = 0
+			) core
+		where
+			core.rn = 1
+	) core,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+	core.cod_source_system = fac_snap.cod_source_system (+)
+	and core.cod_custom_field = fac_snap.cod_custom_field (+)
+	and core.cod_contact = fac_snap.cod_contact (+)
+	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+-- HST INSERT - KPI OLX.BASE.XYZ (average_spending per month)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month);
+
+-- SNAP DELETE - KPI OLX.BASE.XYZ (average_spending per month)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month);
+
+--KPI OLX.BASE.XYZ (average_spending per month)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+	select
+		*
+	from
+		crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month;
+
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month;
+
+"""
+--$$$
+-- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings) and (Revenue (-1) - Total / VAS / Listings)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue as
+	select
+		base_contact.cod_contact,
+		base_contact.cod_source_system,
+		scai.dat_processing dat_snap,
+		inner_core.*,
+		case when cod_year_month = cast(to_char(sysdate,'yyyymm') as int) then 0 else -1 end revenue_month
+	from
+		(
+			select
+				cod_atlas_user,
+				dsc_atlas_user,
+				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
+				--sum(case when type_of_code = 'vas' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_revenue_vas_gross_com_account,
+				--sum(case when type_of_code = 'package' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_revenue_listings_gross_com_account,
+				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
+				round((sum(case when cod_index_type = 2 /* package */then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_revenue_listings_net
+			from
+				(
+				select
+					a.cod_atlas_user,
+					--h.opr_atlas_user,
+					h.dsc_atlas_user,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
+					b.last_status_date,
+					e.cod_index_type,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
+					a.price price_basket,
+					--i.val_current_credits,
+					--a.from_account,
+					a.from_bonus_credits,
+					a.from_refund_credits
+				from
+					crm_integration_anlt.t_fac_payment_basket a,
+					crm_integration_anlt.t_fac_payment_session b,
+					crm_integration_anlt.t_lkp_paidad_index c,
+					crm_integration_anlt.t_lkp_source_system d,
+					crm_integration_anlt.v_lkp_paidad_index e,
+					crm_integration_anlt.t_lkp_payment_status f,
+					crm_integration_anlt.t_lkp_payment_provider g,
+					crm_integration_anlt.t_lkp_atlas_user h,
+					(
+						SELECT
+						  *
+						FROM
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
+					) i
+				where
+					a.cod_source_system = b.cod_source_system
+					and a.cod_payment_session = b.cod_payment_session
+					and b.cod_payment_provider = g.cod_payment_provider
+					and a.cod_source_system = c.cod_source_system
+					and a.cod_source_system = e.cod_source_system
+					and c.cod_paidad_index = e.cod_paidad_index
+					and a.cod_paidad_index = c.cod_paidad_index
+					and a.cod_source_system = d.cod_source_system
+					and a.cod_atlas_user = h.cod_atlas_user
+					and a.cod_source_system = h.cod_source_system
+					and b.opr_payment_session = i.opr_payment_session
+					and b.cod_source_system = i.cod_source_system
+					and b.cod_payment_status = f.cod_payment_status
+					and a.cod_source_system = 7
+					and h.valid_to = 20991231
+					and lower(f.dsc_payment_status) = 'finished'
+					and lower(g.dsc_payment_provider) != 'admin'
+					and b.last_status_date between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					--and a.cod_atlas_user in (15743223,15760699)
+				) core
+		group by
+			cod_atlas_user,
+			dsc_atlas_user,
+			cast(to_char(last_status_date,'yyyymm') as int)
+	) inner_core,
+	crm_integration_anlt.t_lkp_contact base_contact,
+	crm_integration_anlt.t_rel_scai_country_integration scai
+where
+	lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
+	and base_contact.valid_to = 20991231
+	and base_contact.cod_source_system = 12
+	and scai.cod_integration = 50000
+	and scai.cod_country = 2;
+
+
+-- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total as
+select
+	core.cod_contact,
+	core.cod_custom_field,
+	core.dat_snap,
+	core.cod_source_system,
+	core.custom_field_value
+from
+	(
+		select
+			cod_contact,
+			cod_custom_field,
+			dat_snap,
+			cod_source_system,
+			cast(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1904,9 +2113,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month desc) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_0 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -1917,11 +2127,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - total'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = 0
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1936,25 +2154,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_total);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total);
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - Total)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_total);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total);
 
 --KPI OLX.BASE.099 (Revenue (0) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_0_total;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_total;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (-1) - Total)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_total as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -1968,7 +2186,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1977,9 +2195,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_1 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -1990,11 +2209,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (-1) - total'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = -1
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -2009,25 +2236,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_total);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total);
 
 -- SNAP DELETE - KPI OLX.BASE.102 (Revenue (-1) - Total)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_total);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total);
 
 --KPI OLX.BASE.102 (Revenue (-1) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_1_total;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_total;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.101 (Revenue (0) - VAS)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_vas as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -2041,7 +2268,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_revenue_vas_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -2050,9 +2277,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month desc) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_0 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -2063,11 +2291,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - vas'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = 0
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -2082,25 +2318,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_vas);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas);
 
 -- SNAP DELETE - KPI OLX.BASE.101 (Revenue (0) - VAS)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_vas);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas);
 
 --KPI OLX.BASE.101 (Revenue (0) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_0_vas;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_vas;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas;
 
 --$$$ -- 20
 
 -- CREATE TMP - KPI OLX.BASE.104 (Revenue (-1) - VAS)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_vas as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -2114,7 +2350,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_revenue_vas_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -2123,9 +2359,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_1 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -2136,11 +2373,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (-1) - vas'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = -1
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -2155,25 +2400,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_vas);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas);
 
 -- SNAP DELETE - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_vas);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas);
 
 --KPI OLX.BASE.104 (Revenue (-1) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_1_vas;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_vas;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.100 (Revenue (0) - Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_listings as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -2187,7 +2432,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_revenue_listings_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -2196,9 +2441,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month desc) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_0 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -2209,11 +2455,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (0) - listings'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = 0
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -2229,25 +2483,25 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_listings);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings);
 
 -- SNAP DELETE - KPI OLX.BASE.100 (Revenue (0) - Listings)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_listings);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings);
 
 --KPI OLX.BASE.100 (Revenue (0) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_0_listings;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_listings;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.103 (Revenue (-1) - Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -2261,7 +2515,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
+			cast(nvl(val_revenue_listings_net,0) as varchar) custom_field_value
 		from
 			(
 				select
@@ -2270,9 +2524,10 @@ from
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
 					rev_olx.val_revenue_listings_net,
-					rev_olx.val_revenue_vas_net
+					rev_olx.val_revenue_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month) rn
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue_1 rev_olx,
+					crm_integration_anlt.tmp_pl_otomoto_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -2283,11 +2538,19 @@ from
 						where
 							kpi.cod_kpi = rel.cod_kpi
 							and lower(kpi.dsc_kpi) = 'revenue (-1) - listings'
-							and rel.cod_source_system = 16
-					) kpi_custom_field
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) revenue_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
 				where
 					kpi_custom_field.flg_active = 1
+					and calendar_month.revenue_month = -1
 			) core
+		where
+			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -2302,27 +2565,27 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings);
 
 -- SNAP DELETE - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings);
 
 --KPI OLX.BASE.103 (Revenue (-1) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings;
+		crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue;
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_revenue;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.105 (User_ID)
-create table crm_integration_anlt.tmp_pt_olx_calc_user_id as
+create table crm_integration_anlt.tmp_pl_otomoto_calc_user_id as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -2335,7 +2598,7 @@ from
 	  b.cod_contact,
 	  kpi_custom_field.cod_custom_field,
 	  scai.dat_processing dat_snap,
-	  isnull(a.cod_source_system,16) cod_source_system,
+	  isnull(a.cod_source_system,12) cod_source_system,
 	  isnull(a.custom_field_value, ' ') custom_field_value
 	FROM
 	  (
@@ -2349,13 +2612,13 @@ from
 		crm_integration_anlt.t_lkp_contact base_contact,
 		crm_integration_anlt.t_rel_scai_country_integration scai
 	  WHERE
-		atlas_user.cod_source_system = 8
-		AND base_contact.cod_source_system = 16
+		atlas_user.cod_source_system = 7
+		AND base_contact.cod_source_system = 12
 		AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 		AND atlas_user.valid_to = 20991231
 		AND base_contact.valid_to = 20991231
 		AND scai.cod_integration = 50000
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 	  ) A,
 		crm_integration_anlt.t_lkp_contact B,
 		crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2369,15 +2632,15 @@ from
 			where
 			  kpi.cod_kpi = rel.cod_kpi
 			  and lower(kpi.dsc_kpi) = 'user_id'
-			  and rel.cod_source_system = 16
+			  and rel.cod_source_system = 12
 		) kpi_custom_field
 	WHERE
 	  B.cod_contact = A.cod_contact (+)
 	  and b.valid_to = 20991231
-	  and b.cod_source_system = 16
+	  and b.cod_source_system = 12
 	  and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 	) source,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2391,20 +2654,20 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_user_id);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_user_id);
 
 -- SNAP DELETE - KPI OLX.BASE.105 (User_ID)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_user_id);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_user_id);
 
 --KPI OLX.BASE.105 (User_ID)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_user_id;
+		crm_integration_anlt.tmp_pl_otomoto_calc_user_id;
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_user_id;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_user_id;
 
 --$$$
 
@@ -2430,13 +2693,13 @@ select source.* from (
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = '# ads consumed'
-		  and rel.cod_source_system = 16
+		  and rel.cod_source_system = 12
 	) kpi_custom_field
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 	and kpi_custom_field.flg_active = 1
     --and atlas_user.valid_from = scai.dat_processing
 ) source,
@@ -2472,14 +2735,14 @@ select source.* from (
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = 'chat response %'
-		  and rel.cod_source_system = 16
+		  and rel.cod_source_system = 12
 	) kpi_custom_field
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
 	and kpi_custom_field.flg_active = 1
-	and scai.cod_country = 1
+	and scai.cod_country = 2
     --and atlas_user.valid_from = scai.dat_processing
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
@@ -2514,14 +2777,14 @@ select source.* from (
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = 'scheduled package'
-		  and rel.cod_source_system = 16
+		  and rel.cod_source_system = 12
 	) kpi_custom_field
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
 		and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2555,14 +2818,14 @@ select source.* from (
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = 'ami license'
-		  and rel.cod_source_system = 16
+		  and rel.cod_source_system = 12
 	) kpi_custom_field
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
 		and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
+		and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2596,21 +2859,21 @@ select source.* from (
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = 'nif'
-		  and rel.cod_source_system = 16
+		  and rel.cod_source_system = 12
 	) kpi_custom_field
   WHERE
-    base_contact.cod_source_system = 16
+    base_contact.cod_source_system = 12
     AND base_contact.valid_to = 20991231
     AND scai.cod_integration = 50000
 	and kpi_custom_field.flg_active = 1
-    and scai.cod_country = 1
+    and scai.cod_country = 2
 ) source,
     crm_integration_anlt.t_rel_contact_custom_field rel
 where source.cod_source_system = rel.cod_source_system (+)
   and source.cod_custom_field = rel.cod_custom_field (+)
   and source.cod_contact = rel.cod_contact (+)
   and rel.cod_contact is null);
-
+"""
 --$$$
 
 -- #######################
@@ -2634,14 +2897,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
     crm_integration_anlt.t_lkp_scai_process proc
   where
     rel_country_integr.cod_integration = 50000 -- Chandra (Analytical) to Base
-    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_country = 2 -- Poland
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
     and rel_integr_proc.cod_process = proc.cod_process
     and rel_integr_proc.cod_status = 2
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
-	and proc.dsc_process_short = 't_fac_base_integration_snap_pthorizontal';
+	and proc.dsc_process_short = 't_fac_base_integration_snap_plcars';
 
 --$$$ -- 30
 	
@@ -2659,13 +2922,13 @@ last_processing_datetime = sysdate
     and proc.cod_process = rel_integr_proc.cod_process
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
     and rel_country_integr.cod_country = rel_integr_proc.cod_country
-    and rel_integr_proc.cod_country = 1
+    and rel_integr_proc.cod_country = 2
   ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
-and t_rel_scai_integration_process.cod_country = 1
-and proc.dsc_process_short = 't_fac_base_integration_snap_pthorizontal'
+and t_rel_scai_integration_process.cod_country = 2
+and proc.dsc_process_short = 't_fac_base_integration_snap_plcars'
 and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
