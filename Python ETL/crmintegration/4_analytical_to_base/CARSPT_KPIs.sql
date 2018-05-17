@@ -1457,61 +1457,62 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 as
 			select
 				cod_atlas_user,
 				dsc_atlas_user,
-				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
-				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
-				round((sum(case when cod_index_type = 2 /* package */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_listings_net
+				cod_month,
+				round((sum(case when cod_index_type = 1 /* vas */ then price else 0 end)),2) val_revenue_vas_net,
+				round((sum(case when cod_index_type = 2 /* package */then price else 0 end)),2) val_revenue_listings_net
 			from
-						(
-				select
-					a.cod_atlas_user,
-					h.dsc_atlas_user,
-					b.last_status_date,
-					e.cod_index_type,
-					a.price price_basket,
-					a.from_account,
-					a.from_bonus_credits,
-					a.from_refund_credits
-				from
-					crm_integration_anlt.t_fac_payment_basket a,
-					crm_integration_anlt.t_fac_payment_session b,
-					crm_integration_anlt.t_lkp_paidad_index c,
-					crm_integration_anlt.t_lkp_source_system d,
-					crm_integration_anlt.v_lkp_paidad_index e,
-					crm_integration_anlt.t_lkp_payment_status f,
-					crm_integration_anlt.t_lkp_payment_provider g,
-					crm_integration_anlt.t_lkp_atlas_user h,
-					(
-						SELECT
-						  fac.opr_payment_session,
-						  fac.cod_source_system
-						FROM
-						  crm_integration_anlt.t_fac_paidad_user_payment fac
-						WHERE
-						  fac.cod_source_system = 4
-					) i
-				where
-					a.cod_source_system = b.cod_source_system
-					and a.cod_payment_session = b.cod_payment_session
-					and b.cod_payment_provider = g.cod_payment_provider
-					and a.cod_source_system = c.cod_source_system
-					and a.cod_source_system = e.cod_source_system
-					and c.cod_paidad_index = e.cod_paidad_index
-					and a.cod_paidad_index = c.cod_paidad_index
-					and a.cod_source_system = d.cod_source_system
-					and a.cod_atlas_user = h.cod_atlas_user
-					and a.cod_source_system = h.cod_source_system
-					and b.opr_payment_session = i.opr_payment_session
-					and b.cod_source_system = i.cod_source_system
-					and a.cod_source_system = 4
-					and h.valid_to = 20991231
-					and lower(f.dsc_payment_status) = 'finished'
-					and lower(g.dsc_payment_provider) not in ('admin','volume')
-					and b.last_status_date = date_trunc('month',sysdate)
+				(
+					select
+						to_char(b.last_status_date,'yyyymm') cod_month,
+						g.cod_atlas_user,
+						g.dsc_atlas_user,
+						a.user_id atlas_user_id,
+						f.dsc_index_type,
+						f.cod_index_type,
+						sum(a.price) price,
+						sum(a.from_account) from_account
+					from
+						db_atlas_verticals.payment_basket a,
+						db_atlas_verticals.payment_session b,
+						crm_integration_anlt.t_lkp_paidad_index c,
+						crm_integration_anlt.t_lkp_paidad_index_type d,
+						crm_integration_anlt.v_lkp_paidad_index e,
+						crm_integration_anlt.v_lkp_paidad_index_type f,
+						crm_integration_anlt.t_lkp_atlas_user g,
+						crm_integration_anlt.t_lkp_source_system h
+					where
+						a.session_id = b.id
+						and b.provider not in ('admin','volume')
+						and a.price > 0
+						and a.index_id = c.opr_paidad_index
+						and c.cod_source_system = 4
+						and c.valid_to = 20991231
+						--and d.dsc_paidad_index_type not like 'topup%'
+						and f.cod_index_type in (1,2)
+						and c.cod_paidad_index_type = d.cod_paidad_index_type
+						and d.valid_to = 20991231
+						and c.cod_paidad_index = e.cod_paidad_index
+						and c.cod_source_system = e.cod_source_system
+						and e.cod_index_type = f.cod_index_type
+						and b.status = 'finished'
+						and g.opr_atlas_user = a.user_id
+						and g.cod_source_system = c.cod_source_system
+						and g.valid_to = 20991231
+						and h.opr_source_system = a.livesync_dbname
+						and h.cod_source_system = c.cod_source_system
+						and date_trunc('month',b.last_status_date) = date_trunc('month',sysdate)
+					group by
+						to_char(b.last_status_date,'yyyymm'),
+						g.cod_atlas_user,
+						g.dsc_atlas_user,
+						a.user_id,
+						f.dsc_index_type,
+						f.cod_index_type
 			) core
 		group by
 			cod_atlas_user,
 			dsc_atlas_user,
-			cast(to_char(last_status_date,'yyyymm') as int)
+			cod_month
 	) inner_core,
 	crm_integration_anlt.t_lkp_contact base_contact,
 	crm_integration_anlt.t_rel_scai_country_integration scai
@@ -1535,61 +1536,62 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 as
 			select
 				cod_atlas_user,
 				dsc_atlas_user,
-				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
-				round((sum(case when cod_index_type = 1 /* vas */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_vas_net,
-				round((sum(case when cod_index_type = 2 /* package */ then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end)) / 1.23,2) val_revenue_listings_net
+				cod_month,
+				round((sum(case when cod_index_type = 1 /* vas */ then price else 0 end)),2) val_revenue_vas_net,
+				round((sum(case when cod_index_type = 2 /* package */then price else 0 end)),2) val_revenue_listings_net
 			from
-						(
-				select
-					a.cod_atlas_user,
-					h.dsc_atlas_user,
-					b.last_status_date,
-					e.cod_index_type,
-					a.price price_basket,
-					a.from_account,
-					a.from_bonus_credits,
-					a.from_refund_credits
-				from
-					crm_integration_anlt.t_fac_payment_basket a,
-					crm_integration_anlt.t_fac_payment_session b,
-					crm_integration_anlt.t_lkp_paidad_index c,
-					crm_integration_anlt.t_lkp_source_system d,
-					crm_integration_anlt.v_lkp_paidad_index e,
-					crm_integration_anlt.t_lkp_payment_status f,
-					crm_integration_anlt.t_lkp_payment_provider g,
-					crm_integration_anlt.t_lkp_atlas_user h,
-					(
-						SELECT
-						  fac.opr_payment_session,
-						  fac.cod_source_system
-						FROM
-						  crm_integration_anlt.t_fac_paidad_user_payment fac
-						WHERE
-						  fac.cod_source_system = 4
-					) i
-				where
-					a.cod_source_system = b.cod_source_system
-					and a.cod_payment_session = b.cod_payment_session
-					and b.cod_payment_provider = g.cod_payment_provider
-					and a.cod_source_system = c.cod_source_system
-					and a.cod_source_system = e.cod_source_system
-					and c.cod_paidad_index = e.cod_paidad_index
-					and a.cod_paidad_index = c.cod_paidad_index
-					and a.cod_source_system = d.cod_source_system
-					and a.cod_atlas_user = h.cod_atlas_user
-					and a.cod_source_system = h.cod_source_system
-					and b.opr_payment_session = i.opr_payment_session
-					and b.cod_source_system = i.cod_source_system
-					and a.cod_source_system = 4
-					and h.valid_to = 20991231
-					and lower(f.dsc_payment_status) = 'finished'
-					and lower(g.dsc_payment_provider) not in ('admin','volume')
-					and b.last_status_date = date_trunc('month',add_months(sysdate,-1))
+				(
+					select
+						to_char(b.last_status_date,'yyyymm') cod_month,
+						g.cod_atlas_user,
+						g.dsc_atlas_user,
+						a.user_id atlas_user_id,
+						f.dsc_index_type,
+						f.cod_index_type,
+						sum(a.price) price,
+						sum(a.from_account) from_account
+					from
+						db_atlas_verticals.payment_basket a,
+						db_atlas_verticals.payment_session b,
+						crm_integration_anlt.t_lkp_paidad_index c,
+						crm_integration_anlt.t_lkp_paidad_index_type d,
+						crm_integration_anlt.v_lkp_paidad_index e,
+						crm_integration_anlt.v_lkp_paidad_index_type f,
+						crm_integration_anlt.t_lkp_atlas_user g,
+						crm_integration_anlt.t_lkp_source_system h
+					where
+						a.session_id = b.id
+						and b.provider not in ('admin','volume')
+						and a.price > 0
+						and a.index_id = c.opr_paidad_index
+						and c.cod_source_system = 4
+						and c.valid_to = 20991231
+						--and d.dsc_paidad_index_type not like 'topup%'
+						and f.cod_index_type in (1,2)
+						and c.cod_paidad_index_type = d.cod_paidad_index_type
+						and d.valid_to = 20991231
+						and c.cod_paidad_index = e.cod_paidad_index
+						and c.cod_source_system = e.cod_source_system
+						and e.cod_index_type = f.cod_index_type
+						and b.status = 'finished'
+						and g.opr_atlas_user = a.user_id
+						and g.cod_source_system = c.cod_source_system
+						and g.valid_to = 20991231
+						and h.opr_source_system = a.livesync_dbname
+						and h.cod_source_system = c.cod_source_system
+						and date_trunc('month',b.last_status_date) = date_trunc('month',add_months(sysdate,-1))
+					group by
+						to_char(b.last_status_date,'yyyymm'),
+						g.cod_atlas_user,
+						g.dsc_atlas_user,
+						a.user_id,
+						f.dsc_index_type,
+						f.cod_index_type
 			) core
 		group by
 			cod_atlas_user,
 			dsc_atlas_user,
-			cast(to_char(last_status_date,'yyyymm') as int)
+			cod_month
 	) inner_core,
 	crm_integration_anlt.t_lkp_contact base_contact,
 	crm_integration_anlt.t_rel_scai_country_integration scai

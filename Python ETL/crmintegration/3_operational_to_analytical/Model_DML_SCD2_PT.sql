@@ -173,11 +173,25 @@ as
 	) source_table,
     crm_integration_anlt.t_lkp_resource_type lkp_resource_type,
     (select coalesce(max(cod_base_source),0) max_cod from crm_integration_anlt.t_lkp_base_source) max_cod_base_source,
-    crm_integration_anlt.t_lkp_base_source target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_base_source, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_base_source a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_base_source,-1) = target.opr_base_source(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type
 	and lkp_resource_type.valid_to = 20991231;
 
@@ -430,11 +444,25 @@ as
 	and lkp_source_system.cod_country = 1
 	) source_table,
     (select coalesce(max(cod_base_user),0) max_cod from crm_integration_anlt.t_lkp_base_user) max_cod_base_user,
-    crm_integration_anlt.t_lkp_base_user target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_base_user, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_base_user a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_base_user,-1) = target.opr_base_user(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231; -- Portugal
+	and source_table.cod_source_system = target.cod_source_system (+); -- Portugal
 
 analyze crm_integration_anlt.tmp_pt_load_base_user;
 
@@ -703,11 +731,25 @@ as
 	crm_integration_anlt.t_lkp_base_user lkp_base_user_owner,
     crm_integration_anlt.t_lkp_resource_type lkp_resource_type,
     (select coalesce(max(cod_task),0) max_cod from crm_integration_anlt.t_lkp_task) max_cod_task,
-    crm_integration_anlt.t_lkp_task target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_task, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_task a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_task,-1) = target.opr_task(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
 	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user
 	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
 	and lkp_base_user_owner.valid_to = 20991231
@@ -966,11 +1008,25 @@ select
 	and lkp_source_system.cod_country = 1 -- Portugal
 	) source_table,
     (select coalesce(max(cod_call_outcome),0) max_cod from crm_integration_anlt.t_lkp_call_outcome) max_cod_call_outcome,
-    crm_integration_anlt.t_lkp_call_outcome target
+	(
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_call_outcome, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_call_outcome a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_call_outcome,-1) = target.opr_call_outcome(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     ) source, crm_integration_anlt.t_lkp_base_user lkp_user_creator
     where coalesce(source.opr_base_user,-1) = lkp_user_creator.opr_base_user (+)
 	and source.cod_source_system = lkp_user_creator.cod_source_system (+) -- new
@@ -1294,11 +1350,25 @@ select
 	crm_integration_anlt.t_lkp_base_user lkp_base_user_creator,
 	crm_integration_anlt.t_lkp_base_user lkp_base_user_owner,
 	crm_integration_anlt.t_lkp_industry lkp_industry,
-    crm_integration_anlt.t_lkp_contact target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_contact, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_contact a
+				)
+			where rn = 1
+	) target
   where
 	source_table.opr_contact = target.opr_contact(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
 	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user
 	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
 	and lkp_base_user_owner.valid_to = 20991231
@@ -1634,11 +1704,25 @@ create table crm_integration_anlt.tmp_pt_load_custom_field as
         ) scai_execution
     ) source_table,
     (select coalesce(max(cod_custom_field),0) max_cod from crm_integration_anlt.t_lkp_custom_field) max_cod_custom_field,
-    crm_integration_anlt.t_lkp_custom_field target,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_custom_field, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_custom_field a
+				)
+			where rn = 1
+	) target,
     crm_integration_anlt.t_lkp_custom_field_context cf_context
   where
     coalesce(source_table.opr_custom_field,'-1') = target.opr_custom_field(+)
-    and target.valid_to(+) = 20991231
     and cf_context.opr_custom_field_context = 'Contacts';
 
 analyze crm_integration_anlt.tmp_pt_load_custom_field;
@@ -2124,11 +2208,25 @@ as
     crm_integration_anlt.t_lkp_industry lkp_industry,
     crm_integration_anlt.t_lkp_lead_status lkp_lead_status,
     (select coalesce(max(cod_lead),0) max_cod from crm_integration_anlt.t_lkp_lead) max_cod_lead,
-    crm_integration_anlt.t_lkp_lead target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_lead, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_lead a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_lead,-1) = target.opr_lead(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user
 	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
 	and lkp_base_user_owner.valid_to = 20991231
@@ -2406,11 +2504,25 @@ as
 	) source_table,
     crm_integration_anlt.t_lkp_base_user lkp_user_creator,
     (select coalesce(max(cod_loss_reason),0) max_cod from crm_integration_anlt.t_lkp_loss_reason) max_cod_loss_reason,
-    crm_integration_anlt.t_lkp_loss_reason target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_loss_reason, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_loss_reason a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_loss_reason,-1) = target.opr_loss_reason(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_base_user_creator,-1) = lkp_user_creator.opr_base_user
 	and source_table.cod_source_system = lkp_user_creator.cod_source_system -- new
 	and lkp_user_creator.valid_to = 20991231;
@@ -2654,11 +2766,25 @@ as
 	and lkp_source_system.cod_country = 1 -- Portugal
 	) source_table,
     (select coalesce(max(cod_pipeline),0) max_cod from crm_integration_anlt.t_lkp_pipeline) max_cod_pipeline,
-    crm_integration_anlt.t_lkp_pipeline target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_pipeline, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_pipeline a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_pipeline,-1) = target.opr_pipeline(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231;
+	and source_table.cod_source_system = target.cod_source_system (+);
 
 analyze crm_integration_anlt.tmp_pt_load_pipeline;
 	
@@ -2905,11 +3031,25 @@ as
 	) source_table,
     crm_integration_anlt.t_lkp_pipeline lkp_pipeline,
     (select coalesce(max(cod_pipeline),0) max_cod from crm_integration_anlt.t_lkp_stage) max_cod_stages,
-    crm_integration_anlt.t_lkp_stage target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_stage, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_stage a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_stage,-1) = target.opr_stage(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_pipeline,-1) = lkp_pipeline.opr_pipeline
 	and source_table.cod_source_system = lkp_pipeline.cod_source_system -- new
 	and lkp_pipeline.valid_to = 20991231;
@@ -3219,11 +3359,25 @@ as
     crm_integration_anlt.t_lkp_currency lkp_currency,
     crm_integration_anlt.t_lkp_stage lkp_stages,
     crm_integration_anlt.t_lkp_loss_reason lkp_loss_reason,
-    crm_integration_anlt.t_lkp_deal target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_deal, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_deal a
+				)
+			where rn = 1
+	) target
   where
     source_table.opr_deal = target.opr_deal(+)
     and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user
     and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
     and lkp_base_user_owner.valid_to = 20991231
@@ -5137,11 +5291,25 @@ as
 	where source.opr_source_system = lkp_source_system.opr_source_system
     ) source_table,
     (select coalesce(max(cod_category),0) max_cod from crm_integration_anlt.t_lkp_category) max_cod_category,
-    crm_integration_anlt.t_lkp_category target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_category, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_category a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_category,-1) = target.opr_category(+)
-	  and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231;
+	  and source_table.cod_source_system = target.cod_source_system (+);
 
 analyze crm_integration_anlt.tmp_pt_load_category;
 	
@@ -5720,11 +5888,25 @@ select
     ) source_table,
     crm_integration_anlt.t_lkp_paidad_index_type lkp_paidad_index_type,
     (select coalesce(max(cod_paidad_index),0) max_cod from crm_integration_anlt.t_lkp_paidad_index) max_cod_paidad_index,
-    crm_integration_anlt.t_lkp_paidad_index target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_paidad_index, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_paidad_index a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_paidad_index,-1) = target.opr_paidad_index(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_paidad_index_type,'Unknown') = lkp_paidad_index_type.opr_paidad_index_type
 	and source_table.cod_source_system = lkp_paidad_index_type.cod_source_system -- new
 	and lkp_paidad_index_type.valid_to = 20991231;
@@ -6167,11 +6349,25 @@ as
 	where source.opr_source_system = lkp_source_system.opr_source_system
     ) source_table,
     (select coalesce(max(cod_region),0) max_cod from crm_integration_anlt.t_lkp_region) max_cod_region,
-    crm_integration_anlt.t_lkp_region target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_region, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_region a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_region,-1) = target.opr_region(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231;
+	and source_table.cod_source_system = target.cod_source_system (+);
 
 analyze crm_integration_anlt.tmp_pt_load_region;
 	
@@ -6519,11 +6715,25 @@ as
     ) source_table,
     crm_integration_anlt.t_lkp_region lkp_region,
     (select coalesce(max(cod_subregion),0) max_cod from crm_integration_anlt.t_lkp_subregion) max_cod_subregion,
-    crm_integration_anlt.t_lkp_subregion target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_subregion, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_subregion a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_subregion,-1) = target.opr_subregion(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
     and coalesce(source_table.opr_region,-1) = lkp_region.opr_region
 	and source_table.cod_source_system = lkp_region.cod_source_system -- new
 	and lkp_region.valid_to = 20991231;
@@ -6924,11 +7134,25 @@ select
 		crm_integration_anlt.t_lkp_subregion lkp_subregion,
 		crm_integration_anlt.t_lkp_region lkp_region,
     (select coalesce(max(cod_city),0) max_cod from crm_integration_anlt.t_lkp_city) max_cod_city,
-    crm_integration_anlt.t_lkp_city target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_city, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_city a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_city,-1) = target.opr_city(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
 	and coalesce(source_table.opr_region,-1) = lkp_region.opr_region (+)
 	and source_table.cod_source_system = lkp_region.cod_source_system (+)
 	and lkp_region.valid_to (+) = 20991231
@@ -7514,11 +7738,25 @@ select a.*, coalesce(b.cod_city,-2) cod_city from (
     ) source_table,
 	crm_integration_anlt.t_lkp_source lkp_source,
     (select coalesce(max(cod_atlas_user),0) max_cod from crm_integration_anlt.t_lkp_atlas_user) max_cod_atlas_user,
-    crm_integration_anlt.t_lkp_atlas_user target
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_atlas_user, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_atlas_user a
+				)
+			where rn = 1
+	) target
   where
     coalesce(source_table.opr_atlas_user,-1) = target.opr_atlas_user(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and target.valid_to(+) = 20991231
 	and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
 	and lkp_source.valid_to = 20991231
 	) a,  crm_integration_anlt.t_lkp_city b
@@ -9534,12 +9772,26 @@ as
   end dml_type
  from
   crm_integration_anlt.tmp_pt_load_ad_md5_step2_9 source,
-  crm_integration_anlt.t_lkp_ad target,
+  (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_ad, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_ad a
+				)
+			where rn = 1
+	) target,
   (select coalesce(max(cod_ad),0) max_cod from crm_integration_anlt.t_lkp_ad) max_cod_ad
  where
   source.opr_ad = target.opr_ad(+)
-	and source.cod_source_system = target.cod_source_system (+)
-  and target.valid_to(+) = 20991231;
+	and source.cod_source_system = target.cod_source_system (+);
 
 analyze crm_integration_anlt.tmp_pt_load_ad_md5_step2_10;
 
@@ -9829,7 +10081,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_outgoing';
 
-	--$$$
+	--$$$ 
 	
 -- #############################################
 -- # 		   ATLAS - PORTUGAL                #
