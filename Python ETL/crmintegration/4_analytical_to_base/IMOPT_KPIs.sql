@@ -1578,7 +1578,7 @@ create table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_1 as
 		group by
 			cod_atlas_user,
 			dsc_atlas_user,
-			cast(to_char(last_status_date,'yyyymm') as int)
+			cod_month
 	) inner_core,
 	crm_integration_anlt.t_lkp_contact base_contact,
 	crm_integration_anlt.t_rel_scai_country_integration scai
