@@ -1790,8 +1790,6 @@ from
 				where
 					kpi_custom_field.flg_active = 1
 			) core
-		where
-			core.rn = 1
 	) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
