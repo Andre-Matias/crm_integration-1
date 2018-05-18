@@ -2026,7 +2026,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings;
 
-drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re;
+drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_0;
+drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_1;
 
 
 --$$$ -- 20

@@ -2317,7 +2317,9 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_listings;
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue;
+drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_0;
+drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1;
+
 
 --$$$
 
