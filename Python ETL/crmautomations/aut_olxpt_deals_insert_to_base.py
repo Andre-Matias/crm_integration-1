@@ -79,6 +79,7 @@ def main(conf_file):
 					"crm_integration_anlt.t_lkp_base_user lkp_base_user, "\
 					"crm_integration_anlt.t_lkp_paidad_index lkp_pi, "\
 					"crm_integration_anlt.t_lkp_paidad_index_type lkp_pit, "\
+					"crm_integration_anlt.v_lkp_paidad_index v_lkp_pi, "\
 					"(select cod_contact, to_date(max(updated_at),'yyyy-mm-dd') last_call from crm_integration_anlt.t_fac_call where cod_source_system = 16 group by cod_contact) fac_call "\
 				"where "\
 					"fac.cod_atlas_user = lkp_atlas_user.cod_atlas_user "\
@@ -100,6 +101,7 @@ def main(conf_file):
 					"and lkp_contact.cod_base_user_owner = lkp_base_user.cod_base_user "\
 					"and lkp_base_user.cod_source_system = 16 "\
 					"and lkp_base_user.valid_to = 20991231 "\
+					"and v_lkp_pi.cod_paidad_index = lkp_pi.cod_paidad_index "\
 					"and isnull(lkp_category.parent_level1,-2) = lkp_category_parent.opr_category "\
 					"and val_price < 0 "\
 					"and dat_payment > (select last_processing_datetime from crm_integration_anlt.aut_deals_insert_to_base_date where source_system = 'pthorizontal') "\
