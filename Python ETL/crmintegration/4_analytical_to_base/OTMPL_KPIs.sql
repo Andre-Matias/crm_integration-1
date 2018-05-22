@@ -1442,40 +1442,51 @@ SELECT
 	source.custom_field_value
 FROM
 	(
+	SELECT
+	  b.cod_contact,
+	  kpi_custom_field.cod_custom_field,
+	  scai.dat_processing dat_snap,
+	  coalesce(a.cod_source_system,12) cod_source_system,
+	  coalesce(a.custom_field_value, '') custom_field_value
+	FROM
+		(
 		SELECT
-		  b.cod_contact,
-		  kpi_custom_field.cod_custom_field,
-		  scai.dat_processing dat_snap,
-		  isnull(a.cod_source_system,12) cod_source_system,
-		  isnull(a.custom_field_value, '') custom_field_value
-		FROM
-		  (
-		  SELECT
 			--fac.dat_payment,
 			base_contact.cod_contact,
 			scai.dat_processing dat_snap,
 			base_contact.cod_source_system,
-			cast(min(fac.val_price) as varchar) custom_field_value
-		  FROM
-			crm_integration_anlt.t_fac_paidad_user_payment fac,
+			cast(min(payments.price) as varchar) custom_field_value
+		FROM
+			db_atlas_verticals.paidads_user_payments payments,
+			db_atlas_verticals.payment_session session,
 			crm_integration_anlt.t_lkp_atlas_user atlas_user,
 			crm_integration_anlt.t_lkp_contact base_contact,
+			crm_integration_anlt.t_lkp_paidad_index index,
+			crm_integration_anlt.v_lkp_paidad_index v_index,
+			crm_integration_anlt.v_lkp_paidad_index_type v_index_type,
 			crm_integration_anlt.t_rel_scai_country_integration scai
-		  WHERE
-				fac.cod_atlas_user = atlas_user.cod_atlas_user
-				and atlas_user.cod_source_system = 7
-				AND base_contact.cod_source_system = 12
-				AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
-				and fac.dat_payment > dateadd(month,-3,to_date(sysdate,'yyyy-mm-dd'))
-				AND atlas_user.valid_to = 20991231
-				AND base_contact.valid_to = 20991231
-				AND scai.cod_integration = 50000
-				and scai.cod_country = 2
-			group BY
-				--fac.dat_payment,
-				base_contact.cod_contact,
-				scai.dat_processing,
-				base_contact.cod_source_system
+		WHERE
+			payments.id_user = atlas_user.opr_atlas_user
+			and atlas_user.cod_source_system = 7
+			AND base_contact.cod_source_system = 12
+			AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+			and payments.id_transaction = session.id
+			and payments.id_index = index.opr_paidad_index
+			and index.cod_paidad_index = v_index.cod_paidad_index
+			and v_index.cod_index_type = v_index_type.cod_index_type
+			and payments.date > dateadd(month,-3,to_date(sysdate,'yyyy-mm-dd'))
+			and v_index_type.cod_index_type = 2
+			and session.provider not in ('admin','volume')
+			and session.status = 'finished'
+			AND atlas_user.valid_to = 20991231
+			AND base_contact.valid_to = 20991231
+			AND scai.cod_integration = 50000
+			and scai.cod_country = 2
+		group BY
+			--fac.dat_payment,
+			base_contact.cod_contact,
+			scai.dat_processing,
+			base_contact.cod_source_system
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -1488,7 +1499,7 @@ FROM
 				  crm_integration_anlt.t_rel_kpi_custom_field rel
 				where
 				  kpi.cod_kpi = rel.cod_kpi
-				  and lower(kpi.dsc_kpi) = 'max value package'
+				  and lower(kpi.dsc_kpi) = 'max package value last 3 months'
 				  and rel.cod_source_system = 12
 			) kpi_custom_field
 		WHERE
@@ -1498,8 +1509,8 @@ FROM
 		  and scai.cod_integration = 50000
 		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
-	) source,
-    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+		) source,
+		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
