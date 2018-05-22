@@ -13,6 +13,8 @@
 #' 
 
 
+# Working directory
+setwd("~/Verticals-bi/scripts/r/3.Analysis/CarsValuation_RO")
 
 library("ranger")
 library("dplyr")
@@ -23,11 +25,11 @@ library("hydroGOF")
 library("tidyr")
 library("caret")
 
-id <- as.character(as.hexmode(as.integer(Sys.time())))
 
 # Load dataset ready for modeling ---------------------------------------------
-dfDataForModel <- read_csv("dfDataForModel.csv")
+dfDataForModel <- read_csv("datasets/dfDataForModel.csv")
   
+
 # Split into training and test set: -------------------------------------------
 ## 80% for training and 20% for test as for RF
 set.seed(123)
@@ -35,6 +37,7 @@ test_idx <- sample(x = nrow(dfDataForModel), size = (1 - 1/6) * nrow(dfDataForMo
 
 dfDataForModel_train <- dfDataForModel[test_idx, ]
 dfDataForModel_test <- dfDataForModel[-test_idx, ]
+
 
 # Subsplit training for cross-validation --------------------------------------
 folds <- createFolds(dfDataForModel_train$ad_id, k = 5, list = TRUE, returnTrain = TRUE)
@@ -71,6 +74,7 @@ param_grid$MAE <- NA
 param_grid$n_predictors <- rep(2:9, length(n_tree) * length(n_folds))
 #param_grid$Rsquared <- NA
 head(param_grid)
+
 
 # Loop over the rows of param_grid to: ----------------------------------------
 ## 1) train the grid of models
@@ -134,45 +138,7 @@ for (i in 1:num_models) {
 
 
 
-
-
-# model_formula <- as.formula(as.character(param_grid$formula[1]))
-# RF_model <-
-#   ranger(formula = model_formula, 
-#          data =  sample_n(dfDataForModel_train, 500),
-#          num.trees = 100, num.threads = 8, verbose = TRUE, 
-#         importance = "impurity", 
-#          min.node.size = 5
-#   )
-
-
-# Save param_grid with RF simulations
+# Save param_grid with RF simulations -----------------------------------------
 write.csv(param_grid, file= paste0("rf_data/rf_sim_", Sys.Date(), ".csv"))
 
 
-
-
-
-
-# Generate expand grid --------------------------------------------------------
-
-# main_predictors <-
-#   c("make")
-# 
-# predictors <-
-#   c("mileage", "age", "model", "engine_power", "fuel_type",
-#     "body_type", "gearbox", "engine_capacity"
-#   )
-# 
-# formulas <- character(10)
-# for(predictors_num in 1:length(predictors)){
-#   
-#   selected_predictors <- c(main_predictors, head(predictors, predictors_num))
-#   
-#   formula <-
-#     paste("price_RON~", paste(selected_predictors, collapse="+"))
-#   print(formula)
-#   
-#   #model_formula <- as.formula(formula)
-#   formulas[i] <- formula
-# }

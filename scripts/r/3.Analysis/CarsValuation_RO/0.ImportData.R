@@ -25,7 +25,7 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
 
-# 1) ===
+# 1) === Import data with all ads
 
 # Load ads dataset with predictors and response -------------------------------
 # it has both live and draft ads
@@ -77,7 +77,7 @@ dat2<- dat %>%
 ads_all_param <- left_join(ads_all_param, dat2, by= c("ad_id"="id"))
 
 
-# 3) ===
+# 3) === Import data with ads and net counted field
 
 ads_net_counted<- readRDS("dat.rds") %>%
   select(id, net_ad_counted)

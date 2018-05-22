@@ -13,15 +13,7 @@ library("magrittr")
 
 fOutliers <-
   function(df){
-    # # select variables --------------------------------------------------------
-    # 
-    # vars <- 
-    # c("ad_id", "make", "model", "mileage", "year", 
-    #   "body_type", "engine_capacity", "engine_power", "gearbox", "nr_seats",
-    #   "new_used", "fuel_type", "damaged", "price_PLN", "age")
-    # 
-    # df <- df[, vars, with = FALSE]
-    
+
     df <-
       df[df$damaged == "0", ]
     
@@ -50,7 +42,6 @@ fOutliers <-
     
     df <-
       df[df$mileage >= 5000 & df$mileage <= 300000, ]
-    
     
 
     # year --------------------------------------------------------------------
@@ -165,4 +156,34 @@ fOutliers <-
     
   }
 
-write_csv(df, "dfDataForModel.csv")
+
+
+
+#' Once cleaned, below code saves the final dataset ready for modeling
+#' 
+
+# # Save datasets for modeling locally -------------------------------------------------
+# write.csv(dfDataForModel, file= "datasets/dfDataForModel.csv")
+# 
+#
+# # Also save it in S3 -----------------------------------------------------------------
+# 
+# ## load personal credentials
+# Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+#            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
+# 
+# 
+# bucket_path <- "s3://pyrates-data-ocean/"
+# 
+# ## write to an in-memory raw connection
+# con <- rawConnection(raw(0), "r+")
+# write.csv(dfDataForModel, con)
+# 
+# ## upload the object to S3
+# aws.s3::put_object(file = rawConnectionValue(con), 
+#                    bucket = bucket_path, 
+#                    object = "datalake/autovitRO/CPP/dfDataForModel.csv")
+# 
+# ## close the connection
+# close(con)
+

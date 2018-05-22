@@ -1,0 +1,64 @@
+#' ###############################################################################################
+#' Get ads table with created_at_first field which was missing in other file
+#' 
+#' temp script for model building, eventually we will add the created_at_first in the daily query
+#' ################################################################################################
+
+
+
+# load libraries --------------------------------------------------------------
+library("aws.s3")
+library("dplyr")
+library("magrittr")
+library("dtplyr")
+library("data.table")
+library("stringr")
+library("RMySQL")
+library("slackr")
+library("stringr")
+library("DescTools")
+
+# load credentials ------------------------------------------------------------
+load("~/GlobalConfig.Rdata")
+load("~/credentials.Rdata")
+slackrSetup()
+
+# config ----------------------------------------------------------------------
+bucket_path <- "s3://pyrates-data-ocean/"
+
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
+
+# list all parameters files----------------------------------------------------
+s3Files_Ads <- 
+  as.data.frame(
+    get_bucket(
+      bucket = bucket_path,
+      max = Inf, prefix = "datalake/autovitRO/ads/RDS/")
+  )
+
+# read all files to a list ---------------------------------------------------- 
+dat_list <-
+  lapply(s3Files_Ads$Key, function (x){
+    print(Sys.time())
+    print(x)
+    data.table(
+      s3readRDS(x, bucket = bucket_path)
+      )
+  }
+  )
+
+# merge all data frames from the list to a single data frame ------------------
+dat <-
+  rbindlist(dat_list, use.names = TRUE, fill = TRUE)
+
+# Select only required fields
+
+dat2<- dat %>%
+  select (id, created_at_first)
+
+ s3saveRDS(
+   x = dat_wide, 
+   object = "datalake/autovitRO/AIO/Ads_AIO.RDS",
+   bucket = bucket_path
+ )
