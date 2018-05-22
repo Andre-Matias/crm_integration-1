@@ -36,7 +36,7 @@ aut_auth <- mixpanelCreateAccount("autovit.ro",
 
 ## Define timerange: valid across countries -------------------------------------------------------
 from_date <- "20171127"
-to_date <- "20180225"
+to_date <- "20180318"
 ## Define platforms to loop through in case of original version (no experiment id assigned)
 device_vec <- c("rwd", "desktop", "ios", "android")
 
@@ -55,8 +55,7 @@ exp_lookup <- tribble(
 
 
 
-###################################################################################################
-#' OKR1 queries -----------------------------------------------------------------------------------                                                                                                     
+# OKR1 queries ====================================================================================
 #' will send a query for each account                                                                                 
 
 
@@ -102,44 +101,47 @@ df_any_pl_b <- as.data.frame(
 df_any_pl_b <- mutate(df_any_pl_b, platform="rwd", version="variation B")
 
   
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "46817:1241061"
+## experiments: "ios_onboarding_b1"
 ## started ""
-df_any_pl_c1 <- as.data.frame(
-                   mixpanelGetRetention(oto_auth, 
-                          segment_method= "first", 
-                          retention_type= "birth", 
-                          born_event="welcome_screen", 
-                          born_where= '"46817:1241061" in (properties["experiments"]) 
-                          and (string(properties["platform"]) == "ios")', 
-                          from=20171204, to=20180116, unit="day", intervalCount = 15 
-                   )
-                )
-df_any_pl_c1 <- mutate(df_any_pl_c1, platform="ios", version="variation C1 (46817:1241061)")
+# df_any_pl_b1 <- as.data.frame(
+#                    mixpanelGetRetention(oto_auth, 
+#                           segment_method= "first", 
+#                           retention_type= "birth", 
+#                           born_event="welcome_screen", 
+#                           born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+#                           and (string(properties["platform"]) == "ios")', 
+#                           from=20171204, to=20180116, unit="day", intervalCount = 15 
+#                    )
+#                 )
+# df_any_pl_b1 <- mutate(df_any_pl_b1, platform="ios", version="variation B1")
+df_any_pl_b1 <- data.frame()
 
 
-# variation C2 - ios
+# variation C1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
-## experiments: "46817:1241071"
+## experiments: "ios_onboarding_c1"
 ## started ""
-df_any_pl_c2 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"46817:1241071" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-
-df_any_pl_c2 <- mutate(df_any_pl_c2, platform="ios", version="variation C2 (46817:1241071)") 
+# df_any_pl_c1 <- as.data.frame(
+#   mixpanelGetRetention(oto_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# 
+# df_any_pl_c1 <- mutate(df_any_pl_c1, platform="ios", version="variation C1") 
+df_any_pl_c1 <- data.frame()
 
 
 
 
 ## Standvirtual PT --------------------------------------------------------------------------------
+# original - home for all platforms
 df_any_pt_a <- data.frame()
 for (i in seq_along(device_vec)) {
   string_where <- paste0('number(properties["cl"]) == 1 and (string(properties["platform"]) == "', device_vec[i] ,'")')
@@ -177,39 +179,39 @@ df_any_pt_b <- as.data.frame(
 df_any_pt_b <- mutate(df_any_pt_b, platform="rwd", version="variation B")
 
 
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "47658:1269381"
+## experiments: "ios_onboarding_b1"
+## started "20180313"
+df_any_pt_b1 <- as.data.frame(
+  mixpanelGetRetention(sta_auth, 
+                       segment_method= "first", 
+                       retention_type= "birth", 
+                       born_event="welcome_screen", 
+                       born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+                       and (string(properties["platform"]) == "ios")', 
+                       from=20180313, to=to_date, unit="day", intervalCount = 15 
+  )
+)
+df_any_pt_b1 <- mutate(df_any_pt_b1, platform="ios", version="variation B1")
+
+
+# variation C1 - ios
+## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
+## experiments: "ios_onboarding_c1"
 ## started ""
 df_any_pt_c1 <- as.data.frame(
   mixpanelGetRetention(sta_auth, 
                        segment_method= "first", 
                        retention_type= "birth", 
                        born_event="welcome_screen", 
-                       born_where= '"47658:1269381" in (properties["experiments"]) 
+                       born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
-                       from=20180205, to=to_date, unit="day", intervalCount = 15 
-  )
-)
-df_any_pt_c1 <- mutate(df_any_pt_c1, platform="ios", version="variation C1 (47658:1269381)")
-
-
-# variation C2 - ios
-## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
-## experiments: "47658:1269391"
-## started ""
-df_any_pt_c2 <- as.data.frame(
-  mixpanelGetRetention(sta_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47658:1269391" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       from=20180205, to=to_date, unit="day", intervalCount = 15 
+                       from=20180313, to=to_date, unit="day", intervalCount = 15 
   )
 )
 
-df_any_pt_c2 <- mutate(df_any_pt_c2, platform="ios", version="variation C2 (47658:1269391)") 
+df_any_pt_c1 <- mutate(df_any_pt_c1, platform="ios", version="variation C1") 
 
 
 ## Autovit RO -------------------------------------------------------------------------------------
@@ -251,52 +253,54 @@ df_any_ro_b <- as.data.frame(
 df_any_ro_b <- mutate(df_any_ro_b, platform="rwd", version="variation B")
 
 
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "47656:1269291"
+## experiments: "ios_onboarding_b1"
 ## started ""
-df_any_ro_c1 <- as.data.frame(
-  mixpanelGetRetention(aut_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47656:1269291" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-df_any_ro_c1 <- mutate(df_any_ro_c1, platform="ios", version="variation C1 (47656:1269291)")
+# df_any_ro_b1 <- as.data.frame(
+#   mixpanelGetRetention(aut_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# df_any_ro_b1 <- mutate(df_any_ro_b1, platform="ios", version="variation B1")
+df_any_ro_b1 <- data.frame()
 
 
-# variation C2 - ios
+# variation C1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizations but removing segments
-## experiments: "47656:1269301"
+## experiments: "ios_onboarding_c1"
 ## started ""
-df_any_ro_c2 <- as.data.frame(
-  mixpanelGetRetention(aut_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47656:1269301" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-
-df_any_ro_c2 <- mutate(df_any_ro_c2, platform="ios", version="variation C2 (47656:1269301)") 
-
-
-
+# df_any_ro_c1 <- as.data.frame(
+#   mixpanelGetRetention(aut_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# 
+# df_any_ro_c1 <- mutate(df_any_ro_c1, platform="ios", version="variation C1") 
+df_any_ro_c1 <- data.frame()
 
 
-###################################################################################################
-#' OKR2 queries -----------------------------------------------------------------------------------                                                                                             #
+
+
+
+# OKR2 queries=====================================================================================                                                                                            #
 #' will send a query for each account                                                                                                                   
 #' use the custom event created "make_lead_okr2"                                                                      
 
 
 
 # Otomoto PL ------------------------------------------------------------------
+# original - home for all platforms
 ## to query "make_lead" custom event use: $custom_event:750077 as per chrome console
 df_lead_pl_a <- data.frame()
 for (i in seq_along(device_vec)) {
@@ -337,46 +341,48 @@ df_lead_pl_b <- as.data.frame(
 
 df_lead_pl_b <- mutate(df_lead_pl_b, platform="rwd", version="variation B")
 
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "46817:1241061"
+## experiments: "ios_onboarding_b1"
 ## started ""
-df_lead_pl_c1 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"46817:1241061" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       event="$custom_event:750077",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-df_lead_pl_c1 <- mutate(df_lead_pl_c1, platform="ios", version="variation C1 (46817:1241061)")
+# df_lead_pl_b1 <- as.data.frame(
+#   mixpanelGetRetention(oto_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        event="$custom_event:750077",
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# df_lead_pl_b1 <- mutate(df_lead_pl_b1, platform="ios", version="variation B1")
+df_lead_pl_b1 <- data.frame()
 
 
-# variation C2 - ios
+# variation C1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
-## experiments: "46817:1241071"
+## experiments: "ios_onboarding_c1"
 ## started ""
-df_lead_pl_c2 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"46817:1241071" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       event="$custom_event:750077",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-
-df_lead_pl_c2 <- mutate(df_lead_pl_c2, platform="ios", version="variation C2 (46817:1241071)") 
-
+# df_lead_pl_c1 <- as.data.frame(
+#   mixpanelGetRetention(oto_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        event="$custom_event:750077",
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# 
+# df_lead_pl_c1 <- mutate(df_lead_pl_c1, platform="ios", version="variation C1") 
+df_lead_pl_c1 <- data.frame()
 
 
 
 # Standvirtual PT -------------------------------------------------------------
+# original - home for all platforms
 ## to query "make_lead" custom event use: # $custom_event:753501 as per chrome console
 df_lead_pt_a <- data.frame()
 for (i in seq_along(device_vec)) {
@@ -417,45 +423,46 @@ df_lead_pt_b <- as.data.frame(
 
 df_lead_pt_b <- mutate(df_lead_pt_b, platform="rwd", version="variation B")
 
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "47658:1269381"
-## started ""
+## experiments: "ios_onboarding_b1"
+## started "20180313"
+df_lead_pt_b1 <- as.data.frame(
+  mixpanelGetRetention(sta_auth, 
+                       segment_method= "first", 
+                       retention_type= "birth", 
+                       born_event="welcome_screen", 
+                       born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+                       and (string(properties["platform"]) == "ios")', 
+                       event="$custom_event:753501",
+                       from=20180313, to=to_date, unit="day", intervalCount = 15 
+  )
+)
+df_lead_pt_b1 <- mutate(df_lead_pt_b1, platform="ios", version="variation B1")
+
+
+# variation C1 - ios
+## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
+## experiments: "ios_onboarding_c1"
+## started "20180313"
 df_lead_pt_c1 <- as.data.frame(
   mixpanelGetRetention(sta_auth, 
                        segment_method= "first", 
                        retention_type= "birth", 
                        born_event="welcome_screen", 
-                       born_where= '"47658:1269381" in (properties["experiments"]) 
+                       born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
                        and (string(properties["platform"]) == "ios")', 
                        event="$custom_event:753501",
-                       from=20180205, to=to_date, unit="day", intervalCount = 15 
-  )
-)
-df_lead_pt_c1 <- mutate(df_lead_pt_c1, platform="ios", version="variation C1 (47658:1269381)")
-
-
-# variation C2 - ios
-## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
-## experiments: "47658:1269391"
-## started ""
-df_lead_pt_c2 <- as.data.frame(
-  mixpanelGetRetention(sta_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47658:1269391" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       event="$custom_event:753501",
-                       from=20180205, to=to_date, unit="day", intervalCount = 15 
+                       from=20180313, to=to_date, unit="day", intervalCount = 15 
   )
 )
 
-df_lead_pt_c2 <- mutate(df_lead_pt_c2, platform="ios", version="variation C2 (47658:1269391)") 
+df_lead_pt_c1 <- mutate(df_lead_pt_c1, platform="ios", version="variation C1") 
 
 
 
 # Autovit RO ------------------------------------------------------------------
+# original - home for all platforms
 ## to query "make_lead" custom event use: # $custom_event:753505 as per chrome console
 df_lead_ro_a <- data.frame()
 for (i in seq_along(device_vec)) {
@@ -484,7 +491,7 @@ df_lead_ro_a <- mutate(df_lead_ro_a, version="original A")
 ## started "20171122"
 
 df_lead_ro_b <- as.data.frame(
-  mixpanelGetRetention (oto_auth, 
+  mixpanelGetRetention (aut_auth, 
                         segment_method= "first",
                         retention_type= "birth",
                         born_event="welcome_screen",
@@ -496,39 +503,41 @@ df_lead_ro_b <- as.data.frame(
 
 df_lead_ro_b <- mutate(df_lead_ro_b, platform="rwd", version="variation B")
 
-# variation C1 - ios
+# variation B1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions
-## experiments: "47656:1269291"
+## experiments: "ios_onboarding_b1"
 ## started ""
-df_lead_ro_c1 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47656:1269291" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       event="$custom_event:753505",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-df_lead_ro_c1 <- mutate(df_lead_ro_c1, platform="ios", version="variation C1 (47656:1269291)")
+# df_lead_ro_b1 <- as.data.frame(
+#   mixpanelGetRetention(aut_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_b1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        event="$custom_event:753505",
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# df_lead_ro_b1 <- mutate(df_lead_ro_b1, platform="ios", version="variation B1")
+df_lead_ro_b1 <- data.frame()
 
 
-# variation C2 - ios
+# variation C1 - ios
 ## 2nd onboarding version starting with welcome_screen with UX optimizazions but removing segments
-## experiments: "47656:1269301"
+## experiments: "ios_onboarding_c1"
 ## started ""
-df_lead_ro_c2 <- as.data.frame(
-  mixpanelGetRetention(oto_auth, 
-                       segment_method= "first", 
-                       retention_type= "birth", 
-                       born_event="welcome_screen", 
-                       born_where= '"47656:1269301" in (properties["experiments"]) 
-                       and (string(properties["platform"]) == "ios")', 
-                       event="$custom_event:753505",
-                       from=20171204, to=20180116, unit="day", intervalCount = 15 
-  )
-)
-
-df_lead_ro_c2 <- mutate(df_lead_ro_c2, platform="ios", version="variation C2 (47656:1269301)") 
+# df_lead_ro_c1 <- as.data.frame(
+#   mixpanelGetRetention(aut_auth, 
+#                        segment_method= "first", 
+#                        retention_type= "birth", 
+#                        born_event="welcome_screen", 
+#                        born_where= '"ios_onboarding_c1" in (properties["experiments"]) 
+#                        and (string(properties["platform"]) == "ios")', 
+#                        event="$custom_event:753505",
+#                        from=20171204, to=20180116, unit="day", intervalCount = 15 
+#   )
+# )
+# 
+# df_lead_ro_c1 <- mutate(df_lead_ro_c1, platform="ios", version="variation C1") 
+df_lead_ro_c1 <- data.frame()
 
