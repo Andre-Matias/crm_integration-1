@@ -92,15 +92,15 @@ for(i in listMixpanelAccounts){
       )
     )
   
-  #dfChunk <- gather(dfChunk, "Experiment", "ExperimentID", -1:-2)
+  dfChunk <- gather(dfChunk, "Experiment", "ExperimentID", -1:-3)
   
-  #dfChunk$Experiment <-  NULL
+  dfChunk$Experiment <-  NULL
   
-  #dfChunk <- dfChunk[grepl(pattern = idExperiment, dfChunk$ExperimentID), ]
+  dfChunk <- dfChunk[grepl(pattern = idExperiment, dfChunk$ExperimentID), ]
   
-  #dfChunk$project <- as.character(i[[1]])
+  dfChunk$project <- as.character(i[[1]])
   
-  #colnames(dfChunk) <- c("distinct_id", "event", "value", "ExperimentID", "project")
+  colnames(dfChunk) <- c("distinct_id", "event", "value", "ExperimentID", "project")
 
   if(nrow(dfTmp) == 0){
     dfTmp <- dfChunk
@@ -108,3 +108,12 @@ for(i in listMixpanelAccounts){
     dfTmp <- rbind(dfTmp, dfChunk)
   }
 }
+
+
+dfTmp <- spread(data = dfTmp, key = event, value = value)
+
+dfStats <-
+  dfTmp %>% 
+  group_by(ExperimentID, project, ab_test_multipay_page, ab_test_multipay_finished) %>%
+  summarise(qty = sum(n())) %>%
+  mutate(per = qty / sum(qty))
