@@ -75,7 +75,7 @@ for(file in filesToTransform){
   colnames(dfTmp) <- c("ad_id", "riak_mapping")
   
   
-  dfTmp$nr_images <- lapply(dfTmp$riak_mapping, function(x) sum(as.binary(x)))
+  dfTmp$nr_images <- lapply(dfTmp$riak_mapping, function(x) as.numeric(unlist(sum(as.binary(x)))))
   
   dfTmp <- dfTmp[, c("ad_id", "nr_images")]
   
