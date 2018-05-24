@@ -46,7 +46,7 @@ listMixpanelAccounts <-
   )
 
 print(paste(Sys.time(), "Define Start/End Date"))
-startDate <- as.character("2018-03-01")
+startDate <- as.character("2018-05-21")
 endDate <- as.character(Sys.Date())
 
 dfTmp <- as_tibble()
@@ -59,8 +59,8 @@ jqlQuery <-
   '
   function main() {{
       return Events({{
-        from_date: "2018-05-16",
-        to_date:   "2018-05-24"
+        from_date: "{startDate}",
+        to_date:   "{endDate}"
       }})
       .filter((e) => {{
         return e.name.indexOf("ab_test_my_ads_1_click_vas") > -1 
