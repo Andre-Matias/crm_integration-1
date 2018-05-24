@@ -76,7 +76,7 @@ def deletePreviousS3Files(conf_file, keyId, sKeyId):
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country):
 	
 	print("Getting deals data")
-	#Iterate for everypage returned by the API
+	#             Iterate for everypage returned by the API
 	aux = 1
 	name = "./aut_olxpt_base_to_bd_deal_"
 	while 1:
