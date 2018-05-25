@@ -91,12 +91,23 @@ for(i in listMixpanelAccounts){
       )
     )
   
+  if(nrow(dfChunk) > 0){
   dfChunk$project <- as.character(i[[1]])
-  
+  }
   
   if(nrow(dfTmp) == 0){
     dfTmp <- dfChunk
   } else {
     dfTmp <- rbind(dfTmp, dfChunk)
   }
+  
+  colnames(dfTmp) <- c("distinct_id", "event", "value", "project")
 }
+
+dfStats <-
+  dfTmp %>% 
+  select("project", "distinct_id", "event", "value") %>%
+  spread(key = event, value = value) %>%
+  group_by(project, my_ads_1_click_vas_modal, ab_test_my_ads_1_click_vas_modal_confirm) %>%
+  summarise(qtyUsers = sum(n())) %>%
+  mutate(perUsers = qtyUsers / sum(qtyUsers))
