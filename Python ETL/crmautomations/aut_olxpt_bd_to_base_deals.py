@@ -28,7 +28,7 @@ def updateDealsInBase(client, result_list):
 		deal.custom_fields['NIF'] = result[5] 	
 		deal.custom_fields['Phone'] = result[6] 	
 		deal.custom_fields['User ID'] = result[7] 	
-		deal.custom_fields['Payment Date'] = result[8] 	
+		deal.last_stage_change_at = result[9] 	
 		client.deals.update(deal.id, deal)
 	
 def getDatabaseConnection(conf_file):
@@ -68,7 +68,8 @@ cur.execute(
               "aut_olxpt_base_to_bd_contact.nif, "\
               "aut_olxpt_base_to_bd_contact.phone, "\
               "aut_olxpt_base_to_bd_contact.user_id, "\
-              "aut_olxpt_base_to_bd_contact.last_stage_change_at "\
+              "aut_olxpt_base_to_bd_contact.last_stage_change_at, "\
+              "aut_olxpt_base_to_bd_contact.payment_date "\
             "from "\
               "( "\
                 "select "\
@@ -80,7 +81,8 @@ cur.execute(
                   "aut_olxpt_base_to_bd_contact.nif, "\
                   "aut_olxpt_base_to_bd_contact.phone, "\
                   "aut_olxpt_base_to_bd_contact.user_id, "\
-				  "aut_olxpt_base_to_bd_deal.last_stage_change_at "\
+				  "aut_olxpt_base_to_bd_deal.last_stage_change_at, "\
+				  "aut_olxpt_base_to_bd_deal.payment_date "\
                 "from "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_contact, "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_deal "\
@@ -97,6 +99,7 @@ cur.execute(
               "and aut_olxpt_base_to_bd_contact.nif = aut_olxpt_base_to_bd_deal.nif (+) "\
               "and aut_olxpt_base_to_bd_contact.phone = aut_olxpt_base_to_bd_deal.phone (+) "\
               "and aut_olxpt_base_to_bd_contact.user_id = aut_olxpt_base_to_bd_deal.user_id (+) "\
+              "and aut_olxpt_base_to_bd_contact.payment_date = aut_olxpt_base_to_bd_deal.last_stage_change_at (+) "\
               "and aut_olxpt_base_to_bd_deal.id is null;")
 result_list = cur.fetchall()
 

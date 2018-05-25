@@ -1499,6 +1499,7 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_0 as
 						and g.cod_source_system = c.cod_source_system
 						and g.valid_to = 20991231
 						and h.opr_source_system = a.livesync_dbname
+						and a.livesync_dbname = b.livesync_dbname
 						and h.cod_source_system = c.cod_source_system
 						and date_trunc('month',b.last_status_date) = date_trunc('month',sysdate)
 					group by
@@ -1578,6 +1579,7 @@ create table crm_integration_anlt.tmp_pt_standvirtual_calc_revenue_1 as
 						and g.cod_source_system = c.cod_source_system
 						and g.valid_to = 20991231
 						and h.opr_source_system = a.livesync_dbname
+						and a.livesync_dbname = b.livesync_dbname
 						and h.cod_source_system = c.cod_source_system
 						and date_trunc('month',b.last_status_date) = date_trunc('month',add_months(sysdate,-1))
 					group by

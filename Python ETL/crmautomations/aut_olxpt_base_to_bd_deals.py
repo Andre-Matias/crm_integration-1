@@ -121,6 +121,11 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 					deal.user_id = deal_data.custom_fields['User ID']
 				else:
 					deal.user_id = ''
+				deal.last_stage_change_at = deal_data.last_stage_change_at
+				if 'Payment Date' in deal_data.custom_fields:
+					deal.payment_date = deal_data.custom_fields['Payment Date']
+				else:
+					deal.payment_date = ''
 				deal.country = country
 				deal.category = category
 				output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))

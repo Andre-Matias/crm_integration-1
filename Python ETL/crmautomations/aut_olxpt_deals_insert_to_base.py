@@ -20,7 +20,7 @@ def createDealsInBase(client, result_list):
 						source_id=result[3],
 						stage_id=result[4],
 						value=result[5], 
-						custom_fields={'L2 Categoria':result[6],'L1 Categoria':result[7],'Payment Date':result[8]})
+						custom_fields={'L2 Categoria':result[6],'L1 Categoria':result[7],'Payment Date':result[8], 'Transaction ID':result[9], 'Deal created by':result[10]})
 				break
 			except basecrm.errors.ResourceError as err:
 				print("Error: basecrm.errors.ResourceError: " + str(err) + "\nSkipping creation of deal for contact with ID " + str(result[1]))
@@ -46,34 +46,34 @@ def main(conf_file):
 	print('Starting Data Query... ' + time.strftime("%H:%M:%S"))
 	cur.execute(
 				"select "\
-					"fac.dsc_paidad_user_payment,  "\
+					"fac.name, "\
 					"lkp_contact.opr_contact, "\
 					"lkp_base_user.opr_base_user, "\
 					"4616871 as opr_base_source, "\
 					"case "\
 						"when "\
 								"v_lkp_pi.cod_index_type = 1 /* VAS */ "\
-								"and to_date(fac.dat_valid_to,'yyyy-mm-dd') /* active package */ < to_date(sysdate,'yyyy-mm-dd') "\
+								"and to_date(fac.paidads_valid_to,'yyyy-mm-dd') /* active package */ < to_date(sysdate,'yyyy-mm-dd') "\
 								"and last_call < to_date(sysdate,'yyyy-mm-dd') -15 "\
 							"then 7344246 /* organico */ "\
 					"else 2950782 /* sales pipeline */ "\
 					"end as opr_stage, "\
-					"(fac.val_price * (-1))/1.23 as val_price, "\
-					"lkp_category.dsc_category_en sub_category, "\
-					"lkp_category_parent.dsc_category_en main_category, "\
-					"to_char(to_date(fac.dat_payment,'yyyy/mm/dd'),'dd/mm/yyyy') as dat_payment "\
+					"(fac.price * (-1))/1.23 as val_price, "\
+					"lkp_category.name_pt sub_category, "\
+					"lkp_category_parent.name_pt main_category, "\
+					"to_char(to_date(fac.date,'yyyy/mm/dd'),'dd/mm/yyyy') as dat_payment, "\
+				    "fac.id_transaction, "\
+				    "'Automation' as deal_created_by "\
 				"from "\
-					"crm_integration_anlt.t_fac_paidad_user_payment fac, "\
-					"crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user, "\
-					"crm_integration_anlt.t_lkp_ad lkp_ad, "\
-					"crm_integration_anlt.t_lkp_category lkp_category, "\
+					"db_atlas.olxpt_paidads_user_payments fac, "\
+					"db_atlas.olxpt_users lkp_atlas_user, "\
+					"db_atlas.olxpt_ads lkp_ad, "\
+					"db_atlas.olxpt_categories lkp_category, "\
 					"( "\
-						"select cod_category, opr_category, dsc_category_en, parent_level1, parent_level2, cod_category_parent from crm_integration_anlt.t_lkp_category "\
-						"where (cod_source_system = 8 "\
-						"and valid_to = 20991231 "\
-						"and parent_level2 is null "\
-						"and parent_level1 is null) "\
-						"or cod_source_system in(-1,-2) "\
+						"select id opr_category, name_pt, parent_level1, parent_level2, parent_id from db_atlas.olxpt_categories lkp_category "\
+						"where "\
+						"parent_level2 is null "\
+						"and parent_level1 is null "\
 					") lkp_category_parent, "\
 					"crm_integration_anlt.t_lkp_contact lkp_contact, "\
 					"crm_integration_anlt.t_lkp_base_user lkp_base_user, "\
@@ -82,30 +82,24 @@ def main(conf_file):
 					"crm_integration_anlt.v_lkp_paidad_index v_lkp_pi, "\
 					"(select cod_contact, to_date(max(updated_at),'yyyy-mm-dd') last_call from crm_integration_anlt.t_fac_call where cod_source_system = 16 group by cod_contact) fac_call "\
 				"where "\
-					"fac.cod_atlas_user = lkp_atlas_user.cod_atlas_user "\
-					"and lkp_atlas_user.cod_source_system = 8 "\
+					"fac.id_user = lkp_atlas_user.id "\
 					"and lkp_contact.cod_source_system = 16 "\
-					"and lkp_atlas_user.cod_atlas_user = lkp_contact.cod_atlas_user "\
-					"and fac.cod_paidad_index = lkp_pi.cod_paidad_index "\
+					"and lower(lkp_atlas_user.email) = lower(lkp_contact.email) "\
+					"and fac.id_index = lkp_pi.opr_paidad_index "\
 					"and lkp_pi.cod_paidad_index_type = lkp_pit.cod_paidad_index_type "\
 					"and lkp_pit.valid_to = 20991231 "\
 					"and lkp_pit.cod_source_system = 8 "\
 					"and lkp_pit.opr_paidad_index_type in ('ad_homepage','highlight','bundle','nnl','pushup','logo','topads','topupaccount','paid_subscription','paid_limits_single','paid_for_post') "\
 					"and lkp_pi.cod_source_system = 8 "\
-					"and fac.cod_ad = lkp_ad.cod_ad "\
-					"and lkp_ad.valid_to = 20991231 "\
-					"and lkp_ad.cod_source_system = 8 "\
-					"and lkp_ad.cod_category = lkp_category.cod_category "\
-					"and lkp_category.cod_source_system = 8 "\
-					"and lkp_category.valid_to = 20991231 "\
+					"and fac.id_ad = lkp_ad.id "\
+					"and lkp_ad.category_id = lkp_category.id "\
 					"and lkp_contact.cod_base_user_owner = lkp_base_user.cod_base_user "\
 					"and lkp_base_user.cod_source_system = 16 "\
 					"and lkp_base_user.valid_to = 20991231 "\
 					"and v_lkp_pi.cod_paidad_index = lkp_pi.cod_paidad_index "\
 					"and isnull(lkp_category.parent_level1,-2) = lkp_category_parent.opr_category "\
-					"and val_price < 0 "\
-					"and dat_payment > (select last_processing_datetime from crm_integration_anlt.aut_deals_insert_to_base_date where source_system = 'pthorizontal') "\
-					"and lkp_atlas_user.valid_to = 20991231 "\
+					"and fac.price < 0 "\
+					"and trunc(fac.date) > (select last_processing_datetime from crm_integration_anlt.aut_deals_insert_to_base_date where source_system = 'pthorizontal') "\
 					"and lkp_contact.valid_to = 20991231 "\
 					"and lkp_pi.valid_to = 20991231 "\
 					"and lkp_contact.cod_contact = fac_call.cod_contact (+); ")
@@ -124,47 +118,39 @@ def main(conf_file):
 						"'pthorizontal' as source_system, "\
 						"max(fac.dat_payment) "\
 					"from "\
-					"crm_integration_anlt.t_fac_paidad_user_payment fac, "\
-					"crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user, "\
-					"crm_integration_anlt.t_lkp_ad lkp_ad, "\
-					"crm_integration_anlt.t_lkp_category lkp_category, "\
+					"db_atlas.olxpt_paidads_user_payments fac, "\
+					"db_atlas.olxpt_users lkp_atlas_user, "\
+					"db_atlas.olxpt_ads lkp_ad, "\
+					"db_atlas.olxpt_categories lkp_category, "\
 					"( "\
-						"select cod_category, opr_category, dsc_category_en, parent_level1, parent_level2, cod_category_parent from crm_integration_anlt.t_lkp_category "\
-						"where cod_source_system = 8 "\
-						"and valid_to = 20991231 "\
-						"and parent_level2 is null "\
+						"select id opr_category, name_pt, parent_level1, parent_level2, parent_id from db_atlas.olxpt_categories lkp_category "\
+						"where "\
+						"parent_level2 is null "\
 						"and parent_level1 is null "\
-						"union all "\
-						"select cod_category, opr_category, dsc_category_en, parent_level1, parent_level2, cod_category_parent from crm_integration_anlt.t_lkp_category "\
-						"where cod_category in (-1,-2) "\
 					") lkp_category_parent, "\
 					"crm_integration_anlt.t_lkp_contact lkp_contact, "\
 					"crm_integration_anlt.t_lkp_base_user lkp_base_user, "\
 					"crm_integration_anlt.t_lkp_paidad_index lkp_pi, "\
-					"crm_integration_anlt.t_lkp_paidad_index_type lkp_pit "\
+					"crm_integration_anlt.t_lkp_paidad_index_type lkp_pit, "\
+					"crm_integration_anlt.v_lkp_paidad_index v_lkp_pi "\
 				"where "\
-					"fac.cod_atlas_user = lkp_atlas_user.cod_atlas_user "\
-					"and lkp_atlas_user.cod_source_system = 8 "\
+					"fac.id_user = lkp_atlas_user.id "\
 					"and lkp_contact.cod_source_system = 16 "\
-					"and lkp_atlas_user.cod_atlas_user = lkp_contact.cod_atlas_user "\
-					"and fac.cod_paidad_index = lkp_pi.cod_paidad_index "\
+					"and lower(lkp_atlas_user.email) = lower(lkp_contact.email) "\
+					"and fac.id_index = lkp_pi.opr_paidad_index "\
 					"and lkp_pi.cod_paidad_index_type = lkp_pit.cod_paidad_index_type "\
 					"and lkp_pit.valid_to = 20991231 "\
 					"and lkp_pit.cod_source_system = 8 "\
-					"and lkp_pit.opr_paidad_index_type in ('bundle','nnl','pushup','logo','topads','topupaccount') "\
+					"and lkp_pit.opr_paidad_index_type in ('ad_homepage','highlight','bundle','nnl','pushup','logo','topads','topupaccount','paid_subscription','paid_limits_single','paid_for_post') "\
 					"and lkp_pi.cod_source_system = 8 "\
-					"and fac.cod_ad = lkp_ad.cod_ad "\
-					"and lkp_ad.valid_to = 20991231 "\
-					"and lkp_ad.cod_source_system = 8 "\
-					"and lkp_ad.cod_category = lkp_category.cod_category "\
-					"and lkp_category.cod_source_system = 8 "\
-					"and lkp_category.valid_to = 20991231 "\
+					"and fac.id_ad = lkp_ad.id "\
+					"and lkp_ad.category_id = lkp_category.id "\
 					"and lkp_contact.cod_base_user_owner = lkp_base_user.cod_base_user "\
 					"and lkp_base_user.cod_source_system = 16 "\
 					"and lkp_base_user.valid_to = 20991231 "\
+					"and v_lkp_pi.cod_paidad_index = lkp_pi.cod_paidad_index "\
 					"and isnull(lkp_category.parent_level1,-2) = lkp_category_parent.opr_category "\
-					"and val_price < 0 "\
-					"and lkp_atlas_user.valid_to = 20991231 "\
+					"and fac.price < 0 "\
 					"and lkp_contact.valid_to = 20991231 "\
 					"and lkp_pi.valid_to = 20991231; ")
 	conn.commit()
