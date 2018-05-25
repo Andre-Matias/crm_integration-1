@@ -116,7 +116,7 @@ def main(conf_file):
 				"insert into crm_integration_anlt.aut_deals_insert_to_base_date "\
 					"select "\
 						"'pthorizontal' as source_system, "\
-						"max(fac.dat_payment) "\
+						"max(fac.date) "\
 					"from "\
 					"db_atlas.olxpt_paidads_user_payments fac, "\
 					"db_atlas.olxpt_users lkp_atlas_user, "\
