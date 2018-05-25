@@ -76,7 +76,7 @@ def deletePreviousS3Files(conf_file, keyId, sKeyId):
 def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country):
 	
 	print("Getting deals data")
-	#             Iterate for everypage returned by the API
+	#Iterate for everypage returned by the API
 	aux = 1
 	name = "./aut_olxpt_base_to_bd_deal_"
 	while 1:
@@ -93,37 +93,42 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 
 		#Iterate the list of deals
 		for deal_data in data:
-			if  str(datetime.strptime(deal_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
-				deal = Munch()
-				deal.id = deal_data.id
-				deal.contact_id = deal_data.contact_id
-				if 'Categoria' in deal_data.custom_fields:
-					deal.categoria = deal_data.custom_fields['Categoria']
-				else:
-					deal.categoria = ''
-				if 'Email' in deal_data.custom_fields:
-					deal.email = deal_data.custom_fields['Email']
-				else:
-					deal.email = ''
-				if 'Mobile' in deal_data.custom_fields:
-					deal.mobile = deal_data.custom_fields['Mobile']
-				else:
-					deal.mobile = ''
-				if 'NIF' in deal_data.custom_fields:
-					deal.nif = deal_data.custom_fields['NIF']
-				else:
-					deal.nif = ''
-				if 'Phone' in deal_data.custom_fields:
-					deal.phone = deal_data.custom_fields['Phone']
-				else:
-					deal.phone = ''
-				if 'User ID' in deal_data.custom_fields:
-					deal.user_id = deal_data.custom_fields['User ID']
-				else:
-					deal.user_id = ''
-				deal.country = country
-				deal.category = category
-				output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
+			#if  str(datetime.strptime(deal_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
+			deal = Munch()
+			deal.id = deal_data.id
+			deal.contact_id = deal_data.contact_id
+			if 'Categoria' in deal_data.custom_fields:
+				deal.categoria = deal_data.custom_fields['Categoria']
+			else:
+				deal.categoria = ''
+			if 'Email' in deal_data.custom_fields:
+				deal.email = deal_data.custom_fields['Email']
+			else:
+				deal.email = ''
+			if 'Mobile' in deal_data.custom_fields:
+				deal.mobile = deal_data.custom_fields['Mobile']
+			else:
+				deal.mobile = ''
+			if 'NIF' in deal_data.custom_fields:
+				deal.nif = deal_data.custom_fields['NIF']
+			else:
+				deal.nif = ''
+			if 'Phone' in deal_data.custom_fields:
+				deal.phone = deal_data.custom_fields['Phone']
+			else:
+				deal.phone = ''
+			if 'User ID' in deal_data.custom_fields:
+				deal.user_id = deal_data.custom_fields['User ID']
+			else:
+				deal.user_id = ''
+			deal.last_stage_change_at = deal_data.last_stage_change_at
+			if 'Payment Date' in deal_data.custom_fields:
+				deal.payment_date = deal_data.custom_fields['Payment Date']
+			else:
+				deal.payment_date = ''
+			deal.country = country
+			deal.category = category
+			output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
