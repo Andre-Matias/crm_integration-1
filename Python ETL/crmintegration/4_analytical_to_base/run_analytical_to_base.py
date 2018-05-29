@@ -23,7 +23,7 @@ while i < len(sys.argv):
 
 COD_COUNTRY = int(json.load(open(conf_files[0]))['cod_country'])	# Global variable; all configuration files should have the same country code, so we only get the first
 	
-#scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
+scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
 
 # Calculate KPIs with data from the Analytical Model
 for i in range(0, len(conf_files)):
