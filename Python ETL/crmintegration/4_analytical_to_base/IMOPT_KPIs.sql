@@ -203,23 +203,31 @@ FROM
 		  isnull(a.custom_field_value, '1900-01-01 00:00:00') custom_field_value
 		FROM
 		  (
-		  SELECT
-			base_contact.cod_contact,
-			scai.dat_processing dat_snap,
-			base_contact.cod_source_system,
-			cast(atlas_user.last_login_at as varchar) custom_field_value
-		  FROM
-			crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			crm_integration_anlt.t_lkp_contact base_contact,
-			crm_integration_anlt.t_rel_scai_country_integration scai
-		  WHERE
-			atlas_user.cod_source_system = 3
-			AND base_contact.cod_source_system = 17
-			AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			AND atlas_user.valid_to = 20991231
-			AND base_contact.valid_to = 20991231
-			AND scai.cod_integration = 50000
-      and scai.cod_country = 1
+			  select
+				*
+			  from
+				(
+				  SELECT
+				  base_contact.cod_contact,
+				  scai.dat_processing dat_snap,
+				  base_contact.cod_source_system,
+				  cast(atlas_user.last_login_at as varchar) custom_field_value,
+				  row_number() over (partition by atlas_user.dsc_atlas_user order by atlas_user.created_at desc) rn
+				  FROM
+				  crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				  crm_integration_anlt.t_lkp_contact base_contact,
+				  crm_integration_anlt.t_rel_scai_country_integration scai
+				  WHERE
+				  atlas_user.cod_source_system = 3
+				  AND base_contact.cod_source_system = 17
+				  AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+				  AND atlas_user.valid_to = 20991231
+				  AND base_contact.valid_to = 20991231
+				  AND scai.cod_integration = 50000
+				  and scai.cod_country = 1
+				)
+			  where
+				rn = 1
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
