@@ -116,4 +116,6 @@ dfStats <-
   dfTmp %>% 
   group_by(ExperimentID, project, ab_test_multipay_page, ab_test_multipay_finished) %>%
   summarise(qty = sum(n())) %>%
-  mutate(per = qty / sum(qty))
+  mutate(per = qty / sum(qty),
+         prettyPercentage = scales::percent(per)
+         )

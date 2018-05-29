@@ -100,9 +100,10 @@ for(i in listMixpanelAccounts){
   } else {
     dfTmp <- rbind(dfTmp, dfChunk)
   }
-  
-  colnames(dfTmp) <- c("distinct_id", "event", "value", "project")
 }
+
+colnames(dfTmp) <- c("distinct_id", "event", "value", "project")
+
 
 dfStats <-
   dfTmp %>% 
@@ -110,4 +111,5 @@ dfStats <-
   spread(key = event, value = value) %>%
   group_by(project, my_ads_1_click_vas_modal, ab_test_my_ads_1_click_vas_modal_confirm) %>%
   summarise(qtyUsers = sum(n())) %>%
-  mutate(perUsers = qtyUsers / sum(qtyUsers))
+  mutate(perUsers = qtyUsers / sum(qtyUsers)
+         )

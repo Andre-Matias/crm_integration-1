@@ -117,4 +117,5 @@ dfStats <-
   dfTmp %>% 
   group_by(ExperimentID, project, ab_test_my_ads_1_click_VAS_modal, ab_test_my_ads_1_click_VAS_modal_confirm) %>%
   summarise(qty = sum(n())) %>%
-  mutate(per = qty / sum(qty))
+  mutate(per = qty / sum(qty),
+         prettyPercentage = scales::percent(per))
