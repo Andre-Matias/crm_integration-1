@@ -68,8 +68,8 @@ cur.execute(
               "aut_olxpt_base_to_bd_contact.nif, "\
               "aut_olxpt_base_to_bd_contact.phone, "\
               "aut_olxpt_base_to_bd_contact.user_id, "\
-              "aut_olxpt_base_to_bd_contact.last_stage_change_at, "\
-              "aut_olxpt_base_to_bd_contact.payment_date "\
+              "left(replace(replace(aut_olxpt_base_to_bd_contact.last_stage_change_at,'T',' '),'Z',''),10) as last_stage_change_at, "\
+              "case when aut_olxpt_base_to_bd_contact.payment_date = '' then to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_contact.last_stage_change_at,'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') else aut_olxpt_base_to_bd_contact.payment_date end payment_date "\
             "from "\
               "( "\
                 "select "\
@@ -81,8 +81,8 @@ cur.execute(
                   "aut_olxpt_base_to_bd_contact.nif, "\
                   "aut_olxpt_base_to_bd_contact.phone, "\
                   "aut_olxpt_base_to_bd_contact.user_id, "\
-				  "aut_olxpt_base_to_bd_deal.last_stage_change_at, "\
-				  "aut_olxpt_base_to_bd_deal.payment_date "\
+				  "to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_deal.last_stage_change_at,'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') last_stage_change_at, "\
+				  "case when aut_olxpt_base_to_bd_deal.payment_date = '' then to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_deal.last_stage_change_at,'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') else aut_olxpt_base_to_bd_deal.payment_date end payment_date "\
                 "from "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_contact, "\
                   "crm_integration_anlt.aut_olxpt_base_to_bd_deal "\
@@ -99,7 +99,7 @@ cur.execute(
               "and aut_olxpt_base_to_bd_contact.nif = aut_olxpt_base_to_bd_deal.nif (+) "\
               "and aut_olxpt_base_to_bd_contact.phone = aut_olxpt_base_to_bd_deal.phone (+) "\
               "and aut_olxpt_base_to_bd_contact.user_id = aut_olxpt_base_to_bd_deal.user_id (+) "\
-              "and aut_olxpt_base_to_bd_contact.payment_date = aut_olxpt_base_to_bd_deal.last_stage_change_at (+) "\
+              "and aut_olxpt_base_to_bd_contact.payment_date = to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_contact.last_stage_change_at,'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') (+) "\
               "and aut_olxpt_base_to_bd_deal.id is null;")
 result_list = cur.fetchall()
 
