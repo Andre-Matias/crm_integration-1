@@ -1,0 +1,154 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import sys
+import csv, ast, psycopg2, json, basecrm, gzip
+from munch import * 
+import time
+import aut_imopt_base_to_bd_stages_stage_movement
+import aut_imopt_base_to_bd_deals_stage_movement
+import threading
+from retry import retry
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger('logger')
+MAX_ACTIVE_THREADS = 5
+
+@retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
+def updateDealsInBase(client, result_list):
+	#Update dos Deals
+	for result in result_list:
+		deal = Munch()
+		deal.id = result[0]
+		deal.stage_id = result[1]
+		client.deals.update(deal.id, deal)
+
+def getDatabaseConnection(conf_file):
+	data = json.load(open(conf_file))
+	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
+
+conf_file = sys.argv[1] # File with source database
+	
+#base_api_token = '81aef80f2a67ff2d70f0d905c15aa9fe5db3339f51a377370f585aa128ecc77f' #dev imopt
+
+base_api_token = json.load(open(conf_file))['base_api_token_imopt'] 
+
+client = basecrm.Client(access_token=base_api_token)
+
+conn = getDatabaseConnection(conf_file)
+cur = conn.cursor()
+
+#print('Start Truncate aut_imopt_base_to_bd_stages_stage_movement: ' + time.strftime("%H:%M:%S"))
+#cur.execute("truncate table sandbox_andre_matias.aut_imopt_base_to_bd_stages_stage_movement; ")
+#print('End Truncate aut_imopt_base_to_bd_stages_stage_movement: ' + time.strftime("%H:%M:%S"))
+
+#print('Start Truncate aut_imopt_base_to_bd_deals_stage_movement: ' + time.strftime("%H:%M:%S"))
+#cur.execute("truncate table sandbox_andre_matias.aut_imopt_base_to_bd_deals_stage_movement; ")
+#print('End Truncate aut_imopt_base_to_bd_deals_stage_movement: ' + time.strftime("%H:%M:%S"))
+
+#aut_imopt_base_to_bd_stages_stage_movement.main(conf_file)
+#aut_imopt_base_to_bd_deals_stage_movement.main(conf_file)
+
+print('Starting Query: ' + time.strftime("%H:%M:%S"))
+"""
+cur.execute(
+			"select "\
+              "a.id, "\
+              "4891177 as stage_id, "\ 
+              "to_date(left(last_stage_change_at,10),'yyyy-mm-dd') last_stage_change_at, "\
+              "to_date(sysdate,'yyyy-mm-dd') - 10 today_minus_10, "\
+              "b.name "\
+            "from "\
+              "sandbox_andre_matias.aut_imopt_base_to_bd_deals_stage_movement a, "\
+              "sandbox_andre_matias.aut_imopt_base_to_bd_stages_stage_movement b "\
+            "where "\
+              "to_date(left(last_stage_change_at,10),'yyyy-mm-dd') < to_date(sysdate,'yyyy-mm-dd') - 10 "\
+              "and a.stage_id = b.id "\
+              "and b.name not in('Lost','Won','Unqualified');")
+result_list = cur.fetchall()
+"""
+
+cur.execute(
+			"select "\
+              "a.opr_deal, "\
+              "case when and to_date(left(a.last_stage_change_at,10),'yyyy-mm-dd') < to_date(sysdate,'yyyy-mm-dd') - 10 then 4891177 "\ #Lost
+			  "when to_date(left(c.last_call,10),'yyyy-mm-dd') < 4 then 7254714 "\ # Unqualified
+			  "when to_date(left(c.last_call,10),'yyyy-mm-dd') > 4 then 4891177 "\ # Lost
+			  "end as opr_stage, "\
+              "to_date(left(last_stage_change_at,10),'yyyy-mm-dd') last_stage_change_at, "\
+              "to_date(sysdate,'yyyy-mm-dd') - 10 today_minus_10, "\
+			  "c.last_call, "\
+              "b.name "\
+            "from "\
+              "sandbox_andre_matias.t_lkp_deal a, "\
+              "sandbox_andre_matias.t_lkp_stage b "\
+			  "( "\
+			  "select "\
+			  "	b.cod_deal, "\
+			  "	max(a.updated_at) last_call	"\
+			  "from "\
+			  "	sandbox_andre_matias.t_fac_call a, "\
+			  " sandbox_andre_matiast_fac_call_deal b "\
+			  "where "\
+			  " a.cod_call = b.cod_call "\
+			  " a.cod_source_system = 17 "\
+			  "group by "\
+			  " b.cod_deal "\
+			  ") c "\
+            "where "\
+			  "a.valid_to = 20991231 "\
+			  "and a.cod_source_system = 17 "\
+			  "a.cod_deal = c.cod_deal "\
+              #"and to_date(left(a.last_stage_change_at,10),'yyyy-mm-dd') < to_date(sysdate,'yyyy-mm-dd') - 10 "\
+              "and a.cod_stage = b.cod_stage "\
+              "and b.dsc_stage not in('Lost','Won','Unqualified');")
+result_list = cur.fetchall()
+
+# 4891177 = Lost: Ver Pipeline do Stage
+# 7692934 = Lost: Ver Pipeline do Stage
+# 2950803 = Lost: Ver Pipeline do Stage
+# 4891170 = Lost: Ver Pipeline do Stage
+# 7254715 = Lost: Ver Pipeline do Stage
+# 4891184 = Lost: Ver Pipeline do Stage
+# 4891163 = Lost: Ver Pipeline do Stage
+
+# 7254714 = Unqualified: Ver Pipeline do Stage
+# 5509554 = Unqualified: Ver Pipeline do Stage
+# 5390257 = Unqualified: Ver Pipeline do Stage
+# 4891183 = Unqualified: Ver Pipeline do Stage
+# 4891176 = Unqualified: Ver Pipeline do Stage
+# 4891169 = Unqualified: Ver Pipeline do Stage
+# 2950802 = Unqualified: Ver Pipeline do Stage
+# 7692933 = Unqualified: Ver Pipeline do Stage
+# 4891162 = Unqualified: Ver Pipeline do Stage
+
+print('End Query: ' + time.strftime("%H:%M:%S"))
+
+print('Starting Updating: ' + time.strftime("%H:%M:%S"))
+
+# Threading implementation
+number_active_threads = 0
+number_deals = len(result_list)
+deals_per_thread = - (-number_deals // MAX_ACTIVE_THREADS) # Ceiling of integer division
+thread_list = []
+
+i = 0
+j = deals_per_thread
+for n in range(0, MAX_ACTIVE_THREADS):
+	t = threading.Thread(target=updateDealsInBase, args=(client, result_list[i:j]))
+	thread_list.append(t)
+	t.start()
+	print('Spawned thread #' + str(n+1))
+	i = i + deals_per_thread
+	j = j + deals_per_thread
+	if j > number_deals:
+		j = number_deals
+
+for t in thread_list:
+	t.join()
+
+print('End of Updating: ' + time.strftime("%H:%M:%S"))
+
+cur.close()
+conn.close()

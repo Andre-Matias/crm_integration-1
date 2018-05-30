@@ -1,0 +1,13 @@
+{
+	"jsonpaths": [
+		"$['id']",
+		"$['name']",
+		"$['main_category']",
+		"$['category_listings']",
+		"$['type_of_business']",
+		"$['state']",
+		"$['owner']",
+		"$['country']",
+		"$['category']"
+	]
+}
