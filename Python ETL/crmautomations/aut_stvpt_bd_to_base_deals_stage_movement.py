@@ -39,36 +39,7 @@ client = basecrm.Client(access_token=base_api_token)
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
 
-#print('Start Truncate aut_stvpt_base_to_bd_stages_stage_movement: ' + time.strftime("%H:%M:%S"))
-#cur.execute("truncate table sandbox_andre_matias.aut_stvpt_base_to_bd_stages_stage_movement; ")
-#print('End Truncate aut_stvpt_base_to_bd_stages_stage_movement: ' + time.strftime("%H:%M:%S"))
-
-#print('Start Truncate aut_stvpt_base_to_bd_deals_stage_movement: ' + time.strftime("%H:%M:%S"))
-#cur.execute("truncate table sandbox_andre_matias.aut_stvpt_base_to_bd_deals_stage_movement; ")
-#print('End Truncate aut_stvpt_base_to_bd_deals_stage_movement: ' + time.strftime("%H:%M:%S"))
-
-#aut_stvpt_base_to_bd_stages_stage_movement.main(conf_file)
-#aut_stvpt_base_to_bd_deals_stage_movement.main(conf_file)
-
 print('Starting Query: ' + time.strftime("%H:%M:%S"))
-
-"""
-cur.execute(
-			"select "\
-              "a.id, "\
-              "5374004 as stage_id, "\ 
-              "to_date(left(last_stage_change_at,10),'yyyy-mm-dd') last_stage_change_at, "\
-              "to_date(sysdate,'yyyy-mm-dd') - 10 today_minus_10, "\
-              "b.name "\
-            "from "\
-              "sandbox_andre_matias.aut_stvpt_base_to_bd_deals_stage_movement a, "\
-              "sandbox_andre_matias.aut_stvpt_base_to_bd_stages_stage_movement b "\
-            "where "\
-              "to_date(left(last_stage_change_at,10),'yyyy-mm-dd') < to_date(sysdate,'yyyy-mm-dd') - 10 "\
-              "and a.stage_id = b.id "\
-              "and b.name not in('Lost','Won','Unqualified');")
-result_list = cur.fetchall()
-"""
 
 cur.execute(
 			"select "\
