@@ -99,7 +99,7 @@ cur.execute(
               "and aut_olxpt_base_to_bd_contact.nif = aut_olxpt_base_to_bd_deal.nif (+) "\
               "and aut_olxpt_base_to_bd_contact.phone = aut_olxpt_base_to_bd_deal.phone (+) "\
               "and aut_olxpt_base_to_bd_contact.user_id = aut_olxpt_base_to_bd_deal.user_id (+) "\
-              "and aut_olxpt_base_to_bd_contact.payment_date = to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_contact.last_stage_change_at,'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') (+) "\
+              "and aut_olxpt_base_to_bd_contact.payment_date = to_char(tO_date(left(replace(replace(aut_olxpt_base_to_bd_deal.last_stage_change_at (+),'T',' '),'Z',''),10),'yyyy-mm-dd'),'dd/mm/yyyy') "\
               "and aut_olxpt_base_to_bd_deal.id is null;")
 result_list = cur.fetchall()
 
