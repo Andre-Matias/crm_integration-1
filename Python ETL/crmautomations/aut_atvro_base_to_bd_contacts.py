@@ -64,24 +64,24 @@ def getS3Keys(conf_file):
 	% {'key': data['s3_key'],'skey': data['s3_skey']}
 
 def deletePreviousS3Files(conf_file, keyId, sKeyId):
-	print("Deleting S3 Olxpt Deals Files")
+	print("Deleting S3 Atvro Contacts Files")
 	conf = json.load(open(conf_file))
 
 	conn = S3Connection(keyId, sKeyId)
-	b = Bucket(conn, 'pyrates-eu-data-ocean')
-	for x in b.list(prefix = 'crm-automations/deals/olxpt/'):
+	b = Bucket(conn, 'pyrates-data-ocean')
+	for x in b.list(prefix = 'renato-teixeira/contacts/atvro/'):
 		x.delete()
 
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)			
-def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country):
+def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,country):
 	
-	print("Getting deals data")
+	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./aut_olxpt_base_to_bd_deal_"
+	name = "./Reports/aut_atvro_base_to_bd_contacts_"
 	while 1:
 		
-		data = client.deals.list(page = aux, per_page = 100)
+		data = client.contacts.list(page = aux, per_page = 100)
 
 		if len(data) > 0: empty = False
 		else:
@@ -92,43 +92,28 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
-		for deal_data in data:
-		#if  str(datetime.strptime(deal_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
-			deal = Munch()
-			deal.id = deal_data.id
-			deal.contact_id = deal_data.contact_id
-			if 'Categoria' in deal_data.custom_fields:
-				deal.categoria = deal_data.custom_fields['Categoria']
-			else:
-				deal.categoria = ''
-			if 'Email' in deal_data.custom_fields:
-				deal.email = deal_data.custom_fields['Email']
-			else:
-				deal.email = ''
-			if 'Mobile' in deal_data.custom_fields:
-				deal.mobile = deal_data.custom_fields['Mobile']
-			else:
-				deal.mobile = ''
-			if 'NIF' in deal_data.custom_fields:
-				deal.nif = deal_data.custom_fields['NIF']
-			else:
-				deal.nif = ''
-			if 'Phone' in deal_data.custom_fields:
-				deal.phone = deal_data.custom_fields['Phone']
-			else:
-				deal.phone = ''
-			if 'User ID' in deal_data.custom_fields:
-				deal.user_id = deal_data.custom_fields['User ID']
-			else:
-				deal.user_id = ''
-			deal.last_stage_change_at = deal_data.last_stage_change_at
-			if 'Payment Date' in deal_data.custom_fields:
-				deal.payment_date = deal_data.custom_fields['Payment Date']
-			else:
-				deal.payment_date = ''
-			deal.country = country
-			deal.category = category
-			output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
+		for contact_data in data:
+			if str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=1)):
+				contact = Munch()
+				contact.id = contact_data.id
+				contact.name = contact_data.name
+				contact.owner = contact_data.owner_id
+				contact.state = contact_data.address
+				if 'Main Category (*)' in contact_data.custom_fields:
+					contact.main_category = contact_data.custom_fields['Main Category (*)']
+				else:
+					contact.main_category = ''
+				if 'Category listings (*)' in contact_data.custom_fields:
+					contact.category_listings = contact_data.custom_fields['Category listings (*)']
+				else:
+					contact.category_listings = ''
+				if 'Type of business (*)' in contact_data.custom_fields:
+					contact.type_of_business = contact_data.custom_fields['Type of business (*)']
+				else:
+					contact.type_of_business = ''
+				contact.country = country
+				contact.category = category
+				output.write(json.dumps(contact,use_decimal=True)+"\n")
 
 		#Close gz file		
 		output.close()
@@ -136,9 +121,9 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 		#Upload file to S3
 		localName = name + str(aux).zfill(10) + ".txt.gz"
 
-		fileName="aut_olxpt_base_to_bd_deal_" + str(aux).zfill(10) + ".txt.gz"
+		fileName="aut_atvro_base_to_bd_contacts_" + str(aux).zfill(10) + ".txt.gz"
 
-		full_key_name = os.path.join(data_path+"deals/olxpt/", fileName)
+		full_key_name = os.path.join(data_path+"contacts/atvro/", fileName)
 		conn = boto.connect_s3(keyId,sKeyId)
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
@@ -157,18 +142,18 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 	credentials = getS3Keys(conf_file)
 	cur = conn.cursor()
 	
-	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'deals/olxpt/') == 'true'):
+	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'contacts/atvro/') == 'true'):
 		print('Loading...')
 		cur.execute(
 			getCopySql(
 				schema, \
-				'aut_olxpt_base_to_bd_deal', #'aux_olxpt_deals',
-				's3://%(bucketName)s%(data_path)sdeals/olxpt/' \
+				'aut_atvro_base_to_bd_contacts',
+				's3://%(bucketName)s%(data_path)scontacts/atvro/' \
 					% {
 					'bucketName':bucketName,
 					'date': date,
 					'data_path':data_path},
-				's3://%(bucketName)s%(manifest_path)saut_olxpt_deals_sync_jsonpath.json' \
+				's3://%(bucketName)s%(manifest_path)saut_atvro_contacts_sync_jsonpath.json' \
 					% {
 					'bucketName':bucketName,
 					'manifest_path':manifest_path
@@ -183,23 +168,24 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 	conn.close()
 
 def main(conf_file):
-	base_api_token = json.load(open(conf_file))['base_api_token_olxpt']
+	base_api_token = json.load(open(conf_file))['base_api_token_atvro'] 
+	#base_api_token = '81aef80f2a67ff2d70f0d905c15aa9fe5db3339f51a377370f585aa128ecc77f' # dev imotpt
 	schema = json.load(open(conf_file))['schema']
-	country = json.load(open(conf_file))['country_pt']
-	category = json.load(open(conf_file))['category_olxpt']
+	country = json.load(open(conf_file))['country_ro']
+	category = json.load(open(conf_file))['category_atvro']
 	data_path = json.load(open(conf_file))['data_path']
 	keyId = json.load(open(conf_file))['s3_key']
 	sKeyId = json.load(open(conf_file))['s3_skey']
 	bucketName = json.load(open(conf_file))['bucketName']
 	manifest_path = json.load(open(conf_file))['manifest_path']
-		
+	
 	client = basecrm.Client(access_token=base_api_token)
 	date = str(datetime.now().strftime('%Y/%m/%d/'))
 	
 ### TODO - DELETE S3 PATH BEFORE UNLOADING!!!!
 	deletePreviousS3Files(conf_file, keyId, sKeyId)
 	
-	s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
+	s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,country)
 
 	loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path)
 	
