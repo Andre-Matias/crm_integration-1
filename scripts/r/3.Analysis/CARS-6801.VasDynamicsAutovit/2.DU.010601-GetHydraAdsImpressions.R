@@ -90,8 +90,14 @@ for(date in listDatesToGet){
     server_path <- server[1]
     schema <- server[4]
     
+    awsObject <- 
+      paste0(
+        paste(sep = "/", "datalake", vertical, file), "/",file, "_",
+                        gsub("/h/", "", server[4]), "_", paste0(yearText, monthText,dayText), ".RDS"
+    )
+    
     sqlQuery <- 
-      "
+    "
     SELECT
     path, year, day, month,
     params_platform, params_en, params_touch_point_page, params_ad_impressions 
@@ -105,6 +111,11 @@ for(date in listDatesToGet){
     "
     
     sqlQuery <- glue(sqlQuery)
+    
+    #sqlUnload <-
+    #unload ('select * from miguel_chin.testing')
+    #to 's3://pyrates-eu-data-ocean/test/data'
+    #CREDENTIALS 'aws_access_key_id=XXXXXXXXX;aws_secret_access_key=YYYYYYYY'
     
     # connect to Yamato ----------------------------------------------------
     
@@ -167,14 +178,12 @@ for(date in listDatesToGet){
     
     print(paste(Sys.time(), "Saving to AWS..."))
     
-    print(paste0(paste(sep = "/", "datalake", vertical, file), "/", file, "_",
-                 gsub("/h/", "", server[4]), "_", paste0(yearText, monthText,dayText), ".RDS"))
+    print(awsObject)
     
     s3saveRDS(
       x = dfSqlQuery,
       bucket = bucket_path,
-      object = paste0(paste(sep = "/", "datalake", vertical, file), "/",file, "_",
-                      gsub("/h/", "", server[4]), "_", paste0(yearText, monthText,dayText), ".RDS")
+      object = awsObject
     )
     
     print(paste(Sys.time(), "Saved to AWS! NEXT!!!!!"))
