@@ -19,30 +19,78 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
 # user-defined functions ------------------------------------------------------
 s3ReadFileTab <-
   function(x){
-    read_tsv(file = x, col_names = FALSE)
+    read_tsv(file = x, progress = FALSE,
+             col_names = c(
+               "server_path",
+               "year",
+               "day",
+               "month",
+               "platform",
+               "event",
+               "touch_point_page",
+               "ad_impressions_array"
+             ),
+             col_types = list(
+               col_character(),
+               col_character(),
+               col_character(),
+               col_character(),
+               col_character(),
+               col_character(),
+               col_character(),
+               col_character()
+               )
+             )
   }
 
 # config ----------------------------------------------------------------------
-bucket_path <- "s3://pyrates-eu-data-ocean/"
+origin_bucket_path <- "s3://pyrates-eu-data-ocean/"
+destination_bucket_path <- "s3://pyrates-data-ocean/"
+
+vertical <- "autovitRO"
+filename <- "adsimpressions"
+
+destination_bucket_prefix <- paste0("datalake/", vertical, "/", filename, "/")
+
 
 # getting file list -----------------------------------------------------------
 s3_files <- 
   as.data.frame(
     get_bucket(
-      bucket = bucket_path,
+      bucket = origin_bucket_path,
       max = Inf, prefix = "datalake/autovitRO/adsimpressions"
     )
   )
 
-listFilesToRead <-
+s3_files_destination <- 
+  as.data.frame(
+    get_bucket(
+      bucket = destination_bucket_path,
+      max = Inf, prefix = "datalake/autovitRO/adsimpressions"
+    )
+  )
+
+dates_origin <- unique(str_extract(s3_files$Key[s3_files$Size > 0], "[0-9]{8}"))
+
+dates_destination <- unique(str_extract(s3_files_destination$Key, "[0-9]{8}"))
+
+dates <- dates_origin[!(dates_origin %in% dates_destination)]
+
+dates <- c("20171001")
+
+for(date in dates){
+
+fileToRead <-
   s3_files$Key[s3_files$Size > 0
-               & grepl("20171001", s3_files$Key)]
+               & grepl(date, s3_files$Key)]
+
+print(paste(Sys.time(), " | ", fileToRead))
 
 # read all files to a list ---------------------------------------------------- 
 dat_list <-
-  lapply(listFilesToRead, function (x){
+  lapply(fileToRead, function (x){
     print(x)
-    s3read_using(FUN = s3ReadFileTab, object = x, bucket = bucket_path)
+    s3read_using(FUN = s3ReadFileTab, object = x, bucket = origin_bucket_path )
   }
   )
 
@@ -50,16 +98,39 @@ dat_list <-
 dat <-
   rbindlist(dat_list, use.names = TRUE, fill = TRUE)
 
-dat$X8 <- gsub("\\[", "", dat$X8)
-dat$X8 <- gsub("\\]", "", dat$X8)
-dat$X8 <- gsub("\\{\\}", "", dat$X8)
-dat$X8 <- gsub("\"", "", dat$X8)
+print(paste(Sys.time(), " | ", "Cleaning ads impressions array..."))
 
-dat <- dat[dat$X8 != "", ]
+
+dat$ad_impressions_array <- gsub("\\[", "", dat$ad_impressions_array)
+dat$ad_impressions_array <- gsub("\\]", "", dat$ad_impressions_array)
+dat$ad_impressions_array <- gsub("\\{\\}", "", dat$ad_impressions_array)
+dat$ad_impressions_array <- gsub("\"", "", dat$ad_impressions_array)
+
+dat <- dat[dat$ad_impressions_array != "", ]
 
 dat <- as_tibble(dat)
 
+print(paste(Sys.time(), " | ", "Summarizing data..."))
+
 dat <-
-  head(dat, 2) %>%
-  unnest(ad_id = strsplit(X8, split = ",")) %>%
-  select(-X8)
+  dat %>%
+  unnest(ad_id = strsplit(ad_impressions_array, split = ",")) %>%
+  select(-ad_impressions_array) %>%
+  group_by(year, month, day, ad_id) %>%
+  summarise(qtyAdImpressions = sum(n())) %>%
+  group_by() %>%
+  mutate(day = as.Date(paste(year, month, day, sep="-"))) %>% 
+  select(-year, -month)
+
+print(paste(Sys.time(), " | ", "Start saving to AWS..."))
+
+s3saveRDS(x = dat, 
+          object = paste0(destination_bucket_prefix, vertical, "_",filename, "_",date,".RDS"), 
+          bucket = destination_bucket_path
+          )
+
+print(paste(Sys.time(), " | ", "Saved to AWS! NEXT!!!!"))
+
+dat <- NULL
+gc()
+}
