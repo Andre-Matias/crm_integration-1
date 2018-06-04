@@ -16,7 +16,7 @@ library("stringr")
 load("~/credentials.Rdata")
 
 # config ----------------------------------------------------------------------
-bucket_path <- "s3://pyrates-data-ocean/"
+bucket_path <- "s3://pyrates-eu-data-ocean/"
 
 Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
@@ -26,8 +26,6 @@ file <- "adsimpressions"
 
 startDate <- as.POSIXct("2017-10-01", tz = "UTC")
 endDate <- as.POSIXct(as.character(Sys.Date()-1), tz = "UTC")
-endDate <- as.POSIXct("2017-10-05", tz = "UTC")
-
 
 dates <-
   seq(startDate, endDate, "day")
@@ -36,10 +34,10 @@ events <-
   as.character(
     paste(
       c(
-        'ads_impression',
-        'ads_view'
+        '\\\'ads_impression\\\'',
+        '\\\'ads_view\\\''
       ),
-      collapse = "','"
+      collapse = ","
     )
   )
 
@@ -93,7 +91,7 @@ for(date in listDatesToGet){
     awsObject <- 
       paste0(
         paste(sep = "/", "datalake", vertical, file), "/",file, "_",
-                        gsub("/h/", "", server[4]), "_", paste0(yearText, monthText,dayText), ".RDS"
+                        gsub("/h/", "", server[4]), "_", paste0(yearText, monthText,dayText)
     )
     
     sqlQuery <- 
@@ -103,19 +101,27 @@ for(date in listDatesToGet){
     params_platform, params_en, params_touch_point_page, params_ad_impressions 
     FROM spectrum_redshift.{schema}
     WHERE 1 = 1
-    AND params_en IN('{events}')
-    AND year = '{yearText}'
-    AND month = '{monthText}'
-    AND day = '{dayText}'
+    AND params_en IN({events})
+    AND year = \\'{yearText}\\'
+    AND month = \\'{monthText}\\'
+    AND day = \\'{dayText}\\'
     ;
     "
     
     sqlQuery <- glue(sqlQuery)
     
-    #sqlUnload <-
-    #unload ('select * from miguel_chin.testing')
-    #to 's3://pyrates-eu-data-ocean/test/data'
-    #CREDENTIALS 'aws_access_key_id=XXXXXXXXX;aws_secret_access_key=YYYYYYYY'
+    sqlUnload <-
+    "  
+    UNLOAD (\'{sqlQuery}\')
+    to '{bucket_path}{awsObject}_'
+    CREDENTIALS 'aws_access_key_id={myS3key};aws_secret_access_key={MyS3SecretAccessKey}'
+    DELIMITER AS '\\t'
+    "
+    
+    sqlUnload <- glue(sqlUnload)
+    
+    print(sqlUnload)
+
     
     # connect to Yamato ----------------------------------------------------
     
@@ -134,59 +140,59 @@ for(date in listDatesToGet){
     print(paste(monthText, server_path, epochDate))
     print(sqlQuery)
     
-    print(paste(Sys.time(), "=> Starting"))
+    #print(paste(Sys.time(), "=> Starting"))
     
     dbSqlQuery <-
-      dbSendQuery(
-        conDB, sqlQuery
+      RPostgreSQL::dbGetQuery(
+        conDB, sqlUnload
       )
     
     # dfRequestDB <- dbFetch(requestDB)
     
-    dfSqlQuery <- data.frame()
-    chunk <- data.frame()
+    # dfSqlQuery <- data.frame()
+    # chunk <- data.frame()
+    # 
+    # while (!dbHasCompleted(dbSqlQuery)) {
+    #   
+    #   chunk <- dbFetch(dbSqlQuery, n = 10000)
+    #   
+    #   print(
+    #     paste(
+    #       Sys.time(),
+    #       nrow(chunk),
+    #       sep = " | "
+    #     )
+    #   )
+    #   
+    #   text_slackr(channel = c("gv-bi-reporting"), 
+    #               text = paste(
+    #                 Sys.time(),
+    #                 nrow(chunk),
+    #                 sep = " | "
+    #               )
+    #   )
+    #   
+    #   if(nrow(dfSqlQuery) == 0){
+    #     dfSqlQuery <- chunk
+    #   } else {
+    #     dfSqlQuery <- rbind(dfSqlQuery, chunk)
+    #   }
+    #   
+    # }
+    # 
+    # dbClearResult(dbListResults(conDB)[[1]])
     
-    while (!dbHasCompleted(dbSqlQuery)) {
-      
-      chunk <- dbFetch(dbSqlQuery, n = 10000)
-      
-      print(
-        paste(
-          Sys.time(),
-          nrow(chunk),
-          sep = " | "
-        )
-      )
-      
-      text_slackr(channel = c("gv-bi-reporting"), 
-                  text = paste(
-                    Sys.time(),
-                    nrow(chunk),
-                    sep = " | "
-                  )
-      )
-      
-      if(nrow(dfSqlQuery) == 0){
-        dfSqlQuery <- chunk
-      } else {
-        dfSqlQuery <- rbind(dfSqlQuery, chunk)
-      }
-      
-    }
-    
-    dbClearResult(dbListResults(conDB)[[1]])
-    
-    print(paste(Sys.time(), "Saving to AWS..."))
-    
-    print(awsObject)
-    
-    s3saveRDS(
-      x = dfSqlQuery,
-      bucket = bucket_path,
-      object = awsObject
-    )
-    
-    print(paste(Sys.time(), "Saved to AWS! NEXT!!!!!"))
+    # print(paste(Sys.time(), "Saving to AWS..."))
+    # 
+    # print(awsObject)
+    # 
+    # s3saveRDS(
+    #   x = dfSqlQuery,
+    #   bucket = bucket_path,
+    #   object = awsObject
+    # )
+    # 
+    # print(paste(Sys.time(), "Saved to AWS! NEXT!!!!!"))
     
     dbDisconnect(conDB)
   }
