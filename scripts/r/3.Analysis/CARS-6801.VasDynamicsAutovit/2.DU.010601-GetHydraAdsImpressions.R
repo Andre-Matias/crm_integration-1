@@ -147,53 +147,6 @@ for(date in listDatesToGet){
         conDB, sqlUnload
       )
     
-    # dfRequestDB <- dbFetch(requestDB)
-    
-    # dfSqlQuery <- data.frame()
-    # chunk <- data.frame()
-    # 
-    # while (!dbHasCompleted(dbSqlQuery)) {
-    #   
-    #   chunk <- dbFetch(dbSqlQuery, n = 10000)
-    #   
-    #   print(
-    #     paste(
-    #       Sys.time(),
-    #       nrow(chunk),
-    #       sep = " | "
-    #     )
-    #   )
-    #   
-    #   text_slackr(channel = c("gv-bi-reporting"), 
-    #               text = paste(
-    #                 Sys.time(),
-    #                 nrow(chunk),
-    #                 sep = " | "
-    #               )
-    #   )
-    #   
-    #   if(nrow(dfSqlQuery) == 0){
-    #     dfSqlQuery <- chunk
-    #   } else {
-    #     dfSqlQuery <- rbind(dfSqlQuery, chunk)
-    #   }
-    #   
-    # }
-    # 
-    # dbClearResult(dbListResults(conDB)[[1]])
-    
-    # print(paste(Sys.time(), "Saving to AWS..."))
-    # 
-    # print(awsObject)
-    # 
-    # s3saveRDS(
-    #   x = dfSqlQuery,
-    #   bucket = bucket_path,
-    #   object = awsObject
-    # )
-    # 
-    # print(paste(Sys.time(), "Saved to AWS! NEXT!!!!!"))
-    
     dbDisconnect(conDB)
   }
 }
