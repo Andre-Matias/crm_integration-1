@@ -13,6 +13,12 @@
 # checked (ID: 10670883221)
 # unchecked (ID: 10680022219)
 
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> 6bd0be90c62487eab04a3c197c945d5d2048188e
 print(paste(Sys.time(), "Loading libraries"))
 # load libraries --------------------------------------------------------------
 library("RMixpanel")
@@ -46,6 +52,34 @@ listMixpanelAccounts <-
   )
 
 print(paste(Sys.time(), "Define Start/End Date"))
+<<<<<<< HEAD
+startDate <- as.character("2018-03-01")
+endDate <- as.character(Sys.Date())
+
+jqlQuery <-
+  '
+function main() {
+return Events({
+from_date: "2018-05-16",
+to_date:   "2018-05-22"
+})
+
+.filter((e) => {
+return e.name.indexOf("ab_test_my_ads_1_click_vas") > -1 
+&& e.properties.experiments.toString().indexOf("10690523672") > -1
+&& (
+!e.properties.$referring_domain
+|| (e.properties.$referring_domain && e.properties.$referring_domain.includes("fixeads")) === false
+)
+})
+.groupByUser(["name"],
+(state, events) => {
+var firstEvent = events.length  ? events[0].properties : null; 
+return [firstEvent.action_type, firstEvent.experiments, firstEvent.user_id, firstEvent.checked, firstEvent.c]
+});
+}
+'
+=======
 startDate <- as.character("2018-05-21")
 endDate <- as.character(Sys.Date())
 
@@ -119,3 +153,4 @@ dfStats <-
   summarise(qty = sum(n())) %>%
   mutate(per = qty / sum(qty),
          prettyPercentage = scales::percent(per))
+>>>>>>> 6bd0be90c62487eab04a3c197c945d5d2048188e

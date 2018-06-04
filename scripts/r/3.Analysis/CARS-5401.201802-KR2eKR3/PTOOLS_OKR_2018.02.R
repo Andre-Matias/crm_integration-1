@@ -126,12 +126,12 @@ baseline_dfTotal <-
   dfTotal %>% 
   group_by(WeekOfYear) %>% 
   summarise(totalAmount_USD = sum(Amount_USD), totalQTY = sum(Qty)) %>% 
-  filter(WeekOfYear > 1, WeekOfYear <= 4) %>% 
+  filter(WeekOfYear > 9, WeekOfYear <= 13) %>% 
   group_by() %>% 
   summarise(baselineUSD=mean(totalAmount_USD), baselineQTY = mean(totalQTY) ) %>%
   select(baselineUSD, baselineQTY) %>%
   mutate(goalAmount = baselineUSD * 1.05,
-         goalQty = baselineQTY * 1.20)
+         goalQty = baselineQTY * 1.10)
 
 dfOTOByWeek <- 
   dfQueryResults_OtomotoPL %>%
@@ -160,7 +160,7 @@ plotit <-
       annotate("text", x = 0, y = as.numeric(goals[1,c(metric)]), label = paste("baseline:", round(goals[1,c(metric)],0)), vjust = 1.5, hjust = 0, color='coral')+
       annotate("text", x = 17, y = as.numeric(goals[1,c(goal)]), label = paste("goal:", round(goals[1,c(goal)],0)), vjust = -1.0, hjust = 0.75, color='coral')+
       geom_point(aes(WeekOfYear, y = actuals[, c(actual)]))+
-      scale_x_continuous(breaks = seq(1,17,1))+
+      scale_x_continuous(breaks = seq(1,32,1))+
       scale_y_continuous(limits = c(0, max(actuals[, c(actual)])*1.15))+
       geom_hline(yintercept=as.numeric(goals[1,c(metric)]), color='coral', size=1)+
       geom_hline(yintercept=as.numeric(goals[1,c(goal)]), color='coral', size=1)+

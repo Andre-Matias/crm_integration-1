@@ -117,7 +117,7 @@ def main(conf_file):
 					"select "\
 						"'pthorizontal' as source_system, "\
 						"max(fac.date) "\
-					"from "\
+				"from "\
 					"db_atlas.olxpt_paidads_user_payments fac, "\
 					"db_atlas.olxpt_users lkp_atlas_user, "\
 					"db_atlas.olxpt_ads lkp_ad, "\
