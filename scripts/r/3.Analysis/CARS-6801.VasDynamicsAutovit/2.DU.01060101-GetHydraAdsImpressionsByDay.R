@@ -76,8 +76,6 @@ dates_destination <- unique(str_extract(s3_files_destination$Key, "[0-9]{8}"))
 
 dates <- dates_origin[!(dates_origin %in% dates_destination)]
 
-dates <- c("20171001")
-
 for(date in dates){
 
 fileToRead <-
@@ -99,7 +97,6 @@ dat <-
   rbindlist(dat_list, use.names = TRUE, fill = TRUE)
 
 print(paste(Sys.time(), " | ", "Cleaning ads impressions array..."))
-
 
 dat$ad_impressions_array <- gsub("\\[", "", dat$ad_impressions_array)
 dat$ad_impressions_array <- gsub("\\]", "", dat$ad_impressions_array)
