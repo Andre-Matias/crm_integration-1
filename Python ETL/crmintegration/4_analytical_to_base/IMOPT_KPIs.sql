@@ -823,7 +823,7 @@ from
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
-              and fac.dat_posted between trunc(sysdate) - 30 and trunc(sysdate)
+              and trunc(fac.dat_posted) between trunc(sysdate) - 30 and trunc(sysdate)
               and scai.cod_country = 1
             group by
               lkp_contact.cod_contact,
