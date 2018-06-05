@@ -107,6 +107,7 @@ for(date in listDatesToGet){
     AND year = \\'{yearText}\\'
     AND month = \\'{monthText}\\'
     AND day = \\'{dayText}\\'
+    GROUP BY params_platform, year, day, month, params_en, params_ad_id
     ;
     "
     
