@@ -46,6 +46,8 @@ dat_list <-
 dat <-
   rbindlist(dat_list, use.names = TRUE, fill = TRUE)
 
+dat$event <- NULL 
+
 #free up memory ---------------------------------------------------------------
 rm(dat_list)
 gc()
