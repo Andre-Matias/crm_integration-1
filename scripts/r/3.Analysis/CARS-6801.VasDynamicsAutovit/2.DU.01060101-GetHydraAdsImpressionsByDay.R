@@ -1,3 +1,9 @@
+# clean workspace
+rm(list=ls())
+
+Rprof(tf <- "~/tmp/rprof.log", memory.profiling=TRUE)
+Rprofmem(filename = "~/tmp/Rprofmem.out", append = FALSE, threshold = 0)
+
 # load libraries --------------------------------------------------------------
 library("aws.s3")
 library("magrittr")
@@ -77,7 +83,7 @@ dates_destination <- unique(str_extract(s3_files_destination$Key, "[0-9]{8}"))
 dates <- dates_origin[!(dates_origin %in% dates_destination)]
 
 for(date in dates){
-
+  
 fileToRead <-
   s3_files$Key[s3_files$Size > 0
                & grepl(date, s3_files$Key)]
@@ -95,6 +101,9 @@ dat_list <-
 # merge all data frames from the list to a single data frame ------------------
 dat <-
   rbindlist(dat_list, use.names = TRUE, fill = TRUE)
+
+rm(dat_list)
+gc()
 
 print(paste(Sys.time(), " | ", "Cleaning ads impressions array..."))
 
@@ -130,4 +139,9 @@ print(paste(Sys.time(), " | ", "Saved to AWS! NEXT!!!!"))
 
 dat <- NULL
 gc()
+
+Rprof(NULL)
+summaryRprof(tf)
 }
+
+
