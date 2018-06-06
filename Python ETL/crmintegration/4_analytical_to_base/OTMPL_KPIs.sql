@@ -787,8 +787,8 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,12) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      coalesce(a.cod_source_system,12) cod_source_system,
+      coalesce(a.custom_field_value, '-') custom_field_value
     from
       (
         select
@@ -805,7 +805,8 @@ from
               lkp_ad.cod_ad,
               count(*) nr_replies
             from
-              crm_integration_anlt.t_fac_answer_incoming fac,
+              db_atlas_verticals.answers fac,
+              crm_integration_anlt.t_lkp_source_system lkp_source_system,
               crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
@@ -814,7 +815,10 @@ from
             where
               lkp_user.cod_source_system = 7
               and lkp_contact.cod_source_system = 12
-              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
+              and lkp_user.cod_source_system = lkp_source_system.cod_source_system
+              and fac.ad_id = lkp_ad.opr_ad
+              and fac.livesync_dbname = lkp_source_system.opr_source_system
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
@@ -822,7 +826,7 @@ from
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
-              and fac.dat_posted between trunc(sysdate) - 30 and trunc(sysdate)
+              and trunc(fac.posted) between trunc(sysdate) - 30 and trunc(sysdate)
 			  and scai.cod_country = 2
             group by
               lkp_contact.cod_contact,
@@ -855,7 +859,7 @@ from
       and b.cod_source_system = 12
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 2
+	  and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -903,8 +907,8 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,12) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      coalesce(a.cod_source_system,12) cod_source_system,
+      coalesce(a.custom_field_value, '-') custom_field_value
     from
       (
         select
@@ -918,12 +922,13 @@ from
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.cod_atlas_user_sender,
+              fac.sender_id,
               lkp_user.cod_atlas_user,
               lkp_ad.cod_ad,
               count(*) nr_replies
             from
-              crm_integration_anlt.t_fac_answer_incoming fac,
+              db_atlas_verticals.answers fac,
+              crm_integration_anlt.t_lkp_source_system lkp_source_system,
               crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
@@ -932,7 +937,9 @@ from
             where
               lkp_user.cod_source_system = 7
               and lkp_contact.cod_source_system = 12
-              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
+              and lkp_user.cod_source_system = lkp_source_system.cod_source_system
+              and fac.ad_id = lkp_ad.opr_ad
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and lkp_ad_status.opr_ad_status = 'active'
@@ -946,7 +953,7 @@ from
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.cod_atlas_user_sender,
+              fac.sender_id,
               lkp_user.cod_atlas_user,
               lkp_ad.cod_ad
           ) source
@@ -1022,8 +1029,8 @@ from
       b.cod_contact,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,12) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      coalesce(a.cod_source_system,12) cod_source_system,
+      coalesce(a.custom_field_value, '-') custom_field_value
     from
       (
         select
@@ -1037,12 +1044,13 @@ from
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.cod_atlas_user_sender,
+              fac.sender_id,
               lkp_user.cod_atlas_user,
               lkp_ad.cod_ad,
               count(*) nr_replies
             from
-              crm_integration_anlt.t_fac_answer_incoming fac,
+              db_atlas_verticals.answers fac,
+              crm_integration_anlt.t_lkp_source_system lkp_source_system,
               crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
@@ -1051,7 +1059,9 @@ from
             where
               lkp_user.cod_source_system = 7
               and lkp_contact.cod_source_system = 12
-              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
+              and lkp_user.cod_source_system = lkp_source_system.cod_source_system
+              and fac.ad_id = lkp_ad.opr_ad
               and lkp_ad.valid_to = 20991231
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
@@ -1065,7 +1075,7 @@ from
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.cod_atlas_user_sender,
+              fac.sender_id,
               lkp_user.cod_atlas_user,
               lkp_ad.cod_ad
         ) source
