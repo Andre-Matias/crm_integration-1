@@ -48,7 +48,9 @@ dat <-
 
 dat <-
   dat %>%
-  mutate(nr_images = unlist(nr_images))
+  mutate(nr_images = unlist(nr_images),
+         ad_id = as.character(ad_id)
+         )
 
 #free up memory ---------------------------------------------------------------
 rm(dat_list)
