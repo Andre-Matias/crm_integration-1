@@ -30,8 +30,6 @@ def getDatabaseConnection(conf_file):
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
 conf_file = sys.argv[1] # File with source database
-	
-#base_api_token = '81aef80f2a67ff2d70f0d905c15aa9fe5db3339f51a377370f585aa128ecc77f' #dev imopt
 
 base_api_token = json.load(open(conf_file))['base_api_token_storo'] 
 

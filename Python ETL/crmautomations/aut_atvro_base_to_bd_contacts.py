@@ -169,7 +169,6 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 
 def main(conf_file):
 	base_api_token = json.load(open(conf_file))['base_api_token_atvro'] 
-	#base_api_token = '81aef80f2a67ff2d70f0d905c15aa9fe5db3339f51a377370f585aa128ecc77f' # dev imotpt
 	schema = json.load(open(conf_file))['schema']
 	country = json.load(open(conf_file))['country_ro']
 	category = json.load(open(conf_file))['category_atvro']
