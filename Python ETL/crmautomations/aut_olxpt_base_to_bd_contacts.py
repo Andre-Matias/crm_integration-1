@@ -95,27 +95,27 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 
 		#Iterate the list of contacts
 		for contact_data in data:
-			#if  str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
-			contact = Munch()
-			contact.id = contact_data.id
-			contact.email = contact_data.email
-			contact.phone = contact_data.phone
-			contact.mobile = contact_data.mobile
-			if 'Categoria' in contact_data.custom_fields:
-				contact.categoria = contact_data.custom_fields['Categoria']
-			else:
-				contact.categoria = ''
-			if 'NIF' in contact_data.custom_fields:
-				contact.nif = contact_data.custom_fields['NIF']
-			else:
-				contact.nif = ''
-			if 'User_ID' in contact_data.custom_fields:
-				contact.user_id = contact_data.custom_fields['User_ID']
-			else:
-				contact.user_id = ''
-			contact.country = country
-			contact.category = category
-			output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
+			if  str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
+				contact = Munch()
+				contact.id = contact_data.id
+				contact.email = contact_data.email
+				contact.phone = contact_data.phone
+				contact.mobile = contact_data.mobile
+				if 'Categoria' in contact_data.custom_fields:
+					contact.categoria = contact_data.custom_fields['Categoria']
+				else:
+					contact.categoria = ''
+				if 'NIF' in contact_data.custom_fields:
+					contact.nif = contact_data.custom_fields['NIF']
+				else:
+					contact.nif = ''
+				if 'User_ID' in contact_data.custom_fields:
+					contact.user_id = contact_data.custom_fields['User_ID']
+				else:
+					contact.user_id = ''
+				contact.country = country
+				contact.category = category
+				output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
