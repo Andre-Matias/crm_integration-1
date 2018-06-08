@@ -174,11 +174,11 @@ plotit <-
 
 plotit(actuals = dfTotalByWeek, 
        goals=baseline_dfTotal, 
-       platform = "OTO + ATV + STV",
+       platform = "OTO + ATV + STV (base = average quantity weeks of March/19)",
        actual = "totalQTY",
        metric = "baselineQTY", 
        goal = "goalQty", 
-       kr = "KR2 - Increase VAS Quantity in 20%", 
+       kr = "KR2 - Increase VAS Quantity in 10%", 
        ylabel = "Quantity VAS"
 )
 
