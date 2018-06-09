@@ -9,7 +9,6 @@ library("caret")
 library("parallel")
 library("aws.s3")
 
-
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
@@ -36,7 +35,7 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-#dfInputToModel <- head(dfInputToModel, 1000)
+dfInputToModel <- dfInputToModel
 
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
@@ -49,11 +48,18 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$engine_capacity), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$priceValue), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
 
-target <- "qtyMessagesOnAtlas_7"
+dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
+dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
+dfInputToModel$mileage <- as.numeric(mdfInputToModel$ileage)
+dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
+dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
+
+target <- "qtyAdImpressions_7"
 
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
-    "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images"
+    "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
+    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"
   )
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
@@ -67,11 +73,6 @@ f <- 0
 
 main_predictors <-
   c("make")
-
-predictors <-
-  c("mileage", "year", "model", "engine_power", "fuel_type",
-    "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images"
-  )
 
 for(predictors_num in 1:length(predictors)){
   
