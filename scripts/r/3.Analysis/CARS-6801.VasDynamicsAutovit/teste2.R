@@ -50,7 +50,7 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
 
 dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
 dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
-dfInputToModel$mileage <- as.numeric(mdfInputToModel$ileage)
+dfInputToModel$mileage <- as.numeric(dfInputToModel$mileage)
 dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
 dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
 
