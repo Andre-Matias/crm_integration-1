@@ -8,6 +8,7 @@ library("readr")
 library("stringr")
 library("tidyr")
 library("ggplot2")
+library("corrplot")
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
@@ -24,6 +25,21 @@ rm(list = setdiff(ls(), c("myS3key", "MyS3SecretAccessKey")))
 origin_bucket_path <- "s3://pyrates-data-ocean/"
 origin_bucket_prefix <- "datalake/autovitRO/AIO/"
 
+dfAds <-
+  as_tibble(
+    s3readRDS(object = paste0(origin_bucket_prefix, "Ads_AIO.RDS"), bucket = origin_bucket_path)
+  )
+
+dfAds_tmp <-
+  dfAds %>%
+  filter(category_id %in% c(29, 81), net_ad_counted == 1) %>%
+  select(id, created_at_first) %>%
+  mutate(created_at_first_day = as.Date(created_at_first),
+         ad_id = as.character(id)
+  ) %>%
+  select(-created_at_first, -id) %>%
+  filter(created_at_first_day >= as.Date('2017-10-01'))
+
 dfTargets <-
   as_tibble(
     s3readRDS(object = paste0(origin_bucket_prefix, "Targets_AIO.RDS"), bucket = origin_bucket_path)
@@ -34,10 +50,40 @@ dfAdsImages <-
     s3readRDS(object = paste0(origin_bucket_prefix, "autovitRO_adsimages_AIO.RDS"), bucket = origin_bucket_path)
   )
 
+dfTargets <- dfTargets[dfTargets$ad_id %in% dfTargets$ad_id, ]
+dfAdsImages <- dfAdsImages[dfAdsImages$ad_id %in% dfAds_tmp$ad_id, ]
+
+dfTargets <- dfTargets[ , c("ad_id",
+                            "qtyAdImpressions_7",
+                            "qtyAdPageView_7",
+                            "qtyMessagesOnAtlas_7",
+                            "reply_chat_sent_7", 
+                            "reply_message_sent_7",
+                            "reply_phone_call_7", 
+                            "reply_phone_show_7",
+                            "reply_phone_sms_7"
+                            )
+                        ]
+
 #join dataframes
 
 df <- 
   dfTargets %>%
   left_join(dfAdsImages, by = c("ad_id")) %>%
-  select(-ad_id)
+  group_by() %>%
+  select(-ad_id) %>%
+  filter(!is.na(nr_images))
 
+# 
+res <- cor(df)
+corrplot(res, type = "upper", tl.col = "black", tl.srt = 45, addCoef.col = TRUE)
+
+df_summary_stats <-
+  df %>%
+  group_by(nr_images) %>%
+  summarise(meanMessagesOnAtlas_7 = mean(qtyMessagesOnAtlas_7)
+            )%>%
+  filter(!is.na(nr_images), nr_images >0)
+
+res <- cor(df_summary_stats)
+corrplot(res, type = "upper", tl.col = "black", tl.srt = 45, addCoef.col = TRUE)
