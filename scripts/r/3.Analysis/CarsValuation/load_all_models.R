@@ -1,11 +1,26 @@
 # load libraries
 library("data.table")
+library("aws.s3")
 
-dir <- '~/tmp/AQS_20180609_082653/'
+# load credentials ------------------------------------------------------------
+load("~/credentials.Rdata")
+
+#clear garbage
+rm(list=setdiff(ls(), c("myS3key","MyS3SecretAccessKey")))
+
+Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
+           "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
+
+#config
+origin_bucket_path <- "s3://pyrates-data-ocean/"
+origin_bucket_prefix <- "datalake/autovitRO/AIO/"
+vertical <- "autovitRO"
+
+tmp_dir <- '~/tmp/AQS_20180609_112020/'
 
 # lists ads files from datalake -----------------------------------------------
 files <-
-  list.files(path = dir, pattern = '.*model_results_.*_.*_.*_.*_.*_.*.RDS$',
+  list.files(path = tmp_dir, pattern = '.*model_results_.*_.*_.*_.*_.*_.*.RDS$',
              full.names = TRUE)
 
 # read all files to a list ---------------------------------------------------- 
@@ -23,13 +38,16 @@ dat <-
 # save file -------------------------------------------------------------------
 id_dat <- as.character(as.hexmode(as.integer(Sys.time())))
 
-saveRDS(object = dat, file = paste0(dir, id_dat, "_all_models_stats.RDS"))
+saveRDS(object = dat, file = paste0(tmp_dir, id_dat, "_all_models_stats.RDS"))
 
 # remove unnecessary files and free memory ------------------------------------
 rm(list = c("files", "dat_list"))
 gc()
 
-
+s3saveRDS(x = dat,
+          object = paste0(origin_bucket_prefix, tmp_dir, "all_models_stats.RDS"),
+          bucket = origin_bucket_path
+          )
 
 # dat%>%
 #   group_by(dataset, size, ntrees) %>%
