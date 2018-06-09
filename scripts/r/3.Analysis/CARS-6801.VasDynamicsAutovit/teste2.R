@@ -22,13 +22,19 @@ Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
 origin_bucket_path <- "s3://pyrates-data-ocean/"
 origin_bucket_prefix <- "datalake/autovitRO/AIO/"
 vertical <- "autovitRO"
-
+tmp_dir <- "~/tmp/"
 id <- as.character(as.hexmode(as.integer(Sys.time())))
+
+tmp_dir <- paste0(tmp_dir, "AQS_", format(Sys.time(), "%Y%m%d_%H%M%S/"))
+
+dir.create(tmp_dir)
 
 dfInputToModel <-
   as_tibble(
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
+
+#dfInputToModel <- head(dfInputToModel, 1000)
 
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
@@ -40,6 +46,8 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$gearbox), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$engine_capacity), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$priceValue), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
+
+target <- "qtyMessagesOnAtlas_7"
 
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
@@ -68,7 +76,7 @@ for(predictors_num in 1:length(predictors)){
   selected_predictors <- c(main_predictors, head(predictors, predictors_num))
   
   formula <-
-    paste("qtyAdImpressions_7~", paste(selected_predictors, collapse="+"))
+    paste(target, "~", paste(selected_predictors, collapse="+"))
   print(formula)
   
   model_formula <- as.formula(formula)
@@ -96,7 +104,8 @@ for(predictors_num in 1:length(predictors)){
     #save(object = dfInputForModel_cv, file = "~/tmp/dfInputForModel_cv.RDS")
     
     for (iNtrees in c(100, 200, 300, 400, 500, 1000)){
-      for (iMtry in seq(1, length(selected_predictors)-1, 1)){
+      #for (iMtry in seq(1, length(selected_predictors)-1, 1)){
+      for (iMtry in ceiling(sqrt(length(selected_predictors)))){
         
         a <- NULL
         aT <- NULL
@@ -122,7 +131,7 @@ for(predictors_num in 1:length(predictors)){
         a <- data.frame(dataset = "train",
                         formula = formula, 
                         num.independent.variables = RF_model$num.independent.variables,
-                        #variable.importance = as.list(RF_model$variable.importance),
+                        variable.importance = as.list(RF_model$variable.importance),
                         prediction.error = RF_model$prediction.error,
                         r.squared = RF_model$r.squared,
                         learning_sample_size_train = learning_sample_size_train,
@@ -141,7 +150,7 @@ for(predictors_num in 1:length(predictors)){
           arrange(MAE, MSE,RMSE)
         
         saveRDS(object = e, 
-                file = paste0("~/tmp/", id, "model_results_train_stats_",
+                file = paste0(tmp_dir, id, "model_results_train_stats_",
                               iNtrees,"_",iMtry,"_", f, "_", ".RDS"))
         
         print("Train Results")
@@ -156,7 +165,7 @@ for(predictors_num in 1:length(predictors)){
         aT <- data.frame(dataset = "cv",
                          formula = formula, 
                          num.independent.variables = RF_model$num.independent.variables,
-                         #variable.importance = as.list(RF_model$variable.importance),
+                         variable.importance = as.list(RF_model$variable.importance),
                          prediction.error = RF_model$prediction.error,
                          r.squared = RF_model$r.squared,
                          learning_sample_size_train = learning_sample_size_train,
@@ -175,7 +184,7 @@ for(predictors_num in 1:length(predictors)){
           arrange(MAE, MSE,RMSE)
         
         saveRDS(object = eT, 
-                file = paste0("~/tmp/", id, "model_results_cv_stats_",
+                file = paste0(tmp_dir, id, "model_results_cv_stats_",
                               iNtrees,"_",iMtry,"_", f, "_", ".RDS"))
         
         print("CV Results")
@@ -190,7 +199,7 @@ for(predictors_num in 1:length(predictors)){
         aTT <- data.frame(dataset = "test",
                           formula = formula, 
                           num.independent.variables = RF_model$num.independent.variables,
-                          #variable.importance = as.list(RF_model$variable.importance),
+                          variable.importance = as.list(RF_model$variable.importance),
                           prediction.error = RF_model$prediction.error,
                           r.squared = RF_model$r.squared,
                           learning_sample_size_train = learning_sample_size_train,
@@ -210,7 +219,7 @@ for(predictors_num in 1:length(predictors)){
           arrange(MAE, MSE,RMSE)
         
         saveRDS(object = eTT, 
-                file = paste0("~/tmp/", id, "model_results_test_stats_",
+                file = paste0(tmp_dir, id, "model_results_test_stats_",
                               iNtrees,"_",iMtry,"_", f, "_", ".RDS"))
         
         print("Test Results")
@@ -224,4 +233,6 @@ for(predictors_num in 1:length(predictors)){
 #}
 
 print("The End")
+
+print(paste("Results:", tmp_dir))
 Sys.time()
