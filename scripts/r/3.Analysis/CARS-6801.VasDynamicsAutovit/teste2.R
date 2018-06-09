@@ -7,6 +7,8 @@ library("hydroGOF")
 library("tidyr")
 library("caret")
 library("parallel")
+library("aws.s3")
+
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
