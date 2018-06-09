@@ -59,7 +59,8 @@ target <- "qtyAdImpressions_7"
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
-    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"
+    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads",
+    "ad_DayOfWeek", "ad_Hour"
   )
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
