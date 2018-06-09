@@ -13,13 +13,16 @@ library("ggplot2")
 load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
 
-vertical <- "autovitRO"
+#clear garbage
+rm(list=setdiff(ls(), c("myS3key","MyS3SecretAccessKey")))
 
 Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
 
+#config
 origin_bucket_path <- "s3://pyrates-data-ocean/"
 origin_bucket_prefix <- "datalake/autovitRO/AIO/"
+vertical <- "autovitRO"
 
 dfAds <-
   as_tibble(
@@ -46,38 +49,19 @@ dfMessagesOnAtlas <-
     s3readRDS(object = paste0(origin_bucket_prefix, "MessagesOnAtlas_AIO.RDS"), bucket = origin_bucket_path)
   )
 
-dfMessagesOnAtlas$day <- as.Date(dfMessagesOnAtlas$posted_date)
-dfMessagesOnAtlas$posted_date <- NULL
-dfMessagesOnAtlas$ad_id <- as.character(dfMessagesOnAtlas$ad_id)
-gc()
-
-dfAds_tmp <-
-  dfAds %>%
-  filter(category_id %in% c(29, 81)) %>%
-  select(id, created_at_first) %>%
-  mutate(created_at_first_day = as.Date(created_at_first),
-         ad_id = as.character(id)
-  ) %>%
-  select(-created_at_first, -id) %>%
-  filter(created_at_first_day >= as.Date('2017-10-01'))
-
-gc()
-
-dfAdsImpressions <- dfAdsImpressions[dfAdsImpressions$ad_id %in% dfAds_tmp$ad_id, ]
-dfAdPage <- dfAdPage[dfAdPage$ad_id %in% dfAds_tmp$ad_id, ]
-dfReplies <- dfReplies[dfReplies$ad_id %in% dfAds_tmp$ad_id, ]
-dfMessagesOnAtlas <- dfMessagesOnAtlas[dfMessagesOnAtlas$ad_id %in% dfAds_tmp$ad_id, ]
+dfAdsImpressions <- dfAdsImpressions[dfAdsImpressions$ad_id %in% dfAds$ad_id, ]
+dfAdPage <- dfAdPage[dfAdPage$ad_id %in% dfAds$ad_id, ]
+dfReplies <- dfReplies[dfReplies$ad_id %in% dfAds$ad_id, ]
+dfMessagesOnAtlas <- dfMessagesOnAtlas[dfMessagesOnAtlas$ad_id %in% dfAds$ad_id, ]
 
 dfTmp <-
-  dfAds_tmp %>%
+  dfAds %>%
   full_join(dfAdsImpressions, by = c("ad_id"))
-
 gc()
 
 dfTmp <-
   dfTmp %>%
   full_join(dfAdPage, by = c("ad_id", "day"))
-
 gc()
 
 dfTmp <-
@@ -96,6 +80,7 @@ dfTmp <-
   dfTmp %>%
   mutate(difftime = difftime(day, dfTmp$created_at_first_day, units = "day"))
 
+dfTmp$difftime <- 0
 dfTmp$difftime_cut[dfTmp$difftime < 7] <- 7
 dfTmp$difftime_cut[dfTmp$difftime < 14 & dfTmp$difftime >= 7] <- 14
 dfTmp$difftime_cut[dfTmp$difftime < 21 & dfTmp$difftime >= 14] <- 21
