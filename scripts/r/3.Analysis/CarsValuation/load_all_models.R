@@ -1,10 +1,11 @@
 # load libraries
 library("data.table")
 
+dir <- '~/tmp/AQS_20180609_082653/'
 
 # lists ads files from datalake -----------------------------------------------
 files <-
-  list.files(path = '~/tmp/', pattern = '^model_results_.*_.*_.*_.*_.*_.*.RDS$',
+  list.files(path = dir, pattern = '.*model_results_.*_.*_.*_.*_.*_.*.RDS$',
              full.names = TRUE)
 
 # read all files to a list ---------------------------------------------------- 
@@ -22,7 +23,7 @@ dat <-
 # save file -------------------------------------------------------------------
 id_dat <- as.character(as.hexmode(as.integer(Sys.time())))
 
-saveRDS(object = dat, file = paste0("~/tmp/", id_dat, "_all_models_stats.RDS"))
+saveRDS(object = dat, file = paste0(dir, id_dat, "_all_models_stats.RDS"))
 
 # remove unnecessary files and free memory ------------------------------------
 rm(list = c("files", "dat_list"))
@@ -30,8 +31,8 @@ gc()
 
 
 
-dat%>%
-  group_by(dataset, size, ntrees) %>%
-  summarise(meanMSE=mean(MSE)) %>% 
-  ggplot()+geom_point(aes(x=size, y=meanMSE, color=dataset))+
-  ylim(0, NA)
+# dat%>%
+#   group_by(dataset, size, ntrees) %>%
+#   summarise(meanMSE=mean(MSE)) %>% 
+#   ggplot()+geom_point(aes(x=size, y=meanMSE, color=dataset))+
+#   ylim(0, NA)
