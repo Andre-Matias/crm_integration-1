@@ -190,7 +190,7 @@ for(predictors_num in 1:length(predictors)){
         
         print("CV Results")
         
-        p <- predict(RF_model, data = dfDataForModel_test, num.threads = 8)
+        p <- predict(RF_model, data = dfDataForModel_test, num.threads = detectCores()-1)
         
         dfDataForModel_test$predictedTarget <- p$predictions
         
