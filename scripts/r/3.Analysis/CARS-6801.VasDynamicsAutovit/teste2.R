@@ -87,28 +87,14 @@ for(predictors_num in 1:length(predictors)){
   
   for(i in folds){
     f <- f +1
-    dfInputForModel_train <- dfDataForModel_train[i, ]
-    dfInputForModel_cv <- dfDataForModel_train[-i, ]
+    df_train <- dfDataForModel_train[i, ]
+    df_cv <- dfDataForModel_train[-i, ]
     
-    learning_sample_size_train <- nrow(dfInputForModel_train)
-    learning_sample_size_cv <- nrow(dfInputForModel_cv)
+    learning_sample_size_train <- nrow(df_train)
+    learning_sample_size_cv <- nrow(df_cv)
     learning_sample_size_test <- nrow(dfDataForModel_test)
-
-    # dfInputForModel_train <-
-    #   dfInputForModel_train %>%
-    #   arrange(make, model, year, age, body_type, engine_capacity, engine_power,
-    #           gearbox, nr_seats, new_used, fuel_type)
-    # 
-    # dfInputForModel_cv <-
-    #   dfInputForModel_cv %>%
-    #   arrange(make, model, year, age, body_type, engine_capacity, engine_power,
-    #           gearbox, nr_seats, new_used, fuel_type)
-    
-    #save(object = dfInputForModel_train, file = "~/tmp/dfInputForModel_train.RDS")
-    #save(object = dfInputForModel_cv, file = "~/tmp/dfInputForModel_cv.RDS")
     
     for (iNtrees in c(100, 200, 300, 400, 500, 1000)){
-      #for (iMtry in seq(1, length(selected_predictors)-1, 1)){
       for (iMtry in ceiling(sqrt(length(selected_predictors)))){
         
         a <- NULL
@@ -120,7 +106,7 @@ for(predictors_num in 1:length(predictors)){
         print(paste(f, iNtrees, iMtry))
         RF_model <-
           ranger(formula = model_formula,
-                 data =  dfInputForModel_train,
+                 data =  df_train,
                  num.trees = iNtrees, num.threads = detectCores()-1 , verbose = TRUE, 
                  mtry = iMtry, importance = "impurity", 
                  min.node.size = 5
@@ -128,12 +114,12 @@ for(predictors_num in 1:length(predictors)){
         
         print(formula)
         print(paste("Trees", iNtrees, "Mtry", iMtry))
-        dfInputForModel_train$predictedTarget <- RF_model$predictions
+        df_train$predictedTarget <- RF_model$predictions
         
-        targetValues <- as.numeric(as.data.frame(dfInputForModel_train[, target])[,1])
+        targetValues <- as.numeric(as.data.frame(df_train[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        a <- gof(dfInputForModel_train$predictedTarget, targetValues)
+        a <- gof(df_train$predictedTarget, targetValues)
         best.guess <- mean(targetValues)
         RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
@@ -165,14 +151,14 @@ for(predictors_num in 1:length(predictors)){
         
         print("Train Results")
         
-        p <- predict(RF_model, data = dfInputForModel_cv, num.threads = detectCores()-1)
+        p <- predict(RF_model, data = df_cv, num.threads = detectCores()-1)
         
-        dfInputForModel_cv$predictedTarget <- p$predictions
+        df_cv$predictedTarget <- p$predictions
         
-        targetValues <- as.numeric(as.data.frame(dfInputForModel_cv[, target])[,1])
+        targetValues <- as.numeric(as.data.frame(df_cv[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        aT <- gof(dfInputForModel_cv$predictedTarget, targetValues)
+        aT <- gof(df_cv$predictedTarget, targetValues)
         best.guess <- mean(targetValues)
         RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
