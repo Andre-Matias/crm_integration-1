@@ -35,11 +35,8 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-<<<<<<< HEAD
-=======
 #dfInputToModel <- head(dfInputToModel, 1000)
 
->>>>>>> 2f0f9396a149c2039b0f9e9941541945600ff7ee
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$model), ]
@@ -53,21 +50,17 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
 
 dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
 dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
-<<<<<<< HEAD
-dfInputToModel$mileage <- as.numeric(dfInputToModel$ileage)
-=======
 dfInputToModel$mileage <- as.numeric(dfInputToModel$mileage)
->>>>>>> 2f0f9396a149c2039b0f9e9941541945600ff7ee
 dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
 dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
 
-target <- "reply_phone_show_7"
+target <- "qtyAdImpressions_7"
 
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
     "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads",
-    "ad_DayOfWeek", "ad_Hour"
+    "ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
   )
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
@@ -100,7 +93,7 @@ for(predictors_num in 1:length(predictors)){
     learning_sample_size_train <- nrow(dfInputForModel_train)
     learning_sample_size_cv <- nrow(dfInputForModel_cv)
     learning_sample_size_test <- nrow(dfDataForModel_test)
-
+    
     # dfInputForModel_train <-
     #   dfInputForModel_train %>%
     #   arrange(make, model, year, age, body_type, engine_capacity, engine_power,
@@ -250,7 +243,7 @@ for(predictors_num in 1:length(predictors)){
                               iNtrees,"_",iMtry,"_", f, "_", ".RDS"))
         
         print("Test Results")
-
+        
         rm(RF_model)
         gc()
       }
@@ -262,7 +255,6 @@ for(predictors_num in 1:length(predictors)){
 print("The End")
 
 print(paste("Results:", tmp_dir))
-
 
 # lists ads files from datalake -----------------------------------------------
 files <-
@@ -294,6 +286,5 @@ s3saveRDS(x = dat,
           object = paste0(origin_bucket_prefix, tmp_dir, "all_models_stats.RDS"),
           bucket = origin_bucket_path
 )
-
 
 Sys.time()
