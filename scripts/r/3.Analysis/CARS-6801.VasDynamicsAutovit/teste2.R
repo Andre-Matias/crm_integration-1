@@ -127,10 +127,10 @@ for(predictors_num in 1:length(predictors)){
         
         print(formula)
         print(paste("Trees", iNtrees, "Mtry", iMtry))
-        dfInputForModel_train$predictedqtyAdImpressions_7 <- RF_model$predictions
+        dfInputForModel_train$predictedTarget <- RF_model$predictions
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        a <- gof(dfInputForModel_train$predictedqtyAdImpressions_7, dfInputForModel_train$qtyAdImpressions_7)
+        a <- gof(dfInputForModel_train$predictedTarget, dfInputForModel_train$qtyAdImpressions_7)
         
         a <- data.frame(dataset = "train",
                         formula = formula, 
@@ -161,10 +161,10 @@ for(predictors_num in 1:length(predictors)){
         
         p <- predict(RF_model, data = dfInputForModel_cv, num.threads = detectCores()-1)
         
-        dfInputForModel_cv$predictedqtyAdImpressions_7 <- p$predictions
+        dfInputForModel_cv$predictedTarget <- p$predictions
         
         
-        aT <- gof(dfInputForModel_cv$predictedqtyAdImpressions_7, dfInputForModel_cv$qtyAdImpressions_7)
+        aT <- gof(dfInputForModel_cv$predictedTarget, dfInputForModel_cv$qtyAdImpressions_7)
         
         aT <- data.frame(dataset = "cv",
                          formula = formula, 
@@ -195,10 +195,10 @@ for(predictors_num in 1:length(predictors)){
         
         p <- predict(RF_model, data = dfDataForModel_test, num.threads = 8)
         
-        dfDataForModel_test$predictedqtyAdImpressions_7 <- p$predictions
+        dfDataForModel_test$predictedTarget <- p$predictions
         
         
-        aTT <- gof(dfDataForModel_test$predictedqtyAdImpressions_7, dfDataForModel_test$qtyAdImpressions_7)
+        aTT <- gof(dfDataForModel_test$predictedTarget, dfDataForModel_test$qtyAdImpressions_7)
         
         aTT <- data.frame(dataset = "test",
                           formula = formula, 
