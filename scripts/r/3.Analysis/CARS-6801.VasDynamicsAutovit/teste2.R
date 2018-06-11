@@ -35,7 +35,7 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-dfInputToModel <- head(dfInputToModel, 1000)
+#dfInputToModel <- head(dfInputToModel, 1000)
 
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
@@ -113,6 +113,7 @@ for(predictors_num in 1:length(predictors)){
         
         a <- NULL
         aT <- NULL
+        aTT <- NULL
         
         t=Sys.time()
         
@@ -132,9 +133,9 @@ for(predictors_num in 1:length(predictors)){
         targetValues <- as.numeric(as.data.frame(dfInputForModel_train[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        aT <- gof(dfInputForModel_train$predictedTarget, targetValues)
-        #best.guess <- mean(targetValues)
-        #RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
+        a <- gof(dfInputForModel_train$predictedTarget, targetValues)
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         a <- data.frame(dataset = "train",
                         formula = formula, 
@@ -142,7 +143,7 @@ for(predictors_num in 1:length(predictors)){
                         variable.importance = as.list(RF_model$variable.importance),
                         prediction.error = RF_model$prediction.error,
                         r.squared = RF_model$r.squared,
-                        #baselineRMSE = RMSE.baseline,
+                        baselineRMSE = RMSE.baseline,
                         learning_sample_size_train = learning_sample_size_train,
                         learning_sample_size_cv = learning_sample_size_cv,
                         learning_sample_size_test = learning_sample_size_test,
@@ -172,8 +173,8 @@ for(predictors_num in 1:length(predictors)){
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
         aT <- gof(dfInputForModel_cv$predictedTarget, targetValues)
-        #best.guess <- mean(targetValues)
-        #RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         aT <- data.frame(dataset = "cv",
                          formula = formula, 
@@ -181,14 +182,14 @@ for(predictors_num in 1:length(predictors)){
                          variable.importance = as.list(RF_model$variable.importance),
                          prediction.error = RF_model$prediction.error,
                          r.squared = RF_model$r.squared,
-                         #baselineRMSE = RMSE.baseline,
+                         baselineRMSE = RMSE.baseline,
                          learning_sample_size_train = learning_sample_size_train,
                          learning_sample_size_cv = learning_sample_size_cv,
                          learning_sample_size_test = learning_sample_size_test,
                          ntrees = iNtrees, 
                          mtry = iMtry, 
                          resultsName = row.names(a),
-                         resultsValue = a[,1],
+                         resultsValue = aT[,1],
                          kfold = f
         )
         
@@ -207,12 +208,12 @@ for(predictors_num in 1:length(predictors)){
         
         dfDataForModel_test$predictedTarget <- p$predictions
         
-        targetValues <- as.numeric(as.data.frame(dfInputForModel_test[, target])[,1])
+        targetValues <- as.numeric(as.data.frame(dfDataForModel_test[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        aT <- gof(dfInputForModel_test$predictedTarget, targetValues)
-        #best.guess <- mean(targetValues)
-        #RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
+        aTT <- gof( dfDataForModel_test$predictedTarget, targetValues)
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         aTT <- data.frame(dataset = "test",
                           formula = formula, 
@@ -220,14 +221,14 @@ for(predictors_num in 1:length(predictors)){
                           variable.importance = as.list(RF_model$variable.importance),
                           prediction.error = RF_model$prediction.error,
                           r.squared = RF_model$r.squared,
-                          #baselineRMSE = RMSE.baseline,
+                          baselineRMSE = RMSE.baseline,
                           learning_sample_size_train = learning_sample_size_train,
                           learning_sample_size_cv = learning_sample_size_cv,
                           learning_sample_size_test = learning_sample_size_test,
                           ntrees = iNtrees, 
                           mtry = iMtry, 
                           resultsName = row.names(a),
-                          resultsValue = a[,1],
+                          resultsValue = aTT[,1],
                           kfold = f
         )
         
