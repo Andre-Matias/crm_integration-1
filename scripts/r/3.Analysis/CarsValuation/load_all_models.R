@@ -16,7 +16,7 @@ origin_bucket_path <- "s3://pyrates-data-ocean/"
 origin_bucket_prefix <- "datalake/autovitRO/AIO/"
 vertical <- "autovitRO"
 
-tmp_dir <- '~/tmp/AQS_20180609_112020/'
+tmp_dir <- '~/tmp/AQS_20180609_144918/'
 
 # lists ads files from datalake -----------------------------------------------
 files <-
