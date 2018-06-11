@@ -35,6 +35,11 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
+<<<<<<< HEAD
+=======
+#dfInputToModel <- head(dfInputToModel, 1000)
+
+>>>>>>> 2f0f9396a149c2039b0f9e9941541945600ff7ee
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$model), ]
@@ -48,7 +53,11 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
 
 dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
 dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
+<<<<<<< HEAD
 dfInputToModel$mileage <- as.numeric(dfInputToModel$ileage)
+=======
+dfInputToModel$mileage <- as.numeric(dfInputToModel$mileage)
+>>>>>>> 2f0f9396a149c2039b0f9e9941541945600ff7ee
 dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
 dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
 
@@ -57,7 +66,8 @@ target <- "reply_phone_show_7"
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
-    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"
+    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads",
+    "ad_DayOfWeek", "ad_Hour"
   )
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
@@ -110,6 +120,7 @@ for(predictors_num in 1:length(predictors)){
         
         a <- NULL
         aT <- NULL
+        aTT <- NULL
         
         t=Sys.time()
         
@@ -124,10 +135,14 @@ for(predictors_num in 1:length(predictors)){
         
         print(formula)
         print(paste("Trees", iNtrees, "Mtry", iMtry))
-        dfInputForModel_train$predictedqtyAdImpressions_7 <- RF_model$predictions
+        dfInputForModel_train$predictedTarget <- RF_model$predictions
+        
+        targetValues <- as.numeric(as.data.frame(dfInputForModel_train[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        a <- gof(dfInputForModel_train$predictedqtyAdImpressions_7, dfInputForModel_train$qtyAdImpressions_7)
+        a <- gof(dfInputForModel_train$predictedTarget, targetValues)
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         a <- data.frame(dataset = "train",
                         formula = formula, 
@@ -135,6 +150,7 @@ for(predictors_num in 1:length(predictors)){
                         variable.importance = as.list(RF_model$variable.importance),
                         prediction.error = RF_model$prediction.error,
                         r.squared = RF_model$r.squared,
+                        baselineRMSE = RMSE.baseline,
                         learning_sample_size_train = learning_sample_size_train,
                         learning_sample_size_cv = learning_sample_size_cv,
                         learning_sample_size_test = learning_sample_size_test,
@@ -158,10 +174,14 @@ for(predictors_num in 1:length(predictors)){
         
         p <- predict(RF_model, data = dfInputForModel_cv, num.threads = detectCores()-1)
         
-        dfInputForModel_cv$predictedqtyAdImpressions_7 <- p$predictions
+        dfInputForModel_cv$predictedTarget <- p$predictions
         
+        targetValues <- as.numeric(as.data.frame(dfInputForModel_cv[, target])[,1])
         
-        aT <- gof(dfInputForModel_cv$predictedqtyAdImpressions_7, dfInputForModel_cv$qtyAdImpressions_7)
+        # Calculate mean error, mean absolute error, mean squared error, etc.
+        aT <- gof(dfInputForModel_cv$predictedTarget, targetValues)
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         aT <- data.frame(dataset = "cv",
                          formula = formula, 
@@ -169,13 +189,14 @@ for(predictors_num in 1:length(predictors)){
                          variable.importance = as.list(RF_model$variable.importance),
                          prediction.error = RF_model$prediction.error,
                          r.squared = RF_model$r.squared,
+                         baselineRMSE = RMSE.baseline,
                          learning_sample_size_train = learning_sample_size_train,
                          learning_sample_size_cv = learning_sample_size_cv,
                          learning_sample_size_test = learning_sample_size_test,
                          ntrees = iNtrees, 
                          mtry = iMtry, 
-                         resultsName = row.names(aT),
-                         resultsValue = aT[ ,1],
+                         resultsName = row.names(a),
+                         resultsValue = aT[,1],
                          kfold = f
         )
         
@@ -192,10 +213,14 @@ for(predictors_num in 1:length(predictors)){
         
         p <- predict(RF_model, data = dfDataForModel_test, num.threads = 8)
         
-        dfDataForModel_test$predictedqtyAdImpressions_7 <- p$predictions
+        dfDataForModel_test$predictedTarget <- p$predictions
         
+        targetValues <- as.numeric(as.data.frame(dfDataForModel_test[, target])[,1])
         
-        aTT <- gof(dfDataForModel_test$predictedqtyAdImpressions_7, dfDataForModel_test$qtyAdImpressions_7)
+        # Calculate mean error, mean absolute error, mean squared error, etc.
+        aTT <- gof( dfDataForModel_test$predictedTarget, targetValues)
+        best.guess <- mean(targetValues)
+        RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
         aTT <- data.frame(dataset = "test",
                           formula = formula, 
@@ -203,13 +228,14 @@ for(predictors_num in 1:length(predictors)){
                           variable.importance = as.list(RF_model$variable.importance),
                           prediction.error = RF_model$prediction.error,
                           r.squared = RF_model$r.squared,
+                          baselineRMSE = RMSE.baseline,
                           learning_sample_size_train = learning_sample_size_train,
                           learning_sample_size_cv = learning_sample_size_cv,
                           learning_sample_size_test = learning_sample_size_test,
                           ntrees = iNtrees, 
                           mtry = iMtry, 
-                          resultsName = row.names(aTT),
-                          resultsValue = aTT[ ,1],
+                          resultsName = row.names(a),
+                          resultsValue = aTT[,1],
                           kfold = f
         )
         

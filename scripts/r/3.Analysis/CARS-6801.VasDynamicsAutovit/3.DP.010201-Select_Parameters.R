@@ -9,6 +9,7 @@ library("stringr")
 library("tidyr")
 library("ggplot2")
 library("corrplot")
+library("RcppRoll")
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
@@ -45,13 +46,17 @@ dfTargets <-
     s3readRDS(object = paste0(origin_bucket_prefix, "Targets_AIO.RDS"), bucket = origin_bucket_path)
   )
 
-dfAdsImages <-
+dfAdsParameters <-
   as_tibble(
-    s3readRDS(object = paste0(origin_bucket_prefix, "autovitRO_adsimages_AIO.RDS"), bucket = origin_bucket_path)
+    s3readRDS(object = paste0(origin_bucket_prefix, "AdsParametersWIDE_AIO.RDS"), bucket = origin_bucket_path)
   )
 
-dfTargets <- dfTargets[dfTargets$ad_id %in% dfTargets$ad_id, ]
-dfAdsImages <- dfAdsImages[dfAdsImages$ad_id %in% dfAds_tmp$ad_id, ]
+dfAdsParameters$ad_id <- as.character(dfAdsParameters$ad_id)
+
+dfTargets <- dfTargets[dfTargets$ad_id %in% dfAds_tmp$ad_id, ]
+dfAdsParameters <- dfAdsParameters[dfAdsParameters$ad_id %in% dfAds_tmp$ad_id, ]
+dfAdsParameters <- dfAdsParameters[dfAdsParameters$price_currency == 'EUR', ]
+dfAdsParameters <- dfAdsParameters[dfAdsParameters$price_gross_net == 'gross', ]
 
 dfTargets <- dfTargets[ , c("ad_id",
                             "qtyAdImpressions_7",
@@ -69,13 +74,41 @@ dfTargets <- dfTargets[ , c("ad_id",
 
 df <- 
   dfTargets %>%
-  left_join(dfAdsImages, by = c("ad_id")) %>%
+  left_join(dfAdsParameters, by = c("ad_id")) %>%
   group_by() %>%
-  select(-ad_id) %>%
-  filter(!is.na(nr_images))
+  select(-ad_id)
+
+# make
+df$make <- as.factor(df$make)
+
+top_make <-
+  df %>%
+  group_by(make) %>%
+  summarise(qtyByMake = sum(n())) %>% 
+  mutate(perByMake = qtyByMake / sum(qtyByMake)) %>%
+  group_by() %>%
+  arrange(-perByMake) %>%
+  mutate(cumsum_perByMake = cumsum(perByMake)) %>%
+  filter(cumsum_perByMake <= 0.80) %>%
+  select(make) %>%
+  mutate(make = as.character(make))
+
+df_make <- df[df$make %in% top_make$make, ]
+df_make$make <- as.character(df_make$make)
+
+df_tmp <- 
+
+
+res.aov <- aov(qtyAdImpressions_7 ~ make, data = df_make)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+boxplot(qtyAdImpressions_7 ~ make, data = df_make)
+boxplot(qtyAdPageView_7 ~ make, data = df_make, ylim = c(0, 1000))
+boxplot(qtyMessagesOnAtlas_7 ~ make, data = df_make, ylim = c(0, 3))
 
 # 
-res <- cor(df)
+res <- cor(df_make)
 corrplot(res, type = "upper", tl.col = "black", tl.srt = 45, addCoef.col = TRUE)
 
 df_summary_stats <-

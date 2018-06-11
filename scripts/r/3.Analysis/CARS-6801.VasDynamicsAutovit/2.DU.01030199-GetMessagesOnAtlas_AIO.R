@@ -16,11 +16,14 @@ load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
 slackrSetup()
 
-# config ----------------------------------------------------------------------
-bucket_path <- "s3://pyrates-data-ocean/"
-
 Sys.setenv("AWS_ACCESS_KEY_ID" = myS3key,
            "AWS_SECRET_ACCESS_KEY" = MyS3SecretAccessKey)
+
+#clear garbage
+rm(list=setdiff(ls(), c("myS3key","MyS3SecretAccessKey")))
+
+# config ----------------------------------------------------------------------
+bucket_path <- "s3://pyrates-data-ocean/"
 
 # list all parameters files----------------------------------------------------
 s3Files_Ads <- 
@@ -44,6 +47,10 @@ dat_list <-
 # merge all data frames from the list to a single data frame ------------------
 dat <-
   as_tibble(rbindlist(dat_list, use.names = TRUE, fill = TRUE))
+
+dat$day <- as.Date(dat$posted_date)
+dat$posted_date <- NULL
+dat$ad_id <- as.character(dat$ad_id)
 
  s3saveRDS(
    x = dat, 
