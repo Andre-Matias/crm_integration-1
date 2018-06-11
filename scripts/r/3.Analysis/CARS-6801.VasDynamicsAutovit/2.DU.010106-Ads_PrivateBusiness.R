@@ -75,9 +75,9 @@ for(file in filesToTransform){
   file <- gsub("ads", filename, file)
   print(paste0("Writing: ", origin_bucket_path, file))
 
-   # s3saveRDS(
-   #   x = dfTmp,
-   #   bucket = origin_bucket_path,
-   #   object =  file
-   #)
+   s3saveRDS(
+     x = dfTmp,
+     bucket = origin_bucket_path,
+     object =  file
+   )
 }
