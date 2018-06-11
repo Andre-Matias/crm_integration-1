@@ -229,7 +229,7 @@ for(predictors_num in 1:length(predictors)){
                               iNtrees,"_",iMtry,"_", f, "_", ".RDS"))
         
         print("Test Results")
-
+        
         rm(RF_model)
         gc()
       }
@@ -241,4 +241,36 @@ for(predictors_num in 1:length(predictors)){
 print("The End")
 
 print(paste("Results:", tmp_dir))
+
+# lists ads files from datalake -----------------------------------------------
+files <-
+  list.files(path = tmp_dir, pattern = '.*model_results_.*_.*_.*_.*_.*_.*.RDS$',
+             full.names = TRUE)
+
+# read all files to a list ---------------------------------------------------- 
+dat_list <-
+  lapply(files, function (x){
+    print(x) 
+    data.table(readRDS(x))
+  }
+  )
+
+# merge all data frames from the list to a single data frame ------------------
+dat <-
+  rbindlist(dat_list, use.names = TRUE, fill = TRUE)
+
+# save file -------------------------------------------------------------------
+id_dat <- as.character(as.hexmode(as.integer(Sys.time())))
+
+saveRDS(object = dat, file = paste0(tmp_dir, id_dat, "_all_models_stats.RDS"))
+
+# remove unnecessary files and free memory ------------------------------------
+rm(list = c("files", "dat_list"))
+gc()
+
+s3saveRDS(x = dat,
+          object = paste0(origin_bucket_prefix, tmp_dir, "all_models_stats.RDS"),
+          bucket = origin_bucket_path
+)
+
 Sys.time()
