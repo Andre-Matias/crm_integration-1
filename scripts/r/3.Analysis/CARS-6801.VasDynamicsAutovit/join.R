@@ -56,12 +56,26 @@ dfAds_DateTime <-
     s3readRDS(object = paste0(origin_bucket_prefix, "autovitRO_datetime_AIO.RDS"), bucket = origin_bucket_path)
   )
 
+dfAds_DescriptionLength <-
+  as_tibble(
+    s3readRDS(object = paste0(origin_bucket_prefix, "autovitRO_DescriptionLength_AIO.RDS"), bucket = origin_bucket_path)
+  )
+
+dfAds_PrivateBusiness <-
+  as_tibble(
+    s3readRDS(object = paste0(origin_bucket_prefix, "autovitRO_PrivateBusiness_AIO.RDS"), bucket = origin_bucket_path)
+  )
+
+
 dfFinal <-
   dfTargets %>%
   left_join(dfNrImages, by = c("ad_id")) %>%
   left_join(dfParameters, by = c("ad_id")) %>%
   left_join(dfVAS, by = c("ad_id")) %>%
-  left_join(dfAds_DateTime, by = c("ad_id"))
+  left_join(dfAds_DateTime, by = c("ad_id")) %>%
+  left_join(dfAds_DescriptionLength, by = c("ad_id")) %>%
+  left_join(dfAds_PrivateBusiness, by = c("ad_id"))
+  
 
 dfFinal$ad_bighomepage[is.na(dfFinal$ad_bighomepage)] <- 0
 dfFinal$ad_homepage[is.na(dfFinal$ad_homepage)] <- 0
