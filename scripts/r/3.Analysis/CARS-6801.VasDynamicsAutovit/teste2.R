@@ -35,8 +35,6 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-dfInputToModel <- dfInputToModel
-
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$model), ]
@@ -50,11 +48,11 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
 
 dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
 dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
-dfInputToModel$mileage <- as.numeric(mdfInputToModel$ileage)
+dfInputToModel$mileage <- as.numeric(dfInputToModel$ileage)
 dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
 dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
 
-target <- "qtyAdImpressions_7"
+target <- "reply_phone_show_7"
 
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
@@ -238,4 +236,38 @@ for(predictors_num in 1:length(predictors)){
 print("The End")
 
 print(paste("Results:", tmp_dir))
+
+
+# lists ads files from datalake -----------------------------------------------
+files <-
+  list.files(path = tmp_dir, pattern = '.*model_results_.*_.*_.*_.*_.*_.*.RDS$',
+             full.names = TRUE)
+
+# read all files to a list ---------------------------------------------------- 
+dat_list <-
+  lapply(files, function (x){
+    print(x) 
+    data.table(readRDS(x))
+  }
+  )
+
+# merge all data frames from the list to a single data frame ------------------
+dat <-
+  rbindlist(dat_list, use.names = TRUE, fill = TRUE)
+
+# save file -------------------------------------------------------------------
+id_dat <- as.character(as.hexmode(as.integer(Sys.time())))
+
+saveRDS(object = dat, file = paste0(tmp_dir, id_dat, "_all_models_stats.RDS"))
+
+# remove unnecessary files and free memory ------------------------------------
+rm(list = c("files", "dat_list"))
+gc()
+
+s3saveRDS(x = dat,
+          object = paste0(origin_bucket_prefix, tmp_dir, "all_models_stats.RDS"),
+          bucket = origin_bucket_path
+)
+
+
 Sys.time()
