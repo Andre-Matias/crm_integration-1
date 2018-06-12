@@ -47,6 +47,7 @@ dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$gearbox), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$engine_capacity), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$priceValue), ]
 dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
+dfInputToModel$damaged[is.na(dfInputToModel$damaged)] <- 0
 
 dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
 dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
@@ -59,8 +60,8 @@ target <- "qtyAdImpressions_7"
 predictors <-
   c("mileage", "year", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
-    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads",
-    "ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
+    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"#,
+    #"ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
   )
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
