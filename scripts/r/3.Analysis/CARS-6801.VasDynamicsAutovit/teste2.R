@@ -34,14 +34,20 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-target <- "qtyAdImpressions_7"
+target <- "qtyAdImpressions_7" # qtyAdImpressions_7, qtyAdPageView_7, qtyMessagesOnAtlas_7, reply_phone_call_7, reply_phone_show_7,  reply_phone_sms_7
 
 predictors <-
-  c("mileage", "year", "model", "engine_power", "fuel_type",
+  c("mileage", "age", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
+<<<<<<< HEAD
+    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads")#,
+    #"ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
+  #)
+=======
     "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"#,
     #"ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
   )
+>>>>>>> 4d96a9b9e855497b109d76ed1338b4d322582b19
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
 
