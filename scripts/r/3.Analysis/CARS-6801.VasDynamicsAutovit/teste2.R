@@ -35,26 +35,6 @@ dfInputToModel <-
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
   )
 
-#dfInputToModel <- head(dfInputToModel, 1000)
-
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$mileage), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$year), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$model), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$engine_power), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$fuel_type), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$body_type), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$gearbox), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$engine_capacity), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$priceValue), ]
-dfInputToModel <- dfInputToModel[!is.na(dfInputToModel$nr_images), ]
-dfInputToModel$damaged[is.na(dfInputToModel$damaged)] <- 0
-
-dfInputToModel$engine_capacity <- as.numeric(dfInputToModel$engine_capacity)
-dfInputToModel$engine_power <- as.numeric(dfInputToModel$engine_power)
-dfInputToModel$mileage <- as.numeric(dfInputToModel$mileage)
-dfInputToModel$priceValue <- as.numeric(dfInputToModel$priceValue)
-dfInputToModel$year <- 2018 - as.numeric(dfInputToModel$year)
-
 target <- "qtyAdImpressions_7"
 
 predictors <-
