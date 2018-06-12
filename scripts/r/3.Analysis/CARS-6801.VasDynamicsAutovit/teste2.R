@@ -10,7 +10,6 @@ library("parallel")
 library("aws.s3")
 
 # load credentials ------------------------------------------------------------
-load("~/GlobalConfig.Rdata")
 load("~/credentials.Rdata")
 
 #clear garbage
