@@ -94,7 +94,8 @@ dfTmp1 <-
   mutate(metric = paste0(metric, "_", difftime_cut)) %>%
   group_by(ad_id, metric) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
-  spread(key = metric, value = value, fill = 0)
+  spread(key = metric, value = value, fill = 0) %>%
+  mutate(Liquidity_7 = (qtyMessagesOnAtlas_7 + reply_phone_call_7) > 0)
 
 s3saveRDS(x = dfTmp1,
           object = paste0(origin_bucket_prefix, "Targets_AIO.RDS"), 
