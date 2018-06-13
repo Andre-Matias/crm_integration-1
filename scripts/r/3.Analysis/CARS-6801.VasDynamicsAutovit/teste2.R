@@ -30,9 +30,9 @@ tmp_dir <- paste0(tmp_dir, "AQS_", format(Sys.time(), "%Y%m%d_%H%M%S/"))
 dir.create(tmp_dir)
 
 dfInputToModel <-
-  head(as_tibble(
+  as_tibble(
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
-  ), 1000)
+  )
 
 target <- "qtyAdImpressions_7"
 
