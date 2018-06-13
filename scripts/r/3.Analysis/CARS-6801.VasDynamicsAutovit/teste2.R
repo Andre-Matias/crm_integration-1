@@ -30,24 +30,18 @@ tmp_dir <- paste0(tmp_dir, "AQS_", format(Sys.time(), "%Y%m%d_%H%M%S/"))
 dir.create(tmp_dir)
 
 dfInputToModel <-
-  as_tibble(
+  head(as_tibble(
     s3readRDS(object = paste0(origin_bucket_prefix, "dfInputToModel_AQS.RDS"), bucket = origin_bucket_path)
-  )
+  ), 1000)
 
-target <- "qtyAdImpressions_7" # qtyAdImpressions_7, qtyAdPageView_7, qtyMessagesOnAtlas_7, reply_phone_call_7, reply_phone_show_7,  reply_phone_sms_7
+target <- "qtyAdImpressions_7"
 
 predictors <-
-  c("mileage", "age", "model", "engine_power", "fuel_type",
+  c("mileage", "year", "model", "engine_power", "fuel_type",
     "body_type", "gearbox", "engine_capacity", "priceValue", "nr_images",
-<<<<<<< HEAD
-    "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads")#,
-    #"ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
-  #)
-=======
     "ad_bighomepage", "ad_homepage", "bump_up", "export_olx", "highlight", "topads"#,
     #"ad_DayOfWeek", "ad_Hour", "DescriptionLength", "private_business"
   )
->>>>>>> 4d96a9b9e855497b109d76ed1338b4d322582b19
 
 test_idx <- sample(x = nrow(dfInputToModel), size = (1 - 1/6) * nrow(dfInputToModel))
 
@@ -72,7 +66,7 @@ for(predictors_num in 1:length(predictors)){
   model_formula <- as.formula(formula)
   
   for(i in folds){
-    f <- f +1
+    f <- f + 1
     df_train <- dfDataForModel_train[i, ]
     df_cv <- dfDataForModel_train[-i, ]
     
@@ -81,7 +75,7 @@ for(predictors_num in 1:length(predictors)){
     learning_sample_size_test <- nrow(dfDataForModel_test)
     
     for (iNtrees in c(100, 200, 300, 400, 500, 1000)){
-      for (iMtry in ceiling(sqrt(length(selected_predictors)))){
+      for (iMtry in length(selected_predictors)-1){
         
         a <- NULL
         aT <- NULL
@@ -100,6 +94,7 @@ for(predictors_num in 1:length(predictors)){
         
         print(formula)
         print(paste("Trees", iNtrees, "Mtry", iMtry))
+        
         df_train$predictedTarget <- RF_model$predictions
         
         targetValues <- as.numeric(as.data.frame(df_train[, target])[,1])
@@ -183,7 +178,7 @@ for(predictors_num in 1:length(predictors)){
         targetValues <- as.numeric(as.data.frame(dfDataForModel_test[, target])[,1])
         
         # Calculate mean error, mean absolute error, mean squared error, etc.
-        aTT <- gof( dfDataForModel_test$predictedTarget, targetValues)
+        aTT <- gof(dfDataForModel_test$predictedTarget, targetValues)
         best.guess <- mean(targetValues)
         RMSE.baseline <- sqrt(mean((best.guess - targetValues)^2))
         
