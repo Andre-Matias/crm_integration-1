@@ -14,6 +14,7 @@ def getDatabaseConnection(conf_file):
 def main(db_conf_file, kpi_file):
 	
 	print('Connecting to Database...')
+	print(datetime.now().time())
 	
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
@@ -21,6 +22,7 @@ def main(db_conf_file, kpi_file):
 
 	#print('Scripts: ' + kpi_scripts)
 	print('Executing KPI scripts...')
+	print(datetime.now().time())
 
 	i = 1
 	for kpi in kpi_scripts:
@@ -28,11 +30,13 @@ def main(db_conf_file, kpi_file):
 		#	i = i + 1
 		#	continue
 		print('Running block #' + str(i))
+		print(datetime.now().time())
 		cur.execute(kpi)
 		conn.commit()
 		i = i + 1
 
 	print('Closing Database connection...')
+	print(datetime.now().time())
 
 	cur.close()
 	conn.close()

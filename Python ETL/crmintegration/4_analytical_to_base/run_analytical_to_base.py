@@ -28,6 +28,7 @@ scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
 # Calculate KPIs with data from the Analytical Model
 for i in range(0, len(conf_files)):
 	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
+	print(datetime.now().time())
 	calculate_kpis.main(db_conf_file, kpi_files[i])
 	#input('Ready for next set of KPIs?')
 
