@@ -303,22 +303,21 @@ FROM
 			  base_contact.cod_contact,
 			  scai.dat_processing dat_snap,
 			  base_contact.cod_source_system,
-			  city.dsc_city_en custom_field_value --not using dsc_city_pl
+			  city.name_pt custom_field_value --not using dsc_city_pl
 			from
 			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai,
-			  crm_integration_anlt.t_lkp_city city
+			  db_atlas.olxpt_cities city
 			where
 			  atlas_user.cod_source_system = 8
 			  and base_contact.cod_source_system = 16
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
-			  and base_contact.valid_to = 20991231
-			  and city.valid_to = 20991231
+			  and base_contact.valid_to = 20991231 
 			  and scai.cod_integration = 50000
-			  and city.cod_city = atlas_user.cod_city
-				and scai.cod_country = 1
+			  and city.id = atlas_user.opr_city
+			  and scai.cod_country = 1
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,

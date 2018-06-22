@@ -7350,7 +7350,7 @@ create table crm_integration_anlt.tmp_pt_load_atlas_user
 distkey(cod_source_system)
 sortkey(cod_atlas_user, opr_atlas_user)
 as
-select a.*, coalesce(b.cod_city,-2) cod_city from (
+select a.*  from (
 	select
     source_table.opr_atlas_user,
 	source_table.dsc_atlas_user,
@@ -7759,11 +7759,7 @@ select a.*, coalesce(b.cod_city,-2) cod_city from (
 	and source_table.cod_source_system = target.cod_source_system (+)
 	and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
 	and lkp_source.valid_to = 20991231
-	) a,  crm_integration_anlt.t_lkp_city b
-	where
-	coalesce(a.opr_city,-1) = b.opr_city (+)
-	and a.cod_source_system = b.cod_source_system (+)
-	and b.valid_to (+) = 20991231;
+	) a ;
 
 analyze crm_integration_anlt.tmp_pt_load_atlas_user;	
 
@@ -7871,7 +7867,8 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  cast(sms_verification_status as varchar) sms_verification_status,
 	  cast(sms_verification_code as varchar) sms_verification_code,
       hash_atlas_user,
-	  cod_execution
+	  cod_execution,
+	  opr_city
     from
       crm_integration_anlt.tmp_pt_load_atlas_user
     where
