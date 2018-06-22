@@ -7796,6 +7796,7 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  cod_source_system,
 	  cod_source,
 	  cod_city,
+	  opr_city,
 	  email_original,
 	  password,
 	  autologin_rev,
@@ -7867,8 +7868,7 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  cast(sms_verification_status as varchar) sms_verification_status,
 	  cast(sms_verification_code as varchar) sms_verification_code,
       hash_atlas_user,
-	  cod_execution,
-	  opr_city
+	  cod_execution
     from
       crm_integration_anlt.tmp_pt_load_atlas_user
     where
