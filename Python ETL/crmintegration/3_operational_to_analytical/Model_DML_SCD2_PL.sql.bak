@@ -6961,6 +6961,377 @@ and t_rel_scai_integration_process.cod_country = 2
 and proc.dsc_process_short = 't_lkp_contact_upd_atlas_user'
 and t_rel_scai_integration_process.ind_active = 1;
 
+
+	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 2 -- Poland
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_basket';
+
+	--$$$
+	
+-- #############################################
+-- # 		     ATLAS - POLAND                #
+-- #       LOADING t_fac_payment_basket        #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pl_load_payment_basket;
+
+create table crm_integration_anlt.tmp_pl_load_payment_basket 
+distkey(cod_payment_basket)
+sortkey(cod_payment_basket, dml_type, cod_source_system)
+as
+  select source.*,
+    coalesce(lkp_payment_session.cod_payment_session,-2) cod_payment_session,
+    coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index,
+    coalesce(lkp_ad.cod_ad,-2) cod_ad,
+    coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+  from
+    (
+	select
+    source_table.opr_payment_basket,
+    --source_table.opr_source_system,
+    --source_table.opr_payment_session,
+    --source_table.opr_payment_index,
+    --source_table.opr_ad,
+    --source_table.opr_atlas_user,
+	source_table.operation_timestamp,
+    source_table.test_id,
+    source_table.test_group_id,
+    source_table.price,
+    source_table.from_account,
+    source_table.flg_refunded,
+    source_table.flg_used,
+    source_table.flg_cleared,
+    source_table.extra_params,
+    source_table.update_at,
+    source_table.viewed_test_id,
+    source_table.viewed_test_group_id,
+    source_table.migration_data,
+    source_table.flg_migrated,
+    source_table.from_bonus_credits,
+    source_table.from_refund_credits,
+    source_table.hash_payment_basket,
+    source_table.cod_source_system,
+    --lkp_payment_session.cod_payment_session,
+    source_table.opr_payment_session,
+    --lkp_paidad_index.cod_paidad_index,
+    source_table.opr_payment_index,
+    --lkp_ad.cod_ad,
+    source_table.opr_ad,
+    --lkp_atlas_user.cod_atlas_user,
+    source_table.opr_atlas_user,
+    source_table.cod_execution,
+    max_cod_payment_basket.max_cod,
+    row_number() over (order by source_table.opr_payment_basket desc) new_cod,
+    target.cod_payment_basket,
+    case
+      when target.cod_payment_basket is null then 'I'
+      when source_table.hash_payment_basket != target.hash_payment_basket then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+      select
+        source.*,
+		lkp_source_system.cod_source_system,
+		md5
+        (coalesce(opr_payment_session,0) + coalesce(opr_payment_index,0) + coalesce(opr_ad,0) + coalesce(opr_atlas_user,0)) hash_payment_basket
+    from
+      (
+            SELECT
+              id opr_payment_basket,
+              livesync_dbname opr_source_system,
+			  operation_timestamp,
+              session_id opr_payment_session,
+              index_id opr_payment_index,
+              ad_id opr_ad,
+              user_id opr_atlas_user,
+              test_id,
+              test_group_id,
+              price,
+              from_account,
+              refunded flg_refunded,
+              used flg_used,
+              cleared flg_cleared,
+              extra_params,
+              update_at,
+              viewed_test_id,
+              viewed_test_group_id,
+              migration_data,
+              migrated flg_migrated,
+              cast(null as numeric(8,2)) from_bonus_credits,
+              cast(null as numeric(8,2)) from_refund_credits,
+              row_number() over (partition by id order by operation_type desc) rn,
+              scai_execution.cod_execution
+            FROM
+              crm_integration_stg.stg_pl_db_atlas_verticals_payment_basket a,
+              crm_integration_anlt.t_lkp_source_system b,
+              (
+                select
+                  max(fac.cod_execution) cod_execution
+                from
+                  crm_integration_anlt.t_lkp_scai_process proc,
+                  crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+                  crm_integration_anlt.t_fac_scai_execution fac
+                where
+                  rel_integr_proc.cod_process = proc.cod_process
+                  and rel_integr_proc.cod_country = 2
+                  and rel_integr_proc.cod_integration = 30000
+                  and rel_integr_proc.ind_active = 1
+                  and proc.dsc_process_short = 't_fac_payment_basket'
+                  and fac.cod_process = rel_integr_proc.cod_process
+                  and fac.cod_integration = rel_integr_proc.cod_integration
+                  and rel_integr_proc.dat_processing = fac.dat_processing
+                  and fac.cod_status = 2
+              ) scai_execution
+            where
+              a.livesync_dbname = b.opr_source_system
+              and b.cod_business_type = 1 -- Verticals
+              and b.cod_country = 2 -- Poland
+			  --and 1 = 0
+    union all
+    SELECT
+        id opr_payment_basket,
+        'olxpl' opr_source_system,
+		operation_timestamp,
+        session_id opr_payment_session,
+        index_id opr_payment_index,
+        ad_id opr_ad,
+        user_id opr_atlas_user,
+        test_id,
+        test_group_id,
+        price,
+        from_account,
+        refunded flg_refunded,
+        used flg_used,
+        cleared flg_cleared,
+        extra_params,
+        null update_at,
+        null viewed_test_id,
+        null viewed_test_group_id,
+        null migration_data,
+        null flg_migrated,
+        from_bonus_credits,
+        from_refund_credits,
+        row_number() over (partition by id order by operation_type desc) rn,
+        scai_execution.cod_execution
+    FROM
+        crm_integration_stg.stg_pl_db_atlas_olxpl_payment_basket,
+    		 (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 2
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_fac_payment_basket'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+         ) scai_execution
+	--where 1 = 0
+        ) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+    ) source_table,
+    (select coalesce(max(cod_payment_basket),0) max_cod from crm_integration_anlt.t_fac_payment_basket) max_cod_payment_basket,
+    crm_integration_anlt.t_fac_payment_basket target
+  where
+    coalesce(source_table.opr_payment_basket,-1) = target.opr_payment_basket(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and source_table.rn = 1
+) source,
+    crm_integration_anlt.t_fac_payment_session lkp_payment_session,
+    crm_integration_anlt.t_lkp_paidad_index lkp_paidad_index,
+    crm_integration_anlt.t_lkp_ad lkp_ad,
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+  where
+    coalesce(source.opr_payment_session,-1) = lkp_payment_session.opr_payment_session (+)
+	and source.cod_source_system = lkp_payment_session.cod_source_system (+) -- new
+    and coalesce(source.opr_payment_index,-1) = lkp_paidad_index.opr_paidad_index (+)
+	and source.cod_source_system = lkp_paidad_index.cod_source_system (+) -- new
+    and lkp_paidad_index.valid_to (+) = 20991231
+    and coalesce(source.opr_ad,-1) = lkp_ad.opr_ad (+)
+	and source.cod_source_system = lkp_ad.cod_source_system (+) -- new
+    and lkp_ad.valid_to (+) = 20991231
+    and coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+    and lkp_atlas_user.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_pl_load_payment_basket;
+	
+	--$$$
+	
+insert into crm_integration_anlt.t_hst_payment_basket
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_payment_basket target,
+      crm_integration_anlt.tmp_pl_load_payment_basket source
+    where
+      target.cod_payment_basket = source.cod_payment_basket
+      and source.dml_type = 'U';
+
+	--$$$
+	
+delete from crm_integration_anlt.t_fac_payment_basket
+using crm_integration_anlt.tmp_pl_load_payment_basket
+where crm_integration_anlt.t_fac_payment_basket.cod_payment_basket=crm_integration_anlt.tmp_pl_load_payment_basket.cod_payment_basket
+and crm_integration_anlt.tmp_pl_load_payment_basket.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_fac_payment_basket
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_payment_basket
+      end cod_payment_basket,
+      opr_payment_basket,
+      cod_payment_session,
+      cod_paidad_index,
+      cod_ad,
+      cod_source_system,
+      cod_atlas_user,
+      test_id,
+      test_group_id,
+      price,
+      from_account,
+      flg_refunded,
+      flg_used,
+      flg_cleared,
+      extra_params,
+      update_at,
+      viewed_test_id,
+      viewed_test_group_id,
+      migration_data,
+      flg_migrated,
+      from_bonus_credits,
+      from_refund_credits,
+      hash_payment_basket,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pl_load_payment_basket
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_fac_payment_basket;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 2 -- Poland
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_basket';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pl_load_payment_basket),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 2
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 2
+and proc.dsc_process_short = 't_fac_payment_basket'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pl_load_payment_basket;
+
 	--$$$
 	
 -- #######################
