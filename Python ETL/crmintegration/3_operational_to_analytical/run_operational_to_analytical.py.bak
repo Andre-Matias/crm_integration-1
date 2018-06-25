@@ -20,9 +20,9 @@ def main(conf_file, dml_file):
 
 	i = 1
 	for dml in dml_scripts:
-		#if i < 150:  # Remove comments to make this run starting from a certain block
-		#	i = i + 1
-		#	continue
+		if i < 153:  # Remove comments to make this run starting from a certain block
+			i = i + 1
+			continue
 		print('Running block #' + str(i))
 		cur.execute(dml)
 		conn.commit()
