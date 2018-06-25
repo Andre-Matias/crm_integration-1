@@ -6121,6 +6121,1218 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 drop table if exists crm_integration_anlt.tmp_ro_load_paidad_index;
 
+	--$$$ -- 100
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_region'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_region';	
+
+	--$$$
+	
+-- #############################################
+-- # 		        ATLAS - GERAL              #
+-- #	       LOADING t_lkp_region     	   #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_region;
+
+create table crm_integration_anlt.tmp_ro_load_region 
+distkey(cod_source_system)
+sortkey(cod_region, opr_region)
+as
+  select
+    source_table.opr_region,
+    source_table.dsc_region_pt,
+    source_table.dsc_region_en,
+    source_table.dsc_region_pl,
+    source_table.dsc_region_ro,
+    source_table.dsc_region_ru,
+    source_table.dsc_region_hi,
+    source_table.opr_source_system,
+	source_table.operation_timestamp,
+    source_table.code,
+    source_table.domain,
+    source_table.lon,
+    source_table.lat,
+    source_table.seo_weight,
+    source_table.zoom,
+    source_table.locative_pt,
+    source_table.locative_en,
+    source_table.locative_pl,
+    source_table.locative_ro,
+    source_table.locative_ru,
+    source_table.locative_hi,
+    source_table.possessive_pt,
+    source_table.possessive_en,
+    source_table.possessive_pl,
+    source_table.possessive_ro,
+    source_table.possessive_ru,
+    source_table.possessive_hi,
+    source_table.search_combo_label_pt,
+    source_table.search_combo_label_en,
+    source_table.search_combo_label_pl,
+    source_table.search_combo_label_ro,
+    source_table.search_combo_label_ru,
+    source_table.search_combo_label_hi,
+    source_table.aliases_pt,
+    source_table.aliases_en,
+    source_table.aliases_pl,
+    source_table.aliases_ro,
+    source_table.aliases_ru,
+    source_table.aliases_hi,
+    source_table.country_id,
+    source_table.hash_region,
+    source_table.cod_source_system,
+    source_table.cod_execution,
+    max_cod_region.max_cod,
+    row_number() over (order by source_table.opr_region desc) new_cod,
+    target.cod_region,
+    case
+      --when target.cod_region is null then 'I'
+      when target.cod_region is null or (source_table.hash_region != target.hash_region and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_region')) then 'I'
+	  when source_table.operation_type = 'delete' then 'D'
+      when source_table.hash_region != target.hash_region then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		source.*,
+		lkp_source_system.cod_source_system,
+		md5(coalesce(dsc_region_pt,'') + coalesce(dsc_region_en,'') + coalesce(dsc_region_pl,'') + coalesce(dsc_region_ro,'') + coalesce(dsc_region_ru,'') + coalesce(dsc_region_hi,'')
+                  + coalesce(code,'') + coalesce(domain,'')
+                  + cast(coalesce(lon,0) as varchar) + cast(coalesce(lat,0) as varchar) + coalesce(seo_weight,0) + coalesce(zoom,0) + coalesce(locative_pt,'') + coalesce(locative_en,'')
+                  + coalesce(locative_pl,'') + coalesce(locative_ro,'') + coalesce(locative_ru,'') + coalesce(locative_hi,'') + coalesce(possessive_pt,'') + coalesce(possessive_en,'')
+                  + coalesce(possessive_pl,'') + coalesce(possessive_ro,'') + coalesce(possessive_ru,'') + coalesce(possessive_hi,'') + coalesce(search_combo_label_pt,'')
+                  + coalesce(search_combo_label_en,'') + coalesce(search_combo_label_pl,'') + coalesce(search_combo_label_ro,'') + coalesce(search_combo_label_ru,'')
+                  + coalesce(search_combo_label_hi,'') + coalesce(aliases_pt,'') + coalesce(aliases_en,'') + coalesce(aliases_pl,'') + coalesce(aliases_ro,'') + coalesce(aliases_ru,'')
+                  + coalesce(aliases_hi,'') + coalesce(country_id,0)
+              ) hash_region
+	from
+	(
+      SELECT
+        id opr_region,
+        name_pt dsc_region_pt,
+        name_en dsc_region_en,
+        name_pl dsc_region_pl,
+        name_ro dsc_region_ro,
+        name_ru dsc_region_ru,
+        name_hi dsc_region_hi,
+        livesync_dbname opr_source_system,
+		    operation_timestamp,
+		    operation_type,
+        code,
+        domain,
+        lon,
+        lat,
+        seo_weight,
+        zoom,
+        locative_pt,
+        locative_en,
+        locative_pl,
+        locative_ro,
+        locative_ru,
+        locative_hi,
+        possessive_pt,
+        possessive_en,
+        possessive_pl,
+        possessive_ro,
+        possessive_ru,
+        possessive_hi,
+        search_combo_label_pt,
+        search_combo_label_en,
+        search_combo_label_pl,
+        search_combo_label_ro,
+        search_combo_label_ru,
+        search_combo_label_hi,
+        aliases_pt,
+        aliases_en,
+        aliases_pl,
+        aliases_ro,
+        aliases_ru,
+        aliases_hi,
+        country_id,
+        scai_execution.cod_execution
+      FROM
+        crm_integration_stg.stg_ro_db_atlas_verticals_regions a,
+        crm_integration_anlt.t_lkp_source_system b,
+        (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_region'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+        ) scai_execution
+        where
+           a.livesync_dbname = b.opr_source_system
+           and b.cod_business_type = 1 -- Verticals
+           and b.cod_country = 4 -- Romania
+		   --and 1 = 0
+	  union all
+	  select
+		id opr_region,
+        null dsc_region_pt,
+        null dsc_region_en,
+        null dsc_region_pl,
+        name_ro dsc_region_ro,
+        null dsc_region_ru,
+        null dsc_region_hi,
+        'olxro' opr_source_system,
+		    operation_timestamp,
+		    operation_type,
+        code,
+        domain,
+        lon,
+        lat,
+        seo_weight,
+        zoom,
+        null locative_pt,
+        null locative_en,
+        null locative_pl,
+        locative_ro,
+        null locative_ru,
+        null locative_hi,
+        null possessive_pt,
+        null possessive_en,
+        null possessive_pl,
+        possessive_ro,
+        null possessive_ru,
+        null possessive_hi,
+        null search_combo_label_pt,
+        null search_combo_label_en,
+        null search_combo_label_pl,
+        search_combo_label_ro,
+        null search_combo_label_ru,
+        null search_combo_label_hi,
+        null aliases_pt,
+        null aliases_en,
+        null aliases_pl,
+        aliases_ro,
+        null aliases_ru,
+        null aliases_hi,
+        null country_id,
+        scai_execution.cod_execution
+	  from
+		crm_integration_stg.stg_ro_db_atlas_olxro_regions,
+    (
+        select
+          max(fac.cod_execution) cod_execution
+        from
+          crm_integration_anlt.t_lkp_scai_process proc,
+          crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+          crm_integration_anlt.t_fac_scai_execution fac
+        where
+          rel_integr_proc.cod_process = proc.cod_process
+          and rel_integr_proc.cod_country = 4
+          and rel_integr_proc.cod_integration = 30000
+          and rel_integr_proc.ind_active = 1
+          and proc.dsc_process_short = 't_lkp_region'
+          and fac.cod_process = rel_integr_proc.cod_process
+          and fac.cod_integration = rel_integr_proc.cod_integration
+          and rel_integr_proc.dat_processing = fac.dat_processing
+          and fac.cod_status = 2
+     ) scai_execution
+	  --where 1 = 0
+	) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+    ) source_table,
+    (select coalesce(max(cod_region),0) max_cod from crm_integration_anlt.t_lkp_region) max_cod_region,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_region, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_region a
+				)
+			where rn = 1
+	) target
+  where
+    coalesce(source_table.opr_region,-1) = target.opr_region(+)
+	and source_table.cod_source_system = target.cod_source_system (+);
+
+analyze crm_integration_anlt.tmp_ro_load_region;
+	
+	--$$$
+
+delete from crm_integration_anlt.t_lkp_region
+using crm_integration_anlt.tmp_ro_load_region
+where 
+	tmp_ro_load_region.dml_type = 'I' 
+	and t_lkp_region.opr_region = tmp_ro_load_region.opr_region
+	and t_lkp_region.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_region');
+
+	--$$$
+
+update crm_integration_anlt.t_lkp_region
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_region') 
+from crm_integration_anlt.tmp_ro_load_region source
+where source.cod_region = crm_integration_anlt.t_lkp_region.cod_region
+and crm_integration_anlt.t_lkp_region.valid_to = 20991231
+and source.dml_type = 'U';
+
+	--$$$
+
+insert into crm_integration_anlt.t_lkp_region
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_region
+      end cod_region,
+      opr_region,
+      dsc_region_pt,
+      dsc_region_en,
+      dsc_region_pl,
+      dsc_region_ro,
+      dsc_region_ru,
+      dsc_region_hi,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_region') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+      code,
+      domain,
+      lon,
+      lat,
+      seo_weight,
+      zoom,
+      locative_pt,
+      locative_en,
+      locative_pl,
+      locative_ro,
+      locative_ru,
+      locative_hi,
+      possessive_pt,
+      possessive_en,
+      possessive_pl,
+      possessive_ro,
+      possessive_ru,
+      possessive_hi,
+      search_combo_label_pt,
+      search_combo_label_en,
+      search_combo_label_pl,
+      search_combo_label_ro,
+      search_combo_label_ru,
+      search_combo_label_hi,
+      aliases_pt,
+      aliases_en,
+      aliases_pl,
+      aliases_ro,
+      aliases_ru,
+      aliases_hi,
+      country_id,
+      hash_region,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_region
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_lkp_region;
+	  
+	--$$$
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_region';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_region),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_region'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_lkp_region'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_region;
+
+	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_subregion'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_subregion';	
+
+	--$$$
+	
+-- #############################################
+-- # 		        ATLAS - GERAL              #
+-- #	      LOADING t_lkp_subregion     	   #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_subregion;
+
+create table crm_integration_anlt.tmp_ro_load_subregion 
+distkey(cod_source_system)
+sortkey(cod_subregion, opr_subregion)
+as
+  select
+    source_table.opr_subregion,
+    source_table.dsc_subregion_pt,
+    source_table.dsc_subregion_en,
+    source_table.dsc_subregion_pl,
+    source_table.dsc_subregion_ro,
+    source_table.dsc_subregion_ru,
+    source_table.dsc_subregion_uk,
+	source_table.operation_timestamp,
+    source_table.code,
+    source_table.opr_region,
+    source_table.dsc_subregion_normalized_pt,
+    source_table.dsc_subregion_normalized_en,
+    source_table.dsc_subregion_normalized_pl,
+    source_table.dsc_subregion_normalized_ru,
+    source_table.dsc_subregion_normalized_uk,
+    source_table.lon,
+    source_table.lat,
+    source_table.seo_weight,
+    source_table.zoom,
+    source_table.locative_pt,
+    source_table.locative_en,
+    source_table.locative_pl,
+    source_table.locative_ro,
+    source_table.locative_ru,
+    source_table.locative_hi,
+    source_table.locative_uk,
+    source_table.url_code,
+    source_table.possessive_pt,
+    source_table.possessive_en,
+    source_table.possessive_pl,
+    source_table.possessive_ro,
+    source_table.possessive_ru,
+    source_table.possessive_hi,
+    source_table.possessive_uk,
+    source_table.price_group,
+    source_table.display_order,
+    source_table.flg_urban,
+    source_table.external_id,
+    source_table.hash_subregion,
+    coalesce(lkp_region.cod_region,-2) cod_region,
+    source_table.cod_source_system,
+    source_table.cod_execution,
+    max_cod_subregion.max_cod,
+    row_number() over (order by source_table.opr_subregion desc) new_cod,
+    target.cod_subregion,
+    case
+      --when target.cod_subregion is null then 'I'
+      when target.cod_subregion is null or (source_table.hash_subregion != target.hash_subregion and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_subregion')) then 'I'
+	  when source_table.operation_type = 'delete' then 'D'
+      when source_table.hash_subregion != target.hash_subregion then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		*,
+		md5(coalesce(dsc_subregion_pt,'') + coalesce(dsc_subregion_en,'') + coalesce(dsc_subregion_pl,'') + coalesce(dsc_subregion_ro,'') + coalesce(dsc_subregion_ru,'') + coalesce(dsc_subregion_hi,'') + coalesce(dsc_subregion_uk,'')
+            + coalesce(code,'') + coalesce(opr_region,0) + coalesce(dsc_subregion_normalized_pt,'') + coalesce(dsc_subregion_normalized_en,'') + coalesce(dsc_subregion_normalized_pl,'')
+            + coalesce(dsc_subregion_normalized_ru,'') + coalesce(dsc_subregion_normalized_uk,'') + cast(coalesce(lon,0) as varchar) + cast(coalesce(lat,0) as varchar) + coalesce(seo_weight,0)
+            + coalesce(zoom,0) + coalesce(locative_pt,'') + coalesce(locative_en,'') + coalesce(locative_pl,'') + coalesce(locative_ro,'') + coalesce(locative_ru,'')
+            + coalesce(locative_hi,'') + coalesce(locative_hi,'') + coalesce(locative_uk,'') + coalesce(url_code,'') + coalesce(possessive_pt,'') + coalesce(possessive_en,'')
+            + coalesce(possessive_pl,'') + coalesce(possessive_ro,'') + coalesce(possessive_ru,'') + coalesce(possessive_hi,'') + coalesce(possessive_uk,'') + coalesce(price_group,'')
+           + coalesce(display_order,0) + coalesce(flg_urban,0) + coalesce(external_id,'')) hash_subregion
+	from
+	(
+      SELECT
+        id opr_subregion,
+        name_pt dsc_subregion_pt,
+        name_transliterated dsc_subregion_en,
+        name_pl dsc_subregion_pl,
+        name_ro dsc_subregion_ro,
+        name_ru dsc_subregion_ru,
+		    name_hi dsc_subregion_hi,
+        name_uk dsc_subregion_uk,
+        livesync_dbname opr_source_system,
+		    operation_timestamp,
+		    operation_type,
+        code,
+        region_id opr_region,
+        name_normalized_pt dsc_subregion_normalized_pt,
+        name_normalized_en dsc_subregion_normalized_en,
+        name_normalized_pl dsc_subregion_normalized_pl,
+        name_normalized_ru dsc_subregion_normalized_ru,
+        name_normalized_uk dsc_subregion_normalized_uk,
+        lon,
+        lat,
+        seo_weight,
+        zoom,
+        locative_pt,
+        locative_en,
+        locative_pl,
+        locative_ro,
+        locative_ru,
+        locative_hi,
+        locative_uk,
+        url_code,
+        possessive_pt,
+        possessive_en,
+        possessive_pl,
+        possessive_ro,
+        possessive_ru,
+        possessive_hi,
+        possessive_uk,
+        price_group,
+        display_order,
+        urban flg_urban,
+        external_id,
+        cod_source_system,
+        scai_execution.cod_execution
+      FROM
+        crm_integration_stg.stg_ro_db_atlas_verticals_subregions a,
+        crm_integration_anlt.t_lkp_source_system b,
+       (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_subregion'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+         ) scai_execution
+      where
+		a.livesync_dbname = b.opr_source_system
+		and b.cod_business_type = 1 -- Verticals
+		and b.cod_country = 4 -- Romania
+		--and 1 = 0
+	)
+    ) source_table,
+    crm_integration_anlt.t_lkp_region lkp_region,
+    (select coalesce(max(cod_subregion),0) max_cod from crm_integration_anlt.t_lkp_subregion) max_cod_subregion,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_subregion, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_subregion a
+				)
+			where rn = 1
+	) target
+  where
+    coalesce(source_table.opr_subregion,-1) = target.opr_subregion(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+    and coalesce(source_table.opr_region,-1) = lkp_region.opr_region
+	and source_table.cod_source_system = lkp_region.cod_source_system -- new
+	and lkp_region.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_subregion;
+	
+	--$$$
+	
+delete from crm_integration_anlt.t_lkp_subregion
+using crm_integration_anlt.tmp_ro_load_subregion
+where 
+	tmp_ro_load_subregion.dml_type = 'I' 
+	and t_lkp_subregion.opr_subregion = tmp_ro_load_subregion.opr_subregion
+	and t_lkp_subregion.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_subregion');
+
+	--$$$
+	
+update crm_integration_anlt.t_lkp_subregion
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_subregion') 
+from crm_integration_anlt.tmp_ro_load_subregion source
+where source.cod_subregion = crm_integration_anlt.t_lkp_subregion.cod_subregion
+and crm_integration_anlt.t_lkp_subregion.valid_to = 20991231
+and source.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_lkp_subregion
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_subregion
+      end cod_subregion,
+      opr_subregion,
+      dsc_subregion_pt,
+      dsc_subregion_en,
+      dsc_subregion_pl,
+      dsc_subregion_ro,
+      dsc_subregion_ru,
+      null dsc_subregion_hi,
+      dsc_subregion_uk,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_subregion') valid_from, 
+      20991231 valid_to,
+      cod_region,
+      cod_source_system,
+      dsc_subregion_normalized_pt,
+      dsc_subregion_normalized_en,
+      dsc_subregion_normalized_pl,
+      null dsc_subregion_normalized_ro,
+      dsc_subregion_normalized_ru,
+      null dsc_subregion_normalized_hi,
+      dsc_subregion_normalized_uk,
+      code,
+      lon,
+      lat,
+      seo_weight,
+      zoom,
+      locative_pt,
+      locative_en,
+      locative_pl,
+      locative_ro,
+      locative_ru,
+      locative_hi,
+      locative_uk,
+      url_code,
+      possessive_pt,
+      possessive_en,
+      possessive_pl,
+      possessive_ro,
+      possessive_ru,
+      possessive_hi,
+      possessive_uk,
+      price_group,
+      display_order,
+      flg_urban,
+      external_id,
+      hash_subregion,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_subregion
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_lkp_subregion;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_subregion';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_subregion),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_subregion'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_lkp_subregion'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_subregion;
+
+	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_city'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_city';	
+
+	--$$$
+	
+-- #############################################
+-- # 		        ATLAS - GERAL              #
+-- #	        LOADING t_lkp_city       	   #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_city;
+
+create table crm_integration_anlt.tmp_ro_load_city 
+distkey(cod_source_system)
+sortkey(cod_city, opr_city)
+as
+select
+    source_table.opr_city,
+    source_table.dsc_city_pl,
+    source_table.dsc_city_en,
+	source_table.operation_timestamp,
+    source_table.url,
+    source_table.county,
+    source_table.municipality,
+    source_table.flg_unique,
+    source_table.zip,
+    source_table.city_id,
+    source_table.lat,
+    source_table.lon,
+    source_table.zoom,
+    source_table.citizens_count,
+    source_table.citizens_weight,
+    source_table.flg_main,
+    source_table.flg_import_approximation,
+    source_table.flg_show_on_mainpage,
+    source_table.radius,
+    source_table.polygon,
+    source_table.group_id,
+    source_table.external_id,
+    source_table.external_type,
+    source_table.dsc_city_normalized_pl,
+    source_table.hash_city,
+    coalesce(lkp_subregion.cod_subregion,-2) cod_subregion,
+	coalesce(lkp_region.cod_region,-2) cod_region,
+    source_table.cod_source_system,
+    source_table.cod_execution,
+    max_cod_city.max_cod,
+    row_number() over (order by source_table.opr_city desc) new_cod,
+    target.cod_city,
+    case
+      --when target.cod_city is null then 'I'
+      when target.cod_city is null or (source_table.hash_city != target.hash_city and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_city')) then 'I'
+	  when source_table.operation_type = 'delete' then 'D'
+      when source_table.hash_city != target.hash_city then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		*,
+		md5(
+		coalesce(dsc_city_pl,'') +
+		coalesce(dsc_city_en,'') +
+		coalesce(url,'') +
+		coalesce(county,'') +
+		coalesce(municipality,'') +
+		coalesce(flg_unique,0) +
+		coalesce(zip,'') +
+		coalesce(city_id,0) +
+		cast(coalesce(lat,0) as varchar) +
+		cast(coalesce(lon,0) as varchar) +
+		coalesce(zoom,0) +
+		coalesce(citizens_count,0) +
+		coalesce(citizens_weight,0) +
+		coalesce(opr_region,0) +
+		coalesce(opr_subregion,0) +
+		coalesce(flg_main,0) +
+		coalesce(flg_import_approximation,0) +
+		coalesce(flg_show_on_mainpage,0) +
+		cast(coalesce(radius,0) as varchar) +
+		coalesce(polygon,'') +
+		coalesce(group_id,0) +
+		coalesce(external_id,'') +
+		coalesce(external_type,'') +
+		coalesce(dsc_city_normalized_pl,'')
+        ) hash_city
+	from
+	(
+  SELECT
+		a.id opr_city,
+		a.livesync_dbname opr_source_system,
+		a.operation_timestamp,
+		a.operation_type,
+		a.name_pl dsc_city_pl,
+		a.name_en dsc_city_en,
+		a.url,
+		a.county,
+		a.municipality,
+		a.is_unique flg_unique,
+		a.zip,
+		a.city_id,
+		a.lat,
+		a.lon,
+		a.zoom,
+		a.citizens_count,
+		a.citizens_weight,
+		a.region_id opr_region,
+		a.subregion_id opr_subregion,
+		a.main flg_main,
+		a.import_approximation flg_import_approximation,
+		a.show_on_mainpage flg_show_on_mainpage,
+		a.radius,
+		a.polygon,
+		a.group_id,
+		a.external_id,
+		a.external_type,
+		a.name_normalized_pl dsc_city_normalized_pl,
+		scai_execution.cod_execution
+      FROM
+        crm_integration_stg.stg_ro_db_atlas_verticals_cities a,
+        crm_integration_anlt.t_lkp_source_system b,
+        (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_city'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+        ) scai_execution
+    where
+       a.livesync_dbname = b.opr_source_system
+       and b.cod_business_type = 1 -- Verticals
+       and b.cod_country = 4 -- Romania
+       --and 1 = 0
+	  union all
+	  select
+	    a.id opr_city,
+			'olxro' opr_source_system,
+			a.operation_timestamp,
+			a.operation_type,
+			null dsc_city_pl,
+			a.name_ro dsc_city_en,
+			a.url,
+			a.county,
+			a.municipality_ro municipality,
+			a.is_unique flg_unique,
+			a.zip,
+			a.city_id,
+			a.lat,
+			a.lon,
+			a.zoom,
+			a.citizens_count,
+			a.citizens_weight,
+			region_id opr_region,
+			-1 opr_subregion,
+			a.main flg_main,
+			a.import_approximation flg_import_approximation,
+			a.show_on_mainpage flg_show_on_mainpage,
+			a.radius,
+			a.polygon,
+			a.group_id,
+			null external_id,
+			null external_type,
+			null dsc_city_normalized_pl,
+			scai_execution.cod_execution
+      FROM
+        crm_integration_stg.stg_ro_db_atlas_olxro_cities a,
+        (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_city'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+        ) scai_execution
+		--where and 1 = 0
+    ) source,
+		crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+	) source_table,
+		crm_integration_anlt.t_lkp_subregion lkp_subregion,
+		crm_integration_anlt.t_lkp_region lkp_region,
+    (select coalesce(max(cod_city),0) max_cod from crm_integration_anlt.t_lkp_city) max_cod_city,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_city, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_city a
+				)
+			where rn = 1
+	) target
+  where
+    coalesce(source_table.opr_city,-1) = target.opr_city(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and coalesce(source_table.opr_region,-1) = lkp_region.opr_region (+)
+	and source_table.cod_source_system = lkp_region.cod_source_system (+)
+	and lkp_region.valid_to (+) = 20991231
+	and coalesce(source_table.opr_subregion,-1) = lkp_subregion.opr_subregion (+)
+	and source_table.cod_source_system = lkp_subregion.cod_source_system (+)
+	and lkp_subregion.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_city;
+	
+	--$$$
+	
+delete from crm_integration_anlt.t_lkp_city
+using crm_integration_anlt.tmp_ro_load_city
+where 
+	tmp_ro_load_city.dml_type = 'I' 
+	and t_lkp_city.opr_city = tmp_ro_load_city.opr_city
+	and t_lkp_city.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_city');
+
+	--$$$
+	
+update crm_integration_anlt.t_lkp_city
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_city') 
+from crm_integration_anlt.tmp_ro_load_city source
+where source.cod_city = crm_integration_anlt.t_lkp_city.cod_city
+and crm_integration_anlt.t_lkp_city.valid_to = 20991231
+and source.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_lkp_city
+    select
+		case
+			when dml_type = 'I' then max_cod + new_cod
+			when dml_type = 'U' then cod_city
+		end cod_city,
+		opr_city,
+		dsc_city_en,
+		dsc_city_pl,
+		(select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_city') valid_from, 
+		20991231 valid_to,
+		dsc_city_normalized_pl,
+		cod_subregion,
+		cod_region,
+		cod_source_system,
+		url,
+		county,
+		municipality,
+		flg_unique,
+		zip,
+		lat,
+		lon,
+		zoom,
+		citizens_count,
+		citizens_weight,
+		flg_main,
+		flg_import_approximation,
+		flg_show_on_mainpage,
+		radius,
+		polygon,
+		group_id,
+		external_id,
+		external_type,
+		hash_city,
+		cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_city
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_lkp_city;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_city';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_city),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_city'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_lkp_city'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_city;
+
 	--$$$
 	
 -- #######################
@@ -6187,7 +7399,7 @@ create table crm_integration_anlt.tmp_ro_load_atlas_user
 distkey(cod_source_system)
 sortkey(cod_atlas_user, opr_atlas_user)
 as
-select a.*  from (
+select a.*, coalesce(b.cod_city,-2) cod_city from (
 	select
     source_table.opr_atlas_user,
 	source_table.dsc_atlas_user,
@@ -6215,6 +7427,7 @@ select a.*  from (
 	source_table.default_lng,
 	source_table.default_zoom,
 	--source_table.default_district_id,
+	--lkp_city.cod_city,
 	source_table.last_login_ip,
 	source_table.last_login_port,
 	source_table.fraudster,
@@ -6229,7 +7442,7 @@ select a.*  from (
 	source_table.flg_apple_app,
 	source_table.flg_wp_app,
 	source_table.flg_spammer,
-	coalesce(opr_source,'Unknown') opr_source,
+	coalesce(lkp_source.cod_source,-2) cod_source,
 	source_table.flg_hide_user_ads,
 	source_table.flg_email_msg_notif,
 	source_table.flg_email_alarms_notif,
@@ -6571,7 +7784,8 @@ select a.*  from (
 	) source,
     crm_integration_anlt.t_lkp_source_system lkp_source_system
 	where source.opr_source_system = lkp_source_system.opr_source_system
-    ) source_table, 
+    ) source_table,
+	crm_integration_anlt.t_lkp_source lkp_source,
     (select coalesce(max(cod_atlas_user),0) max_cod from crm_integration_anlt.t_lkp_atlas_user) max_cod_atlas_user,
     (
 			select
@@ -6591,8 +7805,14 @@ select a.*  from (
 	) target
   where
     coalesce(source_table.opr_atlas_user,-1) = target.opr_atlas_user(+)
-	and source_table.cod_source_system = target.cod_source_system (+) 
-	) a ;
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
+	and lkp_source.valid_to = 20991231
+	) a,  crm_integration_anlt.t_lkp_city b
+	where
+	coalesce(a.opr_city,-1) = b.opr_city (+)
+	and a.cod_source_system = b.cod_source_system (+)
+	and b.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_ro_load_atlas_user;	
 
@@ -6627,8 +7847,8 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
       20991231 valid_to,
 	  cod_source_system,
-	  opr_source,
-	  opr_city,
+	  cod_source,
+	  cod_city,
 	  email_original,
 	  password,
 	  autologin_rev,
@@ -7009,6 +8229,1279 @@ and proc.dsc_process_short = 't_lkp_contact_upd_atlas_user'
 and t_rel_scai_integration_process.ind_active = 1;
 
 	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_ad'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_ad';
+
+	--$$$
+		
+-- #############################################
+-- # 		     ATLAS - ROMANIA               #
+-- #             LOADING t_lkp_ad              #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_aux_horz;
+
+create table crm_integration_anlt.tmp_ro_load_ad_aux_horz
+as
+	(
+select
+			opr_ad,
+			dsc_ad_title,
+			dsc_ad,
+			opr_source_system,
+			operation_type,
+			operation_timestamp,
+			opr_category,
+			opr_city,
+			opr_atlas_user,
+			last_update_date,
+			created_at,
+			created_at_first,
+			bump_date,
+			ad_valid_to,
+			opr_ad_status,
+			reason_id,
+			remove_reason_details,
+			phone,
+			params,
+			contact_form,
+			ip,
+			port,
+			search_tags,
+			map_address,
+			opr_offer_seek,
+			opr_solr_archive_status,
+			opr_solr_status,
+			external_partner_code,
+			external_id,
+			partner_offer_url,
+			private_business,
+			map_zoom,
+			map_radius,
+			skype,
+			gg,
+			person,
+			visible_in_profile,
+			riak_ring,
+			riak_key,
+			riak_mapping,
+			riak_order,
+			riak_revision,
+			riak_old,
+			riak_validate,
+			riak_sizes,
+			paidads_valid_to,
+			ad_homepage_to,
+			ad_bighomepage_to,
+			opr_rmoderation_status,
+			rmoderation_ranking,
+			rmoderation_previous_description,
+			rmoderation_reasons,
+			rmoderation_ip_country,
+			rmoderation_moderation_started_at,
+			rmoderation_moderation_ended_at,
+			rmoderation_removed_at,
+			rmoderation_verified_by,
+			rmoderation_forwarded_by,
+			rmoderation_bann_reason_id,
+			rmoderation_parent,
+			rmoderation_duplicate_type,
+			rmoderation_markprice,
+			rmoderation_paid,
+			rmoderation_revision,
+			moderation_disable_attribute,
+			opr_source,
+			flg_net_ad_counted,
+			flg_was_paid_for_post,
+			flg_paid_for_post,
+			id_legacy,
+			email,
+			highlight_to,
+			opr_new_used,
+			export_olx_to,
+			olx_id,
+			olx_image_collection_id,
+			migration_last_updated,
+			allegro_id,
+			mysql_search_title,
+			flg_autorenew,
+			brand_program_id,
+			wp_to,
+			walkaround,
+			user_quality_score,
+			updated_at,
+			street_name,
+			street_id,
+			reference_id,
+			punish_no_image_enabled,
+			parent_id,
+			panorama,
+			olx_last_updated,
+			mysql_search_rooms_num,
+			mysql_search_price_per_m,
+			mysql_search_price,
+			movie,
+			mirror_to,
+			mailing_promotion_count,
+			local_plan,
+			header_to,
+			header_category_id,
+			hash,
+			flg_extend_automatically,
+			agent_id,
+			ad_quality_score,
+			view_3d,
+			stand_id,
+			map_lat,
+			map_lon,
+			mysql_search_m,
+			accurate_location,
+			created_at_pushup,
+			overlimit,
+			net_ad_counted,
+			was_paid_for_post,
+			is_paid_for_post,
+			hermes_dirty,
+			hide_adverts,
+			urgent,
+			highlight,
+			topads_to,
+			topads_reminded_at,
+			urgent_to,
+			pushup_recurrencies,
+			pushup_next_recurrency,
+			image_upload_monetization_to,
+			opr_paidad_index, -- não vai ser usado
+			opr_paidad_user_payment, -- não vai ser usado
+			district_id_old, -- não se usa
+			opr_district, -- não se usa
+			opr_region, -- não se usa
+			opr_subregion, -- não se usa
+			district_name, -- não se usa
+			created_at_backup_20150730, -- não se usa
+      cod_execution
+	  from
+		(
+SELECT
+				coalesce(id,-1) opr_ad,
+				title dsc_ad_title,
+				description dsc_ad,
+				'olxro' opr_source_system,
+				operation_type,
+				operation_timestamp,
+				coalesce(category_id,-1) opr_category,
+				coalesce(city_id,-1) opr_city,
+				coalesce(user_id,-1) opr_atlas_user,
+				cast(null as timestamp) last_update_date,
+				created_at,
+				created_at_first,
+				cast(null as timestamp) bump_date,
+				valid_to ad_valid_to,
+				coalesce(status,'Unknown') opr_ad_status,
+				reason_id,
+				remove_reason_details,
+				phone,
+				params,
+				contactform contact_form,
+				ip,
+				cast(null as bigint) as port,
+				search_tags,
+				map_address,
+				coalesce(offer_seek,'Unknown') opr_offer_seek,
+				coalesce(solr_archive_status,'Unknown') opr_solr_archive_status,
+				coalesce(solr_status,'Unknown') opr_solr_status,
+				external_partner_code,
+				external_id,
+				partner_offer_url,
+				private_business,
+				map_zoom,
+				map_radius,
+				skype,
+				gg,
+				person,
+				visible_in_profile,
+				riak_ring,
+				riak_key,
+				riak_mapping,
+				riak_order,
+				riak_revision,
+				riak_old,
+				riak_validate,
+				riak_sizes,
+				paidads_valid_to,
+				ad_homepage_to,
+				cast(null as timestamp) ad_bighomepage_to,
+				coalesce(rmoderation_status,'Unknown') opr_rmoderation_status,
+				rmoderation_ranking,
+				rmoderation_previous_description,
+				rmoderation_reasons,
+				rmoderation_ip_country,
+				rmoderation_moderation_started_at,
+				rmoderation_moderation_ended_at,
+				rmoderation_removed_at,
+				rmoderation_verified_by,
+				rmoderation_forwarded_by,
+				rmoderation_bann_reason_id,
+				rmoderation_parent,
+				rmoderation_duplicate_type,
+				rmoderation_markprice,
+				rmoderation_paid,
+				rmoderation_revision,
+				moderation_disable_attribute,
+				coalesce(source,'Unknown') opr_source,
+				cast(null as bigint) flg_net_ad_counted,
+				cast(null as bigint) flg_was_paid_for_post,
+				cast(null as bigint) flg_paid_for_post,
+				null id_legacy,
+				null email,
+				cast(null as timestamp) highlight_to,
+				'Unknown' opr_new_used,
+				cast(null as timestamp) export_olx_to,
+				cast(null as bigint) olx_id,
+				cast(null as bigint) olx_image_collection_id,
+				cast(null as timestamp) migration_last_updated,
+				cast(null as bigint) allegro_id,
+				null mysql_search_title,
+				cast(null as bigint) flg_autorenew,
+				cast(null as bigint) brand_program_id,
+				cast(null as timestamp) wp_to,
+				null walkaround,
+				cast(null as numeric(18)) user_quality_score,
+				cast(null as timestamp) updated_at,
+				null street_name,
+				cast(null as bigint) street_id,
+				null reference_id,
+				cast(null as bigint) punish_no_image_enabled,
+				cast(null as bigint) parent_id,
+				null panorama,
+				cast(null as timestamp) olx_last_updated,
+				null mysql_search_rooms_num,
+				cast(null as numeric(18)) mysql_search_price_per_m,
+				cast(null as numeric(18)) mysql_search_price,
+				null movie,
+				cast(null as timestamp) mirror_to,
+				cast(null as bigint) mailing_promotion_count,
+				null local_plan,
+				cast(null as timestamp) header_to,
+				cast(null as bigint) header_category_id,
+				null hash,
+				cast(null as bigint) flg_extend_automatically,
+				cast(null as bigint) agent_id,
+				cast(null as numeric(18)) ad_quality_score,
+				null view_3d,
+				cast(null as bigint) stand_id,
+				map_lat,
+				map_lon,
+				cast(null as bigint) mysql_search_m,
+				accurate_location,
+				created_at_pushup,
+				overlimit,
+				net_ad_counted,
+				cast(null as bigint) was_paid_for_post,
+				cast(null as bigint) is_paid_for_post,
+				hermes_dirty,
+				hide_adverts,
+				cast(null as bigint) urgent,
+				cast(null as timestamp) highlight,
+				cast(null as timestamp) topads_to,
+				cast(null as timestamp) topads_reminded_at,
+				cast(null as timestamp) urgent_to,
+				cast(null as bigint) pushup_recurrencies,
+				cast(null as timestamp) pushup_next_recurrency,
+				cast(null as timestamp) image_upload_monetization_to,
+				paidads_id_index opr_paidad_index, -- não vai ser usado
+				paidads_id_payment opr_paidad_user_payment, -- não vai ser usado
+				cast(null as bigint) district_id_old, -- não se usa
+				cast(null as bigint) opr_district, -- não se usa
+				cast(null as bigint) opr_region, -- não se usa
+				cast(null as bigint) opr_subregion, -- não se usa
+				null district_name, -- não se usa
+				cast(null as timestamp) created_at_backup_20150730, -- não se usa
+				row_number() over (partition by id order by operation_type desc) rn,
+				scai_execution.cod_execution
+			  FROM
+				crm_integration_stg.stg_ro_db_atlas_olxro_ads,
+				(
+				  select
+					max(fac.cod_execution) cod_execution
+				  from
+					crm_integration_anlt.t_lkp_scai_process proc,
+					crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+					crm_integration_anlt.t_fac_scai_execution fac
+				  where
+					rel_integr_proc.cod_process = proc.cod_process
+					and rel_integr_proc.cod_country = 4
+					and rel_integr_proc.cod_integration = 30000
+					and rel_integr_proc.ind_active = 1
+					and proc.dsc_process_short = 't_lkp_ad'
+					and fac.cod_process = rel_integr_proc.cod_process
+					and fac.cod_integration = rel_integr_proc.cod_integration
+					and rel_integr_proc.dat_processing = fac.dat_processing
+					and fac.cod_status = 2
+			   ) scai_execution
+			  --where 1 = 0
+		)
+	where
+		rn = 1
+);
+
+analyze crm_integration_anlt.tmp_ro_load_ad_aux_horz;
+
+	--$$$
+
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_aux;
+
+create table crm_integration_anlt.tmp_ro_load_ad_aux
+distkey(opr_ad)
+sortkey(opr_ad, opr_source_system, opr_category, opr_city, opr_atlas_user, opr_ad_status, opr_offer_seek, opr_solr_archive_status, opr_solr_status, opr_rmoderation_status, opr_source, opr_new_used)
+as
+(
+SELECT
+		coalesce(id,-1) opr_ad,
+		title dsc_ad_title,
+		description dsc_ad,
+		livesync_dbname opr_source_system,
+		operation_type,
+		operation_timestamp,
+		coalesce(category_id,-1) opr_category,
+		coalesce(city_id,-1) opr_city,
+		coalesce(user_id,-1) opr_atlas_user,
+		last_update_date,
+		created_at,
+		created_at_first,
+		bump_date,
+		a.valid_to ad_valid_to,
+		coalesce(status,'Unknown') opr_ad_status,
+		reason_id,
+		remove_reason_details,
+		phone,
+		params,
+		contactform contact_form,
+		ip,
+		port,
+		search_tags,
+		map_address,
+		coalesce(offer_seek,'Unknown') opr_offer_seek,
+		coalesce(solr_archive_status,'Unknown') opr_solr_archive_status,
+		coalesce(solr_status,'Unknown') opr_solr_status,
+		external_partner_code,
+		external_id,
+		partner_offer_url,
+		private_business,
+		map_zoom,
+		map_radius,
+		skype,
+		gg,
+		person,
+		visible_in_profile,
+		riak_ring,
+		riak_key,
+		riak_mapping,
+		riak_order,
+		riak_revision,
+		riak_old,
+		riak_validate,
+		riak_sizes,
+		paidads_valid_to,
+		ad_homepage_to,
+		ad_bighomepage_to,
+		coalesce(rmoderation_status,'Unknown') opr_rmoderation_status,
+		rmoderation_ranking,
+		rmoderation_previous_description,
+		rmoderation_reasons,
+		rmoderation_ip_country,
+		rmoderation_moderation_started_at,
+		rmoderation_moderation_ended_at,
+		rmoderation_removed_at,
+		rmoderation_verified_by,
+		rmoderation_forwarded_by,
+		rmoderation_bann_reason_id,
+		rmoderation_parent,
+		rmoderation_duplicate_type,
+		rmoderation_markprice,
+		rmoderation_paid,
+		rmoderation_revision,
+		moderation_disable_attribute,
+		coalesce(source,'Unknown') opr_source,
+		net_ad_counted flg_net_ad_counted,
+		was_paid_for_post flg_was_paid_for_post,
+		is_paid_for_post flg_paid_for_post,
+		id_legacy,
+		email,
+		highlight_to,
+		coalesce(new_used,'Unknown') opr_new_used,
+		export_olx_to,
+		olx_id,
+		olx_image_collection_id,
+		migration_last_updated,
+		allegro_id,
+		mysql_search_title,
+		autorenew flg_autorenew,
+		brand_program_id,
+		wp_to,
+		walkaround,
+		user_quality_score,
+		updated_at,
+		street_name,
+		street_id,
+		reference_id,
+		punish_no_image_enabled,
+		parent_id,
+		panorama,
+		olx_last_updated,
+		mysql_search_rooms_num,
+		mysql_search_price_per_m,
+		mysql_search_price,
+		movie,
+		mirror_to,
+		mailing_promotion_count,
+		local_plan,
+		header_to,
+		header_category_id,
+		hash,
+		extend_automatically flg_extend_automatically,
+		agent_id,
+		ad_quality_score,
+		"3dview" view_3d,
+		stand_id,
+		map_lat,
+		map_lon,
+		mysql_search_m,
+		cast(null as bigint) accurate_location,
+		cast(null as timestamp) created_at_pushup,
+		cast(null as varchar) overlimit,
+		cast(null as bigint) net_ad_counted,
+		cast(null as bigint) was_paid_for_post,
+		cast(null as bigint) is_paid_for_post,
+		cast(null as bigint) hermes_dirty,
+		cast(null as bigint) hide_adverts,
+		cast(null as bigint) urgent,
+		cast(null as timestamp) highlight,
+		cast(null as timestamp) topads_to,
+		cast(null as timestamp) topads_reminded_at,
+		cast(null as timestamp) urgent_to,
+		cast(null as bigint) pushup_recurrencies,
+		cast(null as timestamp) pushup_next_recurrency,
+		cast(null as timestamp) image_upload_monetization_to,
+		paidads_id_index opr_paidad_index, -- não vai ser usado
+		paidads_id_payment opr_paidad_user_payment, -- não vai ser usado
+		district_id_old, -- não se usa
+		district_id opr_district, -- não se usa
+		region_id opr_region, -- não se usa
+		subregion_id opr_subregion, -- não se usa
+		district_name, -- não se usa
+		created_at_backup_20150730, -- não se usa
+		scai_execution.cod_execution
+      FROM
+		crm_integration_stg.stg_ro_db_atlas_verticals_ads a,
+		crm_integration_anlt.t_lkp_source_system b,
+    (
+      select
+        max(fac.cod_execution) cod_execution
+      from
+        crm_integration_anlt.t_lkp_scai_process proc,
+        crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+        crm_integration_anlt.t_fac_scai_execution fac
+      where
+        rel_integr_proc.cod_process = proc.cod_process
+        and rel_integr_proc.cod_country = 4
+        and rel_integr_proc.cod_integration = 30000
+        and rel_integr_proc.ind_active = 1
+        and proc.dsc_process_short = 't_lkp_ad'
+        and fac.cod_process = rel_integr_proc.cod_process
+        and fac.cod_integration = rel_integr_proc.cod_integration
+        and rel_integr_proc.dat_processing = fac.dat_processing
+        and fac.cod_status = 2
+   ) scai_execution
+	  where
+		a.livesync_dbname = b.opr_source_system
+		and b.cod_business_type = 1 -- Verticals
+		and b.cod_country = 4 -- Romania
+		--and 1 = 0
+	  union all
+	  select
+			opr_ad,
+			dsc_ad_title,
+			dsc_ad,
+			opr_source_system,
+			operation_type,
+			operation_timestamp,
+			opr_category,
+			opr_city,
+			opr_atlas_user,
+			last_update_date,
+			created_at,
+			created_at_first,
+			bump_date,
+			ad_valid_to,
+			opr_ad_status,
+			reason_id,
+			remove_reason_details,
+			phone,
+			params,
+			contact_form,
+			ip,
+			port,
+			search_tags,
+			map_address,
+			opr_offer_seek,
+			opr_solr_archive_status,
+			opr_solr_status,
+			external_partner_code,
+			external_id,
+			partner_offer_url,
+			private_business,
+			map_zoom,
+			map_radius,
+			skype,
+			gg,
+			person,
+			visible_in_profile,
+			riak_ring,
+			riak_key,
+			riak_mapping,
+			riak_order,
+			riak_revision,
+			riak_old,
+			riak_validate,
+			riak_sizes,
+			paidads_valid_to,
+			ad_homepage_to,
+			ad_bighomepage_to,
+			opr_rmoderation_status,
+			rmoderation_ranking,
+			rmoderation_previous_description,
+			rmoderation_reasons,
+			rmoderation_ip_country,
+			rmoderation_moderation_started_at,
+			rmoderation_moderation_ended_at,
+			rmoderation_removed_at,
+			rmoderation_verified_by,
+			rmoderation_forwarded_by,
+			rmoderation_bann_reason_id,
+			rmoderation_parent,
+			rmoderation_duplicate_type,
+			rmoderation_markprice,
+			rmoderation_paid,
+			rmoderation_revision,
+			moderation_disable_attribute,
+			opr_source,
+			flg_net_ad_counted,
+			flg_was_paid_for_post,
+			flg_paid_for_post,
+			id_legacy,
+			email,
+			highlight_to,
+			opr_new_used,
+			export_olx_to,
+			olx_id,
+			olx_image_collection_id,
+			migration_last_updated,
+			allegro_id,
+			mysql_search_title,
+			flg_autorenew,
+			brand_program_id,
+			wp_to,
+			walkaround,
+			user_quality_score,
+			updated_at,
+			street_name,
+			street_id,
+			reference_id,
+			punish_no_image_enabled,
+			parent_id,
+			panorama,
+			olx_last_updated,
+			mysql_search_rooms_num,
+			mysql_search_price_per_m,
+			mysql_search_price,
+			movie,
+			mirror_to,
+			mailing_promotion_count,
+			local_plan,
+			header_to,
+			header_category_id,
+			hash,
+			flg_extend_automatically,
+			agent_id,
+			ad_quality_score,
+			view_3d,
+			stand_id,
+			map_lat,
+			map_lon,
+			mysql_search_m,
+			accurate_location,
+			created_at_pushup,
+			overlimit,
+			net_ad_counted,
+			was_paid_for_post,
+			is_paid_for_post,
+			hermes_dirty,
+			hide_adverts,
+			urgent,
+			highlight,
+			topads_to,
+			topads_reminded_at,
+			urgent_to,
+			pushup_recurrencies,
+			pushup_next_recurrency,
+			image_upload_monetization_to,
+			opr_paidad_index, -- não vai ser usado
+			opr_paidad_user_payment, -- não vai ser usado
+			district_id_old, -- não se usa
+			opr_district, -- não se usa
+			opr_region, -- não se usa
+			opr_subregion, -- não se usa
+			district_name, -- não se usa
+			created_at_backup_20150730, -- não se usa
+			cod_execution
+	  from
+		crm_integration_anlt.tmp_ro_load_ad_aux_horz
+);
+
+analyze crm_integration_anlt.tmp_ro_load_ad_aux;
+
+	--$$$
+
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_md5_step1;
+	
+create table crm_integration_anlt.tmp_ro_load_ad_md5_step1
+distkey(opr_ad)
+sortkey(opr_ad, opr_source_system)
+as
+  SELECT
+      source.*,
+      lkp_source_system.cod_source_system
+  FROM
+      crm_integration_anlt.tmp_ro_load_ad_aux source,
+      crm_integration_anlt.t_lkp_source_system lkp_source_system
+  where
+      source.opr_source_system = lkp_source_system.opr_source_system;	
+
+analyze crm_integration_anlt.tmp_ro_load_ad_md5_step1;
+
+
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_md5_step2;
+
+create table crm_integration_anlt.tmp_ro_load_ad_md5_step2
+distkey(opr_ad)
+sortkey(opr_ad, opr_source_system, opr_category, opr_city, opr_atlas_user, opr_ad_status, opr_offer_seek, opr_solr_archive_status, opr_solr_status, opr_rmoderation_status, opr_source, opr_new_used)
+as
+SELECT
+		source.*,
+		md5
+		(
+			coalesce(dsc_ad_title                                                            ,'') +
+			coalesce(dsc_ad                                                                  ,'') +
+			coalesce(opr_category                                                            ,0) +
+			coalesce(opr_city                                                                ,0) +
+			coalesce(opr_atlas_user                                                          ,0) +
+			--coalesce(bump_date                                                               ,'2099-12-31 00:00:00.000000') +
+			coalesce(ad_valid_to                                                             ,'2099-12-31 00:00:00.000000') +
+			coalesce(opr_ad_status                                                           ,'') +
+			coalesce(reason_id                                                               ,0) +
+			coalesce(remove_reason_details                                                   ,'') +
+			coalesce(phone                                                                   ,'') +
+			coalesce(params                                                                  ,'') +
+			coalesce(contact_form                                                            ,0) +
+			coalesce(ip                                                                      ,0) +
+			coalesce(port                                                                    ,0) +
+			coalesce(search_tags                                                             ,'') +
+			coalesce(map_address                                                             ,'') +
+			coalesce(opr_offer_seek                                                          ,'') +
+			coalesce(opr_solr_archive_status                                                 ,'') +
+			coalesce(opr_solr_status                                                         ,'') +
+			coalesce(external_partner_code                                                   ,'') +
+			coalesce(external_id                                                             ,'') +
+			coalesce(partner_offer_url                                                       ,'') +
+			coalesce(private_business                                                        ,'') +
+			coalesce(map_zoom                                                                ,0) +
+			coalesce(map_radius                                                              ,0) +
+			coalesce(skype                                                                   ,'') +
+			coalesce(gg                                                                      ,'') +
+			coalesce(person                                                                  ,'') +
+			coalesce(visible_in_profile                                                      ,0) +
+			coalesce(riak_ring                                                               ,0) +
+			coalesce(riak_key                                                                ,0) +
+			coalesce(riak_mapping                                                            ,0) +
+			coalesce(riak_order                                                              ,'') +
+			coalesce(riak_revision                                                           ,0) +
+			coalesce(riak_old                                                                ,0) +
+			coalesce(riak_validate                                                           ,0) +
+			coalesce(riak_sizes                                                              ,'') +
+			--coalesce(paidads_valid_to                                                        ,'2099-12-31 00:00:00.000000') +
+			--coalesce(ad_homepage_to                                                          ,'2099-12-31 00:00:00.000000') +
+			--coalesce(ad_bighomepage_to                                                       ,'2099-12-31 00:00:00.000000') +
+			coalesce(opr_rmoderation_status                                                  ,'') +
+			coalesce(rmoderation_ranking                                                     ,0) +
+			coalesce(rmoderation_previous_description                                        ,'') +
+			coalesce(rmoderation_reasons                                                     ,'') +
+			coalesce(rmoderation_ip_country                                                  ,'') +
+			--coalesce(rmoderation_moderation_started_at                                       ,'2099-12-31 00:00:00.000000') +
+			--coalesce(rmoderation_moderation_ended_at                                         ,'2099-12-31 00:00:00.000000') +
+			--coalesce(rmoderation_removed_at                                                  ,'2099-12-31 00:00:00.000000') +
+			coalesce(rmoderation_verified_by                                                 ,0) +
+			coalesce(rmoderation_forwarded_by                                                ,0) +
+			coalesce(rmoderation_bann_reason_id                                              ,0) +
+			coalesce(rmoderation_parent                                                      ,0) +
+			coalesce(rmoderation_duplicate_type                                              ,'') +
+			coalesce(rmoderation_markprice                                                   ,0) +
+			coalesce(rmoderation_paid                                                        ,0) +
+			coalesce(rmoderation_revision                                                    ,0) +
+			coalesce(moderation_disable_attribute                                            ,'') +
+			coalesce(opr_source                                                              ,'') +
+			coalesce(flg_net_ad_counted                                                      ,0) +
+			coalesce(flg_was_paid_for_post                                                   ,0) +
+			coalesce(flg_paid_for_post                                                    ,0) +
+			coalesce(id_legacy                                                               ,'') +
+			coalesce(email                                                                   ,'') +
+			--coalesce(highlight_to                                                            ,'2099-12-31 00:00:00.000000') +
+			coalesce(opr_new_used                                                            ,'') +
+			--coalesce(export_olx_to                                                           ,'2099-12-31 00:00:00.000000') +
+			coalesce(olx_id                                                                  ,0) +
+			coalesce(olx_image_collection_id                                                 ,0) +
+			--coalesce(migration_last_updated                                                  ,'2099-12-31 00:00:00.000000') +
+			coalesce(allegro_id                                                              ,0) +
+			coalesce(mysql_search_title                                                      ,'') +
+			coalesce(flg_autorenew                                                           ,0) +
+			coalesce(brand_program_id                                                        ,0) +
+			--coalesce(wp_to                                                                   ,'2099-12-31 00:00:00.000000') +
+			coalesce(walkaround                                                              ,'') +
+			cast(coalesce(user_quality_score                                                 ,0) as varchar) +
+			--coalesce(updated_at                                                              ,'2099-12-31 00:00:00.000000') +
+			coalesce(street_name                                                             ,'') +
+			coalesce(street_id                                                               ,0) +
+			coalesce(reference_id                                                            ,'') +
+			coalesce(punish_no_image_enabled                                                 ,0) +
+			coalesce(parent_id                                                               ,0) +
+			coalesce(panorama                                                                ,'') +
+			--coalesce(olx_last_updated                                                        ,'2099-12-31 00:00:00.000000') +
+			coalesce(mysql_search_rooms_num                                                  ,'') +
+			cast(coalesce(mysql_search_price_per_m                                           ,0) as varchar) +
+			cast(coalesce(mysql_search_price                                                 ,0) as varchar) +
+			coalesce(movie                                                                   ,'') +
+			--coalesce(mirror_to                                                               ,'2099-12-31 00:00:00.000000') +
+			coalesce(mailing_promotion_count                                                 ,0) +
+			coalesce(local_plan                                                              ,'') +
+			--coalesce(header_to                                                               ,'2099-12-31 00:00:00.000000') +
+			coalesce(header_category_id                                                      ,0) +
+			coalesce(hash                                                                    ,'') +
+			coalesce(flg_extend_automatically                                                ,0) +
+			coalesce(agent_id                                                                ,0) +
+			cast(coalesce(ad_quality_score                                                   ,0) as varchar) +
+			coalesce(view_3d                                                                 ,'') +
+			coalesce(stand_id                                                                ,0) +
+			cast(coalesce(map_lat                                                            ,0) as varchar) +
+			cast(coalesce(map_lon                                                            ,0) as varchar) +
+			cast(coalesce(mysql_search_m                                                     ,0) as varchar) +
+			coalesce(accurate_location                                                       ,0) +
+			--coalesce(created_at_pushup                                                       ,'2099-12-31 00:00:00.000000') +
+			coalesce(overlimit                                                               ,'') +
+			coalesce(net_ad_counted                                                          ,0) +
+			coalesce(was_paid_for_post                                                       ,0) +
+			coalesce(is_paid_for_post                                                        ,0) +
+			coalesce(hermes_dirty                                                            ,0) +
+			coalesce(hide_adverts                                                            ,0) +
+			coalesce(urgent                                                                  ,0) +
+			--coalesce(highlight                                                               ,'2099-12-31 00:00:00.000000') +
+			--coalesce(topads_to                                                               ,'2099-12-31 00:00:00.000000') +
+			--coalesce(topads_reminded_at                                                      ,'2099-12-31 00:00:00.000000') +
+			--coalesce(urgent_to                                                               ,'2099-12-31 00:00:00.000000') +
+			coalesce(pushup_recurrencies                                                     ,0)
+			--coalesce(pushup_next_recurrency                                                  ,'2099-12-31 00:00:00.000000') +
+			--coalesce(image_upload_monetization_to                                            ,'2099-12-31 00:00:00.000000')
+	    ) hash_ad
+	  FROM
+		crm_integration_anlt.tmp_ro_load_ad_md5_step1 source;
+
+analyze crm_integration_anlt.tmp_ro_load_ad_md5_step2;
+	
+	--$$$
+	
+drop table if exists crm_integration_anlt.tmp_ro_load_ad;
+
+create table crm_integration_anlt.tmp_ro_load_ad 
+distkey(cod_ad)
+sortkey(cod_ad, opr_ad, dml_type, cod_source_system)
+as
+  select source.*, coalesce(lkp_city.cod_city,-1) cod_city, coalesce(lkp_atlas_user.cod_atlas_user,-1) cod_atlas_user, coalesce(lkp_category.cod_category,-1) cod_category
+		from
+	(
+ select
+  source_table.opr_ad,
+	source_table.dsc_ad_title,
+	source_table.dsc_ad,
+	--lkp_category.cod_category,
+	source_table.opr_category,
+	--lkp_city.cod_city,
+	source_table.opr_city,
+	--lkp_atlas_user.cod_atlas_user,
+	source_table.opr_atlas_user,
+	source_table.operation_type,
+	source_table.operation_timestamp,
+	source_table.last_update_date,
+	source_table.created_at,
+	source_table.created_at_first,
+	source_table.bump_date,
+	source_table.ad_valid_to,
+	coalesce(lkp_ad_status.cod_ad_status,-2) cod_ad_status,
+	source_table.reason_id,
+	source_table.remove_reason_details,
+	source_table.phone,
+	source_table.params,
+	source_table.contact_form,
+	source_table.ip,
+	source_table.port,
+	source_table.search_tags,
+	source_table.map_address,
+	coalesce(lkp_offer_seek.cod_offer_seek,-2) cod_offer_seek,
+	coalesce(lkp_solr_archive_status.cod_solr_archive_status,-2) cod_solr_archive_status,
+	coalesce(lkp_solr_status.cod_solr_status,-2) cod_solr_status,
+	source_table.external_partner_code,
+	source_table.external_id,
+	source_table.partner_offer_url,
+	source_table.private_business,
+	source_table.map_zoom,
+	source_table.map_radius,
+	source_table.skype,
+	source_table.gg,
+	source_table.person,
+	source_table.visible_in_profile,
+	source_table.riak_ring,
+	source_table.riak_key,
+	source_table.riak_mapping,
+	source_table.riak_order,
+	source_table.riak_revision,
+	source_table.riak_old,
+	source_table.riak_validate,
+	source_table.riak_sizes,
+	source_table.paidads_valid_to,
+	source_table.ad_homepage_to,
+	source_table.ad_bighomepage_to,
+	coalesce(lkp_rmoderation_status.cod_rmoderation_status,-2) cod_rmoderation_status,
+	source_table.rmoderation_ranking,
+	source_table.rmoderation_previous_description,
+	source_table.rmoderation_reasons,
+	source_table.rmoderation_ip_country,
+	source_table.rmoderation_moderation_started_at,
+	source_table.rmoderation_moderation_ended_at,
+	source_table.rmoderation_removed_at,
+	source_table.rmoderation_verified_by,
+	source_table.rmoderation_forwarded_by,
+	source_table.rmoderation_bann_reason_id,
+	source_table.rmoderation_parent,
+	source_table.rmoderation_duplicate_type,
+	source_table.rmoderation_markprice,
+	source_table.rmoderation_paid,
+	source_table.rmoderation_revision,
+	source_table.moderation_disable_attribute,
+	coalesce(lkp_source.cod_source,-2) cod_source,
+	source_table.flg_net_ad_counted,
+	source_table.flg_was_paid_for_post,
+	source_table.flg_paid_for_post,
+	source_table.id_legacy,
+	source_table.email,
+	source_table.highlight_to,
+	coalesce(lkp_new_used.cod_new_used,-2) cod_new_used,
+	source_table.export_olx_to,
+	source_table.olx_id,
+	source_table.olx_image_collection_id,
+	source_table.migration_last_updated,
+	source_table.allegro_id,
+	source_table.mysql_search_title,
+	source_table.flg_autorenew,
+	source_table.brand_program_id,
+	source_table.wp_to,
+	source_table.walkaround,
+	source_table.user_quality_score,
+	source_table.updated_at,
+	source_table.street_name,
+	source_table.street_id,
+	source_table.reference_id,
+	source_table.punish_no_image_enabled,
+	source_table.parent_id,
+	source_table.panorama,
+	source_table.olx_last_updated,
+	source_table.mysql_search_rooms_num,
+	source_table.mysql_search_price_per_m,
+	source_table.mysql_search_price,
+	source_table.movie,
+	source_table.mirror_to,
+	source_table.mailing_promotion_count,
+	source_table.local_plan,
+	source_table.header_to,
+	source_table.header_category_id,
+	source_table.hash_ad,
+	source_table.flg_extend_automatically,
+	source_table.agent_id,
+	source_table.ad_quality_score,
+	source_table.view_3d,
+	source_table.stand_id,
+	source_table.map_lat,
+	source_table.map_lon,
+	source_table.mysql_search_m,
+	source_table.accurate_location,
+	source_table.created_at_pushup,
+	source_table.overlimit,
+	source_table.net_ad_counted,
+	source_table.was_paid_for_post,
+	source_table.is_paid_for_post,
+	source_table.hermes_dirty,
+	source_table.hide_adverts,
+	source_table.urgent,
+	source_table.highlight,
+	source_table.topads_to,
+	source_table.topads_reminded_at,
+	source_table.urgent_to,
+	source_table.pushup_recurrencies,
+	source_table.pushup_next_recurrency,
+	source_table.image_upload_monetization_to,
+	source_table.hash,
+    source_table.cod_source_system,
+	source_table.cod_execution,
+    max_cod_ad.max_cod,
+    row_number() over (order by source_table.opr_ad desc) new_cod,
+    target.cod_ad,
+    case
+      --when target.cod_ad is null then 'I'
+	  when target.cod_ad is null or (source_table.hash_ad != target.hash_ad and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')) then 'I'
+	  when source_table.operation_type = 'delete' then 'D'
+      when source_table.hash_ad != target.hash_ad then 'U'
+        else 'X'
+    end dml_type
+  from
+	crm_integration_anlt.tmp_ro_load_ad_md5_step2 source_table,
+	crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
+	crm_integration_anlt.t_lkp_offer_seek lkp_offer_seek,
+	crm_integration_anlt.t_lkp_solr_archive_status lkp_solr_archive_status,
+	crm_integration_anlt.t_lkp_solr_status lkp_solr_status,
+	crm_integration_anlt.t_lkp_rmoderation_status lkp_rmoderation_status,
+	crm_integration_anlt.t_lkp_source lkp_source,
+	crm_integration_anlt.t_lkp_new_used lkp_new_used,
+    (select coalesce(max(cod_ad),0) max_cod from crm_integration_anlt.t_lkp_ad) max_cod_ad,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_ad, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_ad a
+				)
+			where rn = 1
+	) target
+ where
+	source_table.opr_ad = target.opr_ad(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and source_table.opr_ad_status = lkp_ad_status.opr_ad_status
+	and lkp_ad_status.valid_to = 20991231
+	and source_table.opr_offer_seek = lkp_offer_seek.opr_offer_seek
+	and lkp_offer_seek.valid_to = 20991231
+	and source_table.opr_solr_archive_status = lkp_solr_archive_status.opr_solr_archive_status
+	and lkp_solr_archive_status.valid_to = 20991231
+	and source_table.opr_solr_status = lkp_solr_status.opr_solr_status
+	and lkp_solr_status.valid_to = 20991231
+	and source_table.opr_rmoderation_status = lkp_rmoderation_status.opr_rmoderation_status
+	and lkp_rmoderation_status.valid_to = 20991231
+	and source_table.opr_source = lkp_source.opr_source
+	and lkp_source.valid_to = 20991231
+	and source_table.opr_new_used = lkp_new_used.opr_new_used
+	and lkp_new_used.valid_to = 20991231
+) source,
+	crm_integration_anlt.t_lkp_city lkp_city,
+	crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
+	crm_integration_anlt.t_lkp_category lkp_category
+where 
+	coalesce(source.opr_city,-1) = lkp_city.opr_city (+)
+	and source.cod_source_system = lkp_city.cod_source_system (+) -- new
+	and lkp_city.valid_to (+) = 20991231
+	and coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+	and lkp_atlas_user.valid_to (+) = 20991231
+	and coalesce(source.opr_category,-1) = lkp_category.opr_category (+)
+	and source.cod_source_system = lkp_category.cod_source_system (+) -- new
+	and lkp_category.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_ad;
+	
+	--$$$ 
+	
+delete from crm_integration_anlt.t_lkp_ad
+using crm_integration_anlt.tmp_ro_load_ad
+where 
+	tmp_ro_load_ad.dml_type = 'I' 
+	and t_lkp_ad.cod_ad = tmp_ro_load_ad.cod_ad
+	and t_lkp_ad.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad');
+	
+	--$$$
+	
+update crm_integration_anlt.t_lkp_ad
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad')
+from crm_integration_anlt.tmp_ro_load_ad source
+where source.cod_ad = crm_integration_anlt.t_lkp_ad.cod_ad
+and crm_integration_anlt.t_lkp_ad.valid_to = 20991231
+and source.dml_type in('U','D');
+
+insert into crm_integration_anlt.t_lkp_ad
+    select
+		case
+			when dml_type = 'I' then max_cod + new_cod
+			when dml_type = 'U' then cod_ad
+		end cod_ad,
+		opr_ad,
+		dsc_ad_title,
+		dsc_ad,
+		(select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_ad') valid_from, 
+		20991231 valid_to,
+		cod_source_system,
+		cod_category,
+		cod_city,
+		cod_atlas_user,
+		last_update_date,
+		created_at,
+		created_at_first,
+		bump_date,
+		ad_valid_to,
+		cod_ad_status,
+		reason_id,
+		remove_reason_details,
+		phone,
+		params,
+		contact_form,
+		ip,
+		port,
+		search_tags,
+		map_address,
+		cod_offer_seek,
+		cod_solr_archive_status,
+		cod_solr_status,
+		external_partner_code,
+		external_id,
+		partner_offer_url,
+		private_business,
+		map_zoom,
+		map_radius,
+		skype,
+		gg,
+		person,
+		visible_in_profile,
+		riak_ring,
+		riak_key,
+		riak_mapping,
+		riak_order,
+		riak_revision,
+		riak_old,
+		riak_validate,
+		riak_sizes,
+		paidads_valid_to,
+		ad_homepage_to,
+		ad_bighomepage_to,
+		cod_rmoderation_status,
+		rmoderation_ranking,
+		rmoderation_previous_description,
+		rmoderation_reasons,
+		rmoderation_ip_country,
+		rmoderation_moderation_started_at,
+		rmoderation_moderation_ended_at,
+		rmoderation_removed_at,
+		rmoderation_verified_by,
+		rmoderation_forwarded_by,
+		rmoderation_bann_reason_id,
+		rmoderation_parent,
+		rmoderation_duplicate_type,
+		rmoderation_markprice,
+		rmoderation_paid,
+		rmoderation_revision,
+		moderation_disable_attribute,
+		cod_source,
+		flg_net_ad_counted,
+		flg_was_paid_for_post,
+		flg_paid_for_post,
+		id_legacy,
+		email,
+		highlight_to,
+		cod_new_used,
+		export_olx_to,
+		olx_id,
+		olx_image_collection_id,
+		migration_last_updated,
+		allegro_id,
+		mysql_search_title,
+		flg_autorenew,
+		brand_program_id,
+		wp_to,
+		walkaround,
+		user_quality_score,
+		updated_at,
+		street_name,
+		street_id,
+		reference_id,
+		punish_no_image_enabled,
+		parent_id,
+		panorama,
+		olx_last_updated,
+		mysql_search_rooms_num,
+		mysql_search_price_per_m,
+		mysql_search_price,
+		movie,
+		mirror_to,
+		mailing_promotion_count,
+		local_plan,
+		header_to,
+		header_category_id,
+		hash,
+		flg_extend_automatically,
+		agent_id,
+		ad_quality_score,
+		view_3d,
+		stand_id,
+		map_lat,
+		map_lon,
+		mysql_search_m,
+		accurate_location,
+		created_at_pushup,
+		overlimit,
+		net_ad_counted,
+		was_paid_for_post,
+		is_paid_for_post,
+		hermes_dirty,
+		hide_adverts,
+		urgent,
+		highlight,
+		topads_to,
+		topads_reminded_at,
+		urgent_to,
+		pushup_recurrencies,
+		pushup_next_recurrency,
+		image_upload_monetization_to,
+		hash_ad,
+		cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_ad
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_lkp_ad;
+	  
+	--$$$ 
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_ad';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_ad),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_ad'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_lkp_ad'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_ad;
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_md5_step2;
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_md5_step1;
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_aux;
+drop table if exists crm_integration_anlt.tmp_ro_load_ad_aux_horz;
+
+	--$$$
 
 
 -- #######################
@@ -7205,30 +9698,73 @@ as
     source_table.opr_ad,
 	source_table.cod_execution,
     coalesce(lkp_atlas_receiver.cod_atlas_user,-2) cod_atlas_user_receiver,
-    coalesce(source_table.opr_source,'Unknown') opr_source,
+    coalesce(lkp_source.cod_source,-2) cod_source,
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
     crm_integration_anlt.tmp_ro_load_answer_step1_outgoing source_table,
-    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_receiver, 
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_receiver,
+    crm_integration_anlt.t_lkp_source lkp_source,
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_outgoing) max_cod_answer
   where
     coalesce(source_table.opr_atlas_user_receiver,-1) = lkp_atlas_receiver.opr_atlas_user
     and source_table.cod_source_system = lkp_atlas_receiver.cod_source_system -- new
-    and lkp_atlas_receiver.valid_to = 20991231 ;
+    and lkp_atlas_receiver.valid_to = 20991231
+  and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
+  and lkp_source.valid_to = 20991231;
  
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
- 	
+ 
+--$$$
+ 
+create table crm_integration_anlt.tmp_ro_load_answer_step3_outgoing
+distkey(opr_answer)
+sortkey(opr_answer, cod_source_system)
+as
+  select
+    source_table.opr_answer,
+	source_table.operation_timestamp,
+    source_table.sender_phone,
+    source_table.flg_readed,
+    source_table.flg_star,
+    source_table.dat_posted,
+    source_table.dat_readed_at,
+    source_table.number,
+    source_table.dat_last_posted_in,
+    source_table.dat_last_posted_out,
+    source_table.opr_answer_last_posted,
+    source_table.ip,
+    source_table.port,
+    source_table.embrace_user_id,
+    source_table.olx_conversation_id,
+    source_table.opr_answer_parent,
+    source_table.cod_source_system,
+    coalesce(lkp_ad.cod_ad,-2) cod_ad,
+    source_table.cod_atlas_user_receiver,
+    source_table.cod_source,
+    source_table.max_cod,
+    source_table.new_cod,
+	source_table.cod_execution
+  from
+    crm_integration_anlt.tmp_ro_load_answer_step2_outgoing source_table,
+    crm_integration_anlt.t_lkp_ad lkp_ad
+  where
+    coalesce(source_table.opr_ad,-1) = lkp_ad.opr_ad
+    and source_table.cod_source_system = lkp_ad.cod_source_system -- new
+    and lkp_ad.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_answer_step3_outgoing;
+	
 	--$$$
 	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
-where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing)
-and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing);
+where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step3_outgoing)
+and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step3_outgoing);
 
 delete from crm_integration_anlt.t_fac_answer_outgoing
-where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing)
-and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing);
+where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step3_outgoing)
+and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step3_outgoing);
 
 --$$$ -- 140
 
@@ -7237,7 +9773,7 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
       max_cod + new_cod cod_answer,
       opr_answer,
       opr_answer_parent,
-      opr_ad,
+      cod_ad,
       cod_atlas_user_receiver,
       cod_source_system,
       sender_phone,
@@ -7251,13 +9787,13 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
       opr_answer_last_posted,
       ip,
       port,
-      opr_source,
+      cod_source,
       embrace_user_id,
       olx_conversation_id,
       null hash_answer,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
+      crm_integration_anlt.tmp_ro_load_answer_step3_outgoing;
 
 analyze crm_integration_anlt.t_fac_answer_outgoing;
 	  
@@ -7297,15 +9833,29 @@ insert into crm_integration_anlt.t_fac_scai_execution
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
 last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_ad'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc 
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 4
 and proc.dsc_process_short = 't_fac_answer_outgoing'
-and t_rel_scai_integration_process.ind_active = 1;
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step1_outgoing;
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
+drop table if exists crm_integration_anlt.tmp_ro_load_answer_step3_outgoing;
 
 	--$$$
 	
@@ -7502,20 +10052,63 @@ as
     source_table.opr_ad,
 	source_table.cod_execution,
     coalesce(lkp_atlas_sender.cod_atlas_user,-2) cod_atlas_user_sender,
-    coalesce(source_table.opr_source,'Unknown') opr_source,
+    coalesce(lkp_source.cod_source,-2) cod_source,
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
     crm_integration_anlt.tmp_ro_load_answer_step1_incoming source_table,
-    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_sender, 
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_sender,
+    crm_integration_anlt.t_lkp_source lkp_source,
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_incoming) max_cod_answer
   where
     coalesce(source_table.opr_atlas_user_sender,-1) = lkp_atlas_sender.opr_atlas_user
     and source_table.cod_source_system = lkp_atlas_sender.cod_source_system -- new
-    and lkp_atlas_sender.valid_to = 20991231 ;
+    and lkp_atlas_sender.valid_to = 20991231
+    and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
+    and lkp_source.valid_to = 20991231;
 
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
-		
+	
+	--$$$
+
+create table crm_integration_anlt.tmp_ro_load_answer_step3_incoming
+distkey(opr_answer)
+sortkey(opr_answer, cod_source_system)
+as
+  select
+    source_table.opr_answer,
+	  source_table.operation_timestamp,
+    source_table.sender_phone,
+    source_table.flg_readed,
+    source_table.flg_star,
+    source_table.dat_posted,
+    source_table.dat_readed_at,
+    source_table.number,
+    source_table.dat_last_posted_in,
+    source_table.dat_last_posted_out,
+    source_table.opr_answer_last_posted,
+    source_table.ip,
+    source_table.port,
+    source_table.embrace_user_id,
+    source_table.olx_conversation_id,
+    source_table.opr_answer_parent,
+    source_table.cod_source_system,
+    coalesce(lkp_ad.cod_ad,-2) cod_ad,
+    source_table.cod_atlas_user_sender,
+    source_table.cod_source,
+    source_table.max_cod,
+    source_table.new_cod,
+	source_table.cod_execution
+  from
+    crm_integration_anlt.tmp_ro_load_answer_step2_incoming source_table,
+    crm_integration_anlt.t_lkp_ad lkp_ad
+  where
+    coalesce(source_table.opr_ad,-1) = lkp_ad.opr_ad
+    and source_table.cod_source_system = lkp_ad.cod_source_system -- new
+    and lkp_ad.valid_to = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_answer_step3_incoming;
+	
 	--$$$
 
 insert into crm_integration_anlt.t_hst_answer_incoming
@@ -7534,7 +10127,7 @@ insert into crm_integration_anlt.t_fac_answer_incoming
       max_cod + new_cod cod_answer,
       opr_answer,
       opr_answer_parent,
-      opr_ad,
+      cod_ad,
       cod_atlas_user_sender,
       cod_source_system,
       sender_phone,
@@ -7548,13 +10141,13 @@ insert into crm_integration_anlt.t_fac_answer_incoming
       opr_answer_last_posted,
       ip,
       port,
-      opr_source,
+      cod_source,
       embrace_user_id,
       olx_conversation_id,
       null hash_answer,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
+      crm_integration_anlt.tmp_ro_load_answer_step3_incoming;
 
 analyze crm_integration_anlt.t_fac_answer_incoming;
 	  
@@ -7596,15 +10189,1155 @@ insert into crm_integration_anlt.t_fac_scai_execution
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
 last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_answer_step2_incoming),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_ad'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 4
 and proc.dsc_process_short = 't_fac_answer_incoming'
-and t_rel_scai_integration_process.ind_active = 1;
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step1_incoming;
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
+drop table if exists crm_integration_anlt.tmp_ro_load_answer_step3_incoming;
+
+	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_paidad_user_payment'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_paidad_user_payment';
+
+	--$$$
+	
+-- #############################################
+-- # 		     ATLAS - ROMANIA               #
+-- #    LOADING t_fac_paidad_user_payment      #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
+
+create table crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1 
+distkey(opr_atlas_user)
+sortkey(opr_atlas_user, opr_paidad_user_payment, dml_type, cod_source_system)
+as
+  select source.*, coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index, coalesce(lkp_ad.cod_ad,-2) cod_ad
+	from
+		(
+	  select
+		source_table.opr_paidad_user_payment,
+		source_table.dsc_paidad_user_payment,
+		source_table.operation_timestamp,
+		source_table.opr_payment_session,
+		cast(to_char(trunc(source_table.dat_paidad_user_payment) , 'YYYYMMDD') as bigint) dat_paidad_user_payment, -- yyyymmdd int
+		source_table.dat_paidad_user_payment dat_payment, -- timestamp
+		source_table.val_price,
+		source_table.dat_valid_to,
+		source_table.flg_renewed,
+		source_table.id_newsletter,
+		source_table.val_current_credits,
+		source_table.flg_invoice_sent,
+		source_table.flg_money_back_on_bank_account,
+		source_table.id_invoice,
+		source_table.id_invoice_sap,
+		source_table.flg_removed_from_invoice,
+		source_table.flg_invalid_item,
+		source_table.flg_vas,
+		source_table.sap_id_invoice,
+		source_table.migration_data,
+		source_table.flg_migrated,
+		source_table.hash_paidad_user_payment,
+		source_table.cod_source_system,
+		coalesce(lkp_payment_provider.cod_payment_provider,-2) cod_payment_provider,
+		--lkp_paidad_index.cod_paidad_index,
+		source_table.opr_paidad_index,
+		--lkp_ad.cod_ad,
+		source_table.opr_ad,
+		--lkp_atlas_user.cod_atlas_user,
+		source_table.opr_atlas_user,
+		source_table.cod_execution,
+		max_cod_paidad_user_payment.max_cod,
+		row_number() over (order by source_table.opr_paidad_user_payment desc) new_cod,
+		target.cod_paidad_user_payment,
+		case
+			when target.cod_paidad_user_payment is null then 'I'
+			when source_table.hash_paidad_user_payment != target.hash_paidad_user_payment then 'U'
+			else 'X'
+		end dml_type
+  from
+    (
+      SELECT
+		source.*,
+		lkp_source_system.cod_source_system,
+		md5
+		(
+			coalesce(opr_atlas_user                          ,0) +
+			coalesce(opr_payment_session   				,0) +
+			coalesce(opr_ad                                  ,0) +
+			coalesce(dsc_paidad_user_payment             ,'') +
+			cast(coalesce(val_price                          ,0) as varchar) +
+			coalesce(dat_paidad_user_payment               ,'2099-12-31 00:00:00.000000') +
+			coalesce(dat_valid_to                            ,'2099-12-31 00:00:00.000000') +
+			coalesce(opr_payment_provider                    ,'') +
+			coalesce(opr_paidad_index                       ,0) +
+			coalesce(flg_renewed                             ,0) +
+			coalesce(id_newsletter                           ,0) +
+			cast(coalesce(val_current_credits                ,0) as varchar) +
+			coalesce(flg_invoice_sent                        ,0) +
+			coalesce(flg_money_back_on_bank_account          ,0) +
+			coalesce(id_invoice                              ,0) +
+			coalesce(id_invoice_sap                          ,0) +
+			coalesce(flg_removed_from_invoice                ,0) +
+			coalesce(flg_invalid_item                        ,0) +
+			coalesce(flg_vas                                 ,0) +
+			coalesce(sap_id_invoice                          ,0) +
+			coalesce(migration_data                          ,'') +
+			coalesce(flg_migrated                            ,0)
+	    ) hash_paidad_user_payment
+	  FROM
+	  (
+      SELECT
+        id opr_paidad_user_payment,
+			  livesync_dbname opr_source_system,
+			  operation_timestamp,
+			  id_user opr_atlas_user,
+			  id_transaction opr_payment_session,
+			  id_ad opr_ad,
+			  name dsc_paidad_user_payment,
+			  price val_price,
+			  date dat_paidad_user_payment,
+			  paidads_valid_to dat_valid_to,
+			  payment_provider opr_payment_provider,
+			  id_index opr_paidad_index,
+			  is_renewed flg_renewed,
+			  id_newsletter,
+			  current_credits val_current_credits,
+			  invoice_sent flg_invoice_sent,
+			  money_back_on_bank_account flg_money_back_on_bank_account,
+			  id_invoice,
+			  id_invoice_sap,
+			  is_removed_from_invoice flg_removed_from_invoice,
+			  is_invalid_item flg_invalid_item,
+			  is_vas flg_vas,
+			  sap_id_invoice,
+			  migration_data,
+			  migrated flg_migrated,
+			  row_number() over (partition by id order by operation_type desc) rn,
+        scai_execution.cod_execution
+            FROM
+              crm_integration_stg.stg_ro_db_atlas_verticals_paidads_user_payments a,
+              crm_integration_anlt.t_lkp_source_system b,
+             (
+              select
+                max(fac.cod_execution) cod_execution
+              from
+                crm_integration_anlt.t_lkp_scai_process proc,
+                crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+                crm_integration_anlt.t_fac_scai_execution fac
+              where
+                rel_integr_proc.cod_process = proc.cod_process
+                and rel_integr_proc.cod_country = 4
+                and rel_integr_proc.cod_integration = 30000
+                and rel_integr_proc.ind_active = 1
+                and proc.dsc_process_short = 't_fac_paidad_user_payment'
+                and fac.cod_process = rel_integr_proc.cod_process
+                and fac.cod_integration = rel_integr_proc.cod_integration
+                and rel_integr_proc.dat_processing = fac.dat_processing
+                and fac.cod_status = 2
+             ) scai_execution
+            where
+              a.livesync_dbname = b.opr_source_system
+              and b.cod_business_type = 1 -- Verticals
+              and b.cod_country = 4 -- Romania
+			  --and 1 = 0
+      union all
+      SELECT
+        id opr_paidad_user_payment,
+			  'olxro' opr_source_system,
+			  operation_timestamp,
+			  id_user opr_atlas_user,
+			  id_transaction opr_payment_session,
+			  id_ad opr_ad,
+			  name dsc_paidad_user_payment,
+			  price val_price,
+			  date dat_paidad_user_payment,
+			  paidads_valid_to dat_valid_to,
+			  payment_provider opr_payment_provider,
+			  id_index opr_paidad_index,
+			  is_renewed flg_renewed,
+			  cast(null as bigint) id_newsletter,
+			  current_credits val_current_credits,
+			  null flg_invoice_sent,
+			  null flg_money_back_on_bank_account,
+			  null id_invoice,
+			  null id_invoice_sap,
+			  null flg_removed_from_invoice,
+			  null flg_invalid_item,
+			  null flg_vas,
+			  null sap_id_invoice,
+			  null migration_data,
+			  null flg_migrated,
+			  row_number() over (partition by id order by operation_type desc) rn,
+        scai_execution.cod_execution
+            FROM
+              crm_integration_stg.stg_ro_db_atlas_olxro_paidads_user_payments,
+              (
+                select
+                  max(fac.cod_execution) cod_execution
+                from
+                  crm_integration_anlt.t_lkp_scai_process proc,
+                  crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+                  crm_integration_anlt.t_fac_scai_execution fac
+                where
+                  rel_integr_proc.cod_process = proc.cod_process
+                  and rel_integr_proc.cod_country = 4
+                  and rel_integr_proc.cod_integration = 30000
+                  and rel_integr_proc.ind_active = 1
+                  and proc.dsc_process_short = 't_fac_paidad_user_payment'
+                  and fac.cod_process = rel_integr_proc.cod_process
+                  and fac.cod_integration = rel_integr_proc.cod_integration
+                  and rel_integr_proc.dat_processing = fac.dat_processing
+                  and fac.cod_status = 2
+               ) scai_execution
+			--where 1 = 0
+        ) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+    ) source_table,
+	  crm_integration_anlt.t_lkp_payment_provider lkp_payment_provider,
+    (select coalesce(max(cod_paidad_user_payment),0) max_cod from crm_integration_anlt.t_fac_paidad_user_payment) max_cod_paidad_user_payment,
+    crm_integration_anlt.t_fac_paidad_user_payment target
+  where
+    coalesce(source_table.opr_paidad_user_payment,-1) = target.opr_paidad_user_payment(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+    and coalesce(source_table.opr_payment_provider,'Unknown') = lkp_payment_provider.opr_payment_provider
+    and lkp_payment_provider.valid_to = 20991231
+    and source_table.rn = 1
+) source,
+	crm_integration_anlt.t_lkp_paidad_index lkp_paidad_index,
+	crm_integration_anlt.t_lkp_ad lkp_ad
+where
+	coalesce(source.opr_paidad_index,-1) = lkp_paidad_index.opr_paidad_index(+)
+	and source.cod_source_system = lkp_paidad_index.cod_source_system(+) -- new
+    and lkp_paidad_index.valid_to(+) = 20991231
+    and coalesce(source.opr_ad,-1) = lkp_ad.opr_ad(+)
+	and source.cod_source_system = lkp_ad.cod_source_system(+) -- new
+    and lkp_ad.valid_to(+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
+
+create table crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
+distkey(opr_paidad_user_payment)
+sortkey(opr_paidad_user_payment, dml_type, cod_source_system)
+as
+	select
+		source.*, coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+	from
+		crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1 source,
+		crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+	where
+    coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+		and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+    and lkp_atlas_user.valid_to(+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
+	
+	--$$$
+	
+insert into crm_integration_anlt.t_hst_paidad_user_payment
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_paidad_user_payment target,
+      crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2 source
+    where
+      target.cod_paidad_user_payment = source.cod_paidad_user_payment
+      and source.dml_type = 'U';
+
+	--$$$
+	
+delete from crm_integration_anlt.t_fac_paidad_user_payment
+using crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
+where crm_integration_anlt.t_fac_paidad_user_payment.cod_paidad_user_payment=crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2.cod_paidad_user_payment
+and crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_fac_paidad_user_payment
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_paidad_user_payment
+      end cod_paidad_user_payment,
+	  dat_paidad_user_payment,
+	  opr_paidad_user_payment,
+	  dsc_paidad_user_payment,
+	  opr_payment_session,
+	  cod_source_system,
+	  cod_atlas_user,
+	  cod_ad,
+	  val_price,
+	  dat_payment,
+	  dat_valid_to,
+	  cod_paidad_index,
+	  flg_renewed,
+	  cod_payment_provider,
+	  id_newsletter,
+	  val_current_credits,
+	  flg_invoice_sent,
+	  flg_money_back_on_bank_account,
+	  id_invoice,
+	  id_invoice_sap,
+	  flg_removed_from_invoice,
+	  flg_invalid_item,
+	  flg_vas,
+	  sap_id_invoice,
+	  flg_migrated,
+	  migration_data,
+	  hash_paidad_user_payment,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_fac_paidad_user_payment;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_paidad_user_payment';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_paidad_user_payment'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_fac_paidad_user_payment'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step1;
+drop table if exists crm_integration_anlt.tmp_ro_load_paidad_user_payment_step2;
+
+	--$$$
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_session'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_session';
+
+	--$$$
+	
+-- #############################################
+-- # 		     ATLAS - ROMANIA               #
+-- #       LOADING t_fac_payment_session       #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_session;
+
+create table crm_integration_anlt.tmp_ro_load_payment_session 
+distkey(cod_payment_session)
+sortkey(cod_payment_session, dml_type, cod_source_system)
+as
+  select
+    source_table.opr_payment_session,
+	source_table.operation_timestamp,
+	source_table.created_at,
+	source_table.last_status_date,
+	source_table.ip,
+	source_table.external_id,
+	source_table.request,
+	source_table.message,
+    source_table.additional_data,
+    source_table.migration_data,
+    source_table.flg_migrated,
+    source_table.hash_payment_session,
+    source_table.cod_source_system,
+    source_table.cod_execution,
+    coalesce(lkp_payment_provider.cod_payment_provider,-2) cod_payment_provider,
+    coalesce(lkp_payment_status.cod_payment_status,-2) cod_payment_status,
+    coalesce(lkp_source.cod_source,-2) cod_source,
+    max_cod_payment_session.max_cod,
+    row_number() over (order by source_table.opr_payment_session desc) new_cod,
+    target.cod_payment_session,
+    case
+      when target.cod_payment_session is null then 'I'
+      when source_table.hash_payment_session != target.hash_payment_session then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+      SELECT
+		source.*,
+		lkp_source_system.cod_source_system,
+		md5
+		(
+			--coalesce(created_at                            ,'2099-12-31 00:00:00.000000') +
+			--coalesce(last_status_date                      ,'2099-12-31 00:00:00.000000') +
+			coalesce(ip                                      ,0) +
+			coalesce(opr_payment_status                      ,'') +
+			coalesce(opr_payment_provider                    ,'') +
+			coalesce(external_id                             ,0) +
+			coalesce(request                                 ,'')+
+			coalesce(message                                 ,'') +
+			coalesce(opr_source                              ,'') +
+			coalesce(additional_data                         ,'') +
+			coalesce(migration_data                          ,'') +
+			coalesce(flg_migrated                            ,0)
+	    ) hash_payment_session
+	  FROM
+	  (
+            SELECT
+				id opr_payment_session,
+				livesync_dbname opr_source_system,
+				operation_timestamp,
+				created_at,
+				last_status_date,
+				ip,
+				status opr_payment_status,
+				provider opr_payment_provider,
+				external_id,
+				request,
+				message,
+				source opr_source,
+				additional_data,
+				migration_data,
+				migrated flg_migrated,
+				row_number() over (partition by id order by operation_type desc) rn,
+				scai_execution.cod_execution
+            FROM
+            crm_integration_stg.stg_ro_db_atlas_verticals_payment_session a,
+            crm_integration_anlt.t_lkp_source_system b,
+            (
+              select
+                max(fac.cod_execution) cod_execution
+              from
+                crm_integration_anlt.t_lkp_scai_process proc,
+                crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+                crm_integration_anlt.t_fac_scai_execution fac
+              where
+                rel_integr_proc.cod_process = proc.cod_process
+                and rel_integr_proc.cod_country = 4
+                and rel_integr_proc.cod_integration = 30000
+                and rel_integr_proc.ind_active = 1
+                and proc.dsc_process_short = 't_fac_payment_session'
+                and fac.cod_process = rel_integr_proc.cod_process
+                and fac.cod_integration = rel_integr_proc.cod_integration
+                and rel_integr_proc.dat_processing = fac.dat_processing
+                and fac.cod_status = 2
+            ) scai_execution
+            where
+				a.livesync_dbname = b.opr_source_system
+				and b.cod_business_type = 1 -- Verticals
+				and b.cod_country = 4 -- Romania
+				--and 1 = 0
+            union all
+			SELECT
+				id opr_payment_session,
+				'olxro' opr_source_system,
+				operation_timestamp,
+				created_at,
+				last_status_date,
+				ip,
+				status opr_payment_status,
+				provider opr_payment_provider,
+				external_id,
+				request,
+				message,
+				source opr_source,
+				null additional_data,
+				null migration_data,
+				null flg_migrated,
+				row_number() over (partition by id order by operation_type desc) rn,
+				scai_execution.cod_execution
+			FROM
+				crm_integration_stg.stg_ro_db_atlas_olxro_payment_session,
+        (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_fac_payment_session'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+        ) scai_execution
+			  --where 1 = 0
+        ) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+    ) source_table,
+    crm_integration_anlt.t_lkp_source lkp_source,
+    crm_integration_anlt.t_lkp_payment_status lkp_payment_status,
+	crm_integration_anlt.t_lkp_payment_provider lkp_payment_provider,
+    (select coalesce(max(cod_payment_session),0) max_cod from crm_integration_anlt.t_fac_payment_session) max_cod_payment_session,
+    crm_integration_anlt.t_fac_payment_session target
+  where
+    coalesce(source_table.opr_payment_session,-1) = target.opr_payment_session(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+    and coalesce(source_table.opr_payment_provider,'Unknown') = lkp_payment_provider.opr_payment_provider
+	and lkp_payment_provider.valid_to = 20991231
+    and coalesce(source_table.opr_payment_status,'Unknown') = lkp_payment_status.opr_payment_status
+    and lkp_payment_status.valid_to = 20991231
+    and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
+    and lkp_source.valid_to = 20991231
+	and source_table.rn = 1;
+
+analyze crm_integration_anlt.tmp_ro_load_payment_session;
+	
+	--$$$
+	
+insert into crm_integration_anlt.t_hst_payment_session
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_payment_session target,
+      crm_integration_anlt.tmp_ro_load_payment_session source
+    where
+      target.cod_payment_session = source.cod_payment_session
+      and source.dml_type = 'U';
+
+	--$$$
+	
+delete from crm_integration_anlt.t_fac_payment_session
+using crm_integration_anlt.tmp_ro_load_payment_session
+where crm_integration_anlt.t_fac_payment_session.cod_payment_session=crm_integration_anlt.tmp_ro_load_payment_session.cod_payment_session
+and crm_integration_anlt.tmp_ro_load_payment_session.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_fac_payment_session
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_payment_session
+      end cod_payment_session,
+	  opr_payment_session,
+	  created_at,
+	  last_status_date,
+	  ip,
+	  cod_payment_status,
+	  cod_payment_provider,
+	  external_id,
+	  request,
+	  message,
+	  cod_source,
+	  additional_data,
+	  migration_data,
+	  flg_migrated,
+	  cod_source_system,
+	  hash_payment_session,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_payment_session
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_fac_payment_session;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_session';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_payment_session),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_session'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_fac_payment_session'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_session;
+
+	--$$$ -- 160
+	
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_basket';
+
+	--$$$
+	
+-- #############################################
+-- # 		     ATLAS - ROMANIA               #
+-- #       LOADING t_fac_payment_basket        #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step1;
+
+create table crm_integration_anlt.tmp_ro_load_payment_basket_step1 
+distkey(opr_atlas_user)
+sortkey(opr_atlas_user, cod_payment_basket, dml_type, cod_source_system)
+as
+  select source.*,
+    coalesce(lkp_payment_session.cod_payment_session,-2) cod_payment_session,
+    coalesce(lkp_paidad_index.cod_paidad_index,-2) cod_paidad_index,
+    coalesce(lkp_ad.cod_ad,-2) cod_ad
+  from
+    (
+	select
+    source_table.opr_payment_basket,
+    --source_table.opr_source_system,
+    --source_table.opr_payment_session,
+    --source_table.opr_payment_index,
+    --source_table.opr_ad,
+    --source_table.opr_atlas_user,
+	source_table.operation_timestamp,
+    source_table.test_id,
+    source_table.test_group_id,
+    source_table.price,
+    source_table.from_account,
+    source_table.flg_refunded,
+    source_table.flg_used,
+    source_table.flg_cleared,
+    source_table.extra_params,
+    source_table.update_at,
+    source_table.viewed_test_id,
+    source_table.viewed_test_group_id,
+    source_table.migration_data,
+    source_table.flg_migrated,
+    source_table.from_bonus_credits,
+    source_table.from_refund_credits,
+    source_table.hash_payment_basket,
+    source_table.cod_source_system,
+    --lkp_payment_session.cod_payment_session,
+    source_table.opr_payment_session,
+    --lkp_paidad_index.cod_paidad_index,
+    source_table.opr_payment_index,
+    --lkp_ad.cod_ad,
+    source_table.opr_ad,
+    --lkp_atlas_user.cod_atlas_user,
+    source_table.opr_atlas_user,
+    source_table.cod_execution,
+    max_cod_payment_basket.max_cod,
+    row_number() over (order by source_table.opr_payment_basket desc) new_cod,
+    target.cod_payment_basket,
+    case
+      when target.cod_payment_basket is null then 'I'
+      when source_table.hash_payment_basket != target.hash_payment_basket then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+      select
+        source.*,
+		lkp_source_system.cod_source_system,
+		md5
+        (coalesce(opr_payment_session,0) + coalesce(opr_payment_index,0) + coalesce(opr_ad,0) + coalesce(opr_atlas_user,0)) hash_payment_basket
+    from
+      (
+            SELECT
+              id opr_payment_basket,
+              livesync_dbname opr_source_system,
+			  operation_timestamp,
+              session_id opr_payment_session,
+              index_id opr_payment_index,
+              ad_id opr_ad,
+              user_id opr_atlas_user,
+              test_id,
+              test_group_id,
+              price,
+              from_account,
+              refunded flg_refunded,
+              used flg_used,
+              cleared flg_cleared,
+              extra_params,
+              update_at,
+              viewed_test_id,
+              viewed_test_group_id,
+              migration_data,
+              migrated flg_migrated,
+              cast(null as numeric(8,2)) from_bonus_credits,
+              cast(null as numeric(8,2)) from_refund_credits,
+              row_number() over (partition by id order by operation_type desc) rn,
+              scai_execution.cod_execution
+            FROM
+              crm_integration_stg.stg_ro_db_atlas_verticals_payment_basket a,
+              crm_integration_anlt.t_lkp_source_system b,
+              (
+                select
+                  max(fac.cod_execution) cod_execution
+                from
+                  crm_integration_anlt.t_lkp_scai_process proc,
+                  crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+                  crm_integration_anlt.t_fac_scai_execution fac
+                where
+                  rel_integr_proc.cod_process = proc.cod_process
+                  and rel_integr_proc.cod_country = 4
+                  and rel_integr_proc.cod_integration = 30000
+                  and rel_integr_proc.ind_active = 1
+                  and proc.dsc_process_short = 't_fac_payment_basket'
+                  and fac.cod_process = rel_integr_proc.cod_process
+                  and fac.cod_integration = rel_integr_proc.cod_integration
+                  and rel_integr_proc.dat_processing = fac.dat_processing
+                  and fac.cod_status = 2
+              ) scai_execution
+            where
+              a.livesync_dbname = b.opr_source_system
+              and b.cod_business_type = 1 -- Verticals
+              and b.cod_country = 4 -- Romania
+			  --and 1 = 0
+    union all
+    SELECT
+        id opr_payment_basket,
+        'olxro' opr_source_system,
+		operation_timestamp,
+        session_id opr_payment_session,
+        index_id opr_payment_index,
+        ad_id opr_ad,
+        user_id opr_atlas_user,
+        test_id,
+        test_group_id,
+        price,
+        from_account,
+        refunded flg_refunded,
+        used flg_used,
+        cleared flg_cleared,
+        extra_params,
+        null update_at,
+        null viewed_test_id,
+        null viewed_test_group_id,
+        null migration_data,
+        null flg_migrated,
+        from_bonus_credits,
+        from_refund_credits,
+        row_number() over (partition by id order by operation_type desc) rn,
+        scai_execution.cod_execution
+    FROM
+        crm_integration_stg.stg_ro_db_atlas_olxro_payment_basket,
+    		 (
+          select
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_fac_payment_basket'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+         ) scai_execution
+	--where 1 = 0
+        ) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+    ) source_table,
+    (select coalesce(max(cod_payment_basket),0) max_cod from crm_integration_anlt.t_fac_payment_basket) max_cod_payment_basket,
+    crm_integration_anlt.t_fac_payment_basket target
+  where
+    coalesce(source_table.opr_payment_basket,-1) = target.opr_payment_basket(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and source_table.rn = 1
+) source,
+    crm_integration_anlt.t_fac_payment_session lkp_payment_session,
+    crm_integration_anlt.t_lkp_paidad_index lkp_paidad_index,
+    crm_integration_anlt.t_lkp_ad lkp_ad
+  where
+    coalesce(source.opr_payment_session,-1) = lkp_payment_session.opr_payment_session (+)
+	and source.cod_source_system = lkp_payment_session.cod_source_system (+) -- new
+    and coalesce(source.opr_payment_index,-1) = lkp_paidad_index.opr_paidad_index (+)
+	and source.cod_source_system = lkp_paidad_index.cod_source_system (+) -- new
+    and lkp_paidad_index.valid_to (+) = 20991231
+    and coalesce(source.opr_ad,-1) = lkp_ad.opr_ad (+)
+	and source.cod_source_system = lkp_ad.cod_source_system (+) -- new
+    and lkp_ad.valid_to (+) = 20991231;
+
+analyze crm_integration_anlt.tmp_ro_load_payment_basket_step1;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step2;
+
+create table crm_integration_anlt.tmp_ro_load_payment_basket_step2
+distkey(cod_payment_basket)
+sortkey(cod_payment_basket, dml_type, cod_source_system)
+as
+select
+	source.*, coalesce(lkp_atlas_user.cod_atlas_user,-2) cod_atlas_user
+from
+	crm_integration_anlt.tmp_ro_load_payment_basket_step1 source,
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user
+where
+	coalesce(source.opr_atlas_user,-1) = lkp_atlas_user.opr_atlas_user (+)
+	and source.cod_source_system = lkp_atlas_user.cod_source_system (+) -- new
+    and lkp_atlas_user.valid_to (+) = 20991231;
+	
+analyze crm_integration_anlt.tmp_ro_load_payment_basket_step2;
+	
+	--$$$
+	
+insert into crm_integration_anlt.t_hst_payment_basket
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_payment_basket target,
+      crm_integration_anlt.tmp_ro_load_payment_basket_step2 source
+    where
+      target.cod_payment_basket = source.cod_payment_basket
+      and source.dml_type = 'U';
+
+	--$$$
+	
+delete from crm_integration_anlt.t_fac_payment_basket
+using crm_integration_anlt.tmp_ro_load_payment_basket_step2
+where crm_integration_anlt.t_fac_payment_basket.cod_payment_basket=crm_integration_anlt.tmp_ro_load_payment_basket_step2.cod_payment_basket
+and crm_integration_anlt.tmp_ro_load_payment_basket_step2.dml_type = 'U';
+
+	--$$$
+	
+insert into crm_integration_anlt.t_fac_payment_basket
+    select
+      case
+        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'U' then cod_payment_basket
+      end cod_payment_basket,
+      opr_payment_basket,
+      cod_payment_session,
+      cod_paidad_index,
+      cod_ad,
+      cod_source_system,
+      cod_atlas_user,
+      test_id,
+      test_group_id,
+      price,
+      from_account,
+      flg_refunded,
+      flg_used,
+      flg_cleared,
+      extra_params,
+      update_at,
+      viewed_test_id,
+      viewed_test_group_id,
+      migration_data,
+      flg_migrated,
+      from_bonus_credits,
+      from_refund_credits,
+      hash_payment_basket,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_ro_load_payment_basket_step2
+    where
+      dml_type in ('U','I');
+
+analyze crm_integration_anlt.t_fac_payment_basket;
+	  
+	--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_fac_payment_basket';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_ro_load_payment_basket_step2),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_fac_payment_basket'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step1;
+drop table if exists crm_integration_anlt.tmp_ro_load_payment_basket_step2;
 
 	--$$$
 	
@@ -7757,8 +11490,8 @@ as
   select
     source_table.server_date_day dat_event,
     source_table.server_date_day_datetime,
-    source_table.cod_source_system, 
-	coalesce(source_table.opr_ad,-2) opr_ad,
+    source_table.cod_source_system,
+    coalesce(lkp_ad.cod_ad,-2) cod_ad,
     coalesce(lkp_event.cod_event,-2) cod_event,
     source_table.occurrences,
     source_table.distinct_occurrences,
@@ -7766,9 +11499,13 @@ as
 	source_table.cod_execution
   from
     crm_integration_anlt.tmp_ro_load_web_step1 source_table,
-    crm_integration_anlt.t_lkp_event lkp_event 
-  where 
-        coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
+    crm_integration_anlt.t_lkp_event lkp_event,
+    crm_integration_anlt.t_lkp_ad lkp_ad
+  where
+    coalesce(source_table.opr_ad,-1) = lkp_ad.opr_ad(+)
+    and source_table.cod_source_system = lkp_ad.cod_source_system(+)
+    and lkp_ad.valid_to(+) = 20991231
+    and coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
     and lkp_event.valid_to(+) = 20991231;
 
 analyze crm_integration_anlt.tmp_ro_load_web;
@@ -7778,8 +11515,8 @@ where crm_integration_anlt.t_fac_web.dat_event in (select distinct dat_event fro
 and crm_integration_anlt.t_fac_web.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_web);
 
 insert into crm_integration_anlt.t_fac_web
-    select 
-	  opr_ad,
+    select
+      cod_ad,
       dat_event,
       cod_event,
       cod_source_system,

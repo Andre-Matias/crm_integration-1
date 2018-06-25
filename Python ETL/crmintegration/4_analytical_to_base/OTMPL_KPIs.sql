@@ -302,22 +302,22 @@ FROM
 			  base_contact.cod_contact,
 			  scai.dat_processing dat_snap,
 			  base_contact.cod_source_system,
-			  city.name_en custom_field_value --not using dsc_city_pl
+			  city.dsc_city_en custom_field_value --not using dsc_city_pl
 			from
 			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai,
-			  db_atlas_verticals.cities city
+			  crm_integration_anlt.t_lkp_city city
 			where
 			  atlas_user.cod_source_system = 7
 			  and base_contact.cod_source_system = 12
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
-			  and base_contact.valid_to = 20991231 
+			  and base_contact.valid_to = 20991231
+			  and city.valid_to = 20991231
 			  and scai.cod_integration = 50000
-			  and city.id = atlas_user.opr_city
-			  and city.livesync_dbname = 'otomotopl'
-			  and scai.cod_country = 2
+			  and city.cod_city = atlas_user.cod_city
+				and scai.cod_country = 2
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -576,33 +576,34 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.date desc, inner_core.id desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
 						from
 							(
 								select
 									atlas_user.dsc_atlas_user,
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
-									fac.name custom_field_value,
-									fac.date,
-									fac.id
+									fac.dsc_paidad_user_payment custom_field_value,
+									fac.dat_paidad_user_payment,
+									fac.opr_paidad_user_payment
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
-									db_atlas_verticals.paidads_user_payments fac,
+									crm_integration_anlt.t_fac_paidad_user_payment fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type 
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
+									crm_integration_anlt.t_lkp_payment_provider provider
 								where
 									atlas_user.cod_source_system = 7
 									and atlas_user.valid_to = 20991231
 									and scai.cod_integration = 50000
-									and atlas_user.cod_atlas_user = fac.id_user (+)
-									and fac.id_index = idx.opr_paidad_index (+)
-									and 7 = idx.cod_source_system (+)
-									and idx.cod_index_type = idx_type.cod_index_type(+) 
-									and lower(fac.payment_provider) != 'admin'
+									and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
+									and fac.cod_paidad_index = idx.cod_paidad_index (+)
+									and fac.cod_source_system = idx.cod_source_system (+)
+									and idx.cod_index_type = idx_type.cod_index_type(+)
+									and fac.cod_payment_provider = provider.cod_payment_provider (+)
+									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
-									and fac.livesync_dbname = 'otomotopl'
 									and scai.cod_country = 2
 							) inner_core
 					)
@@ -801,34 +802,37 @@ from
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               db_atlas_verticals.answers fac,
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
-              db_atlas_verticals.ads ads,
+              crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
-              and fac.ad_id = ads.id
-              and fac.livesync_dbname = lkp_source_system.opr_source_system 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.ad_id = lkp_ad.opr_ad
+              and fac.livesync_dbname = lkp_source_system.opr_source_system
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
 			  and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
+              and scai.cod_integration = 50000
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and trunc(fac.posted) between trunc(sysdate) - 30 and trunc(sysdate)
 			  and scai.cod_country = 2
-			  and ads.livesync_dbname = 'otomotopl'
             group by
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              ads.id
+              lkp_ad.cod_ad
           ) source
         group by
           source.cod_source_system,
@@ -911,7 +915,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast((sum(nr_replies) / count(distinct source.id)) as varchar) custom_field_value
+          cast((sum(nr_replies) / count(distinct source.cod_ad)) as varchar) custom_field_value
         from
           (
             select
@@ -920,23 +924,26 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               db_atlas_verticals.answers fac,
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
-              db_atlas_verticals.ads ads, 
+              crm_integration_anlt.t_lkp_ad lkp_ad,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
-              and fac.ad_id = ads.id  
-              and ads.status = 'active'
-			  and ads.livesync_dbname = 'otomotopl'
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.ad_id = lkp_ad.opr_ad
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
+              and lkp_ad_status.opr_ad_status = 'active'
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
 			  and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
@@ -948,7 +955,7 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.user_id
+              lkp_ad.cod_ad
           ) source
         group by
           source.cod_source_system,
@@ -1030,7 +1037,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast(count(distinct source.id) as varchar) custom_field_value --nr_ads_with_replies,
+          cast(count(distinct source.cod_ad) as varchar) custom_field_value --nr_ads_with_replies,
         from
          (
             select
@@ -1039,27 +1046,30 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               db_atlas_verticals.answers fac,
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
-              db_atlas_verticals.ads ads,
+              crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
+              and lkp_ad.cod_source_system = lkp_user.cod_source_system
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
-              and fac.ad_id = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.ad_id = lkp_ad.opr_ad
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
-              and ads.status = 'active'
-			  and ads.livesync_dbname = 'otomotopl'
+              and scai.cod_integration = 50000
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
+              and lkp_ad_status.opr_ad_status = 'active'
 			  and scai.cod_country = 2
             group by
               lkp_contact.cod_source_system,
@@ -1067,7 +1077,7 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.id
+              lkp_ad.cod_ad
         ) source
         group by
           source.cod_source_system,
@@ -1160,7 +1170,7 @@ from
               and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
               and cod_event = 170
           ) fac,
-          db_atlas_verticals.ads ads,
+          crm_integration_anlt.t_lkp_ad lkp,
           crm_integration_anlt.t_lkp_atlas_user lkp_user,
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
@@ -1169,9 +1179,9 @@ from
           and lkp_user.cod_source_system = fac.cod_source_system
           and lkp_user.cod_source_system = lkp.cod_source_system
           and lkp_contact.cod_source_system = 12
-          and fac.opr_ad = ads.id 
-          and ads.user_id = lkp_user.cod_atlas_user
-		  and ads.livesync_dbname = 'otomotopl'
+          and fac.cod_ad = lkp.cod_ad
+          and lkp.valid_to = 20991231
+          and lkp.cod_atlas_user = lkp_user.cod_atlas_user
           and lkp_user.valid_to = 20991231
           and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
           and lkp_contact.valid_to = 20991231
@@ -1254,18 +1264,18 @@ from
         select
           coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
           inner_core.dat_snap,
-          cast(max(paidads_valid_to) as varchar) custom_field_value
+          cast(max(dat_valid_to) as varchar) custom_field_value
         from
           (
             select
               atlas_user.dsc_atlas_user,
               idx_type.dsc_index_type,
               scai.dat_processing dat_snap,
-              fac.paidads_valid_to,
-              fac.date
+              fac.dat_valid_to,
+              dat_paidad_user_payment
             from
               crm_integration_anlt.t_lkp_atlas_user atlas_user,
-              db_atlas_verticals.paidads_user_payments fac,
+              crm_integration_anlt.t_fac_paidad_user_payment fac,
               crm_integration_anlt.t_rel_scai_country_integration scai,
               crm_integration_anlt.v_lkp_paidad_index idx,
               crm_integration_anlt.v_lkp_paidad_index_type idx_type
@@ -1273,10 +1283,9 @@ from
               atlas_user.cod_source_system = 7
               and atlas_user.valid_to = 20991231
               and scai.cod_integration = 50000
-              and atlas_user.cod_atlas_user = fac.id_user (+)
-              and fac.id_index = idx.opr_paidad_index (+)
-              and 7 = idx.cod_source_system (+)
-			  and fac.livesync_dbname = 'otomotopl'
+              and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
+              and fac.cod_paidad_index = idx.cod_paidad_index (+)
+              and fac.cod_source_system = idx.cod_source_system (+)
               and idx.cod_index_type = idx_type.cod_index_type(+)
               and lower(idx_type.dsc_index_type) = 'package'
 							and scai.cod_country = 2
@@ -1545,6 +1554,184 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package;
 
 drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_max_value_package;
+
+/*
+-- CREATE TMP - KPI OLX.BASE.XYZ (average_spending) (NOT IN T_REL_KPI_CUSTOM_FIELD YET)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month as
+	select
+		base_contact.cod_contact,
+		base_contact.cod_source_system,
+		scai.dat_processing dat_snap,
+		inner_core.*,
+		case when cod_year_month = cast(to_char(sysdate,'yyyymm') as int) then 0 else -1 end average_spending_month
+	from
+		(
+			select
+				cod_atlas_user,
+				dsc_atlas_user,
+				cast(to_char(last_status_date,'yyyymm') as int) cod_year_month,
+				--sum(case when type_of_code = 'vas' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_average_spending_vas_gross_com_account,
+				--sum(case when type_of_code = 'package' then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) - nvl(from_account,0) else 0 end) val_average_spending_listings_gross_com_account,
+				round((avg(case when cod_index_type = 1 then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_average_spending_vas_net,
+				round((avg(case when cod_index_type = 2 then price_basket - nvl(from_bonus_credits,0) - nvl(from_refund_credits,0) else 0 end)) / 1.23,2) val_average_spending_listings_net
+			from
+				(
+				select
+					a.cod_atlas_user,
+					--h.opr_atlas_user,
+					h.dsc_atlas_user,
+					--a.cod_payment_basket,
+					--d.dsc_source_system,
+					b.last_status_date,
+					e.cod_index_type,
+					--c.paidad_index_code,
+					--i.val_price price_user_payment,
+					a.price price_basket,
+					--i.val_current_credits,
+					--a.from_account,
+					a.from_bonus_credits,
+					a.from_refund_credits
+				from
+					crm_integration_anlt.t_fac_payment_basket a,
+					crm_integration_anlt.t_fac_payment_session b,
+					crm_integration_anlt.t_lkp_paidad_index c,
+					crm_integration_anlt.t_lkp_source_system d,
+					crm_integration_anlt.v_lkp_paidad_index e,
+					crm_integration_anlt.t_lkp_payment_status f,
+					crm_integration_anlt.t_lkp_payment_provider g,
+					crm_integration_anlt.t_lkp_atlas_user h,
+					(
+						SELECT
+						  *
+						FROM
+						  (
+							SELECT
+							  fac.opr_payment_session,
+							  fac.cod_source_system,
+							  --fac.val_current_credits,
+							  row_number() OVER ( PARTITION BY fac.cod_atlas_user ORDER BY fac.cod_paidad_user_payment DESC ) rn
+							FROM
+							  crm_integration_anlt.t_fac_paidad_user_payment fac
+						)
+						WHERE rn = 1
+					) i
+				where
+					a.cod_source_system = b.cod_source_system
+					and a.cod_payment_session = b.cod_payment_session
+					and b.cod_payment_provider = g.cod_payment_provider
+					and a.cod_source_system = c.cod_source_system
+					and a.cod_source_system = e.cod_source_system
+					and c.cod_paidad_index = e.cod_paidad_index
+					and a.cod_paidad_index = c.cod_paidad_index
+					and a.cod_source_system = d.cod_source_system
+					and a.cod_atlas_user = h.cod_atlas_user
+					and a.cod_source_system = h.cod_source_system
+					and b.opr_payment_session = i.opr_payment_session
+					and b.cod_source_system = i.cod_source_system
+					and b.cod_payment_status = f.cod_payment_status
+					and a.cod_source_system = 7
+					and h.valid_to = 20991231
+					and lower(f.dsc_payment_status) = 'finished'
+					and lower(g.dsc_payment_provider) != 'admin'
+					and b.last_status_date between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					--and a.cod_atlas_user in (15743223,15760699)
+				) core
+		group by
+			cod_atlas_user,
+			dsc_atlas_user,
+			cast(to_char(last_status_date,'yyyymm') as int)
+	) inner_core,
+	crm_integration_anlt.t_lkp_contact base_contact,
+	crm_integration_anlt.t_rel_scai_country_integration scai
+where
+	lower(inner_core.dsc_atlas_user(+)) = lower(base_contact.email)
+	and base_contact.valid_to = 20991231
+	and base_contact.cod_source_system = 12
+	and scai.cod_integration = 50000
+	and scai.cod_country = 2;
+
+
+-- CREATE TMP - KPI OLX.BASE.XYZ (average_spending per month)
+create table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month as
+select
+	core.cod_contact,
+	core.cod_custom_field,
+	core.dat_snap,
+	core.cod_source_system,
+	core.custom_field_value
+from
+	(
+		select
+			cod_contact,
+			cod_custom_field,
+			dat_snap,
+			cod_source_system,
+			cast(nvl(val_average_spending_listings_net,0) + nvl(val_average_spending_vas_net,0) as varchar) custom_field_value
+		from
+			(
+				select
+					rev_cars.cod_contact,
+					kpi_custom_field.cod_custom_field,
+					rev_cars.dat_snap,
+					rev_cars.cod_source_system,
+					rev_cars.val_average_spending_listings_net,
+					rev_cars.val_average_spending_vas_net,
+					row_number() over (partition by cod_contact order by cod_year_month desc) rn
+				from
+					crm_integration_anlt.tmp_pl_otomoto_calc_average_spending rev_cars,
+					(
+						select
+							rel.cod_custom_field,
+							rel.flg_active
+						from
+							crm_integration_anlt.t_lkp_kpi kpi,
+							crm_integration_anlt.t_rel_kpi_custom_field rel
+						where
+							kpi.cod_kpi = rel.cod_kpi
+							and lower(kpi.dsc_kpi) = 'average spending per month'
+							and rel.cod_source_system = 12
+					) kpi_custom_field,
+					(
+						select datediff('months',sysdate,to_date(cod_month,'yyyymm')) average_spending_month
+						from crm_integration_anlt.t_lkp_month
+						where to_date(cod_month,'yyyymm') between date_trunc('month',add_months(sysdate,-1)) and sysdate
+					) calendar_month
+				where
+					kpi_custom_field.flg_active = 1
+					and calendar_month.average_spending_month = 0
+			) core
+		where
+			core.rn = 1
+	) core,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+	core.cod_source_system = fac_snap.cod_source_system (+)
+	and core.cod_custom_field = fac_snap.cod_custom_field (+)
+	and core.cod_contact = fac_snap.cod_contact (+)
+	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+-- HST INSERT - KPI OLX.BASE.XYZ (average_spending per month)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month);
+
+-- SNAP DELETE - KPI OLX.BASE.XYZ (average_spending per month)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month);
+
+--KPI OLX.BASE.XYZ (average_spending per month)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+	select
+		*
+	from
+		crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month;
+
+drop table crm_integration_anlt.tmp_pl_otomoto_calc_average_spending_per_month;
+*/
+
 
 --$$$
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings)
@@ -2479,12 +2666,25 @@ insert into crm_integration_anlt.t_fac_scai_execution
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
 last_processing_datetime = sysdate
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 2
+  ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 2
 and proc.dsc_process_short = 't_fac_base_integration_snap_plcars'
-and t_rel_scai_integration_process.ind_active = 1;
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
 
 

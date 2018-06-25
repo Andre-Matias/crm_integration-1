@@ -39,7 +39,6 @@ def updateContactsInBase(client, contact_list, return_queue):
 		client.contacts.update(contact.id, contact)
 	
 	print('Thread done sending contacts to Base!')
-	print(datetime.now().time())
 		
 	return_queue.put(number_of_updates)
 
@@ -56,7 +55,6 @@ def main(db_conf_file, conf_file):
 	
 	# Create Redshift Connection
 	print('Connecting to Database...')
-	print(datetime.now().time())
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
 
@@ -64,7 +62,6 @@ def main(db_conf_file, conf_file):
 
 	# Obtain the list of custom fields and contacts to update in Base; This is a list of tuples (opr_contact, dsc_custom_field, custom_field_value)
 	print('Querying for contacts with custom fields to update to Base with cod_source_system ' + cod_source_system + '...')
-	print(datetime.now().time())
 	# TODO: Confirm dsc_process_short name
 	cur.execute(
 		"SELECT contact.opr_contact, "\
@@ -83,13 +80,11 @@ def main(db_conf_file, conf_file):
 		"AND fac.cod_source_system = " + cod_source_system + " "\
 		"AND contact.valid_to = 20991231;")	
 	print('Extracting query results...')
-	print(datetime.now().time())
 	result_list = cur.fetchall()
 	#print('Results:')
 	#print(result_list)
 
 	print('Closing Database connection...')
-	print(datetime.now().time())
 
 	cur.close()
 	conn.close()
@@ -98,7 +93,6 @@ def main(db_conf_file, conf_file):
 
 	# Create Base Connection
 	print('Connecting to ' + dsc_process + '...')
-	print(datetime.now().time())
 	client = basecrm.Client(access_token=base_api_token)
 	
 	# Put all query results in a dictionary with key as opr_contact, and value as a list of the tuples the query returned (one for each custom field of that contact)
@@ -117,7 +111,6 @@ def main(db_conf_file, conf_file):
 	
 	while len(contacts_data) > 0:
 		print('Page #' + str(page_nbr))
-		print(datetime.now().time())
 		contacts_data = client.contacts.list(page=page_nbr, per_page=100)
 		
 		# Code could be further improved if all contacts are acquired from Base first, put in a dictionary, and then do updates later (will use much more memory, however)
@@ -130,13 +123,12 @@ def main(db_conf_file, conf_file):
 				contact_dictionary[contact.id] = contact
 							
 		page_nbr = page_nbr + 1
-	
+
+	print(datetime.now().time())	
 	print('Number of updates done in code: ' + str(number_of_updates))
-	print(datetime.now().time())
 	
 	# Update contacts in Base
 	print('Updating #' + str(len(contact_dictionary)) + ' contacts in Base')
-	print(datetime.now().time())
 	
 	#input('Ready to send contacts to Base. Proceed?')
 	
@@ -155,7 +147,6 @@ def main(db_conf_file, conf_file):
 		thread_list.append(t)
 		t.start()
 		print('Spawned thread #' + str(n+1))
-		print(datetime.now().time())
 		i = i + contacts_per_thread
 		j = j + contacts_per_thread
 		if j > number_contacts:
@@ -169,10 +160,9 @@ def main(db_conf_file, conf_file):
 		number_of_updates = number_of_updates + thread_return_values_queue.get()
 	
 	print('Number of updates done in ' + dsc_process + ': ' + str(number_of_updates))
-	print(datetime.now().time())
 	scai.processEnd(db_conf_file, dsc_process, COD_INTEGRATION, COD_COUNTRY) # SCAI
-	print('Done\n')
 	print(datetime.now().time())
+	print('Done\n')
 
 	
 # Test if this is being run as a standalone program and not an utility module

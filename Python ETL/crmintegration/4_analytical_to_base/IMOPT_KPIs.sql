@@ -303,21 +303,21 @@ FROM
 			  base_contact.cod_contact,
 			  scai.dat_processing dat_snap,
 			  base_contact.cod_source_system,
-			  city.name_en custom_field_value --not using dsc_city_pl
+			  city.dsc_city_en custom_field_value --not using dsc_city_pl
 			from
 			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai,
-			  db_atlas_verticals.cities city
+			  crm_integration_anlt.t_lkp_city city
 			where
 			  atlas_user.cod_source_system = 3
 			  and base_contact.cod_source_system = 17
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
 			  and base_contact.valid_to = 20991231
+			  and city.valid_to = 20991231
 			  and scai.cod_integration = 50000
-			  and city.id = atlas_user.opr_city
-			  and city.livesync_dbname = 'imovirtualpt'
+			  and city.cod_city = atlas_user.cod_city
         and scai.cod_country = 1
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
@@ -577,32 +577,33 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.date desc, inner_core.id desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
 						from
 							(
 								select
 									atlas_user.dsc_atlas_user,
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
-									fac.name custom_field_value,
-									fac.date,
-									fac.id
+									fac.dsc_paidad_user_payment custom_field_value,
+									fac.dat_paidad_user_payment,
+									fac.opr_paidad_user_payment
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
-									db_atlas_verticals.paidads_user_payments fac,
+									crm_integration_anlt.t_fac_paidad_user_payment fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type 
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
+									crm_integration_anlt.t_lkp_payment_provider provider
 								where
 									atlas_user.cod_source_system = 3
 									and atlas_user.valid_to = 20991231
 									and scai.cod_integration = 50000
-									and atlas_user.cod_atlas_user = fac.id_user (+)
-									and fac.id_index = idx.opr_paidad_index (+)
-									and 3 = idx.cod_source_system (+)
-									and idx.cod_index_type = idx_type.cod_index_type(+) 
-									and fac.livesync_dbname = 'imovirtualpt'
-									and lower(fac.payment_provider) != 'admin'
+									and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
+									and fac.cod_paidad_index = idx.cod_paidad_index (+)
+									and fac.cod_source_system = idx.cod_source_system (+)
+									and idx.cod_index_type = idx_type.cod_index_type(+)
+									and fac.cod_payment_provider = provider.cod_payment_provider (+)
+									and lower(provider.dsc_payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
 									and scai.cod_country = 1
 							) inner_core
@@ -802,31 +803,33 @@ from
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              db_atlas_verticals.ads ads,
+              crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
-              and fac.opr_ad = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
-			  and ads.livesync_dbname = 'imovirtualpt'
+              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
+              and scai.cod_integration = 50000
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
               and trunc(fac.dat_posted) between trunc(sysdate) - 30 and trunc(sysdate)
               and scai.cod_country = 1
             group by
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              ads.id
+              lkp_ad.cod_ad
           ) source
         group by
           source.cod_source_system,
@@ -909,7 +912,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast((sum(nr_replies) / count(distinct source.id)) as varchar) custom_field_value
+          cast((sum(nr_replies) / count(distinct source.cod_ad)) as varchar) custom_field_value
         from
           (
             select
@@ -918,21 +921,23 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              db_atlas_verticals.ads ads, 
+              crm_integration_anlt.t_lkp_ad lkp_ad,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
-              and fac.opr_ad = ads.id  
-              and ads.status = 'active'
-              and ads.user_id = lkp_user.cod_atlas_user
-			  and ads.livesync_dbname = 'imovirtualpt'
+              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
+              and lkp_ad_status.opr_ad_status = 'active'
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
@@ -944,7 +949,7 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              ads.id
+              lkp_ad.cod_ad
           ) source
         group by
           source.cod_source_system,
@@ -1026,7 +1031,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast(count(distinct source.id) as varchar) custom_field_value --nr_ads_with_replies,
+          cast(count(distinct source.cod_ad) as varchar) custom_field_value --nr_ads_with_replies,
         from
          (
             select
@@ -1035,25 +1040,27 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              ads.id,
+              lkp_ad.cod_ad,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              db_atlas_verticals.ads ads,
+              crm_integration_anlt.t_lkp_ad lkp_ad,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
+              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
-              and fac.opr_ad = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.cod_ad = lkp_ad.cod_ad
+              and lkp_ad.valid_to = 20991231
+              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
-              and ads.status = 'active'
-			  and ads.livesync_dbname = 'imovirtualpt'
+              and scai.cod_integration = 50000
+              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
+              and lkp_ad_status.opr_ad_status = 'active'
               and scai.cod_country = 1
             group by
               lkp_contact.cod_source_system,
@@ -1061,7 +1068,7 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              ads.id
+              lkp_ad.cod_ad
         ) source
         group by
           source.cod_source_system,
@@ -1118,6 +1125,105 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies;
 
+/*$$
+
+-- CREATE TMP - KPI OLX.BASE.084 (# Views)
+create table crm_integration_anlt.tmp_pt_imovirtual_calc_views as
+select
+  source.cod_contact,
+  source.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+  source.custom_field_value
+from
+  (
+    select
+      b.cod_contact,
+      kpi_custom_field.cod_custom_field,
+      scai.dat_processing dat_snap,
+      isnull(a.cod_source_system,17) cod_source_system,
+      isnull(a.custom_field_value, '-') custom_field_value
+    from
+      (
+        select
+          lkp_contact.cod_contact,
+          scai.dat_processing dat_snap,
+          lkp_contact.cod_source_system,
+          cast(sum(nbr_occurrences) as varchar) custom_field_value
+        from
+          crm_integration_anlt.t_fac_web fac,
+          crm_integration_anlt.t_lkp_ad lkp,
+          crm_integration_anlt.t_lkp_atlas_user lkp_user,
+          crm_integration_anlt.t_lkp_contact lkp_contact,
+          crm_integration_anlt.t_rel_scai_country_integration scai
+        where
+          lkp_user.cod_source_system = 3
+          and lkp_contact.cod_source_system = 17
+          and fac.cod_ad = lkp.cod_ad
+          and lkp.valid_to = 20991231
+          and lkp.cod_atlas_user = lkp_user.cod_atlas_user
+          and lkp_user.valid_to = 20991231
+          and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+          and lkp_contact.valid_to = 20991231
+          and scai.cod_integration = 50000
+          and cod_event = 170
+          and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+					and scai.cod_country = 1
+        group by
+          lkp_contact.cod_contact,
+          scai.dat_processing,
+          lkp_contact.cod_source_system
+      ) a,
+      crm_integration_anlt.t_lkp_contact B,
+      crm_integration_anlt.t_rel_scai_country_integration scai,
+		(
+			select
+			  rel.cod_custom_field,
+			  rel.flg_active
+			from
+			  crm_integration_anlt.t_lkp_kpi kpi,
+			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			where
+			  kpi.cod_kpi = rel.cod_kpi
+			  and lower(kpi.dsc_kpi) = '# views'
+			  and rel.cod_source_system = 17
+		) kpi_custom_field
+    where
+      b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 17
+      and scai.cod_integration = 50000
+	  	and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 1
+  ) source,
+  crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+-- HST INSERT - KPI OLX.BASE.084 (# Views)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_views);
+
+-- SNAP DELETE - KPI OLX.BASE.084 (# Views)
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_views);
+
+-- OLX.BASE.084 (# Views)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    crm_integration_anlt.tmp_pt_imovirtual_calc_views;
+
+drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_views;
+
+$$*/
 
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Expiry Date)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date as
@@ -1140,19 +1246,20 @@ from
         select
           coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
           inner_core.dat_snap,
-          cast(max(dateadd(day,duration,date)) as varchar) custom_field_value
+          cast(max(dateadd(day,duration,dat_payment)) as varchar) custom_field_value
         from
           (
             select
               atlas_user.dsc_atlas_user,
               idx_type.dsc_index_type,
               scai.dat_processing dat_snap,
-              fac.dat_valid_to, 
-			  fac.date,
+              fac.dat_valid_to,
+              dat_paidad_user_payment,
+			  dat_payment,
 			  duration
             from
               crm_integration_anlt.t_lkp_atlas_user atlas_user,
-              db_atlas_verticals.paidads_user_payments fac,
+              crm_integration_anlt.t_fac_paidad_user_payment fac,
 			  crm_integration_anlt.t_lkp_paidad_index paidad_index,
               crm_integration_anlt.t_rel_scai_country_integration scai,
               crm_integration_anlt.v_lkp_paidad_index idx,
@@ -1161,12 +1268,11 @@ from
               atlas_user.cod_source_system = 3
               and atlas_user.valid_to = 20991231
               and scai.cod_integration = 50000
-              and atlas_user.cod_atlas_user = fac.id_user (+)
-              and fac.id_index = idx.opr_paidad_index (+)
-              and 3 = idx.cod_source_system (+)
-			  and idx.cod_paidad_index = paidad_index.cod_paidad_index (+)
+              and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
+              and fac.cod_paidad_index = idx.cod_paidad_index (+)
+              and fac.cod_source_system = idx.cod_source_system (+)
+			  and fac.cod_paidad_index = paidad_index.cod_paidad_index (+)
               and idx.cod_index_type = idx_type.cod_index_type(+)
-			  and fac.livesync_dbname = 'imovirtualpt'
               and lower(idx_type.dsc_index_type) = 'package'
 			  and scai.cod_country = 1
 			) inner_core
@@ -2264,9 +2370,22 @@ insert into crm_integration_anlt.t_fac_scai_execution
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
 last_processing_datetime = sysdate
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_fac_payment_basket'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 1
 and proc.dsc_process_short = 't_fac_base_integration_snap_ptre'
-and t_rel_scai_integration_process.ind_active = 1;
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
