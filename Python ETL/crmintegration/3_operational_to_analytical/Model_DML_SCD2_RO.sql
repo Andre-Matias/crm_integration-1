@@ -6229,7 +6229,7 @@ select a.*  from (
 	source_table.flg_apple_app,
 	source_table.flg_wp_app,
 	source_table.flg_spammer,
-	coalesce(lkp_source.cod_source,-2) cod_source,
+	coalesce(opr_source,'Unknown') opr_source,
 	source_table.flg_hide_user_ads,
 	source_table.flg_email_msg_notif,
 	source_table.flg_email_alarms_notif,
@@ -6571,8 +6571,7 @@ select a.*  from (
 	) source,
     crm_integration_anlt.t_lkp_source_system lkp_source_system
 	where source.opr_source_system = lkp_source_system.opr_source_system
-    ) source_table,
-	crm_integration_anlt.t_lkp_source lkp_source,
+    ) source_table, 
     (select coalesce(max(cod_atlas_user),0) max_cod from crm_integration_anlt.t_lkp_atlas_user) max_cod_atlas_user,
     (
 			select
@@ -6592,9 +6591,7 @@ select a.*  from (
 	) target
   where
     coalesce(source_table.opr_atlas_user,-1) = target.opr_atlas_user(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-	and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
-	and lkp_source.valid_to = 20991231
+	and source_table.cod_source_system = target.cod_source_system (+) 
 	) a ;
 
 analyze crm_integration_anlt.tmp_ro_load_atlas_user;	
@@ -6630,7 +6627,7 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
       20991231 valid_to,
 	  cod_source_system,
-	  cod_source,
+	  opr_source,
 	  opr_city,
 	  email_original,
 	  password,
@@ -7208,20 +7205,17 @@ as
     source_table.opr_ad,
 	source_table.cod_execution,
     coalesce(lkp_atlas_receiver.cod_atlas_user,-2) cod_atlas_user_receiver,
-    coalesce(lkp_source.cod_source,-2) cod_source,
+    coalesce(source_table.opr_source,'Unknown') opr_source,
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
     crm_integration_anlt.tmp_ro_load_answer_step1_outgoing source_table,
-    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_receiver,
-    crm_integration_anlt.t_lkp_source lkp_source,
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_receiver, 
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_outgoing) max_cod_answer
   where
     coalesce(source_table.opr_atlas_user_receiver,-1) = lkp_atlas_receiver.opr_atlas_user
     and source_table.cod_source_system = lkp_atlas_receiver.cod_source_system -- new
-    and lkp_atlas_receiver.valid_to = 20991231
-  and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
-  and lkp_source.valid_to = 20991231;
+    and lkp_atlas_receiver.valid_to = 20991231 ;
  
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
  	
@@ -7257,7 +7251,7 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
       opr_answer_last_posted,
       ip,
       port,
-      cod_source,
+      opr_source,
       embrace_user_id,
       olx_conversation_id,
       null hash_answer,
@@ -7508,20 +7502,17 @@ as
     source_table.opr_ad,
 	source_table.cod_execution,
     coalesce(lkp_atlas_sender.cod_atlas_user,-2) cod_atlas_user_sender,
-    coalesce(lkp_source.cod_source,-2) cod_source,
+    coalesce(source_table.opr_source,'Unknown') opr_source,
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
     crm_integration_anlt.tmp_ro_load_answer_step1_incoming source_table,
-    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_sender,
-    crm_integration_anlt.t_lkp_source lkp_source,
+    crm_integration_anlt.t_lkp_atlas_user lkp_atlas_sender, 
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_incoming) max_cod_answer
   where
     coalesce(source_table.opr_atlas_user_sender,-1) = lkp_atlas_sender.opr_atlas_user
     and source_table.cod_source_system = lkp_atlas_sender.cod_source_system -- new
-    and lkp_atlas_sender.valid_to = 20991231
-    and coalesce(source_table.opr_source,'Unknown') = lkp_source.opr_source
-    and lkp_source.valid_to = 20991231;
+    and lkp_atlas_sender.valid_to = 20991231 ;
 
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
 		
@@ -7557,7 +7548,7 @@ insert into crm_integration_anlt.t_fac_answer_incoming
       opr_answer_last_posted,
       ip,
       port,
-      cod_source,
+      opr_source,
       embrace_user_id,
       olx_conversation_id,
       null hash_answer,
