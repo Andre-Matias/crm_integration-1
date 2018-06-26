@@ -1,7 +1,3 @@
-# average Jan week
-
-
-
 # libraries -------------------------------------------------------------------
 library("RMySQL")
 library("dplyr")
@@ -20,22 +16,22 @@ load("~/GlobalConfig.Rdata")
 
 querySQl <-
   "
-  SELECT YEAR(PUP.date)Year, WEEKOFYEAR(PUP.date)WeekOfYear, DATE(PUP.date)Day, PI.type, COUNT(*)Qty,  SUM(-price)Amount
-  FROM paidads_user_payments PUP
-  INNER JOIN paidads_indexes PI
-  ON PUP.id_index=PI.id
-  INNER JOIN
-  payment_session PS
-  ON PUP.id_transaction=PS.id
-  WHERE
-  PUP.date >= '2018-01-01 00:00:00'
-  AND PS.status = 'finished'
-  AND PI.type IN('topads', 'highlight', 'ad_homepage', 'export_olx', 'bump_up', 'ad_bighomepage')
-  AND PUP.is_removed_from_invoice = 0
-  AND price < 0
-  AND PS.provider NOT IN('admin')
-  GROUP BY 1, 2, 3, 4;
-  "
+SELECT YEAR(PUP.date)Year, WEEKOFYEAR(PUP.date)WeekOfYear, DATE(PUP.date)Day, PI.type, COUNT(*)Qty,  SUM(-price)Amount
+FROM paidads_user_payments PUP
+INNER JOIN paidads_indexes PI
+ON PUP.id_index=PI.id
+INNER JOIN
+payment_session PS
+ON PUP.id_transaction=PS.id
+WHERE
+PUP.date >= '2018-01-01 00:00:00'
+AND PS.status = 'finished'
+AND PI.type IN('topads', 'highlight', 'ad_homepage', 'export_olx', 'bump_up', 'ad_bighomepage')
+AND PUP.is_removed_from_invoice = 0
+AND price < 0
+AND PS.provider NOT IN('admin')
+GROUP BY 1, 2, 3, 4;
+"
 
 dbs <-
   list(
@@ -90,34 +86,34 @@ baseline_OtomotoPL <-
   dfQueryResults_OtomotoPL %>% 
   group_by(WeekOfYear) %>% 
   summarise(totalAmount_USD = sum(Amount_USD), totalQTY = sum(Qty)) %>% 
-  filter(WeekOfYear > 1, WeekOfYear <= 4) %>% 
+  filter(WeekOfYear >= 10, WeekOfYear <= 13) %>% 
   group_by() %>% 
   summarise(baselineUSD=mean(totalAmount_USD), baselineQTY = mean(totalQTY) ) %>%
   select(baselineUSD, baselineQTY) %>%
-  mutate(goalAmount = baselineUSD * 1.05,
-         goalQty = baselineQTY * 1.20)
+  mutate(goalAmount = baselineUSD * 1.10,
+         goalQty = baselineQTY * 1.10)
 
 baseline_AutovitRO <-
   dfQueryResults_AutovitRO %>% 
   group_by(WeekOfYear) %>% 
   summarise(totalAmount_USD = sum(Amount_USD), totalQTY = sum(Qty)) %>% 
-  filter(WeekOfYear > 1, WeekOfYear <= 4) %>% 
+  filter(WeekOfYear >= 10, WeekOfYear <= 13) %>% 
   group_by() %>% 
   summarise(baselineUSD=mean(totalAmount_USD), baselineQTY = mean(totalQTY) ) %>%
   select(baselineUSD, baselineQTY) %>%
-  mutate(goalAmount = baselineUSD * 1.05,
-         goalQty = baselineQTY * 1.20)
+  mutate(goalAmount = baselineUSD * 1.10,
+         goalQty = baselineQTY * 1.10)
 
 baseline_StandvirtualPT <-
   dfQueryResults_StandvirtualPT %>% 
   group_by(WeekOfYear) %>% 
   summarise(totalAmount_USD = sum(Amount_USD), totalQTY = sum(Qty)) %>% 
-  filter(WeekOfYear > 1, WeekOfYear <= 4) %>% 
+  filter(WeekOfYear >= 10, WeekOfYear <= 13) %>% 
   group_by() %>% 
   summarise(baselineUSD=mean(totalAmount_USD), baselineQTY = mean(totalQTY) ) %>%
   select(baselineUSD, baselineQTY) %>%
-  mutate(goalAmount = baselineUSD * 1.05,
-         goalQty = baselineQTY * 1.20)
+  mutate(goalAmount = baselineUSD * 1.10,
+         goalQty = baselineQTY * 1.10)
 
 dfTotal <- 
   rbind(rbind(dfQueryResults_StandvirtualPT, dfQueryResults_AutovitRO), dfQueryResults_OtomotoPL)
@@ -126,11 +122,11 @@ baseline_dfTotal <-
   dfTotal %>% 
   group_by(WeekOfYear) %>% 
   summarise(totalAmount_USD = sum(Amount_USD), totalQTY = sum(Qty)) %>% 
-  filter(WeekOfYear > 9, WeekOfYear <= 13) %>% 
+  filter(WeekOfYear >= 10, WeekOfYear <= 13) %>% 
   group_by() %>% 
   summarise(baselineUSD=mean(totalAmount_USD), baselineQTY = mean(totalQTY) ) %>%
   select(baselineUSD, baselineQTY) %>%
-  mutate(goalAmount = baselineUSD * 1.05,
+  mutate(goalAmount = baselineUSD * 1.10,
          goalQty = baselineQTY * 1.10)
 
 dfOTOByWeek <- 
@@ -168,7 +164,7 @@ plotit <-
       xlab("weeks")+
       theme_solarized()+
       ggtitle(kr, subtitle = platform)
-      return(g)
+    return(g)
   }
 
 
@@ -191,4 +187,4 @@ plotit(actuals = dfTotalByWeek,
        goal = "goalAmount", 
        kr = "KR3 - Increase VAS Revenue in 5%", 
        ylabel = "VAS Revenue - Fixed USD"
-       )
+)
