@@ -21,7 +21,7 @@ COD_COUNTRY = int(data['cod_country'])			# Global variable
 scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 # Copy Atlas tables from Yamato to Operational Model
-#copy_tables_atlas.main(conf_file, db_conf_file)
+copy_tables_atlas.main(conf_file, db_conf_file)
 
 #input('Ready to copy Hydra tables. Proceed?')
 

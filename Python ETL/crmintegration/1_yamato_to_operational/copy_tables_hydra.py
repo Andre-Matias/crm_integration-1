@@ -162,9 +162,9 @@ def main(conf_file, db_conf_file):
 	global HYDRA_COUNTRY_CODE; HYDRA_COUNTRY_CODE = data['hydra_country_code']										# Global variable
 	
 	# Copy tables 'web' from schema 'hydra' to Operational Model
-	#last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra, [resource])[resource]						# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
-	#copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name)			# Function that effectively copies 'hydra.web' table
-	#print(datetime.now().time())
+	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra, [resource])[resource]						# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
+	copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name)			# Function that effectively copies 'hydra.web' table
+	print(datetime.now().time())
 	# Copy tables 'web' from schema 'hydra_verticals' to Operational Model
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra_verticals, [resource])[resource]			# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
 	copyHydraVerticalsTable(db_conf_file, sc_schema_hydra_verticals, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names)	# Function that effectively copies 'hydra_verticals.web' table
