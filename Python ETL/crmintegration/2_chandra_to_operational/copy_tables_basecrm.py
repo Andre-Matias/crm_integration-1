@@ -160,15 +160,15 @@ def main(conf_file, source_conf_file, target_conf_file):
 	global BASE_ACCOUNT_COUNTRY; BASE_ACCOUNT_COUNTRY = data['base_account_country']	# Global variable
 	
 	# Delete old S3 files
-	print('Deleting old S3 files from bucket ' + data['bucket_name'] + ' and path ' + data['aux_s3_path_prefix'] + '...')
-	deletePreviousS3Files(source_conf_file, data['bucket_name'], data['aux_s3_path_prefix'])
+	#print('Deleting old S3 files from bucket ' + data['bucket_name'] + ' and path ' + data['aux_s3_path_prefix'] + '...')
+	#deletePreviousS3Files(source_conf_file, data['bucket_name'], data['aux_s3_path_prefix'])
 
 	print(datetime.now().time())
 
 	# Copy from source database to S3
-	print('\nResources to unload:\n' + str(resources) + '\n')
-	last_updates_dict = getLastUpdateDates(target_conf_file, sc_schema, resources)	# Get the date of last update for each of this schema's resources
-	copyFromDatabaseToS3(source_conf_file, target_conf_file, resources, sc_schema, last_updates_dict, data['aux_s3_path'])
+	#print('\nResources to unload:\n' + str(resources) + '\n')
+	#last_updates_dict = getLastUpdateDates(target_conf_file, sc_schema, resources)	# Get the date of last update for each of this schema's resources
+	#copyFromDatabaseToS3(source_conf_file, target_conf_file, resources, sc_schema, last_updates_dict, data['aux_s3_path'])
 
 	print(datetime.now().time())
 	
