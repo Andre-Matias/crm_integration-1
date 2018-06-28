@@ -80,7 +80,7 @@ def main(db_conf_file, conf_file):
 			"AND process.dsc_process_short = '" + dsc_process + "' "\
 			"AND fac.cod_source_system = " + cod_source_system + " "\
 			"AND contact.valid_to = 20991231;")	
-	except Exception, e: 
+	except Exception as e: 
 		scai.processEnd(db_conf_file, dsc_process, COD_INTEGRATION, COD_COUNTRY, '', '',3)	# SCAI
 		scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 		print e

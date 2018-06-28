@@ -16,7 +16,7 @@ def executeSQL(conf_file, sql_script, return_value=False):
 
 	try:
 		cur.execute(sql_script)
-	except Exception, e:
+	except Exception as e:
 		conn.rollback() 
 		print e
 		print e.pgerror

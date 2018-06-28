@@ -92,7 +92,7 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 			'last_update_date':last_update_date
 			}		
 			)
-		except Exception, e:
+		except Exception as e:
 			conn_target.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
@@ -119,7 +119,7 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 		scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 		
 	# Is normal execution or re-execution starting from the step that was in error	
-	if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):	
+	if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):	
 		scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 		print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_update_date})
 		
@@ -155,7 +155,7 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 			'case_statement':case_statement
 			}
 			)
-		except Exception, e:
+		except Exception as e:
 			conn.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
@@ -165,6 +165,9 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 		else:
 			conn.commit()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
+			
+			#Enable execution of following processes
+			scai_last_execution_status = 1
 
 	cur.close()
 	cur.close()

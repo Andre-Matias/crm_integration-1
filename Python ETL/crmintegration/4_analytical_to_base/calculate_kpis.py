@@ -50,7 +50,7 @@ def main(db_conf_file, kpi_file):
 		print('Running block #' + str(i)) 
 		try:
 			cur.execute(kpi)
-		except Exception, e:
+		except Exception as e:
 			conn.rollback()  
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
 			print e

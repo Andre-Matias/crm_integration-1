@@ -112,7 +112,7 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 				'BASE_ACCOUNT_COUNTRY':BASE_ACCOUNT_COUNTRY
 				}		
 				)
-		except Exception, e:
+		except Exception as e:
 			conn_target.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
@@ -146,7 +146,7 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 				
 		# Is normal execution or re-execution starting from the step that was in error	
-		if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
 			scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
 			try:
 				cur_target.execute(
@@ -167,7 +167,7 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 				'sc_schema':sc_schema
 				}	
 				)
-			except Exception, e:
+			except Exception as e:
 				conn_target.rollback()
 				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
 				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
@@ -177,6 +177,9 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 			else:
 				conn_target.commit()
 				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',2)	# SCAI
+				
+				#Enable execution of following processes
+				scai_last_execution_status = 1
 
 	cur_target.close()
 	conn_target.close()

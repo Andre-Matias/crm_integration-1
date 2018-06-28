@@ -57,7 +57,7 @@ def main(conf_file, dml_file, country):
 		print('Running block #' + str(i))
 		try:
 			cur.execute(dml)
-		except Exception, e:
+		except Exception as e:
 			conn.rollback() 
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
 			print e
