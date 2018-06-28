@@ -16,6 +16,11 @@ def main(conf_file, dml_file, country):
 	
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
+	
+	scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, country)	# SCAI
+
+	if (scai_last_execution_status == 2):
+		sys.exit("The integration is already running...")
 
     #If last execution ended in error, then check in which block it ended
 	block_nbr = cur.execute("select "\
