@@ -53,7 +53,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 
 	
-def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names=''):
+def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names='', scai_last_execution_status):
 	print('Connecting to Yamato...')
 	conn_target = getDatabaseConnection(db_conf_file)
 	cur_target = conn_target.cursor()
@@ -62,55 +62,85 @@ def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_
 		for resource in resources:	
 			tg_table = 'stg_%(COUNTRY)s_%(sc_schema)s_%(resource)s' % {'resource':resource, 'sc_schema':sc_schema, 'COUNTRY':COUNTRY}
 			scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
-			scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
-			print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
-			cur_target.execute(
-				"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-				"INSERT INTO %(tg_schema)s.%(tg_table)s "\
-				"SELECT * FROM %(sc_schema)s.%(resource)s "\
-				"WHERE operation_timestamp >= '%(last_update_date)s'; "\
-				"ANALYZE %(tg_schema)s.%(tg_table)s;"
-			% {
-			'tg_table':tg_table,
-			'tg_schema':tg_schema,
-			'sc_schema':sc_schema,
-			'resource':resource,
-			'last_update_date':last_updates_dict[resource]
-			}	
-			)
-			conn_target.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp')	# SCAI
+			if(scai_last_execution_status==3):
+				scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+				
+			# Is normal execution or re-execution starting from the step that was in error	
+			if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+				scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+				print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
+				try:
+					cur_target.execute(
+						"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+						"INSERT INTO %(tg_schema)s.%(tg_table)s "\
+						"SELECT * FROM %(sc_schema)s.%(resource)s "\
+						"WHERE operation_timestamp >= '%(last_update_date)s'; "\
+						"ANALYZE %(tg_schema)s.%(tg_table)s;"
+					% {
+					'tg_table':tg_table,
+					'tg_schema':tg_schema,
+					'sc_schema':sc_schema,
+					'resource':resource,
+					'last_update_date':last_updates_dict[resource]
+					}	
+					) 
+				except Exception, e:
+					conn_target.rollback()
+					scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+					scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+					print e
+					print e.pgerror
+					sys.exit("The process aborted with error.")
+				else:
+					conn_target.commit()
+					scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
 			
 	elif(sc_schema == 'db_atlas_verticals'):
 		for resource in resources:
 			tg_table = 'stg_%(COUNTRY)s_%(sc_schema)s_%(resource)s' % {'resource':resource, 'sc_schema':sc_schema, 'COUNTRY':COUNTRY}
 			scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
+			if(scai_last_execution_status==3):
+				scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+				
+			# Is normal execution or re-execution starting from the step that was in error	
+			if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+				scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+				
 			scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI		
 			print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
-			cur_target.execute(
-				"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-				"INSERT INTO %(tg_schema)s.%(tg_table)s "\
-				"SELECT * FROM %(sc_schema)s.%(resource)s "\
-				"WHERE operation_timestamp >= '%(last_update_date)s' "\
-				"AND livesync_dbname in (%(verticals_names)s); "\
-				"ANALYZE %(tg_schema)s.%(tg_table)s;"
-			% {
-			'tg_table':tg_table,
-			'tg_schema':tg_schema,
-			'sc_schema':sc_schema,
-			'resource':resource,
-			'verticals_names':verticals_names,
-			'last_update_date':last_updates_dict[resource]
-			}	
-			)
-			conn_target.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp')	# SCAI
+			try:
+				cur_target.execute(
+					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+					"INSERT INTO %(tg_schema)s.%(tg_table)s "\
+					"SELECT * FROM %(sc_schema)s.%(resource)s "\
+					"WHERE operation_timestamp >= '%(last_update_date)s' "\
+					"AND livesync_dbname in (%(verticals_names)s); "\
+					"ANALYZE %(tg_schema)s.%(tg_table)s;"
+				% {
+				'tg_table':tg_table,
+				'tg_schema':tg_schema,
+				'sc_schema':sc_schema,
+				'resource':resource,
+				'verticals_names':verticals_names,
+				'last_update_date':last_updates_dict[resource]
+				}	
+				)
+			except Exception, e:
+				conn_target.rollback()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				print e
+				print e.pgerror
+				sys.exit("The process aborted with error.")
+			else:
+				conn_target.commit()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
 	
 	cur_target.close()
 	conn_target.close()
 
 
-def main(conf_file, db_conf_file):
+def main(conf_file, db_conf_file, scai_last_execution_status):
 	print(datetime.now().time())
 	
 	data = json.load(open(conf_file))
@@ -127,7 +157,7 @@ def main(conf_file, db_conf_file):
 		resources = data[resources_identifier].split(',')
 		print('\n' + resources_identifier)
 		last_updates_dict = getLastUpdateDates(db_conf_file, sc_schema, resources)							# Get the date of last update for each of this schema's resources
-		copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names)	# Copy Yamato tables to Operational Model, from dates of last update
+		copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names, scai_last_execution_status)	# Copy Yamato tables to Operational Model, from dates of last update
 
 	print('Done copying all Atlas tables!')
 	print(datetime.now().time())

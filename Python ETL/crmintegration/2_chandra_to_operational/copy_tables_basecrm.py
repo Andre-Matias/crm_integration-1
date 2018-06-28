@@ -16,16 +16,18 @@ COUNTRY = ''				# Replaced by name in conf_file
 BASE_ACCOUNT_COUNTRY = -1	# Replaced by name in conf_file
 
 
-def deletePreviousS3Files(conf_file, bucket_name, s3_path_prefix):
-	conf = json.load(open(conf_file))
-	key = conf['s3_key']
-	skey = conf['s3_skey']
+def deletePreviousS3Files(conf_file, bucket_name, s3_path_prefix, scai_last_execution_status):
 
-	conn = S3Connection(key, skey)
+	if (scai_last_execution_status!=3):
+		conf = json.load(open(conf_file))
+		key = conf['s3_key']
+		skey = conf['s3_skey']
 
-	b = Bucket(conn, bucket_name)
-	for x in b.list(prefix = s3_path_prefix):
-		x.delete()
+		conn = S3Connection(key, skey)
+
+		b = Bucket(conn, bucket_name)
+		for x in b.list(prefix = s3_path_prefix):
+			x.delete()
 
 		
 def getDatabaseConnection(conf_file):
@@ -72,7 +74,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 	
 	
-def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updates_dict, aux_path):
+def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updates_dict, aux_path, scai_last_execution_status):
 	print('Connecting to Chandra...')
 	conn = getDatabaseConnection(source_conf)
 	cur = conn.cursor()
@@ -85,32 +87,49 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 		print('\t' + resource + ": " + last_updates_dict[resource])
 		tg_table = 'stg_' + COUNTRY + '_' + resource[4:]	# Target table name has the country in the middle of the source table name (for example, stg_d_base_contacts -> stg_pt_d_base_contacts)
 		scai_process_name = scai.getProcessShortDescription(target_conf, tg_table)				# SCAI
-		scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
-		cur.execute(
-			"UNLOAD ('SELECT * from %(schema)s.%(resource)s "\
-			"		WHERE meta_event_time >= \\\'%(last_update_date)s\\\' "\
-			"		AND base_account_country = \\\'%(BASE_ACCOUNT_COUNTRY)s\\\'') "\
-			"TO 's3://%(aux_path)s/%(schema)s_%(resource)s/data_' "\
-			"CREDENTIALS '%(credentials)s' "\
-			"ESCAPE "\
-			"manifest;"
-		% {
-		'schema':schema,
-		'resource':resource,
-		'last_update_date':last_updates_dict[resource],
-		'credentials':credentials,
-		'aux_path':aux_path,
-		'BASE_ACCOUNT_COUNTRY':BASE_ACCOUNT_COUNTRY
-		}		
-		)
-		conn.commit()
+		
+		if(scai_last_execution_status==3):
+			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+				
+		# Is normal execution or re-execution starting from the step that was in error	
+		if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+			scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
+			try:
+				cur.execute(
+					"UNLOAD ('SELECT * from %(schema)s.%(resource)s "\
+					"		WHERE meta_event_time >= \\\'%(last_update_date)s\\\' "\
+					"		AND base_account_country = \\\'%(BASE_ACCOUNT_COUNTRY)s\\\'') "\
+					"TO 's3://%(aux_path)s/%(schema)s_%(resource)s/data_' "\
+					"CREDENTIALS '%(credentials)s' "\
+					"ESCAPE "\
+					"manifest;"
+				% {
+				'schema':schema,
+				'resource':resource,
+				'last_update_date':last_updates_dict[resource],
+				'credentials':credentials,
+				'aux_path':aux_path,
+				'BASE_ACCOUNT_COUNTRY':BASE_ACCOUNT_COUNTRY
+				}		
+				)
+		except Exception, e:
+			conn_target.rollback()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
+			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+			print e
+			print e.pgerror
+			sys.exit("The process aborted with error.")
+		else:
+			conn_target.commit()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',2)	# SCAI
+
 
 	#Close connection
 	cur.close()
 	conn.close()
 
 	
-def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path):		
+def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path, scai_last_execution_status):		
 	#LOAD to target redshift
 	print('Connecting to Yamato...')
 	conn_target = getDatabaseConnection(target_conf)
@@ -121,33 +140,49 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path)
 	for resource in resources:
 		tg_table = 'stg_' + COUNTRY + '_' + resource[4:]	# Target table name has the country in the middle of the source table name (for example, stg_d_base_contacts -> stg_pt_d_base_contacts)
 		print('Loading %(tg_schema)s.%(tg_table)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table })
-		cur_target.execute(
-			"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-			"COPY %(tg_schema)s.%(tg_table)s "\
-			"FROM 's3://%(aux_path)s/%(sc_schema)s_%(resource)s/data_manifest' "\
-			"CREDENTIALS '%(credentials)s' "\
-			"REGION 'us-west-2' "\
-			"ESCAPE "\
-			"manifest; "\
-			"ANALYZE %(tg_schema)s.%(tg_table)s;"
-		% {
-		'tg_schema':tg_schema,
-		'tg_table':tg_table,
-		'resource':resource,
-		'credentials':credentials,
-		'aux_path':aux_path,
-		'sc_schema':sc_schema
-		}	
-		)
-		conn_target.commit()
-		scai_process_name = scai.getProcessShortDescription(target_conf, tg_table)							# SCAI
-		scai.processEnd(target_conf, resource, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time')	# SCAI
+		scai_process_name = scai.getProcessShortDescription(target_conf, tg_table)				# SCAI
+		
+		if(scai_last_execution_status==3):
+			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+				
+		# Is normal execution or re-execution starting from the step that was in error	
+		if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+			scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
+			try:
+				cur_target.execute(
+					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+					"COPY %(tg_schema)s.%(tg_table)s "\
+					"FROM 's3://%(aux_path)s/%(sc_schema)s_%(resource)s/data_manifest' "\
+					"CREDENTIALS '%(credentials)s' "\
+					"REGION 'us-west-2' "\
+					"ESCAPE "\
+					"manifest; "\
+					"ANALYZE %(tg_schema)s.%(tg_table)s;"
+				% {
+				'tg_schema':tg_schema,
+				'tg_table':tg_table,
+				'resource':resource,
+				'credentials':credentials,
+				'aux_path':aux_path,
+				'sc_schema':sc_schema
+				}	
+				)
+			except Exception, e:
+				conn_target.rollback()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
+				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				print e
+				print e.pgerror
+				sys.exit("The process aborted with error.")
+			else:
+				conn_target.commit()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',2)	# SCAI
 
 	cur_target.close()
 	conn_target.close()
 	
 	
-def main(conf_file, source_conf_file, target_conf_file):
+def main(conf_file, source_conf_file, target_conf_file, scai_last_execution_status):
 	print(datetime.now().time())
 	
 	data = json.load(open(conf_file))
@@ -161,20 +196,20 @@ def main(conf_file, source_conf_file, target_conf_file):
 	
 	# Delete old S3 files
 	print('Deleting old S3 files from bucket ' + data['bucket_name'] + ' and path ' + data['aux_s3_path_prefix'] + '...')
-	deletePreviousS3Files(source_conf_file, data['bucket_name'], data['aux_s3_path_prefix'])
+	deletePreviousS3Files(source_conf_file, data['bucket_name'], data['aux_s3_path_prefix'], scai_last_execution_status)
 
 	print(datetime.now().time())
 
 	# Copy from source database to S3
 	print('\nResources to unload:\n' + str(resources) + '\n')
 	last_updates_dict = getLastUpdateDates(target_conf_file, sc_schema, resources)	# Get the date of last update for each of this schema's resources
-	copyFromDatabaseToS3(source_conf_file, target_conf_file, resources, sc_schema, last_updates_dict, data['aux_s3_path'])
+	copyFromDatabaseToS3(source_conf_file, target_conf_file, resources, sc_schema, last_updates_dict, data['aux_s3_path'], scai_last_execution_status)
 
 	print(datetime.now().time())
 	
 	# Copy from S3 to target database
 	print('\nResources to load:\n' + str(resources) + '\n')
-	copyFromS3ToDatabase(target_conf_file, resources, sc_schema, tg_schema, data['aux_s3_path'])
+	copyFromS3ToDatabase(target_conf_file, resources, sc_schema, tg_schema, data['aux_s3_path'], scai_last_execution_status)
 
 	print(datetime.now().time())
 

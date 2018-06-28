@@ -15,6 +15,26 @@ def main(db_conf_file, kpi_file):
 	
 	print('Connecting to Database...')
 	
+	#If last execution ended in error, then check in which block it ended
+	block_nbr = cur.execute("select "\
+				" nvl(block_nbr,1) as block_nbr "\
+				" from crm_integration_anlt.t_rel_scai_country_integration country_integration"\
+				"where "\
+				"	country_integration.cod_integration = %(COD_INTEGRATION)d "\
+				"	and country_integration.cod_country = %(cod_country)d "\ 
+				"   and country_integration.cod_status = 3 "\
+				"	and ind_active = 1 "\
+				% {
+					'cod_country':country ,
+					'COD_INTEGRATION':COD_INTEGRATION
+				}
+			)
+	conn.commit()
+	
+	#If above query does not return a value (For example on a normal execution, without previous errors)
+	if (not block_nbr)
+		block_nbr = 1
+	
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
 	kpi_scripts = open(kpi_file).read().split('$$$')
@@ -24,16 +44,24 @@ def main(db_conf_file, kpi_file):
 
 	i = 1
 	for kpi in kpi_scripts:
-		#if i < 16:  # Remove comments to make this run starting from a certain block
-		#	i = i + 1
-		#	continue
-		print('Running block #' + str(i))
-		cur.execute(kpi)
-		conn.commit()
+		if i < block_nbr:  # Make this run starting from a certain block
+			i = i + 1
+			continue
+		print('Running block #' + str(i)) 
+		try:
+			cur.execute(kpi)
+		except Exception, e:
+			conn.rollback()  
+			scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
+			print e
+			print e.pgerror
+			sys.exit("The process aborted with error.")
+		else:
+			conn.commit() 
+
 		i = i + 1
 
 	print('Closing Database connection...')
-
 	cur.close()
 	conn.close()
 	

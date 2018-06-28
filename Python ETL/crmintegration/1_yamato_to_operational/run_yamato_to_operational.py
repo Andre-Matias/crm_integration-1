@@ -18,17 +18,26 @@ data = json.load(open(conf_file))
 
 COD_COUNTRY = int(data['cod_country'])			# Global variable
 
+
+scai_last_execution_status = scai.getLastExecutionStatus(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+if (scai_last_execution_status == 2):
+	sys.exit("The integration is already running...")
+
+	
+#Begin scai execution
 scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 # Copy Atlas tables from Yamato to Operational Model
-copy_tables_atlas.main(conf_file, db_conf_file)
+copy_tables_atlas.main(conf_file, db_conf_file, scai_last_execution_status)
 
 #input('Ready to copy Hydra tables. Proceed?')
 
 # Copy Hydra tables from Yamato to Operational Model (tables aren't fully copied here)
-copy_tables_hydra.main(conf_file, db_conf_file)
+copy_tables_hydra.main(conf_file, db_conf_file, scai_last_execution_status)
 
-scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY)		# SCAI
+#End scai execution
+scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
 
 print(datetime.now().time())
 print('All done!')

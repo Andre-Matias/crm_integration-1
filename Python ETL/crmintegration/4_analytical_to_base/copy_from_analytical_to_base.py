@@ -63,22 +63,30 @@ def main(db_conf_file, conf_file):
 	# Obtain the list of custom fields and contacts to update in Base; This is a list of tuples (opr_contact, dsc_custom_field, custom_field_value)
 	print('Querying for contacts with custom fields to update to Base with cod_source_system ' + cod_source_system + '...')
 	# TODO: Confirm dsc_process_short name
-	cur.execute(
-		"SELECT contact.opr_contact, "\
-		"  custom_field.dsc_custom_field, "\
-		"  fac.custom_field_value "\
-		"FROM crm_integration_anlt.t_fac_base_integration_snap fac, "\
-		"crm_integration_anlt.t_lkp_contact contact, "\
-		"crm_integration_anlt.t_lkp_custom_field custom_field, "\
-		"crm_integration_anlt.t_rel_scai_integration_process rel, "\
-		"crm_integration_anlt.t_lkp_scai_process process "\
-		"WHERE fac.cod_custom_field = custom_field.cod_custom_field "\
-		"AND fac.cod_contact = contact.cod_contact "\
-		"AND fac.dat_snap = rel.dat_processing "\
-		"AND rel.cod_process = process.cod_process "\
-		"AND process.dsc_process_short = '" + dsc_process + "' "\
-		"AND fac.cod_source_system = " + cod_source_system + " "\
-		"AND contact.valid_to = 20991231;")	
+	try:
+		cur.execute(
+			"SELECT contact.opr_contact, "\
+			"  custom_field.dsc_custom_field, "\
+			"  fac.custom_field_value "\
+			"FROM crm_integration_anlt.t_fac_base_integration_snap fac, "\
+			"crm_integration_anlt.t_lkp_contact contact, "\
+			"crm_integration_anlt.t_lkp_custom_field custom_field, "\
+			"crm_integration_anlt.t_rel_scai_integration_process rel, "\
+			"crm_integration_anlt.t_lkp_scai_process process "\
+			"WHERE fac.cod_custom_field = custom_field.cod_custom_field "\
+			"AND fac.cod_contact = contact.cod_contact "\
+			"AND fac.dat_snap = rel.dat_processing "\
+			"AND rel.cod_process = process.cod_process "\
+			"AND process.dsc_process_short = '" + dsc_process + "' "\
+			"AND fac.cod_source_system = " + cod_source_system + " "\
+			"AND contact.valid_to = 20991231;")	
+	except Exception, e: 
+		scai.processEnd(db_conf_file, dsc_process, COD_INTEGRATION, COD_COUNTRY, '', '',3)	# SCAI
+		scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+		print e
+		print e.pgerror
+		sys.exit("The process aborted with error.")
+
 	print('Extracting query results...')
 	result_list = cur.fetchall()
 	#print('Results:')
@@ -160,7 +168,7 @@ def main(db_conf_file, conf_file):
 		number_of_updates = number_of_updates + thread_return_values_queue.get()
 	
 	print('Number of updates done in ' + dsc_process + ': ' + str(number_of_updates))
-	scai.processEnd(db_conf_file, dsc_process, COD_INTEGRATION, COD_COUNTRY) # SCAI
+	scai.processEnd(db_conf_file, dsc_process, COD_INTEGRATION, COD_COUNTRY, '', '', 1) # SCAI
 	print(datetime.now().time())
 	print('Done\n')
 
