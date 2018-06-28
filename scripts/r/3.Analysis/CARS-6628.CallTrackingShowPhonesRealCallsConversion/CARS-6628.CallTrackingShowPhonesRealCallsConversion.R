@@ -4,6 +4,7 @@ library("dtplyr")
 library("magrittr")
 library("glue")
 library("RMySQL")
+library("RPostgreSQL")
 
 # load credentials ------------------------------------------------------------
 load("~/GlobalConfig.Rdata")
@@ -104,11 +105,17 @@ dbClearResult(dbSqlQuery)
 # disconnect from database  -------------------------------------------------
 dbDisconnect(conDB)
 
-
-
-
-
-
+sqlQuery <-
+  "
+  SELECT server_path, ad_id, server_date_day, COUNT(*)QtyShowPhoneReplies
+  FROM main.hydra_verticals.web
+  WHERE trackname = 'reply_phone_show'
+  AND server_path = '/h/v-otomoto-web'
+  AND ad_id IN(6028078457)
+  GROUP BY 1, 2, 3
+  LIMIT 10
+  ;
+  "
 
 # connect to Yamato ----------------------------------------------------
 
@@ -124,12 +131,25 @@ conDB <-
     password = dwYamatoDbPassword
   )
 
-print(paste(monthText, server_path, epochDate))
-print(sqlQuery)
 
 dbSqlQuery <-
   RPostgreSQL::dbGetQuery(
-    conDB, sqlUnload
+    conDB, sqlQuery
   )
 
 dbDisconnect(conDB)
+
+
+# 
+# 
+# 
+# /h/v-otomoto-web;
+# /h/v-otomoto-ios
+# /h/v-otomoto-android;
+# 
+# /h/v-standvirtual-ios
+# /h/v-standvirtual-android
+# 
+# 
+# SELECT DISTINCT server_path FROM main.hydra_verticals.web;
+# 
