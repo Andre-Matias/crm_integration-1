@@ -372,5 +372,3 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 	print('SCAI Process process_status: ' + process_status)
 	
 	return process_status
-	
-	-
