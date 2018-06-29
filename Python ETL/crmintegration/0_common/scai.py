@@ -18,8 +18,8 @@ def executeSQL(conf_file, sql_script, return_value=False):
 		cur.execute(sql_script)
 	except Exception as e:
 		conn.rollback() 
-		print e
-		print e.pgerror
+		print (e)
+		print (e.pgerror)
 		sys.exit("The process aborted with error.")
 	else:
 		conn.commit()
