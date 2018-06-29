@@ -21,7 +21,7 @@ def main(db_conf_file, kpi_file):
 				" from crm_integration_anlt.t_rel_scai_country_integration country_integration"\
 				"where "\
 				"	country_integration.cod_integration = %(COD_INTEGRATION)d "\
-				"	and country_integration.cod_country = %(cod_country)d "\ 
+				"	and country_integration.cod_country = %(cod_country)d "\
 				"   and country_integration.cod_status = 3 "\
 				"	and ind_active = 1 "\
 				% {
