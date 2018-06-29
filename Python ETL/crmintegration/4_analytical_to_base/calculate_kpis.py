@@ -11,7 +11,7 @@ def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
-def main(db_conf_file, kpi_file):
+def main(db_conf_file, kpi_file, country):
 	
 	print('Connecting to Database...')
 	conn = getDatabaseConnection(db_conf_file)
@@ -71,5 +71,6 @@ def main(db_conf_file, kpi_file):
 if __name__ == "__main__":
 	db_conf_file = sys.argv[1] 	# Database configuration file
 	kpi_file = sys.argv[2]  	# File with KPI calculation scripts to execute
+	country = int(sys.argv[3])  # Country code
 	
-	main(db_conf_file, kpi_file)
+	main(db_conf_file, kpi_file, country)
