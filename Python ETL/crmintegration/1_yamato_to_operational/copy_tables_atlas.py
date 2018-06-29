@@ -64,7 +64,7 @@ def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_
 			scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
 			if(scai_last_execution_status==3):
 				scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
-				
+			print('Last execution status= %(scai_last_execution_status)s; Process Status= %(scai_process_status)s .' % {'scai_last_execution_status':scai_last_execution_status, 'scai_process_status':scai_process_status})	
 			# Is normal execution or re-execution starting from the step that was in error	
 			if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
 				scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
@@ -156,7 +156,8 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	
 	global COD_COUNTRY; COD_COUNTRY = int(data['cod_country'])												# Global variable
 	global COUNTRY; COUNTRY = data['country']																# Global variable
-
+	print('First Last execution status= %(scai_last_execution_status)s;  ' % {'scai_last_execution_status':scai_last_execution_status})	
+		
 	# Copy tables from several source schemata to single target schema
 	for sc_schema in sc_schemata:
 		resources_identifier = 'resources_' + sc_schema
