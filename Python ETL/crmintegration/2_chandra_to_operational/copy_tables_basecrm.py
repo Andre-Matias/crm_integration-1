@@ -112,16 +112,16 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 				'BASE_ACCOUNT_COUNTRY':BASE_ACCOUNT_COUNTRY
 				}		
 				)
-		except Exception as e:
-			conn_target.rollback()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
-			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
-			print (e)
-			print (e.pgerror)
-			sys.exit("The process aborted with error.")
-		else:
-			conn_target.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
+			except Exception as e:
+				conn_target.rollback()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
+				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				print (e)
+				print (e.pgerror)
+				sys.exit("The process aborted with error.")
+			else:
+				conn_target.commit()
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 
 
 	#Close connection
