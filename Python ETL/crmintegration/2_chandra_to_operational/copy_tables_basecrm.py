@@ -89,7 +89,7 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 		scai_process_name = scai.getProcessShortDescription(target_conf, tg_table)				# SCAI
 		
 		if(scai_last_execution_status==3):
-			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+			scai_process_status = scai.processCheck(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 				
 		# Is normal execution or re-execution starting from the step that was in error	
 		if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
@@ -114,14 +114,14 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 				)
 			except Exception as e:
 				conn_target.rollback()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
-				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				scai.processEnd(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
+				scai.integrationEnd(target_conf, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 				print (e)
 				print (e.pgerror)
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
+				scai.processEnd(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 
 
 	#Close connection
@@ -143,7 +143,7 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 		scai_process_name = scai.getProcessShortDescription(target_conf, tg_table)				# SCAI
 		
 		if(scai_last_execution_status==3):
-			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+			scai_process_status = scai.processCheck(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 				
 		# Is normal execution or re-execution starting from the step that was in error	
 		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
@@ -169,14 +169,14 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 				)
 			except Exception as e:
 				conn_target.rollback()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
-				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				scai.processEnd(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
+				scai.integrationEnd(target_conf, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 				print (e)
 				print (e.pgerror)
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
+				scai.processEnd(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
