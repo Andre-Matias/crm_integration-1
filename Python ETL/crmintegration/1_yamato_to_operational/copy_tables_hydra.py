@@ -93,14 +93,14 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 			}		
 			)
 		except Exception as e:
-			conn_target.rollback()
+			conn.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 			print (e)
 			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
-			conn_target.commit()
+			conn.commit()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',1)
 
 			#Enable execution of following processes
