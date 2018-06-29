@@ -121,7 +121,9 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 				sys.exit("The process aborted with error.")
 			else:
 				conn.commit()
-				scai.processEnd(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
+				
+				#Enable execution of following processes
+				scai_last_execution_status = 1
 
 
 	#Close connection
@@ -147,7 +149,7 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 				
 		# Is normal execution or re-execution starting from the step that was in error	
 		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
-			scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
+		
 			try:
 				cur_target.execute(
 					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
