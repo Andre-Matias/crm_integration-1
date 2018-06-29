@@ -53,7 +53,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 
 	
-def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names='', scai_last_execution_status):
+def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names='', scai_last_execution_status=1):
 	print('Connecting to Yamato...')
 	conn_target = getDatabaseConnection(db_conf_file)
 	cur_target = conn_target.cursor()
