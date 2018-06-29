@@ -94,14 +94,14 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 			)
 		except Exception as e:
 			conn_target.rollback()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 			print (e)
 			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
 			conn_target.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',2)	# SCAI
 
 	cur.close()
 	cur.close()
@@ -157,14 +157,14 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 			)
 		except Exception as e:
 			conn.rollback()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 			print (e)
 			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
 			conn.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day',2)	# SCAI
 			
 			#Enable execution of following processes
 			scai_last_execution_status = 1
