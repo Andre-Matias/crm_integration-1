@@ -12078,4 +12078,3 @@ drop table if exists crm_integration_anlt.tmp_pt_load_web_step1;
 
 drop table if exists crm_integration_anlt.tmp_pt_load_web;
 
-	--$$$
