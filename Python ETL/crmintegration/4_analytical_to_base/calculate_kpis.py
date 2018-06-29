@@ -14,6 +14,8 @@ def getDatabaseConnection(conf_file):
 def main(db_conf_file, kpi_file):
 	
 	print('Connecting to Database...')
+	conn = getDatabaseConnection(db_conf_file)
+	cur = conn.cursor()
 	
 	#If last execution ended in error, then check in which block it ended
 	block_nbr = cur.execute("select "\
@@ -35,8 +37,7 @@ def main(db_conf_file, kpi_file):
 	if (not block_nbr):
 		block_nbr = 1
 	
-	conn = getDatabaseConnection(db_conf_file)
-	cur = conn.cursor()
+
 	kpi_scripts = open(kpi_file).read().split('$$$')
 
 	#print('Scripts: ' + kpi_scripts)
