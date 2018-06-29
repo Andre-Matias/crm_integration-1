@@ -53,7 +53,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 
 
-def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, horizontal_name, scai_last_execution_status):	
+def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, horizontal_name, scai_last_execution_status=1):	
 	print('Connecting to Yamato...')
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
@@ -107,7 +107,7 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 	cur.close()
 
 
-def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names, scai_last_execution_status):		
+def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names, scai_last_execution_status=1):		
 	print('Connecting to Yamato...')
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()

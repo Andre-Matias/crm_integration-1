@@ -16,7 +16,7 @@ COUNTRY = ''				# Replaced by name in conf_file
 BASE_ACCOUNT_COUNTRY = -1	# Replaced by name in conf_file
 
 
-def deletePreviousS3Files(conf_file, bucket_name, s3_path_prefix, scai_last_execution_status):
+def deletePreviousS3Files(conf_file, bucket_name, s3_path_prefix, scai_last_execution_status=1):
 
 	if (scai_last_execution_status!=3):
 		conf = json.load(open(conf_file))
@@ -74,7 +74,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 	
 	
-def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updates_dict, aux_path, scai_last_execution_status):
+def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updates_dict, aux_path, scai_last_execution_status=1):
 	print('Connecting to Chandra...')
 	conn = getDatabaseConnection(source_conf)
 	cur = conn.cursor()
@@ -129,7 +129,7 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 	conn.close()
 
 	
-def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path, scai_last_execution_status):		
+def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path, scai_last_execution_status=1):		
 	#LOAD to target redshift
 	print('Connecting to Yamato...')
 	conn_target = getDatabaseConnection(target_conf)
