@@ -360,7 +360,7 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 		"	and rel_integr_proc.cod_country = %(cod_country)d "\
 		"	and rel_integr_proc.ind_active = 1 "\
 		"   and rel_country_integr.cod_country = rel_integr_proc.cod_country "\
-		"	and rel_country_integr.cod_integration = '%(cod_integration)d "\
+		"	and rel_country_integr.cod_integration = %(cod_integration)d "\
 	% {
 		'dsc_process':dsc_process,
 		'cod_country':cod_country,
