@@ -344,7 +344,7 @@ def getLastExecutionStatus(conf_file, cod_integration, cod_country):
 	#print(sql_script) 
 
 	last_execution_status = executeSQL(conf_file, sql_script, return_value=True)
-	print('SCAI Process getStatusLastExecution: ' + last_execution_status)
+	print('SCAI Process getStatusLastExecution: ' + str(last_execution_status))
 	
 	return last_execution_status	
 
@@ -369,6 +369,6 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 	#print(sql_script) 
 
 	process_status = executeSQL(conf_file, sql_script, return_value=True)
-	print('SCAI Process process_status: ' + process_status)
+	print('SCAI Process process_status: ' + str(process_status))
 	
 	return process_status
