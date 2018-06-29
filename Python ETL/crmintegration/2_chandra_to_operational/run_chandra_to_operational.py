@@ -21,7 +21,7 @@ data = json.load(open(conf_file))
 COD_COUNTRY = int(data['cod_country'])	# Global variable
 
 
-scai_last_execution_status = scai.getLastExecutionStatus(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+scai_last_execution_status = scai.getLastExecutionStatus(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 if (scai_last_execution_status == 2):
 	sys.exit("The integration is already running...")
