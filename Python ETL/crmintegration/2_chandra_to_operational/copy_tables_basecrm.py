@@ -121,7 +121,7 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 			sys.exit("The process aborted with error.")
 		else:
 			conn_target.commit()
-			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',2)	# SCAI
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 
 
 	#Close connection
@@ -176,7 +176,7 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',2)	# SCAI
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
