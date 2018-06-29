@@ -53,8 +53,8 @@ def main(db_conf_file, kpi_file):
 		except Exception as e:
 			conn.rollback()  
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
-			print e
-			print e.pgerror
+			print (e)
+			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
 			conn.commit() 

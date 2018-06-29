@@ -96,8 +96,8 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 			conn_target.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
-			print e
-			print e.pgerror
+			print (e)
+			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
 			conn_target.commit()
@@ -159,8 +159,8 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 			conn.rollback()
 			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
 			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
-			print e
-			print e.pgerror
+			print (e)
+			print (e.pgerror)
 			sys.exit("The process aborted with error.")
 		else:
 			conn.commit()
