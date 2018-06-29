@@ -2,6 +2,7 @@ import sys
 from datetime import datetime
 import psycopg2
 import simplejson as json
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
 COD_INTEGRATION = 30000		# Operational to Analytical
