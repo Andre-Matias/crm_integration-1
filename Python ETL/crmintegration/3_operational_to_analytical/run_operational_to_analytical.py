@@ -82,6 +82,6 @@ def main(conf_file, dml_file, country):
 if __name__ == "__main__":
 	conf_file = sys.argv[1] # Json file with Database connection details
 	dml_file = sys.argv[2]  # Text file with DML scripts to execute
-	country = sys.argv[3]  # Text file with DML scripts to execute
+	country = int(sys.argv[3])  # Country code
 	
 	main(conf_file, dml_file, country)
