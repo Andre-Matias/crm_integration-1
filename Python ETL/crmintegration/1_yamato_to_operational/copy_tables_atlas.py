@@ -64,7 +64,7 @@ def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_
 			scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
 			if(scai_last_execution_status==3):
 				scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
-			print('Last execution status= %(scai_last_execution_status)s; Process Status= %(scai_process_status)s .' % {'scai_last_execution_status':scai_last_execution_status, 'scai_process_status':scai_process_status})	
+
 			# Is normal execution or re-execution starting from the step that was in error	
 			if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
 				scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
@@ -108,39 +108,38 @@ def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_
 			# Is normal execution or re-execution starting from the step that was in error	
 			if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
 				scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
-				
-			scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI		
-			print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
-			try:
-				cur_target.execute(
-					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-					"INSERT INTO %(tg_schema)s.%(tg_table)s "\
-					"SELECT * FROM %(sc_schema)s.%(resource)s "\
-					"WHERE operation_timestamp >= '%(last_update_date)s' "\
-					"AND livesync_dbname in (%(verticals_names)s); "\
-					"ANALYZE %(tg_schema)s.%(tg_table)s;"
-				% {
-				'tg_table':tg_table,
-				'tg_schema':tg_schema,
-				'sc_schema':sc_schema,
-				'resource':resource,
-				'verticals_names':verticals_names,
-				'last_update_date':last_updates_dict[resource]
-				}	
-				)
-			except Exception as e:
-				conn_target.rollback()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
-				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
-				print (e)
-				print (e.pgerror)
-				sys.exit("The process aborted with error.")
-			else:
-				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
-				
-				#Enable execution of following processes
-				scai_last_execution_status = 1
+				 	
+				print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
+				try:
+					cur_target.execute(
+						"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+						"INSERT INTO %(tg_schema)s.%(tg_table)s "\
+						"SELECT * FROM %(sc_schema)s.%(resource)s "\
+						"WHERE operation_timestamp >= '%(last_update_date)s' "\
+						"AND livesync_dbname in (%(verticals_names)s); "\
+						"ANALYZE %(tg_schema)s.%(tg_table)s;"
+					% {
+					'tg_table':tg_table,
+					'tg_schema':tg_schema,
+					'sc_schema':sc_schema,
+					'resource':resource,
+					'verticals_names':verticals_names,
+					'last_update_date':last_updates_dict[resource]
+					}	
+					)
+				except Exception as e:
+					conn_target.rollback()
+					scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+					scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+					print (e)
+					print (e.pgerror)
+					sys.exit("The process aborted with error.")
+				else:
+					conn_target.commit()
+					scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
+					
+					#Enable execution of following processes
+					scai_last_execution_status = 1
 	
 	cur_target.close()
 	conn_target.close()
