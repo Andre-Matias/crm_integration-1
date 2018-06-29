@@ -32,7 +32,7 @@ def main(db_conf_file, kpi_file):
 	conn.commit()
 	
 	#If above query does not return a value (For example on a normal execution, without previous errors)
-	if (not block_nbr)
+	if (not block_nbr):
 		block_nbr = 1
 	
 	conn = getDatabaseConnection(db_conf_file)

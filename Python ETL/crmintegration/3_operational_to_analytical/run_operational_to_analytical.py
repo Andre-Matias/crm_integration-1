@@ -61,7 +61,7 @@ def main(conf_file, dml_file, country):
 			cur.execute(dml)
 		except Exception as e:
 			conn.rollback() 
-			scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
+			scai.integrationEnd(conf_file, COD_INTEGRATION, country, 3, i)		# SCAI
 			print (e)
 			print (e.pgerror)
 			sys.exit("The process aborted with error.")
@@ -74,7 +74,7 @@ def main(conf_file, dml_file, country):
 	print('Closing Database connection...')
 	cur.close()
 	conn.close()
-	scai.integrationEnd(db_conf_file, COD_INTEGRATION, country, 1)		# SCAI
+	scai.integrationEnd(conf_file, COD_INTEGRATION, country, 1)		# SCAI
 	print(datetime.now().time())
 	print('All done!')
 
