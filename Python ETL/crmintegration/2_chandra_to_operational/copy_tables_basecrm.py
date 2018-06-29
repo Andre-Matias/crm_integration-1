@@ -92,7 +92,7 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 			scai_process_status = scai.processCheck(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 				
 		# Is normal execution or re-execution starting from the step that was in error	
-		if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):
+		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
 			scai.processStart(target_conf, scai_process_name, COD_INTEGRATION, COD_COUNTRY)			# SCAI
 			try:
 				cur.execute(
