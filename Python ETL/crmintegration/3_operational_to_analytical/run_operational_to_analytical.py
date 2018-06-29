@@ -27,8 +27,8 @@ def main(conf_file, dml_file, country):
     #If last execution ended in error, then check in which block it ended
 	block_nbr = cur.execute("select "\
 				" nvl(block_nbr,1) as block_nbr "\
-				" from crm_integration_anlt.t_rel_scai_country_integration country_integration"\
-				"where "\
+				" from crm_integration_anlt.t_rel_scai_country_integration country_integration "\
+				" where "\
 				"	country_integration.cod_integration = %(COD_INTEGRATION)d "\
 				"	and country_integration.cod_country = %(cod_country)d "\
 				"   and country_integration.cod_status = 3 "\
