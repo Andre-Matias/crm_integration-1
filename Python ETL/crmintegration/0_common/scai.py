@@ -333,10 +333,10 @@ def getLastExecutionStatus(conf_file, cod_integration, cod_country):
 		"select "\
 		" cod_status "\
 		" from crm_integration_anlt.t_rel_scai_country_integration "\
-		"where "\
-		"	cod_integration = %(cod_integration)d "\
-		"	and cod_country = %(cod_country)d "\
-		"	and ind_active = 1;" \
+		" where "\
+		" cod_integration = %(cod_integration)d "\
+		" and cod_country = %(cod_country)d "\
+		" and ind_active = 1;" \
 	% {
 		'cod_integration':cod_integration,
 		'cod_country':cod_country
@@ -356,7 +356,7 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 		"	select rel_integr_proc.cod_status "\
 		"	from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr "\
 		"	where proc.dsc_process_short = '%(dsc_process)s' "\
-		"	and proc.cod_process = rel_integr_proc.cod_process "\ 
+		"	and proc.cod_process = rel_integr_proc.cod_process "\
 		"	and rel_integr_proc.cod_country = %(cod_country)d "\
 		"	and rel_integr_proc.ind_active = 1 "\
 		"   and rel_country_integr.cod_country = rel_integr_proc.cod_country "\
@@ -373,4 +373,4 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 	
 	return process_status
 	
-	
+	-
