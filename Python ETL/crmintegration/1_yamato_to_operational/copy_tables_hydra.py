@@ -53,95 +53,127 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	return last_updates_dict
 
 
-def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, horizontal_name):	
+def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, horizontal_name, scai_last_execution_status):	
 	print('Connecting to Yamato...')
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
 
 	tg_table = 'stg_%(COUNTRY)s_%(sc_schema)s_%(resource)s' % {'resource':resource, 'sc_schema':sc_schema, 'COUNTRY':COUNTRY}
 	scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
-	scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
-	print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_update_date})
-	cur.execute(
-		"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-		"INSERT INTO %(tg_schema)s.%(tg_table)s "\
-		"SELECT "\
-		"	server_date_day, "\
-		"	ad_id, "\
-		"	action_type, "\
-		"	%(horizontal_name)s source, "\
-		"	count(*) occurrences, "\
-		"	count(distinct session_long) distinct_occurrences "\
-		"FROM hydra.web "\
-		"WHERE upper(country_code) = '%(HYDRA_COUNTRY_CODE)s' "\
-		"AND ad_id is not null "\
-		"AND server_date_day >= '%(last_update_date)s' "\
-		"GROUP BY server_date_day, ad_id, action_type; "\
-		"ANALYZE %(tg_schema)s.%(tg_table)s;"
-	% {
-	'tg_table':tg_table,
-	'tg_schema':tg_schema,
-	'horizontal_name':horizontal_name,
-	'HYDRA_COUNTRY_CODE':HYDRA_COUNTRY_CODE,
-	'last_update_date':last_update_date
-	}		
-	)
-	conn.commit()
-	scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day')	# SCAI
+	if(scai_last_execution_status==3):
+		scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+		
+	# Is normal execution or re-execution starting from the step that was in error	
+	if (scai_last_execution_status == 2 or (scai_last_execution_status == 3 and scai_process_status == 3)):	
+		scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+		print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_update_date})
+		try:
+			cur.execute(
+				"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+				"INSERT INTO %(tg_schema)s.%(tg_table)s "\
+				"SELECT "\
+				"	server_date_day, "\
+				"	ad_id, "\
+				"	action_type, "\
+				"	%(horizontal_name)s source, "\
+				"	count(*) occurrences, "\
+				"	count(distinct session_long) distinct_occurrences "\
+				"FROM hydra.web "\
+				"WHERE upper(country_code) = '%(HYDRA_COUNTRY_CODE)s' "\
+				"AND ad_id is not null "\
+				"AND server_date_day >= '%(last_update_date)s' "\
+				"GROUP BY server_date_day, ad_id, action_type; "\
+				"ANALYZE %(tg_schema)s.%(tg_table)s;"
+			% {
+			'tg_table':tg_table,
+			'tg_schema':tg_schema,
+			'horizontal_name':horizontal_name,
+			'HYDRA_COUNTRY_CODE':HYDRA_COUNTRY_CODE,
+			'last_update_date':last_update_date
+			}		
+			)
+		except Exception as e:
+			conn_target.rollback()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+			print e
+			print e.pgerror
+			sys.exit("The process aborted with error.")
+		else:
+			conn_target.commit()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
 
 	cur.close()
 	cur.close()
 
 
-def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names):		
+def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names, scai_last_execution_status):		
 	print('Connecting to Yamato...')
 	conn = getDatabaseConnection(db_conf_file)
 	cur = conn.cursor()
 	
 	tg_table = 'stg_%(COUNTRY)s_%(sc_schema)s_%(resource)s' % {'resource':resource, 'sc_schema':sc_schema, 'COUNTRY':COUNTRY}
 	scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
-	scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
-	print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_update_date})
 	
-	# Dynamically build CASE statement according to number of verticals
-	case_statement = "CASE"
-	for i in range(len(anlt_verticals_names)):
-		case_statement += " WHEN lower(host) LIKE '%%" + hydra_verticals_names[i] + "%%' THEN " + anlt_verticals_names[i]
-	case_statement += " ELSE 'other' END"
-	
-	cur.execute(
-		"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
-		"INSERT INTO %(tg_schema)s.%(tg_table)s "\
-		"SELECT "\
-		"	server_date_day, "\
-		"	ad_id, "\
-		"	trackname, "\
-		"	%(case_statement)s source, "\
-		"	count(*) occurrences, "\
-		"	count(distinct session_long) distinct_occurrences "\
-		"FROM hydra_verticals.web "\
-		"WHERE upper(country_code) = '%(HYDRA_COUNTRY_CODE)s' "\
-		"AND ad_id is not null "\
-		"AND server_date_day >= '%(last_update_date)s' "\
-		"GROUP BY server_date_day, ad_id, trackname, "\
-		"	%(case_statement)s; "\
-		"ANALYZE %(tg_schema)s.%(tg_table)s;"
-	% {
-	'tg_table':tg_table,
-	'tg_schema':tg_schema,
-	'HYDRA_COUNTRY_CODE':HYDRA_COUNTRY_CODE,
-	'last_update_date':last_update_date,
-	'case_statement':case_statement
-	}
-	)
-	conn.commit()
-	scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'server_date_day')	# SCAI
+	if(scai_last_execution_status==3):
+		scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+		
+	# Is normal execution or re-execution starting from the step that was in error	
+	if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):	
+		scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+		print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_update_date})
+		
+		# Dynamically build CASE statement according to number of verticals
+		case_statement = "CASE"
+		for i in range(len(anlt_verticals_names)):
+			case_statement += " WHEN lower(host) LIKE '%%" + hydra_verticals_names[i] + "%%' THEN " + anlt_verticals_names[i]
+		case_statement += " ELSE 'other' END"
+		
+		try:
+			cur.execute(
+				"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+				"INSERT INTO %(tg_schema)s.%(tg_table)s "\
+				"SELECT "\
+				"	server_date_day, "\
+				"	ad_id, "\
+				"	trackname, "\
+				"	%(case_statement)s source, "\
+				"	count(*) occurrences, "\
+				"	count(distinct session_long) distinct_occurrences "\
+				"FROM hydra_verticals.web "\
+				"WHERE upper(country_code) = '%(HYDRA_COUNTRY_CODE)s' "\
+				"AND ad_id is not null "\
+				"AND server_date_day >= '%(last_update_date)s' "\
+				"GROUP BY server_date_day, ad_id, trackname, "\
+				"	%(case_statement)s; "\
+				"ANALYZE %(tg_schema)s.%(tg_table)s;"
+			% {
+			'tg_table':tg_table,
+			'tg_schema':tg_schema,
+			'HYDRA_COUNTRY_CODE':HYDRA_COUNTRY_CODE,
+			'last_update_date':last_update_date,
+			'case_statement':case_statement
+			}
+			)
+		except Exception as e:
+			conn.rollback()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+			scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+			print e
+			print e.pgerror
+			sys.exit("The process aborted with error.")
+		else:
+			conn.commit()
+			scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',2)	# SCAI
+			
+			#Enable execution of following processes
+			scai_last_execution_status = 1
 
 	cur.close()
 	cur.close()
 	
 		
-def main(conf_file, db_conf_file):
+def main(conf_file, db_conf_file, scai_last_execution_status):
 	print(datetime.now().time())
 	
 	data = json.load(open(conf_file))
@@ -163,11 +195,11 @@ def main(conf_file, db_conf_file):
 	
 	# Copy tables 'web' from schema 'hydra' to Operational Model
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra, [resource])[resource]						# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
-	copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name)			# Function that effectively copies 'hydra.web' table
+	copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name,scai_last_execution_status)			# Function that effectively copies 'hydra.web' table
 	print(datetime.now().time())
 	# Copy tables 'web' from schema 'hydra_verticals' to Operational Model
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra_verticals, [resource])[resource]			# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
-	copyHydraVerticalsTable(db_conf_file, sc_schema_hydra_verticals, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names)	# Function that effectively copies 'hydra_verticals.web' table
+	copyHydraVerticalsTable(db_conf_file, sc_schema_hydra_verticals, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names,scai_last_execution_status)	# Function that effectively copies 'hydra_verticals.web' table
 
 	print('Done copying all Hydra tables!')
 	print(datetime.now().time())

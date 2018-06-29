@@ -20,12 +20,18 @@ data = json.load(open(conf_file))
 
 COD_COUNTRY = int(data['cod_country'])	# Global variable
 
+
+scai_last_execution_status = scai.getLastExecutionStatus(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+if (scai_last_execution_status == 2):
+	sys.exit("The integration is already running...")
+
 scai.integrationStart(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 # Copy rdl_basecrm_v2 tables from Chandra to Operational Model
-copy_tables_basecrm.main(conf_file, source_conf_file, target_conf_file)
+copy_tables_basecrm.main(conf_file, source_conf_file, target_conf_file, scai_last_execution_status)
 
-scai.integrationEnd(target_conf_file, COD_INTEGRATION, COD_COUNTRY)		# SCAI
+scai.integrationEnd(target_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
 
 print(datetime.now().time())
 print('All done!')

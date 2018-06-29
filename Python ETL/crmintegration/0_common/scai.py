@@ -14,8 +14,15 @@ def executeSQL(conf_file, sql_script, return_value=False):
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
-	cur.execute(sql_script)
-	conn.commit()
+	try:
+		cur.execute(sql_script)
+	except Exception as e:
+		conn.rollback() 
+		print e
+		print e.pgerror
+		sys.exit("The process aborted with error.")
+	else:
+		conn.commit()
 
 	if return_value:
 		result = cur.fetchone()
@@ -34,7 +41,7 @@ def updateIntegrationStart(conf_file, cod_integration, cod_country):
 		"update crm_integration_anlt.t_rel_scai_country_integration "\
 		"	set dat_processing = cast(to_char(trunc(sysdate),'yyyymmdd') as int), "\
 		"	execution_nbr = case "\
-		"						when trunc(sysdate) - to_date(dat_processing,'yyyymmdd') > 1 then 1 "\
+		"						when trunc(sysdate) - to_date(dat_processing,'yyyymmdd') >= 1 then 1 "\
 		"	  					else execution_nbr + 1 "\
 		"					  	end, "\
 		"	cod_status = 2 "\
@@ -148,7 +155,7 @@ def insertProcessExecutionStart(conf_file, dsc_process, cod_integration, cod_cou
 
 		
 # Step 5
-def insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_country):
+def insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_country,status):
 	print('SCAI Step #5')
 	sql_script = \
 		"insert into crm_integration_anlt.t_fac_scai_execution "\
@@ -157,7 +164,7 @@ def insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_count
 		"	rel_integr_proc.cod_country, "\
 		"	rel_integr_proc.cod_integration, "\
 		"	rel_integr_proc.cod_process, "\
-		"	1 cod_status, "\
+		"	'%(status)d' cod_status, "\
 		"	2 cod_execution_type, "\
 		"	rel_integr_proc.dat_processing, "\
 		"	rel_integr_proc.execution_nbr, "\
@@ -180,19 +187,20 @@ def insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_count
 	% {
 		'cod_integration':cod_integration,
 		'cod_country':cod_country,
-		'dsc_process':dsc_process
+		'dsc_process':dsc_process,
+		'status':status
 	}
 	
 	executeSQL(conf_file, sql_script)
 
 
 # Step 6
-def updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_column_name):
+def updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_column_name, status):
 	print('SCAI Step #6')
 	if date_column_name != '':
 		sql_script = \
 			"update crm_integration_anlt.t_rel_scai_integration_process "\
-			"set cod_status = 1, "\
+			"set cod_status = '%(status)d', "\
 			"last_processing_datetime = isnull((select max(%(date_column_name)s) from crm_integration_stg.%(table_name)s),last_processing_datetime) "\
 			"from crm_integration_anlt.t_lkp_scai_process proc "\
 			"where t_rel_scai_integration_process.cod_process = proc.cod_process "\
@@ -204,12 +212,13 @@ def updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_colum
 			'cod_country':cod_country,
 			'dsc_process':dsc_process,
 			'table_name':table_name,
-			'date_column_name':date_column_name
+			'date_column_name':date_column_name,
+			'status':status
 		}
 	else:
 		sql_script = \
 			"update crm_integration_anlt.t_rel_scai_integration_process "\
-			"set cod_status = 1, "\
+			"set cod_status = '%(status)d', "\
 			"last_processing_datetime = sysdate "\
 			"from crm_integration_anlt.t_lkp_scai_process proc "\
 			"where t_rel_scai_integration_process.cod_process = proc.cod_process "\
@@ -219,13 +228,14 @@ def updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_colum
 			"and t_rel_scai_integration_process.ind_active = 1;"\
 		% {
 			'cod_country':cod_country,
-			'dsc_process':dsc_process
+			'dsc_process':dsc_process,
+			'status':status
 		}
 	executeSQL(conf_file, sql_script)
 	
 	
 # Step 7
-def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country):
+def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, status):
 	print('SCAI Step #7')
 	sql_script = \
 		"insert into crm_integration_anlt.t_fac_scai_execution "\
@@ -234,7 +244,7 @@ def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country):
 		"	cod_country, "\
 		"	cod_integration, "\
 		"	-1 cod_process, "\
-		"	1 cod_status, "\
+		"	'%(status)d' cod_status, "\
 		"	2 cod_execution_type, "\
 		"	dat_processing, "\
 		"	execution_nbr, "\
@@ -247,25 +257,29 @@ def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country):
 		"	and cod_country = %(cod_country)d;" \
 	% {
 		'cod_integration':cod_integration,
-		'cod_country':cod_country			
+		'cod_country':cod_country,
+		'status':status		
 	}
 	#print(sql_script)	
 	executeSQL(conf_file, sql_script)
 
 
 # Step 8
-def updateIntegrationEnd(conf_file, cod_integration, cod_country):
+def updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr):
 	print('SCAI Step #8')
 	sql_script = \
 		"update crm_integration_anlt.t_rel_scai_country_integration "\
 		"set "\
-		"   cod_status = 1 "\
+		"   cod_status = '%(status)d' "\
+		" , block_nbr = '%(block_nbr)d' "\
 		"where "\
 		"	cod_integration = %(cod_integration)d "\
 		"	and cod_country = %(cod_country)d;" \
 	% {
 		'cod_integration':cod_integration,
-		'cod_country':cod_country			
+		'cod_country':cod_country,
+		'status':status,
+		'block_nbr':block_nbr	
 	}
 	#print(sql_script)
 	executeSQL(conf_file, sql_script)
@@ -277,9 +291,9 @@ def integrationStart(conf_file, cod_integration, cod_country):
 	insertIntegrationExecutionStart(conf_file, cod_integration, cod_country)
 	
 # Steps 7 and 8, used after ending an integration
-def integrationEnd(conf_file, cod_integration, cod_country):
-	insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country)
-	updateIntegrationEnd(conf_file, cod_integration, cod_country)
+def integrationEnd(conf_file, cod_integration, cod_country, status=1):
+	insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, status)
+	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr=1)
 
 # Steps 3 and 4, used before starting a process
 def processStart(conf_file, dsc_process, cod_integration, cod_country):
@@ -287,9 +301,9 @@ def processStart(conf_file, dsc_process, cod_integration, cod_country):
 	insertProcessExecutionStart(conf_file, dsc_process, cod_integration, cod_country)
 
 # Steps 5 and 6, used after ending a process
-def processEnd(conf_file, dsc_process, cod_integration, cod_country, table_name='', date_column_name=''):
-	insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_country)
-	updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_column_name)
+def processEnd(conf_file, dsc_process, cod_integration, cod_country, table_name='', date_column_name='', status=1):
+	insertProcessExecutionEnd(conf_file, dsc_process, cod_integration, cod_country,status)
+	updateProcessEnd(conf_file, dsc_process, cod_country, table_name, date_column_name,status)
 	
 # Return the 'dsc_process_short' corresponding to the table name argument (TODO: Incorporate this 
 def getProcessShortDescription(conf_file, table_name):
@@ -310,3 +324,53 @@ def getProcessShortDescription(conf_file, table_name):
 	print('SCAI Process: ' + process_name)
 	
 	return process_name
+	
+	
+# Check status last execution (1-OK; 2-Running; 3-Error)
+def getLastExecutionStatus(conf_file, cod_integration, cod_country):
+	print('SCAI Step #0')
+	sql_script = \
+		"select "\
+		" cod_status "\
+		" from crm_integration_anlt.t_rel_scai_country_integration "\
+		"where "\
+		"	cod_integration = %(cod_integration)d "\
+		"	and cod_country = %(cod_country)d "\
+		"	and ind_active = 1;" \
+	% {
+		'cod_integration':cod_integration,
+		'cod_country':cod_country
+	}
+	#print(sql_script) 
+
+	last_execution_status = executeSQL(conf_file, sql_script, return_value=True)
+	print('SCAI Process getStatusLastExecution: ' + last_execution_status)
+	
+	return last_execution_status	
+
+	
+# Check if this execution is a retry or not and if process is the one that needs to be executed
+def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last_execution_status):
+	print('SCAI processCheck')
+	sql_script = \
+		"	select rel_integr_proc.cod_status "\
+		"	from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr "\
+		"	where proc.dsc_process_short = '%(dsc_process)s' "\
+		"	and proc.cod_process = rel_integr_proc.cod_process "\ 
+		"	and rel_integr_proc.cod_country = %(cod_country)d "\
+		"	and rel_integr_proc.ind_active = 1 "\
+		"   and rel_country_integr.cod_country = rel_integr_proc.cod_country "\
+		"	and rel_country_integr.cod_integration = '%(cod_integration)d "\
+	% {
+		'dsc_process':dsc_process,
+		'cod_country':cod_country,
+		'cod_integration':cod_integration
+	}
+	#print(sql_script) 
+
+	process_status = executeSQL(conf_file, sql_script, return_value=True)
+	print('SCAI Process process_status: ' + process_status)
+	
+	return process_status
+	
+	
