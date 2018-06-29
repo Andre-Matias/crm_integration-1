@@ -39,7 +39,7 @@ def main(conf_file, dml_file, country):
 	conn.commit()
 	
 	#If above query does not return a value (For example on a normal execution, without previous errors)
-	if (not block_nbr)
+	if (not block_nbr):
 		block_nbr = 1
 	
 	scai.integrationStart(conf_file, COD_INTEGRATION, country) 	# SCAI
