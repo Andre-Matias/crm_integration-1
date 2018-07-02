@@ -5,7 +5,7 @@ import sys, os
 import csv, ast, psycopg2, json, basecrm, gzip
 import time
 import threading
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration/0_common'))  # Change this later to a package import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration//0_common'))  # Change this later to a package import
 import scai
 
 MAX_ACTIVE_THREADS = 5
