@@ -50,11 +50,15 @@ client = basecrm.Client(access_token=base_api_token)
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
 
-scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+scai_process_status = scai.processCheck(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, 1)	# SCAI
 
-if (scai_last_execution_status == 2):
-	sys.exit("The integration is already running...")
-	
+#First time ever execution
+if (not scai_process_status):
+	scai_process_status = 1
+
+if (scai_process_status != 1):
+	sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
+ 	
 scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
 scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
