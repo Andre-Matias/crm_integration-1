@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration', 
 import scai
 
 MAX_ACTIVE_THREADS = 5
-COD_INTEGRATION = 60000					# Chandra to Operational
+COD_INTEGRATION = 80000					# Chandra to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
 scai_process_name = "aut_olxpt_deals_creation"
 
@@ -48,11 +48,15 @@ def main(conf_file, COD_COUNTRY):
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 	
-	scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+	scai_process_status = scai.processCheck(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, 1)	# SCAI
 
-	if (scai_last_execution_status != 1):
+	#First time ever execution
+	if (not scai_process_status):
+		scai_process_status = 1
+
+	if (scai_process_status != 1):
 		sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
-		
+
 	scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
 	scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 

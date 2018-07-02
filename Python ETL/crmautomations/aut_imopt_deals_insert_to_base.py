@@ -15,7 +15,7 @@ print('Starting Process... ' + time.strftime("%H:%M:%S"))
 logging.basicConfig()
 logger = logging.getLogger('logger')
 MAX_ACTIVE_THREADS = 5
-COD_INTEGRATION = 60000					# Chandra to Operational
+COD_INTEGRATION = 80000					# Chandra to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
 scai_process_name = "aut_imopt_deals_creation"
 	
@@ -43,9 +43,11 @@ client = basecrm.Client(access_token=base_api_token)
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
 
-scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+#First time ever execution
+if (not scai_process_status):
+	scai_process_status = 1
 
-if (scai_last_execution_status != 1):
+if (scai_process_status != 1):
 	sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
 
 	
