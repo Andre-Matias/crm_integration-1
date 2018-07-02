@@ -31,7 +31,7 @@ def main(conf_file, dml_file, country):
 		sys.exit("The integration is already running...")
 
     #If last execution ended in error, then check in which block it ended
-	block_nbr = cur.execute("select "\
+	cur.execute("select "\
 				" nvl(block_nbr,1) as block_nbr "\
 				" from crm_integration_anlt.t_rel_scai_country_integration country_integration "\
 				" where "\
@@ -46,9 +46,13 @@ def main(conf_file, dml_file, country):
 			)
 	conn.commit()
 	
+	results = cur.fetchone()
+	
 	#If above query does not return a value (For example on a normal execution, without previous errors)
-	if (not block_nbr):
+	if (not results):
 		block_nbr = 1
+	else:
+		block_nbr = results[0]
 	
 	scai.integrationStart(conf_file, COD_INTEGRATION, country) 	# SCAI
 	

@@ -18,7 +18,7 @@ def main(db_conf_file, kpi_file, country):
 	cur = conn.cursor()
 	
 	#If last execution ended in error, then check in which block it ended
-	block_nbr = cur.execute("select "\
+	cur.execute("select "\
 				" nvl(block_nbr,1) as block_nbr "\
 				" from crm_integration_anlt.t_rel_scai_country_integration country_integration "\
 				" where "\
@@ -31,11 +31,16 @@ def main(db_conf_file, kpi_file, country):
 					'COD_INTEGRATION':COD_INTEGRATION
 				}
 			)
+			
 	conn.commit()
 	
+	results = cur.fetchone()
+	
 	#If above query does not return a value (For example on a normal execution, without previous errors)
-	if (not block_nbr):
+	if (not results):
 		block_nbr = 1
+	else:
+		block_nbr = results[0]
 	
 
 	kpi_scripts = open(kpi_file).read().split('$$$')
