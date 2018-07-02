@@ -293,7 +293,7 @@ def integrationStart(conf_file, cod_integration, cod_country):
 # Steps 7 and 8, used after ending an integration
 def integrationEnd(conf_file, cod_integration, cod_country, status=1, block_nbr = 1):
 	insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, status)
-	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr = 1)
+	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr)
 
 # Steps 3 and 4, used before starting a process
 def processStart(conf_file, dsc_process, cod_integration, cod_country):
