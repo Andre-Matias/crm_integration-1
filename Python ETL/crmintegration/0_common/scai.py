@@ -265,7 +265,7 @@ def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, statu
 
 
 # Step 8
-def updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr):
+def updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr = 1):
 	print('SCAI Step #8')
 	sql_script = \
 		"update crm_integration_anlt.t_rel_scai_country_integration "\
@@ -291,9 +291,9 @@ def integrationStart(conf_file, cod_integration, cod_country):
 	insertIntegrationExecutionStart(conf_file, cod_integration, cod_country)
 	
 # Steps 7 and 8, used after ending an integration
-def integrationEnd(conf_file, cod_integration, cod_country, status=1):
+def integrationEnd(conf_file, cod_integration, cod_country, status=1, block_nbr = 1):
 	insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, status)
-	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr=1)
+	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr = 1)
 
 # Steps 3 and 4, used before starting a process
 def processStart(conf_file, dsc_process, cod_integration, cod_country):
@@ -324,6 +324,26 @@ def getProcessShortDescription(conf_file, table_name):
 	print('SCAI Process: ' + process_name)
 	
 	return process_name
+	
+# Check status last execution (1-OK; 2-Running; 3-Error)
+def getCountryIntegrationStatus(conf_file, cod_country):
+	print('SCAI Step #0')
+	sql_script = \
+		"select "\
+		" max (cod_status) "\
+		" from crm_integration_anlt.t_rel_scai_country_integration "\
+		" where "\ 
+		" and cod_country = %(cod_country)d "\
+		" and ind_active = 1;" \
+	% { 
+		'cod_country':cod_country
+	}
+	#print(sql_script) 
+
+	country_execution_status = executeSQL(conf_file, sql_script, return_value=True)
+	print('SCAI Process getCountryIntegrationStatus: ' + str(country_execution_status))
+	
+	return country_execution_status		
 	
 	
 # Check status last execution (1-OK; 2-Running; 3-Error)
