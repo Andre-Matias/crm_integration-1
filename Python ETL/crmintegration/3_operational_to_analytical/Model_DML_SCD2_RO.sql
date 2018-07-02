@@ -337,11 +337,15 @@ as
     source_table.status,
     source_table.flg_confirmed,
 	source_table.flg_invited,
-	source_table.phone_number
+	source_table.phone_number,
 	source_table.roles,
 	source_table.team_name,
-	source_table."group",
-	source_table.reports_to,
+	case
+		when source_table."group" = '' then source_table."group"
+		else substring(split_part(source_table."group",'"',3),2,len(split_part(source_table."group",'"',3))-2)
+	end opr_group,
+	split_part(source_table."group",'"',6) dsc_group,
+	target_base_user_responsible.cod_base_user cod_base_user_responsible,
 	source_table.timezone,
 	source_table.meta_event_type,
 	source_table.meta_event_time,
@@ -436,10 +440,28 @@ as
 						crm_integration_anlt.t_lkp_base_user a
 				)
 			where rn = 1
-	) target
+	) target,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_base_user, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_base_user a
+				)
+			where rn = 1
+	) target_base_user_responsible
   where
     coalesce(source_table.opr_base_user,-1) = target.opr_base_user(+)
-	and source_table.cod_source_system = target.cod_source_system (+); -- Romania
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and coalesce(source_table.reports_to,-1) = target_base_user_responsible.opr_base_user(+)
+	and source_table.cod_source_system = target_base_user_responsible.cod_source_system (+); -- Romania
 
 analyze crm_integration_anlt.tmp_ro_load_base_user;
 
@@ -483,8 +505,9 @@ insert into crm_integration_anlt.t_lkp_base_user
 	  phone_number
 	  roles,
 	  team_name,
-	  "group",
-	  reports_to,
+	  opr_group,
+	  dsc_group,
+	  cod_base_user_responsible,
 	  timezone,
       created_at, 
       updated_at,
