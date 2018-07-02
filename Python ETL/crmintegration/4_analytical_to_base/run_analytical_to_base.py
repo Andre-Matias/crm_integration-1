@@ -27,24 +27,24 @@ country_execution_status = scai.getCountryIntegrationStatus(db_conf_file, COD_CO
 
 scai_last_execution_status = scai.getLastExecutionStatus(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
-#if (country_execution_status != 1 and scai_last_execution_status = 1):
-#	sys.exit("The integration executed successfuly on last execution. The problem is further ahead.")
+if (country_execution_status != 1 and scai_last_execution_status = 1):
+	sys.exit("The integration executed successfuly on last execution. The problem is further ahead.")
 
-#if (scai_last_execution_status == 2):
-#	sys.exit("The integration is already running...")
+if (scai_last_execution_status == 2):
+	sys.exit("The integration is already running...")
 	
 scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
 
 # Calculate KPIs with data from the Analytical Model
 for i in range(0, len(conf_files)):
 	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
-	#calculate_kpis.main(db_conf_file, kpi_files[i], COD_COUNTRY)
+	calculate_kpis.main(db_conf_file, kpi_files[i], COD_COUNTRY)
 	#input('Ready for next set of KPIs?')
 
 # Send all KPIs to Base
-#for i in range(0, len(kpi_files)):
-#print('Sending KPIs to Base using configuration file ' + conf_files[i] + '...')
-copy_from_analytical_to_base.main(db_conf_file, '/home/andre_matias/configs_base_ptcars.conf')
+for i in range(0, len(kpi_files)):
+	print('Sending KPIs to Base using configuration file ' + conf_files[i] + '...')
+	copy_from_analytical_to_base.main(db_conf_file, conf_files[i])
 
 scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 1) 	# SCAI
 
