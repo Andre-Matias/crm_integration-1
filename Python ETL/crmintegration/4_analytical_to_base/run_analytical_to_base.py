@@ -42,9 +42,9 @@ for i in range(0, len(conf_files)):
 	#input('Ready for next set of KPIs?')
 
 # Send all KPIs to Base
-for i in range(0, len(kpi_files)):
-	print('Sending KPIs to Base using configuration file ' + conf_files[i] + '...')
-	copy_from_analytical_to_base.main(db_conf_file, conf_files[i])
+#for i in range(0, len(kpi_files)):
+#print('Sending KPIs to Base using configuration file ' + conf_files[i] + '...')
+copy_from_analytical_to_base.main(db_conf_file, '/home/andre_matias/configs_base_ptcars.conf')
 
 scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 1) 	# SCAI
 
