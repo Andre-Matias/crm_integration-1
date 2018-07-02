@@ -332,8 +332,9 @@ def getCountryIntegrationStatus(conf_file, cod_country):
 		"select "\
 		" max (cod_status) "\
 		" from crm_integration_anlt.t_rel_scai_country_integration "\
-		" where "\ 
-		" and cod_country = %(cod_country)d "\
+		" where "\
+		" cod_country = %(cod_country)d "\
+		" and cod_integration in (10000, 11000, 12000, 30000, 50000)"\
 		" and ind_active = 1;" \
 	% { 
 		'cod_country':cod_country
