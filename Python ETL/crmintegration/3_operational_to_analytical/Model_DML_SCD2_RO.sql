@@ -336,6 +336,13 @@ as
     source_table.role,
     source_table.status,
     source_table.flg_confirmed,
+	source_table.flg_invited,
+	source_table.phone_number
+	source_table.roles,
+	source_table.team_name,
+	source_table."group",
+	source_table.reports_to,
+	source_table.timezone,
 	source_table.meta_event_type,
 	source_table.meta_event_time,
     source_table.created_at,
@@ -358,7 +365,8 @@ as
 	select
 		 source.*,
 		lkp_source_system.cod_source_system,
-		md5(coalesce(dsc_base_user,'') + coalesce(email,'') + coalesce(role,'') + coalesce(status,'') + decode(flg_confirmed, 1, 1, 0)) hash_base_user
+		md5(coalesce(dsc_base_user,'') + coalesce(email,'') + coalesce(role,'') + coalesce(status,'') + decode(flg_confirmed, 1, 1, 0) +
+			decode(flg_invited, 1, 1, 0) + coalesce(phone_number,'') + coalesce(roles,'') + coalesce(team_name,'') + coalesce("group",'') + coalesce(reports_to,'-1') + coalesce(timezone,'')) hash_base_user
 	from
 	(
       SELECT
@@ -371,6 +379,13 @@ as
         role,
         status,
         confirmed flg_confirmed,
+		invited flg_invited,
+		phone_number,
+		roles,
+		team_name,
+		"group",
+		reports_to,
+		timezone,
         created_at,
         updated_at,
         deleted_at,
@@ -464,7 +479,14 @@ insert into crm_integration_anlt.t_lkp_base_user
       role,
       status,
       decode(flg_confirmed,1,1,0) flg_confirmed,
-      created_at,
+	  decode(flg_invited,1,1,0) flg_invited,
+	  phone_number
+	  roles,
+	  team_name,
+	  "group",
+	  reports_to,
+	  timezone,
+      created_at, 
       updated_at,
       deleted_at,
       hash_base_user,
