@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import sys
+import sys, os
 import csv, ast, psycopg2, json, basecrm, gzip
 import time
 import threading
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
+import scai
 
 MAX_ACTIVE_THREADS = 5
+COD_INTEGRATION = 60000					# Chandra to Operational
+COD_COUNTRY = -1						# Replaced by code in conf_file
+scai_process_name = "aut_olxpt_deals_creation"
 
 def createDealsInBase(client, result_list):
 	for result in result_list:
@@ -32,7 +37,7 @@ def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
-def main(conf_file):
+def main(conf_file, COD_COUNTRY):
 	print('Starting Process... ' + time.strftime("%H:%M:%S"))
 		
 	base_api_token = json.load(open(conf_file))['base_api_token_olxpt'] 
@@ -42,6 +47,14 @@ def main(conf_file):
 	# Create Redshift Connection
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
+	
+	scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+	if (scai_last_execution_status != 1):
+		sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
+		
+	scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
+	scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 	print('Starting Data Query... ' + time.strftime("%H:%M:%S"))
 	cur.execute(
@@ -181,7 +194,8 @@ def main(conf_file):
 		
 	print('Ending Deals Creations in Base... ' + time.strftime("%H:%M:%S"))		
 
-
+	scai.processEnd(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, '', '',1)	# SCAI
+	scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
 	cur.close()
 	conn.close()
 					
@@ -189,4 +203,5 @@ def main(conf_file):
 
 if __name__ == "__main__":
 	conf_file = sys.argv[1] # File with source database
-	main(conf_file)
+	COD_COUNTRY = int(sys.argv[2])  # Country code
+	main(conf_file, COD_COUNTRY)

@@ -1,18 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import sys
+import sys, os
 import csv, ast, psycopg2, json, basecrm, gzip
 import time
 from retry import retry
 import logging
 import threading
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
+import scai
 
 print('Starting Process... ' + time.strftime("%H:%M:%S"))
 
 logging.basicConfig()
 logger = logging.getLogger('logger')
 MAX_ACTIVE_THREADS = 5
+COD_INTEGRATION = 60000					# Chandra to Operational
+COD_COUNTRY = -1						# Replaced by code in conf_file
+scai_process_name = "aut_stvpt_deals_creation"
 	
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
 def createDealsInBase(client, result_list):
@@ -38,6 +43,15 @@ client = basecrm.Client(access_token=base_api_token)
 # Create Redshift Connection
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
+
+scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+if (scai_last_execution_status != 1):
+	sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
+
+	
+scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
+scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 print('Starting Data Query... ' + time.strftime("%H:%M:%S"))
 cur.execute(
@@ -111,6 +125,9 @@ for t in thread_list:
 	t.join()
 	
 print('Ending Deals Creations in Base... ' + time.strftime("%H:%M:%S"))		
+
+scai.processEnd(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, '', '',1)	# SCAI
+scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
 
 cur.close()
 conn.close()

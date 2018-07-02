@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import sys
+import sys, os
 import csv, ast, psycopg2, json, basecrm, gzip
 from munch import * 
 import time
@@ -10,10 +10,16 @@ import aut_stvpt_base_to_bd_deals
 import threading
 from retry import retry
 import logging
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
+import scai
 
 logging.basicConfig()
 logger = logging.getLogger('logger')
 MAX_ACTIVE_THREADS = 5
+
+COD_INTEGRATION = 60000					# Chandra to Operational
+COD_COUNTRY = -1						# Replaced by code in conf_file
+scai_process_name = "aut_stvpt_deals_insert_to_base"
 
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
 def updateDealsInBase(client, result_list):
@@ -31,6 +37,7 @@ def getDatabaseConnection(conf_file):
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
 conf_file = sys.argv[1] # File with source database
+COD_COUNTRY = int(sys.argv[2])  # Country code
 
 base_api_token = json.load(open(conf_file))['base_api_token_stvpt'] 
 
@@ -38,6 +45,14 @@ client = basecrm.Client(access_token=base_api_token)
 
 conn = getDatabaseConnection(conf_file)
 cur = conn.cursor()
+
+scai_last_execution_status = scai.getLastExecutionStatus(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+if (scai_last_execution_status == 2):
+	sys.exit("The integration is already running...")
+	
+scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
+scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 print('Start Truncate aut_stvpt_base_to_bd_contact: ' + time.strftime("%H:%M:%S"))
 cur.execute("truncate table crm_integration_anlt.aut_stvpt_base_to_bd_contact; ")
@@ -110,5 +125,7 @@ for t in thread_list:
 
 print('End of Updating: ' + time.strftime("%H:%M:%S"))
 
+scai.processEnd(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, '', '',1)	# SCAI
+scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
 cur.close()
 conn.close()
