@@ -7,7 +7,7 @@ import time
 from retry import retry
 import logging
 import threading
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration\\0_common'))  # Change this later to a package import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration', '0_common'))  # Change this later to a package import
 import scai
 
 print('Starting Process... ' + time.strftime("%H:%M:%S"))
