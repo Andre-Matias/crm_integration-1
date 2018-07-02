@@ -20,6 +20,7 @@ MAX_ACTIVE_THREADS = 5
 COD_INTEGRATION = 60000					# Chandra to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
 scai_process_name = "aut_imopt_deals_insert_to_base"
+print os.path.join(os.path.dirname(__file__), '..\crmintegration', '0_common')
 
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
 def updateDealsInBase(client, result_list):
