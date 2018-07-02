@@ -4,7 +4,7 @@
 #' vs Hydra (validated already).
 #' 
 #' metrics: sessions, show_phone, reply_click (TBD for each data source)
-#' period: current month (1-25) June 2018
+#' period: June 2018
 #' countries: Otomoto, Standvirtual, Autovit
 #' data sources: GA (via API), Hydra (via Yamato)
 #' 
@@ -52,7 +52,7 @@ end_date <- "2018-06-30"
 
 # Otomoto
 
-## reply_click
+## reply_click using event ---- NOT USING IT
 # query_init <- Init(start.date = start_date,
 #                    end.date = end_date,
 #                    dimensions = c("ga:date"),
