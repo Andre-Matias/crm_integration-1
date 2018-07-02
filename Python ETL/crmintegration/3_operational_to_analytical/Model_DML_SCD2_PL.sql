@@ -341,8 +341,8 @@ as
 	source_table.roles,
 	source_table.team_name,
 	case
-		when source_table."group" = '' then source_table."group"
-		else substring(split_part(source_table."group",'"',3),2,len(split_part(source_table."group",'"',3))-2)
+		when source_table."group" = '' then -1
+		else cast(substring(split_part(source_table."group",'"',3),2,len(split_part(source_table."group",'"',3))-2) as int)
 	end opr_group,
 	split_part(source_table."group",'"',6) dsc_group,
 	target_base_user_responsible.cod_base_user cod_base_user_responsible,
