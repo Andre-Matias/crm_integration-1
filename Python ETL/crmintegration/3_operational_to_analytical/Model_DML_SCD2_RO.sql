@@ -502,7 +502,7 @@ insert into crm_integration_anlt.t_lkp_base_user
       status,
       decode(flg_confirmed,1,1,0) flg_confirmed,
 	  decode(flg_invited,1,1,0) flg_invited,
-	  phone_number
+	  phone_number,
 	  roles,
 	  team_name,
 	  opr_group,
