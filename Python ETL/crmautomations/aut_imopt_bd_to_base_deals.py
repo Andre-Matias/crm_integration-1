@@ -11,7 +11,9 @@ import threading
 from retry import retry
 import logging
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'crmintegration\\0_common'))  # Change this later to a package import
-import scai
+#import scai
+
+print(sys.path)
 
 logging.basicConfig()
 logger = logging.getLogger('logger')
