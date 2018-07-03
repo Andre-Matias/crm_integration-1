@@ -265,7 +265,7 @@ def insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, statu
 
 
 # Step 8
-def updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr = 1):
+def updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr):
 	print('SCAI Step #8')
 	sql_script = \
 		"update crm_integration_anlt.t_rel_scai_country_integration "\
@@ -291,7 +291,7 @@ def integrationStart(conf_file, cod_integration, cod_country):
 	insertIntegrationExecutionStart(conf_file, cod_integration, cod_country)
 	
 # Steps 7 and 8, used after ending an integration
-def integrationEnd(conf_file, cod_integration, cod_country, status=1, block_nbr = 1):
+def integrationEnd(conf_file, cod_integration, cod_country, status=1, block_nbr=1):
 	insertIntegrationExecutionEnd(conf_file, cod_integration, cod_country, status)
 	updateIntegrationEnd(conf_file, cod_integration, cod_country, status, block_nbr)
 
