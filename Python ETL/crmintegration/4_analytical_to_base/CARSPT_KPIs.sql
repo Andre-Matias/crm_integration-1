@@ -303,22 +303,22 @@ FROM
 			  base_contact.cod_contact,
 			  scai.dat_processing dat_snap,
 			  base_contact.cod_source_system,
-			  city.dsc_city_en custom_field_value --not using dsc_city_pl
+			  city.name_en custom_field_value --not using dsc_city_pl
 			from
 			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
 			  crm_integration_anlt.t_lkp_contact base_contact,
 			  crm_integration_anlt.t_rel_scai_country_integration scai,
-			  crm_integration_anlt.t_lkp_city city
+			  db_atlas_verticals.cities city
 			where
 			  atlas_user.cod_source_system = 4
 			  and base_contact.cod_source_system = 15
 			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 			  and atlas_user.valid_to = 20991231
-			  and base_contact.valid_to = 20991231
-			  and city.valid_to = 20991231
+			  and base_contact.valid_to = 20991231 
 			  and scai.cod_integration = 50000
-			  and city.cod_city = atlas_user.cod_city
-				and scai.cod_country = 1
+			  and city.id = atlas_user.opr_city
+			  and city.livesync_dbname = 'carspt'
+			  and scai.cod_country = 1
 		  ) A,
 			crm_integration_anlt.t_lkp_contact B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -577,33 +577,32 @@ from
 							dsc_atlas_user,
 							inner_core.dat_snap,
 							inner_core.custom_field_value,
-							row_number() over (partition by dsc_atlas_user order by inner_core.dat_paidad_user_payment desc, inner_core.opr_paidad_user_payment desc) rn
+							row_number() over (partition by dsc_atlas_user order by inner_core.date desc, inner_core.id desc) rn
 						from
 							(
 								select
 									atlas_user.dsc_atlas_user,
 									idx_type.dsc_index_type,
 									scai.dat_processing dat_snap,
-									fac.dsc_paidad_user_payment custom_field_value,
-									fac.dat_paidad_user_payment,
-									fac.opr_paidad_user_payment
+									fac.name custom_field_value,
+									fac.date,
+									fac.id
 								from
 									crm_integration_anlt.t_lkp_atlas_user atlas_user,
-									crm_integration_anlt.t_fac_paidad_user_payment fac,
+									db_atlas_verticals.paidads_user_payments fac,
 									crm_integration_anlt.t_rel_scai_country_integration scai,
 									crm_integration_anlt.v_lkp_paidad_index idx,
-									crm_integration_anlt.v_lkp_paidad_index_type idx_type,
-									crm_integration_anlt.t_lkp_payment_provider provider
+									crm_integration_anlt.v_lkp_paidad_index_type idx_type 
 								where
 									atlas_user.cod_source_system = 4
 									and atlas_user.valid_to = 20991231
 									and scai.cod_integration = 50000
-									and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
-									and fac.cod_paidad_index = idx.cod_paidad_index (+)
-									and fac.cod_source_system = idx.cod_source_system (+)
-									and idx.cod_index_type = idx_type.cod_index_type(+)
-									and fac.cod_payment_provider = provider.cod_payment_provider (+)
-									and lower(provider.dsc_payment_provider) != 'admin'
+									and atlas_user.cod_atlas_user = fac.id_user (+)
+									and fac.id_index = idx.opr_paidad_index (+)
+									and 4 = idx.cod_source_system (+)
+									and fac.livesync_dbname = 'carspt'
+									and idx.cod_index_type = idx_type.cod_index_type(+) 
+									and lower(fac.payment_provider) != 'admin'
 									and lower(idx_type.dsc_index_type) = 'package'
 									and scai.cod_country = 1
 							) inner_core
@@ -804,33 +803,31 @@ from
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              lkp_ad.cod_ad,
+              ads.id,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              crm_integration_anlt.t_lkp_ad lkp_ad,
+              db_atlas_verticals.ads ads,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact,
-              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
+              crm_integration_anlt.t_lkp_contact lkp_contact, 
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 4
               and lkp_contact.cod_source_system = 15
-              and fac.cod_ad = lkp_ad.cod_ad
-              and lkp_ad.valid_to = 20991231
+              and fac.opr_ad = ads.id 
+			  and ads.livesync_dbname = 'carspt'
               and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000
-              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
+              and scai.cod_integration = 50000 
               and trunc(fac.dat_posted) between trunc(sysdate) - 30 and trunc(sysdate)
 			  and scai.cod_country = 1
             group by
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
-              lkp_ad.cod_ad
+              ads.id
           ) source
         group by
           source.cod_source_system,
@@ -913,7 +910,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast((sum(nr_replies) / count(distinct source.cod_ad)) as varchar) custom_field_value
+          cast((sum(nr_replies) / count(distinct source.id)) as varchar) custom_field_value
         from
           (
             select
@@ -922,23 +919,21 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad,
+              ads.id,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              crm_integration_anlt.t_lkp_ad lkp_ad,
-              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
+              db_atlas_verticals.ads ads, 
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 4
               and lkp_contact.cod_source_system = 15
-              and fac.cod_ad = lkp_ad.cod_ad
-              and lkp_ad.valid_to = 20991231
-              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
-              and lkp_ad_status.opr_ad_status = 'active'
-              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
+              and fac.opr_ad = ads.id  
+              and ads.status = 'active'
+			  and ads.livesync_dbname = 'carspt'
+              and ads.user_id = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
@@ -950,7 +945,7 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad
+              ads.id
           ) source
         group by
           source.cod_source_system,
@@ -1032,7 +1027,7 @@ from
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast(count(distinct source.cod_ad) as varchar) custom_field_value --nr_ads_with_replies,
+          cast(count(distinct source.id) as varchar) custom_field_value --nr_ads_with_replies,
         from
          (
             select
@@ -1041,35 +1036,33 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad,
+              ads.id,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              crm_integration_anlt.t_lkp_ad lkp_ad,
+              db_atlas_verticals.ads ads,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact,
-              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
+              crm_integration_anlt.t_lkp_contact lkp_contact, 
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 4
               and lkp_contact.cod_source_system = 15
-              and fac.cod_ad = lkp_ad.cod_ad
-              and lkp_ad.valid_to = 20991231
-              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
+              and fac.opr_ad = ads.id 
+              and ads.user_id = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000
-              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
-              and lkp_ad_status.opr_ad_status = 'active'
-							and scai.cod_country = 1
+              and scai.cod_integration = 50000 
+              and ads.status = 'active'
+			  and ads.livesync_dbname = 'carspt'
+			  and scai.cod_country = 1
             group by
               lkp_contact.cod_source_system,
               lkp_contact.cod_contact,
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad
+              ads.id
         ) source
         group by
           source.cod_source_system,
@@ -1162,7 +1155,7 @@ from
               and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
               and cod_event = 170
           ) fac,
-          crm_integration_anlt.t_lkp_ad lkp,
+          db_atlas_verticals.ads ads,
           crm_integration_anlt.t_lkp_atlas_user lkp_user,
           crm_integration_anlt.t_lkp_contact lkp_contact,
           crm_integration_anlt.t_rel_scai_country_integration scai
@@ -1171,9 +1164,9 @@ from
           and lkp_user.cod_source_system = fac.cod_source_system
           and lkp_user.cod_source_system = lkp.cod_source_system
           and lkp_contact.cod_source_system = 15
-          and fac.cod_ad = lkp.cod_ad
-          and lkp.valid_to = 20991231
-          and lkp.cod_atlas_user = lkp_user.cod_atlas_user
+          and fac.opr_ad = ads.id 
+          and ads.user_id = lkp_user.cod_atlas_user
+		  and ads.livesync_dbname = 'carspt'
           and lkp_user.valid_to = 20991231
           and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
           and lkp_contact.valid_to = 20991231
@@ -1256,20 +1249,19 @@ from
         select
           coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
           inner_core.dat_snap,
-          cast(max(dateadd(day,duration,dat_payment)) as varchar) custom_field_value
+          cast(max(dateadd(day,duration,date)) as varchar) custom_field_value
         from
           (
             select
               atlas_user.dsc_atlas_user,
               idx_type.dsc_index_type,
               scai.dat_processing dat_snap,
-              fac.dat_valid_to,
-              dat_paidad_user_payment,
-			  dat_payment,
+              fac.paidads_valid_to,
+              fac.date, 
 			  duration
             from
               crm_integration_anlt.t_lkp_atlas_user atlas_user,
-              crm_integration_anlt.t_fac_paidad_user_payment fac,
+              db_atlas_verticals.paidads_user_payments fac,
 			  crm_integration_anlt.t_lkp_paidad_index paidad_index,
               crm_integration_anlt.t_rel_scai_country_integration scai,
               crm_integration_anlt.v_lkp_paidad_index idx,
@@ -1278,10 +1270,11 @@ from
               atlas_user.cod_source_system = 4
               and atlas_user.valid_to = 20991231
               and scai.cod_integration = 50000
-              and atlas_user.cod_atlas_user = fac.cod_atlas_user (+)
-              and fac.cod_paidad_index = idx.cod_paidad_index (+)
-              and fac.cod_source_system = idx.cod_source_system (+)
-			  and fac.cod_paidad_index = paidad_index.cod_paidad_index (+)
+              and atlas_user.cod_atlas_user = fac.id_user (+)
+              and fac.id_index = idx.opr_paidad_index (+)
+              and 4 = idx.cod_source_system (+)
+			  and fac.livesync_dbname = 'carspt'
+			  and idx.cod_paidad_index = paidad_index.cod_paidad_index (+)
               and idx.cod_index_type = idx_type.cod_index_type(+)
               and lower(idx_type.dsc_index_type) = 'package'
 			  and scai.cod_country = 1
@@ -2345,22 +2338,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
 last_processing_datetime = sysdate
-/*from
-  (
-    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
-    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
-    where proc.dsc_process_short = 't_fac_payment_basket'
-    and proc.cod_process = rel_integr_proc.cod_process
-    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
-    and rel_country_integr.cod_country = rel_integr_proc.cod_country
-    and rel_integr_proc.cod_country = 1
-  ) source*/
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 1
 and proc.dsc_process_short = 't_fac_base_integration_snap_ptcars'
-and t_rel_scai_integration_process.ind_active = 1
-/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
-and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
-and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+and t_rel_scai_integration_process.ind_active = 1;
