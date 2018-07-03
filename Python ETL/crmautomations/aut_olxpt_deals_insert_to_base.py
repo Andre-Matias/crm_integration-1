@@ -39,7 +39,8 @@ def createDealsInBase(client, result_list):
 			except basecrm.errors.ServerError as err:
 				print("Error: basecrm.errors.ServerError. Trying again...")
 			except basecrm.errors.RateLimitError as err:
-				print("Error: basecrm.errors.RateLimitError. Trying again...")
+				print("Error: basecrm.errors.RateLimitError. Trying again in 1 second...")
+				time.sleep(1)
 			except requests.exceptions.ConnectionError as err:
 				print("Error: requests.exceptions.ConnectionError. Reconnecting and trying again...")
 				client = getBaseConnection()
