@@ -26,7 +26,8 @@ scai_last_execution_status = scai.getLastExecutionStatus(db_conf_file, COD_INTEG
 
 
 if (country_execution_status != 1 and scai_last_execution_status == 1):
-	sys.exit("The integration executed successfuly on last execution. The problem is further ahead.")
+	print ('The integration executed successfuly on last execution. The problem is further ahead.')
+	sys.exit(0)
 
 if (scai_last_execution_status == 2):
 	sys.exit("The integration is already running...")
