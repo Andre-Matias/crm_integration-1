@@ -51,7 +51,7 @@ def getDatabaseConnection(conf_file):
 def main(conf_file, COD_COUNTRY):
 	print('Starting Process... ' + time.strftime("%H:%M:%S"))
 		
-	global base_api_token = json.load(open(conf_file))['base_api_token_olxpt'] 
+	global base_api_token; base_api_token = json.load(open(conf_file))['base_api_token_olxpt'] 
 
 	client = getBaseConnection()
 
