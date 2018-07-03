@@ -7859,37 +7859,3 @@ drop table if exists crm_integration_anlt.tmp_ro_load_web_step1;
 
 drop table if exists crm_integration_anlt.tmp_ro_load_web;
 
-	--$$$
-	
--- #######################
--- ####    PASSO 7    ####
--- #######################
-insert into crm_integration_anlt.t_fac_scai_execution
-  select
-    max_cod_exec + 1 cod_execution,
-    cod_country,
-    cod_integration,
-    -1 cod_process,
-    1 cod_status, -- Ok
-    2 cod_execution_type, -- End
-    dat_processing,
-    execution_nbr,
-    sysdate
-  from
-    crm_integration_anlt.t_rel_scai_country_integration,
-    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution)
-  where
-    cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 4 -- Romania
-	and ind_active = 1;
-
--- #######################
--- ####    PASSO 8    ####
--- #######################
-update crm_integration_anlt.t_rel_scai_country_integration
-    set
-      cod_status = 1 -- Ok
-where
-    cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
-    and cod_country = 4 -- Romania
-	and ind_active = 1; 
