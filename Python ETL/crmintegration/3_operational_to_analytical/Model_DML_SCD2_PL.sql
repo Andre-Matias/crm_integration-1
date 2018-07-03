@@ -6184,81 +6184,26 @@ sortkey(cod_atlas_user, opr_atlas_user)
 as
 select a.*  from (
 	select
-    source_table.opr_atlas_user,
+        source_table.opr_atlas_user,
 	source_table.dsc_atlas_user,
 	source_table.email_original,
-	source_table.password,
-	source_table.autologin_rev,
 	source_table.operation_type,
 	source_table.operation_timestamp,
 	source_table.type,
 	source_table.created_at,
 	source_table.last_login_at,
-	source_table.default_lang,
-	source_table.flg_newsletter,
-	source_table.flg_use_offer_limits,
-	source_table.ban_reason_id,
-	source_table.flg_autocomplete_defaults,
-	source_table.default_skype,
-	source_table.default_phone,
-	source_table.default_map_address,
-	source_table.default_gg,
-	source_table.default_person,
-	--source_table.default_region_id,
-	--source_table.default_subregion_id,
-	source_table.default_lat,
-	source_table.default_lng,
-	source_table.default_zoom,
-	--source_table.default_district_id,
-	source_table.last_login_ip,
-	source_table.last_login_port,
-	source_table.fraudster,
-	source_table.rmoderation_moderated_by,
-	source_table.rmoderation_moderated_at,
-	source_table.rmoderation_moderated_days,
-	source_table.rmoderation_moderated_total,
-	source_table.rmoderation_moderated_last,
-	source_table.credits,
-	source_table.flg_app,
-	source_table.flg_android_app,
-	source_table.flg_apple_app,
-	source_table.flg_wp_app,
-	source_table.flg_spammer,
-	coalesce(opr_source,'Unknown') opr_source,
-	source_table.flg_hide_user_ads,
-	source_table.flg_email_msg_notif,
-	source_table.flg_email_alarms_notif,
-	source_table.police_comment,
-	source_table.police_bank_account,
-	source_table.flg_monitored,
-	source_table.flg_hide_bank_warning,
+	source_table.default_lang, 
+	source_table.ban_reason_id, 
+	source_table.credits, 
+	coalesce(opr_source,'Unknown') opr_source, 
 	source_table.flg_external_login,
-	source_table.flg_business,
-	source_table.flg_restricted,
-	source_table.trusted_started_at,
-	source_table.flg_trusted_accepted,
-	source_table.migration_status,
-	source_table.suspend_reason,
-	source_table.password_method,
-	source_table.default_person_first_name,
-	source_table.default_person_last_name,
-	source_table.default_postcode,
+	source_table.flg_business, 
+	source_table.suspend_reason, 
 	source_table.last_modification_date,
-	source_table.flg_autorenew,
-	source_table.quality_score,
-	source_table.first_app_login_at,
-	source_table.flg_email_promo_notif,
-	source_table.flg_email_expired_notif,
-	source_table.disabled_export_clients,
-	source_table.username_legacy,
-	source_table.user_legacy_id,
+	source_table.flg_autorenew, 
 	source_table.bonus_credits,
-	source_table.bonus_credits_expire_at,
-	source_table.hermes_dirty,
-	source_table.flg_uses_crm,
-	source_table.sms_verification_phone,
-	source_table.sms_verification_status,
-	source_table.sms_verification_code,
+	source_table.bonus_credits_expire_at, 
+	source_table.flg_uses_crm, 
 	source_table.opr_city,
     source_table.cod_source_system,
     source_table.hash_atlas_user,
@@ -6282,77 +6227,22 @@ select a.*  from (
 		(
 			coalesce(dsc_atlas_user                                      ,'') +
 			coalesce(email_original                                      ,'') +
-			coalesce(password                                            ,'') +
-			coalesce(autologin_rev                                       ,0) +
 			coalesce(type                                                ,'') +
 			coalesce(created_at                                          ,'2099-12-31 00:00:00.000000') +
 			coalesce(last_login_at                                       ,'2099-12-31 00:00:00.000000') +
-			coalesce(default_lang                                        ,'') +
-			coalesce(flg_newsletter                                      ,0) +
-			coalesce(flg_use_offer_limits                                ,0) +
+			coalesce(default_lang                                        ,'') + 
 			coalesce(ban_reason_id                                       ,0) +
-			coalesce(flg_autocomplete_defaults                           ,0) +
-			coalesce(default_skype                                       ,'') +
-			coalesce(default_phone                                       ,'') +
-			coalesce(default_map_address                                 ,'') +
-			coalesce(default_gg                                          ,'') +
-			coalesce(default_person                                      ,'') +
-			coalesce(opr_region                                   ,0) +
-			coalesce(opr_subregion                                ,0) +
-			cast(coalesce(default_lat                                    ,0) as varchar) +
-			cast(coalesce(default_lng                                    ,0) as varchar) +
-			coalesce(default_zoom                                        ,0) +
-			coalesce(default_district_id                                 ,0) +
 			coalesce(opr_city                                            ,0) +
-			coalesce(last_login_ip                                       ,0) +
-			coalesce(last_login_port                                     ,0) +
-			coalesce(fraudster                                           ,0) +
-			coalesce(rmoderation_moderated_by                            ,0) +
-			--coalesce(rmoderation_moderated_at                            ,'2099-12-31 00:00:00.000000') +
-			coalesce(rmoderation_moderated_days                          ,0) +
-			coalesce(rmoderation_moderated_total                         ,0) +
-			--coalesce(rmoderation_moderated_last                          ,'2099-12-31 00:00:00.000000') +
-			cast(coalesce(credits                                        ,0) as varchar) +
-			coalesce(flg_app                                             ,'0') +
-			coalesce(flg_android_app                                     ,0) +
-			coalesce(flg_apple_app                                       ,0) +
-			coalesce(flg_wp_app                                          ,0) +
-			coalesce(flg_spammer                                      ,0) +
-			coalesce(opr_source                                          ,'') +
-			coalesce(flg_hide_user_ads                                   ,0) +
-			coalesce(flg_email_msg_notif                                 ,0) +
-			coalesce(flg_email_alarms_notif                              ,0) +
-			coalesce(police_comment                                      ,'') +
-			coalesce(police_bank_account                                 ,'') +
-			coalesce(flg_monitored                                    ,0) +
-			coalesce(flg_hide_bank_warning                               ,0) +
+			cast(coalesce(credits                                        ,0) as varchar) + 
+			coalesce(opr_source                                          ,'') + 
 			coalesce(flg_external_login                                  ,0) +
-			coalesce(flg_business                                     ,0) +
-			coalesce(flg_restricted                                   ,0) +
-			--coalesce(trusted_started_at                                  ,'2099-12-31 00:00:00.000000') +
-			coalesce(flg_trusted_accepted                                ,0) +
-			coalesce(migration_status                                    ,'') +
-			coalesce(suspend_reason                                      ,'') +
-			coalesce(password_method                                     ,'') +
-			coalesce(default_person_first_name                           ,'') +
-			coalesce(default_person_last_name                            ,'') +
-			coalesce(default_postcode                                    ,'') +
+			coalesce(flg_business                                     ,0) + 
+			coalesce(suspend_reason                                      ,'') + 
 			--coalesce(last_modification_date                              ,'2099-12-31 00:00:00.000000') +
-			coalesce(flg_autorenew                                       ,0) +
-			cast(coalesce(quality_score                                  ,0) as varchar) +
-			--coalesce(first_app_login_at                                  ,'2099-12-31 00:00:00.000000') +
-			coalesce(flg_email_promo_notif                               ,0) +
-			coalesce(flg_email_expired_notif                             ,0) +
-			coalesce(disabled_export_clients                             ,'') +
-			coalesce(username_legacy                                     ,'') +
-			coalesce(user_legacy_id                                      ,0) +
+			coalesce(flg_autorenew                                       ,0) + 
 			cast(coalesce(bonus_credits                                  ,0) as varchar) +
-			--coalesce(bonus_credits_expire_at                             ,'2099-12-31 00:00:00.000000') +
-			coalesce(hermes_dirty                                        ,0) +
-			coalesce(flg_uses_crm                                        ,0) +
-			coalesce(sms_verification_phone                              ,'') +
-			coalesce(sms_verification_status                             ,'') +
-			coalesce(sms_verification_code                               ,'')
+			--coalesce(bonus_credits_expire_at                             ,'2099-12-31 00:00:00.000000') + 
+			coalesce(flg_uses_crm                                        ,0)
 	    ) hash_atlas_user
 	  FROM
 	  (
@@ -6362,79 +6252,24 @@ select a.*  from (
 		operation_type,
 		operation_timestamp,
 		email dsc_atlas_user,
-		email_original,
-		password,
-		autologin_rev,
+		email_original, 
 		type,
 		created_at,
 		last_login_at,
-		default_lang,
-		newsletter flg_newsletter,
-		use_offer_limits flg_use_offer_limits,
-		ban_reason_id,
-		autocomplete_defaults flg_autocomplete_defaults,
-		default_skype,
-		default_phone,
-		default_map_address,
-		default_gg,
-		default_person,
-		default_region_id opr_region,
-		default_subregion_id opr_subregion,
-		default_lat,
-		default_lng,
-		default_zoom,
-		default_district_id,
-		default_city_id opr_city,
-		last_login_ip,
-		last_login_port,
-		fraudster,
-		rmoderation_moderated_by,
-		rmoderation_moderated_at,
-		rmoderation_moderated_days,
-		rmoderation_moderated_total,
-		rmoderation_moderated_last,
-		credits,
-		app flg_app,
-		android_app flg_android_app,
-		apple_app flg_apple_app,
-		wp_app flg_wp_app,
-		is_spammer flg_spammer,
-		source opr_source,
-		hide_user_ads flg_hide_user_ads,
-		email_msg_notif flg_email_msg_notif,
-		email_alarms_notif flg_email_alarms_notif,
-		police_comment,
-		police_bank_account,
-		is_monitored flg_monitored,
-		hide_bank_warning flg_hide_bank_warning,
+		default_lang, 
+		ban_reason_id, 
+		default_city_id opr_city, 
+		credits, 
+		source opr_source, 
 		external_login flg_external_login,
-		is_business flg_business,
-		is_restricted flg_restricted,
-		trusted_started_at,
-		trusted_accepted flg_trusted_accepted,
-		migration_status,
-		suspend_reason,
-		password_method,
-		default_person_first_name,
-		default_person_last_name,
-		default_postcode,
+		is_business flg_business, 
+		suspend_reason, 
 		last_modification_date,
-		autorenew flg_autorenew,
-		quality_score,
-		first_app_login_at,
-		email_promo_notif flg_email_promo_notif,
-		email_expired_notif flg_email_expired_notif,
-		disabled_export_clients,
-		username_legacy,
-		user_legacy_id,
+		autorenew flg_autorenew, 
 		cast(null as numeric(10,2)) bonus_credits,
-		cast(null as timestamp) bonus_credits_expire_at,
-		cast(null as bigint) hermes_dirty,
-		cast(null as bigint) flg_uses_crm,
-		cast(null as varchar) sms_verification_phone,
-		cast(null as varchar) sms_verification_status,
-		cast(null as varchar) sms_verification_code,
-    scai_execution.cod_execution
+		cast(null as timestamp) bonus_credits_expire_at, 
+		cast(null as bigint) flg_uses_crm, 
+		scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_pl_db_atlas_verticals_users a,
     		crm_integration_anlt.t_lkp_source_system b,
@@ -6469,79 +6304,24 @@ select a.*  from (
 		operation_type,
 		operation_timestamp,
 		email dsc_atlas_user,
-		email_original,
-		null as password,
-		autologin_rev,
+		email_original, 
 		type,
 		created_at,
 		last_login_at,
-		null default_lang,
-		newsletter flg_newsletter,
-		use_offer_limits flg_use_offer_limits,
-		ban_reason_id,
-		autocomplete_defaults flg_autocomplete_defaults,
-		default_skype,
-		default_phone,
-		default_map_address,
-		default_gg,
-		default_person,
-		default_region_id opr_region,
-		default_subregion_id opr_subregion,
-		default_lat,
-		default_lng,
-		default_zoom,
-		default_district_id,
-		default_city_id opr_city,
-		last_login_ip,
-		null last_login_port,
-		fraudster,
-		rmoderation_moderated_by,
-		rmoderation_moderated_at,
-		null rmoderation_moderated_days,
-		null rmoderation_moderated_total,
-		null rmoderation_moderated_last,
-		credits,
-		app flg_app,
-		android_app flg_android_app,
-		apple_app flg_apple_app,
-		wp_app flg_wp_app,
-		is_spammer flg_spammer,
-		source opr_source,
-		hide_user_ads flg_hide_user_ads,
-		null flg_email_msg_notif,
-		email_alarms_notif flg_email_alarms_notif,
-		police_comment,
-		police_bank_account,
-		is_monitored flg_monitored,
-		hide_bank_warning flg_hide_bank_warning,
+		null default_lang, 
+		ban_reason_id, 
+		default_city_id opr_city, 
+		credits, 
+		source opr_source, 
 		external_login flg_external_login,
-		is_business flg_business,
-		is_restricted flg_restricted,
-		trusted_started_at,
-		trusted_accepted flg_trusted_accepted,
-		null migration_status,
-		null suspend_reason,
-		null password_method,
-		null default_person_first_name,
-		null default_person_last_name,
-		null default_postcode,
+		is_business flg_business, 
+		null suspend_reason, 
 		null last_modification_date,
-		null flg_autorenew,
-		null quality_score,
-		null first_app_login_at,
-		null flg_email_promo_notif,
-		null flg_email_expired_notif,
-		null disabled_export_clients,
-		null username_legacy,
-		null user_legacy_id,
+		null flg_autorenew, 
 		bonus_credits,
-		bonus_credits_expire_at,
-		hermes_dirty,
-		uses_crm flg_uses_crm,
-		null sms_verification_phone,
-		null sms_verification_status,
-		null sms_verification_code,
-    scai_execution.cod_execution
+		bonus_credits_expire_at, 
+		uses_crm flg_uses_crm, 
+		scai_execution.cod_execution
 	  FROM
 		crm_integration_stg.stg_pl_db_atlas_olxpl_users,
      (
@@ -6619,81 +6399,26 @@ insert into crm_integration_anlt.t_lkp_atlas_user
       end cod_atlas_user,
 	  opr_atlas_user,
 	  dsc_atlas_user,
-	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
+	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
       20991231 valid_to,
 	  cod_source_system,
-	  opr_source, 
+	  opr_source,
 	  opr_city,
-	  email_original,
-	  password,
-	  autologin_rev,
+	  email_original, 
 	  type,
 	  created_at,
 	  last_login_at,
-	  default_lang,
-	  flg_newsletter,
-	  flg_use_offer_limits,
-	  ban_reason_id,
-	  flg_autocomplete_defaults,
-	  default_skype,
-	  default_phone,
-	  default_map_address,
-	  default_gg,
-	  default_person,
-	  --default_region_id,
-	  --default_subregion_id,
-	  default_lat,
-	  default_lng,
-	  default_zoom,
-	  --default_district_id,
-	  last_login_ip,
-	  last_login_port,
-	  fraudster,
-	  rmoderation_moderated_by,
-	  rmoderation_moderated_at,
-	  rmoderation_moderated_days,
-	  rmoderation_moderated_total,
-	  rmoderation_moderated_last,
-	  credits,
-	  flg_app,
-	  flg_android_app,
-	  flg_apple_app,
-	  flg_wp_app,
-	  flg_spammer,
-	  flg_hide_user_ads,
-	  flg_email_msg_notif,
-	  flg_email_alarms_notif,
-	  police_comment,
-	  police_bank_account,
-	  flg_monitored,
-	  flg_hide_bank_warning,
+	  default_lang, 
+	  ban_reason_id, 
+	  credits, 
 	  flg_external_login,
-	  flg_business,
-	  flg_restricted,
-	  trusted_started_at,
-	  flg_trusted_accepted,
-	  migration_status,
-	  suspend_reason,
-	  password_method,
-	  default_person_first_name,
-	  default_person_last_name,
-	  default_postcode,
+	  flg_business, 
+	  suspend_reason, 
 	  last_modification_date,
-	  flg_autorenew,
-	  quality_score,
-	  first_app_login_at,
-	  flg_email_promo_notif,
-	  flg_email_expired_notif,
-	  disabled_export_clients,
-	  username_legacy,
-	  user_legacy_id,
+	  flg_autorenew, 
 	  cast(bonus_credits as numeric(10,2)) bonus_credits,
-	  cast(bonus_credits_expire_at as timestamp) bonus_credits_expire_at,
-	  cast(hermes_dirty as bigint) hermes_dirty,
-	  cast(flg_uses_crm as bigint) flg_uses_crm,
-	  cast(sms_verification_phone as varchar) sms_verification_phone,
-	  cast(sms_verification_status as varchar) sms_verification_status,
-	  cast(sms_verification_code as varchar) sms_verification_code,
+	  cast(bonus_credits_expire_at as timestamp) bonus_credits_expire_at, 
+	  cast(flg_uses_crm as bigint) flg_uses_crm, 
       hash_atlas_user,
 	  cod_execution
     from
