@@ -6195,7 +6195,7 @@ select a.*  from (
 	source_table.default_lang, 
 	source_table.ban_reason_id, 
 	source_table.credits, 
-	coalesce(opr_source,'Unknown') opr_source, 
+	coalesce(source_table.opr_source,'Unknown') opr_source, 
 	source_table.flg_external_login,
 	source_table.flg_business, 
 	source_table.suspend_reason, 
