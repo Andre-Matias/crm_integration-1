@@ -76,3 +76,11 @@
 #   AND buyer_id != seller_id
 # )M
 # ON Z.ad_id = M.ad_id
+
+
+# gettings calls and SMS from 
+
+# SELECT *
+#   FROM main.aggregates.ad_traffic_verticals
+# WHERE stream IN ('v-otomoto-web', 'v-otomoto-android', 'v-otomoto-ios')
+# AND server_date_day >= '2018-06-01' AND server_date_day <= '2018-07-07';
