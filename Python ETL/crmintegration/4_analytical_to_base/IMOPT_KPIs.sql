@@ -921,23 +921,21 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad,
+              ads.id,
               count(*) nr_replies
             from
               crm_integration_anlt.t_fac_answer_incoming fac,
-              crm_integration_anlt.t_lkp_ad lkp_ad,
-              crm_integration_anlt.t_lkp_ad_status lkp_ad_status,
+              db_atlas_verticals.ads ads, 
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
-              and fac.cod_ad = lkp_ad.cod_ad
-              and lkp_ad.valid_to = 20991231
-              and lkp_ad.cod_ad_status = lkp_ad_status.cod_ad_status
-              and lkp_ad_status.opr_ad_status = 'active'
-              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
+              and fac.opr_ad = ads.id   
+              and ads.status = 'active'
+			  and ads.livesync_dbname = 'imovirtualpt'
+              and ads.user_id = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
@@ -949,7 +947,7 @@ from
               scai.dat_processing,
               fac.cod_atlas_user_sender,
               lkp_user.cod_atlas_user,
-              lkp_ad.cod_ad
+              ads.id
           ) source
         group by
           source.cod_source_system,

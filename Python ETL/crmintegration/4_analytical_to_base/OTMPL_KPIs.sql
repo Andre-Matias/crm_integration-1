@@ -948,7 +948,7 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.user_id
+              ads.id
           ) source
         group by
           source.cod_source_system,
