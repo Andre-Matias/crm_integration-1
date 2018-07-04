@@ -12,11 +12,11 @@ import scai
 MAX_ACTIVE_THREADS = 5
 COD_INTEGRATION = 80000					# Chandra to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
+BASE_API_TOKEN = -1
 scai_process_name = "aut_olxpt_deals_creation"
-base_api_token = -1
 
 def getBaseConnection():
-	client = basecrm.Client(access_token=base_api_token)
+	client = basecrm.Client(access_token=BASE_API_TOKEN)
 	return client
 
 def createDealsInBase(client, result_list):
@@ -52,7 +52,7 @@ def getDatabaseConnection(conf_file):
 def main(conf_file, COD_COUNTRY):
 	print('Starting Process... ' + time.strftime("%H:%M:%S"))
 		
-	global base_api_token; base_api_token = json.load(open(conf_file))['base_api_token_olxpt'] 
+	global BASE_API_TOKEN; BASE_API_TOKEN = json.load(open(conf_file))['base_api_token_olxpt'] 
 
 	client = getBaseConnection()
 

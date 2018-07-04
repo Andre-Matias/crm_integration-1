@@ -7,7 +7,7 @@ import basecrm
 import gzip
 import threading
 import queue
-from retry import retry
+import time
 import logging
 from datetime import date, datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
@@ -30,13 +30,28 @@ def getDatabaseConnection(conf_file):
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
 
-@retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
 def updateContactsInBase(client, contact_list, return_queue):
 	number_of_updates = 0
 
 	for contact in contact_list:
+		keep_trying = True
+		while keep_trying:
+			try:
+				client.contacts.update(contact.id, contact)
+				break
+			except basecrm.errors.ResourceError as err:
+				print("Error: basecrm.errors.ResourceError\nDescription: " + str(err) + "\nSkipping update of contact with ID " + str(contact.id))
+				keep_trying = False
+			except basecrm.errors.ServerError as err:
+				print("Error: basecrm.errors.ServerError\nDescription: " + str(err) + "\nTrying again...")
+			except basecrm.errors.RateLimitError as err:
+				print("Error: basecrm.errors.RateLimitError\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				time.sleep(1)
+			except requests.exceptions.ConnectionError as err:
+				print("Error: requests.exceptions.ConnectionError\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				time.sleep(1)
+				
 		number_of_updates = number_of_updates + 1
-		client.contacts.update(contact.id, contact)
 	
 	print('Thread done sending contacts to Base!')
 		
@@ -118,8 +133,19 @@ def main(db_conf_file, conf_file):
 	number_of_updates = 0
 	
 	while len(contacts_data) > 0:
-		print('Page #' + str(page_nbr))
-		contacts_data = client.contacts.list(page=page_nbr, per_page=100)
+		while True:
+			try:
+				print('Page #' + str(page_nbr))
+				contacts_data = client.contacts.list(page=page_nbr, per_page=100)
+				break
+			except basecrm.errors.ServerError as err:
+				print("Error: basecrm.errors.ServerError\nDescription: " + str(err) + "\nTrying again...")
+			except basecrm.errors.RateLimitError as err:
+				print("Error: basecrm.errors.RateLimitError\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				time.sleep(1)
+			except requests.exceptions.ConnectionError as err:
+				print("Error: requests.exceptions.ConnectionError\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				time.sleep(1)
 		
 		# Code could be further improved if all contacts are acquired from Base first, put in a dictionary, and then do updates later (will use much more memory, however)
 		# Alternatively, a dictionary with 100 contacts could be created for every iteration here, instead of putting all contacts in a single dictionary; there could still be some time gains compared to current implementation

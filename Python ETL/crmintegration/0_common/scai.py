@@ -393,3 +393,17 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 	print('SCAI Process process_status: ' + str(process_status))
 	
 	return process_status
+	
+
+# Insert an error log into t_fac_scai_error_log
+#def logError(conf_file, dsc_process, cod_integration, cod_country):
+#	print('SCAI logError')
+#	sql_script = \
+#
+#	% {
+#		'dsc_process':dsc_process,
+#		'cod_country':cod_country,
+#		'cod_integration':cod_integration
+#	}
+#	
+#	executeSQL(conf_file, sql_script, return_value=True)
