@@ -816,7 +816,7 @@ from
               and lkp_contact.cod_source_system = 15
               and fac.opr_ad = ads.id 
 			  and ads.livesync_dbname = 'carspt'
-              and lkp_ad.cod_atlas_user = lkp_user.cod_atlas_user
+              and ads.user_id = lkp_user.cod_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
