@@ -1147,7 +1147,7 @@ from
               atlas_user.dsc_atlas_user,
               idx_type.dsc_index_type,
               scai.dat_processing dat_snap,
-              fac.dat_valid_to, 
+              fac.paidads_valid_to, 
 			  fac.date,
 			  duration
             from
