@@ -22,6 +22,7 @@
 #     AND user_id IN (SELECT id
 #                     FROM users
 #                     WHERE is_business = 1)
+#     AND net_ad_counted = 1
 #   ) A
 #   INNER JOIN billing_periods BP
 #   ON A.user_id = BP.user_id
@@ -53,6 +54,7 @@
 #     AND user_id IN (SELECT id
 #                     FROM users
 #                     WHERE is_business = 1)
+#       AND net_ad_counted = 1
 #   ) A
 #   INNER JOIN billing_periods BP
 #   ON A.user_id = BP.user_id
