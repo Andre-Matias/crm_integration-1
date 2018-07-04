@@ -1162,7 +1162,7 @@ from
         where
           lkp_user.cod_source_system = 4
           and lkp_user.cod_source_system = fac.cod_source_system
-          and lkp_user.cod_source_system = lkp.cod_source_system
+          and lkp_user.cod_source_system = 15
           and lkp_contact.cod_source_system = 15
           and fac.opr_ad = ads.id 
           and ads.user_id = lkp_user.cod_atlas_user

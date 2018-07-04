@@ -948,7 +948,7 @@ from
               scai.dat_processing,
               fac.sender_id,
               lkp_user.cod_atlas_user,
-              ads.user_id
+              ads.id
           ) source
         group by
           source.cod_source_system,
@@ -1167,7 +1167,7 @@ from
         where
           lkp_user.cod_source_system = 7
           and lkp_user.cod_source_system = fac.cod_source_system
-          and lkp_user.cod_source_system = lkp.cod_source_system
+          and lkp_user.cod_source_system = 12
           and lkp_contact.cod_source_system = 12
           and fac.opr_ad = ads.id 
           and ads.user_id = lkp_user.cod_atlas_user
