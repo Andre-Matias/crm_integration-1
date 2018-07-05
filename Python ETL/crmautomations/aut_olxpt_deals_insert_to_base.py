@@ -55,6 +55,10 @@ def createDealsInBase(client, result_list, conf_file):
 				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "requests.exceptions.ConnectionError", str(err));
 				print("Error: requests.exceptions.ConnectionError. Reconnecting and trying again...")
 				number_of_errors = number_of_errors + 1; client = getBaseConnection()
+			except Exception as err
+				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err))
+				print("Error\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				number_of_errors = number_of_errors + 1; time.sleep(1)
 				
 def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
