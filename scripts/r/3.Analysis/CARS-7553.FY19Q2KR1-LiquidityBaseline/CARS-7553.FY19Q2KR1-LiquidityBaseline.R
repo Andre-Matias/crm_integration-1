@@ -86,3 +86,38 @@
 #   FROM main.aggregates.ad_traffic_verticals
 # WHERE stream IN ('v-otomoto-web', 'v-otomoto-android', 'v-otomoto-ios')
 # AND server_date_day >= '2018-06-01' AND server_date_day <= '2018-07-07';
+
+
+# GET listings with package classification - STANDVIRTUAL
+# 
+# SELECT ad_id, created_at_first, name, starting_time, ending_time, display_order
+# FROM (
+#         SELECT ad_id, A.user_id, category_id, created_at_first, package_id, starting_time, ending_time
+#         FROM
+#         (SELECT
+#                 id as ad_id,
+#                 user_id,
+#                 category_id,
+#                 created_at_first
+#                 FROM ads
+#                 WHERE
+#                 created_at_first >= '2018-06-01 00:00:00' AND created_at_first < '2018-07-01 00:00:00'
+#                 AND category_id = 29
+#                 AND user_id IN (SELECT id
+#                                 FROM users
+#                                 WHERE is_business = 1)
+#                 AND net_ad_counted = 1
+#                 AND id = '8028053439'
+#         ) A
+#         INNER JOIN ondemand_packages BP
+#         ON A.user_id = BP.user_id
+#         AND A.created_at_first >= BP.starting_time
+#         AND A.created_at_first < BP.ending_time
+# )Z
+# LEFT JOIN
+# (SELECT id, name, display_order FROM dealer_packages) DP
+# ON Z.package_id = DP.id
+# ;
+# 
+# 
+# SELECT * FROM ondemand_packages WHERE user_id = 569;
