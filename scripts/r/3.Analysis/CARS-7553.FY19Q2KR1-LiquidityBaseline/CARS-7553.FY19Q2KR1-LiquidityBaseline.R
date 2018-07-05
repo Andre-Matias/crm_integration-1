@@ -107,7 +107,6 @@
 #                                 FROM users
 #                                 WHERE is_business = 1)
 #                 AND net_ad_counted = 1
-#                 AND id = '8028053439'
 #         ) A
 #         INNER JOIN ondemand_packages BP
 #         ON A.user_id = BP.user_id
@@ -119,5 +118,61 @@
 # ON Z.package_id = DP.id
 # ;
 # 
-# 
-# SELECT * FROM ondemand_packages WHERE user_id = 569;
+
+
+
+# # getting messages - FOR STANDVIRTUAL
+SELECT DISTINCT
+Z.ad_id,
+created_at_first,
+M.posted,
+M.buyer_id
+FROM (
+  SELECT
+  ad_id,
+  A.user_id,
+  category_id,
+  created_at_first,
+  package_id,
+  starting_time,
+  ending_time
+  FROM
+  (SELECT
+    id as ad_id,
+    user_id,
+    category_id,
+    created_at_first
+    FROM ads
+    WHERE
+    created_at_first >= '2018-06-01 00:00:00' AND created_at_first < '2018-07-01 00:00:00'
+    AND category_id = 29
+    AND user_id IN (SELECT id
+                    FROM users
+                    WHERE is_business = 1)
+    AND net_ad_counted = 1
+  ) A
+  INNER JOIN ondemand_packages BP
+  ON A.user_id = BP.user_id
+  AND A.created_at_first >= BP.starting_time
+  AND A.created_at_first < BP.ending_time
+) Z
+LEFT JOIN
+(SELECT
+  id,
+  name
+  FROM dealer_packages) DP
+ON Z.package_id = DP.id
+INNER JOIN (
+  SELECT
+  id,
+  ad_id,
+  buyer_id,
+  posted
+  FROM answers
+  WHERE 1 = 1
+  AND parent_id = 0
+  AND user_id = seller_id
+  AND buyer_id = sender_id
+  AND buyer_id != seller_id
+) M
+ON Z.ad_id = M.ad_id
