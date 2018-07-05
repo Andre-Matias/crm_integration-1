@@ -171,7 +171,7 @@ def main(db_conf_file, conf_file):
 				print("Error: requests.exceptions.ConnectionError\nDescription: " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 			except Exception as err:
-				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err))
+				scai.logError(db_conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err))
 				print("Error\nDescription: " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 		
