@@ -1,5 +1,6 @@
 import sys
 from datetime import datetime
+import string
 import psycopg2
 import simplejson as json
 
