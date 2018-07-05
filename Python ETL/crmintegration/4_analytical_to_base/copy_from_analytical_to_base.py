@@ -9,6 +9,7 @@ import threading
 import queue
 import time
 import logging
+import requests
 from datetime import date, datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
