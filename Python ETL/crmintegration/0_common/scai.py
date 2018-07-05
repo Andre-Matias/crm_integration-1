@@ -398,6 +398,8 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 # Insert an error log into t_fac_scai_error_log
 def logError(conf_file, dsc_process, cod_integration, cod_country, dsc_error, error_message):
 	print('SCAI logError')
+	
+	error_message = string.replace(error_message, "'", "\\\'") # Escape the character ' when it appears inside error messages
 	sql_script = \
 		"INSERT INTO crm_integration_anlt.t_fac_scai_error_log "\
 		"SELECT "\
