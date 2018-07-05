@@ -149,21 +149,21 @@ def main(db_conf_file, conf_file):
 		while True:
 			try:
 				if(number_of_errors > MAX_ERRORS_SKIPPED):
-					scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+					scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 					sys.exit("The process aborted for exceeding " + str(MAX_ERRORS_SKIPPED) + " errors.")
 				print('Page #' + str(page_nbr))
 				contacts_data = client.contacts.list(page=page_nbr, per_page=100)
 				break
 			except basecrm.errors.ServerError as err:
-				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ServerError", str(err))
+				scai.logError(db_conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ServerError", str(err))
 				print("Error: basecrm.errors.ServerError\nDescription: " + str(err) + "\nTrying again...")
 				number_of_errors = number_of_errors + 1
 			except basecrm.errors.RateLimitError as err:
-				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.RateLimitError", str(err))
+				scai.logError(db_conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.RateLimitError", str(err))
 				print("Error: basecrm.errors.RateLimitError\nDescription: " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 			except requests.exceptions.ConnectionError as err:
-				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "requests.exceptions.ConnectionError", str(err))
+				scai.logError(db_conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "requests.exceptions.ConnectionError", str(err))
 				print("Error: requests.exceptions.ConnectionError\nDescription: " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 		
@@ -197,7 +197,7 @@ def main(db_conf_file, conf_file):
 	i = 0
 	j = contacts_per_thread
 	for n in range(0, MAX_ACTIVE_THREADS):
-		t = threading.Thread(target=updateContactsInBase, args=(client, contact_list[i:j], conf_file, thread_return_values_queue))
+		t = threading.Thread(target=updateContactsInBase, args=(client, contact_list[i:j], db_conf_file, thread_return_values_queue))
 		thread_list.append(t)
 		t.start()
 		print('Spawned thread #' + str(n+1))
