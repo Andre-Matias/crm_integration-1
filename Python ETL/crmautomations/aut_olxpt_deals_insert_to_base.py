@@ -28,6 +28,7 @@ def createDealsInBase(client, result_list, conf_file):
 		while keep_trying:
 			try:
 				if(number_of_errors > MAX_ERRORS_SKIPPED):
+					scai.processEnd(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, '', '', 3)	# SCAI
 					scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 					sys.exit("The process aborted for exceeding " + str(MAX_ERRORS_SKIPPED) + " errors.")
 				deal = client.deals.create(

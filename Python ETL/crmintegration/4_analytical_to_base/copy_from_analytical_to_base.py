@@ -42,7 +42,8 @@ def updateContactsInBase(client, contact_list, conf_file, return_queue):
 		while keep_trying:
 			try:
 				if(number_of_errors > MAX_ERRORS_SKIPPED):
-					scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+					scai.processEnd(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, '', '', 3)	# SCAI
+					scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 3)						# SCAI
 					sys.exit("The process aborted for exceeding " + str(MAX_ERRORS_SKIPPED) + " errors.")
 				client.contacts.update(contact.id, contact)
 				break
@@ -153,6 +154,7 @@ def main(db_conf_file, conf_file):
 		while True:
 			try:
 				if(number_of_errors > MAX_ERRORS_SKIPPED):
+					scai.processEnd(db_conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, '', '', 3)	# SCAI
 					scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 					sys.exit("The process aborted for exceeding " + str(MAX_ERRORS_SKIPPED) + " errors.")
 				print('Page #' + str(page_nbr))
