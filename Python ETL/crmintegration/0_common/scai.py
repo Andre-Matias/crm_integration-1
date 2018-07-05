@@ -430,7 +430,7 @@ def logError(conf_file, dsc_process, cod_integration, cod_country, dsc_error, er
 		"		  AND fac.cod_country = %(cod_country)d) execution, "\
 		"	  crm_integration_anlt.t_fac_scai_error_log error_log "\
 		"	WHERE "\
-		"	  error_log.cod_execution = execution.cod_execution "\
+		"	  error_log.cod_execution (+) = execution.cod_execution "\
 		"	GROUP BY "\
         "	  execution.cod_execution) "\
 	% {
