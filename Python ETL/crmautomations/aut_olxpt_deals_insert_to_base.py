@@ -14,16 +14,22 @@ COD_INTEGRATION = 80000					# Chandra to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
 BASE_API_TOKEN = -1
 scai_process_name = "aut_olxpt_deals_creation"
+MAX_ERRORS_SKIPPED = 200
 
 def getBaseConnection():
 	client = basecrm.Client(access_token=BASE_API_TOKEN)
 	return client
 
-def createDealsInBase(client, result_list):
+def createDealsInBase(client, result_list, conf_file):
+	number_of_errors = 0
+	
 	for result in result_list:
 		keep_trying = True
 		while keep_trying:
 			try:
+				if(number_of_errors > MAX_ERRORS_SKIPPED):
+					scai.integrationEnd(conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+					sys.exit("The process aborted for exceeding " + str(MAX_ERRORS_SKIPPED) + " errors.")
 				deal = client.deals.create(
 						name=result[0],
 						contact_id=result[1],
@@ -34,16 +40,21 @@ def createDealsInBase(client, result_list):
 						custom_fields={'L2 Categoria':result[6],'L1 Categoria':result[7],'Payment Date':result[8], 'Transaction ID':result[9], 'Deal created by':result[10]})
 				break
 			except basecrm.errors.ResourceError as err:
+				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ResourceError", str(err));
 				print("Error: basecrm.errors.ResourceError: " + str(err) + "\nSkipping creation of deal for contact with ID " + str(result[1]))
-				keep_trying = False
+				number_of_errors = number_of_errors + 1; keep_trying = False
 			except basecrm.errors.ServerError as err:
+				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ServerError", str(err));
 				print("Error: basecrm.errors.ServerError. Trying again...")
+				number_of_errors = number_of_errors + 1
 			except basecrm.errors.RateLimitError as err:
+				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.RateLimitError", str(err));
 				print("Error: basecrm.errors.RateLimitError. Trying again in 1 second...")
-				time.sleep(1)
+				number_of_errors = number_of_errors + 1; time.sleep(1)
 			except requests.exceptions.ConnectionError as err:
+				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "requests.exceptions.ConnectionError", str(err));
 				print("Error: requests.exceptions.ConnectionError. Reconnecting and trying again...")
-				client = getBaseConnection()
+				number_of_errors = number_of_errors + 1; client = getBaseConnection()
 				
 def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
@@ -196,7 +207,7 @@ def main(conf_file, COD_COUNTRY):
 	i = 0
 	j = deals_per_thread
 	for n in range(0, MAX_ACTIVE_THREADS):
-		t = threading.Thread(target=createDealsInBase, args=(client, result_list[i:j]))
+		t = threading.Thread(target=createDealsInBase, args=(client, result_list[i:j], conf_file))
 		thread_list.append(t)
 		t.start()
 		print('Spawned thread #' + str(n+1))

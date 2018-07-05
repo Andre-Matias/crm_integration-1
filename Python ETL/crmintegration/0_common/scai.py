@@ -396,14 +396,46 @@ def processCheck(conf_file, dsc_process, cod_integration, cod_country, scai_last
 	
 
 # Insert an error log into t_fac_scai_error_log
-#def logError(conf_file, dsc_process, cod_integration, cod_country):
-#	print('SCAI logError')
-#	sql_script = \
-#
-#	% {
-#		'dsc_process':dsc_process,
-#		'cod_country':cod_country,
-#		'cod_integration':cod_integration
-#	}
-#	
-#	executeSQL(conf_file, sql_script, return_value=True)
+def logError(conf_file, dsc_process, cod_integration, cod_country, dsc_error, error_message):
+	print('SCAI logError')
+	sql_script = \
+		"INSERT INTO crm_integration_anlt.t_fac_scai_error_log "\
+		"SELECT "\
+		"  cod_execution, "\
+		"  case "\
+		"	when max_cod_iteration is null then 1 "\
+		"	else max_cod_iteration + 1 "\
+		"  end cod_iteration, "\
+		"  '%(dsc_error)s' dsc_error, "\
+		"  '%(error_message)s' error_message, "\
+		"  sysdate error_date "\
+		"FROM "\
+		"  ( "\
+		"	SELECT "\
+		"	  execution.cod_execution, "\
+		"	  max(error_log.cod_iteration) max_cod_iteration "\
+		"	FROM "\
+		"	  (SELECT "\
+		"		  max(cod_execution) cod_execution "\
+		"		FROM "\
+		"		  crm_integration_anlt.t_fac_scai_execution fac, "\
+		"		  crm_integration_anlt.t_lkp_scai_process proc"\
+		"		WHERE "\
+		"		  fac.cod_integration = %(cod_integration)d "\
+		"		  AND fac.cod_process = proc.cod_process "\
+		"		  AND proc.dsc_process_short = '%(dsc_process)s' "\
+		"		  AND fac.cod_country = %(cod_country)d) execution, "\
+		"	  crm_integration_anlt.t_fac_scai_error_log error_log "\
+		"	WHERE "\
+		"	  error_log.cod_execution = execution.cod_execution "\
+		"	GROUP BY "\
+        "	  execution.cod_execution) "\
+	% {
+		'dsc_process':dsc_process,
+		'cod_country':cod_country,
+		'cod_integration':cod_integration,
+		'dsc_error':dsc_error,
+		'error_message':error_message
+	}
+	
+	executeSQL(conf_file, sql_script)
