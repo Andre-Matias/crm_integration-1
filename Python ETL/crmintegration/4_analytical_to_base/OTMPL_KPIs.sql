@@ -186,49 +186,51 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
 
 -- CREATE TMP - KPI OLX.BASE.084 (Last login)
 create table crm_integration_anlt.tmp_pl_otomoto_calc_last_login as
-SELECT
+select
 	source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-FROM
+from
 	(
-		SELECT
+     select
 		  b.cod_contact,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
 		  isnull(a.cod_source_system,12) cod_source_system,
 		  isnull(a.custom_field_value, '1900-01-01 00:00:00') custom_field_value
-		FROM
+		from
 		  (
 			  select
-				*
+					*
 			  from
-				(
-				  SELECT
-				  base_contact.cod_contact,
-				  scai.dat_processing dat_snap,
-				  base_contact.cod_source_system,
-				  cast(atlas_user.last_login_at as varchar) custom_field_value,
-				  row_number() over (partition by atlas_user.dsc_atlas_user order by atlas_user.created_at desc) rn
-				  FROM
-				  crm_integration_anlt.t_lkp_atlas_user atlas_user,
-				  crm_integration_anlt.t_lkp_contact base_contact,
-				  crm_integration_anlt.t_rel_scai_country_integration scai
-				  WHERE
-				  atlas_user.cod_source_system = 7
-				  AND base_contact.cod_source_system = 12
-				  AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-				  AND atlas_user.valid_to = 20991231
-				  AND base_contact.valid_to = 20991231
-				  AND scai.cod_integration = 50000
-				  and scai.cod_country = 2
-				)
+					(
+						select
+							base_contact.cod_contact_parent,
+							base_contact.cod_contact,
+							scai.dat_processing dat_snap,
+							base_contact.cod_source_system,
+							cast(atlas_user.last_login_at as varchar) custom_field_value,
+							row_number() over (partition by cod_contact_parent order by coalesce(atlas_user.last_login_at,'1900-01-01') desc) rn
+						from
+							crm_integration_anlt.t_lkp_atlas_user atlas_user,
+							crm_integration_anlt.t_lkp_contact base_contact,
+							crm_integration_anlt.t_rel_scai_country_integration scai
+						where
+							atlas_user.cod_source_system = 7
+							and base_contact.cod_source_system = 12
+							and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+							and atlas_user.valid_to = 20991231
+							and base_contact.valid_to = 20991231
+							and scai.cod_integration = 50000
+							and scai.cod_country = 2
+							--and base_contact.cod_contact_parent = 306798
+					)
 			  where
-				rn = 1
-		  ) A,
-			crm_integration_anlt.t_lkp_contact B,
+					rn = 1
+		  ) a,
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) b,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -242,10 +244,8 @@ FROM
 				  and lower(kpi.dsc_kpi) = 'last login'
 				  and rel.cod_source_system = 12
 			) kpi_custom_field
-		WHERE
-		  B.cod_contact = A.cod_contact (+)
-		  and b.valid_to = 20991231
-		  and b.cod_source_system = 12
+		where
+		  b.cod_contact = a.cod_contact_parent (+)
 		  and scai.cod_integration = 50000
 		  and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
@@ -372,41 +372,51 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_city;
 
 -- CREATE TMP - KPI OLX.BASE.031 (Created date)
 create table crm_integration_anlt.tmp_pl_otomoto_calc_created_date as
-SELECT
+select
 	source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-FROM
+from
 	(
-		SELECT
-		  B.COD_CONTACT,
+		select
+		  b.cod_contact,
 		  kpi_custom_field.cod_custom_field,
 		  scai.dat_processing dat_snap,
-		  ISNULL(A.COD_SOURCE_SYSTEM,12) COD_SOURCE_SYSTEM,
-		  ISNULL(A.custom_field_value, ' ') custom_field_value
-		FROM
+		  isnull(a.cod_source_system,12) cod_source_system,
+		  isnull(a.custom_field_value, ' ') custom_field_value
+		from
 		  (
-			select
-			  base_contact.cod_contact,
-			  scai.dat_processing dat_snap,
-			  base_contact.cod_source_system,
-			  CAST(atlas_user.created_at AS VARCHAR) custom_field_value
-			from
-			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			  crm_integration_anlt.t_lkp_contact base_contact,
-			  crm_integration_anlt.t_rel_scai_country_integration scai
-			where
-			  atlas_user.cod_source_system = 7
-			  and base_contact.cod_source_system = 12
-			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			  and atlas_user.valid_to = 20991231
-			  and base_contact.valid_to = 20991231
-			  and scai.cod_integration = 50000
-				and scai.cod_country = 2
-		  ) A,
-			crm_integration_anlt.t_lkp_contact B,
+				select
+					*
+				from
+					(
+						select
+							base_contact.cod_contact_parent,
+							base_contact.cod_contact,
+							scai.dat_processing dat_snap,
+							base_contact.cod_source_system,
+							cast(atlas_user.created_at as varchar) custom_field_value,
+							row_number() over (partition by cod_contact_parent order by coalesce(atlas_user.created_at,'1900-01-01')) rn
+						from
+							crm_integration_anlt.t_lkp_atlas_user atlas_user,
+							crm_integration_anlt.t_lkp_contact base_contact,
+							crm_integration_anlt.t_rel_scai_country_integration scai
+						where
+							atlas_user.cod_source_system = 7
+							and base_contact.cod_source_system = 12
+							and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+							and atlas_user.valid_to = 20991231
+							and base_contact.valid_to = 20991231
+							and scai.cod_integration = 50000
+							and scai.cod_country = 2
+							--and base_contact.cod_contact_parent = 306798
+						) a
+					where
+						rn = 1
+		  ) a,
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) b,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -420,10 +430,8 @@ FROM
 				  and lower(kpi.dsc_kpi) = 'created date'
 				  and rel.cod_source_system = 12
 			) kpi_custom_field
-		WHERE
-		  B.COD_CONTACT = A.COD_CONTACT (+)
-		  AND B.VALID_TO = 20991231
-		  AND B.cod_source_system = 12
+		where
+		  b.cod_contact = a.cod_contact_parent (+)
 		  and scai.cod_integration = 50000
 		  and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
@@ -459,64 +467,179 @@ drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_created_date;
 
 -- CREATE TMP - KPI OLX.BASE.086 (# Logins last 30 days)
 create table crm_integration_anlt.tmp_pl_otomoto_calc_logins_last_30_days as
-SELECT
+select
 	source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-FROM
+from
 	(
-		SELECT
-		  B.COD_CONTACT,
-		  kpi_custom_field.cod_custom_field,
-		  scai.dat_processing dat_snap,
-		  ISNULL(A.COD_SOURCE_SYSTEM,12) COD_SOURCE_SYSTEM,
-		  ISNULL(A.custom_field_value, ' ') custom_field_value
-		FROM
-		  (
-			select
-			  base_contact.cod_contact,
-			  scai.dat_processing dat_snap,
-			  base_contact.cod_source_system,
-			  cast(count(distinct last_login_at) as varchar) custom_field_value
-			from
-			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			  crm_integration_anlt.t_lkp_contact base_contact,
-			  crm_integration_anlt.t_rel_scai_country_integration scai
-			where
-			  atlas_user.cod_source_system = 7
-			  and base_contact.cod_source_system = 12
-			  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			  and base_contact.valid_to = 20991231
-			  and scai.cod_integration = 50000
-			  and atlas_user.last_login_at is not null
-			  and trunc(last_login_at) between trunc(sysdate) - 30 and trunc(sysdate)
-				and scai.cod_country = 2
-			  group by base_contact.cod_contact,
-				scai.dat_processing,
-				base_contact.cod_source_system
-		  ) A,
-			crm_integration_anlt.t_lkp_contact B,
+		select
+			b.cod_contact,
+			kpi_custom_field.cod_custom_field,
+			scai.dat_processing dat_snap,
+			isnull(a.cod_source_system,12) cod_source_system,
+			isnull(a.custom_field_value, '0') custom_field_value
+		from
+			(
+				select
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system,
+					count(distinct server_date_day) custom_field_value
+				from
+					(
+						select
+							base.cod_contact_parent,
+							web.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra_verticals.web web,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							web.server_date_day >= dateadd(day,-30,sysdate)
+							and web.country_code = 'PL'
+							and web.stream = 'v-otomoto-web'
+							and web.user_id = base.opr_atlas_user
+							--and trackname like 'login%'
+						group by
+							base.cod_contact_parent,
+							dat_snap,
+							cod_source_system,
+							web.server_date_day
+
+						union all
+
+						select
+							base.cod_contact_parent,
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra_verticals.ios ios,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							ios.server_date_day >= dateadd(day,-30,sysdate)
+							and ios.country_code = 'PL'
+							and ios.stream = 'v-otomoto-ios'
+							and ios.user_id = base.opr_atlas_user
+							--and trackname like 'login%'
+						group by
+							base.cod_contact_parent,
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system
+
+						union all
+
+						select
+							base.cod_contact_parent,
+							android.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra_verticals.android android,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							android.server_date_day >= dateadd(day,-30,sysdate)
+							and android.country_code = 'PL'
+							and android.stream = 'v-otomoto-android'
+							and android.user_id = base.opr_atlas_user
+							--and trackname like 'login%'
+						group by
+							base.cod_contact_parent,
+							android.server_date_day,
+							dat_snap,
+							cod_source_system
+					) core
+				group by
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system
+			) a,
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) B,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
-				  rel.cod_custom_field,
-				  rel.flg_active
+					rel.cod_custom_field,
+					rel.flg_active
 				from
-				  crm_integration_anlt.t_lkp_kpi kpi,
-				  crm_integration_anlt.t_rel_kpi_custom_field rel
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
 				where
-				  kpi.cod_kpi = rel.cod_kpi
-				  and lower(kpi.dsc_kpi) = '# logins last 30 days'
-				  and rel.cod_source_system = 12
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# logins last 30 days'
+					and rel.cod_source_system = 12
 			) kpi_custom_field
-		WHERE
-		  B.COD_CONTACT = A.COD_CONTACT (+)
-		  AND B.VALID_TO = 20991231
-		  AND B.cod_source_system = 12
-		  and scai.cod_integration = 50000
-		  and kpi_custom_field.flg_active = 1
+		where
+			b.cod_contact = a.cod_contact_parent (+)
+			and scai.cod_integration = 50000
+			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
@@ -791,14 +914,15 @@ from
     from
       (
         select
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing dat_snap,
           source.cod_source_system,
           cast(sum(nr_replies) as varchar) custom_field_value --nr_replies,
         from
           (
             select
-              lkp_contact.cod_contact,
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
               ads.id,
@@ -808,54 +932,53 @@ from
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
               db_atlas_verticals.ads ads,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
               and fac.ad_id = ads.id
-              and fac.livesync_dbname = lkp_source_system.opr_source_system 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.livesync_dbname = lkp_source_system.opr_source_system
+              and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-			  and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+			  			and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
+              and scai.cod_integration = 50000
               and trunc(fac.posted) between trunc(sysdate) - 30 and trunc(sysdate)
-			  and scai.cod_country = 2
-			  and ads.livesync_dbname = 'otomotopl'
-            group by
-              lkp_contact.cod_contact,
+							and scai.cod_country = 2
+							and ads.livesync_dbname = 'otomotopl'
+						group by
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
               ads.id
           ) source
         group by
           source.cod_source_system,
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing
       ) a,
-        crm_integration_anlt.t_lkp_contact b,
-        crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) b,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+					rel.cod_custom_field,
+					rel.flg_active
+				from
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# replies'
+					and rel.cod_source_system = 12
+			) kpi_custom_field
 			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = '# replies'
-			  and rel.cod_source_system = 12
-		) kpi_custom_field
-    where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 12
-      and scai.cod_integration = 50000
-	  and kpi_custom_field.flg_active = 1
-	  and scai.cod_country = 2
+				b.cod_contact = a.cod_contact_parent(+)
+				and scai.cod_integration = 50000
+			and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -908,73 +1031,71 @@ from
     from
       (
         select
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast((sum(nr_replies) / count(distinct source.id)) as varchar) custom_field_value
+          cast(sum(nr_replies) / count(distinct source.id) as varchar) custom_field_value --nr_replies_per_ad,
         from
           (
             select
-              lkp_contact.cod_source_system,
-              lkp_contact.cod_contact,
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.sender_id,
-              lkp_user.cod_atlas_user,
+              lkp_contact.cod_source_system,
               ads.id,
               count(*) nr_replies
             from
               db_atlas_verticals.answers fac,
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
-              db_atlas_verticals.ads ads, 
+              db_atlas_verticals.ads ads,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
               crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
-              and fac.ad_id = ads.id  
-              and ads.status = 'active'
-			  and ads.livesync_dbname = 'otomotopl'
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.ad_id = ads.id
+							and ads.status = 'active'
+              and fac.livesync_dbname = lkp_source_system.opr_source_system
+              and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-			  and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+			  			and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
-			  and scai.cod_country = 2
-            group by
-              lkp_contact.cod_source_system,
-              lkp_contact.cod_contact,
+              and trunc(fac.posted) between trunc(sysdate) - 30 and trunc(sysdate)
+							and scai.cod_country = 2
+							and ads.livesync_dbname = 'otomotopl'
+						group by
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.sender_id,
-              lkp_user.cod_atlas_user,
+              lkp_contact.cod_source_system,
               ads.id
           ) source
         group by
           source.cod_source_system,
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing
       ) a,
-      crm_integration_anlt.t_lkp_contact b,
-      crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) b,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+					rel.cod_custom_field,
+					rel.flg_active
+				from
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# replies'
+					and rel.cod_source_system = 12
+			) kpi_custom_field
 			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = '# replies per ad'
-			  and rel.cod_source_system = 12
-		) kpi_custom_field
-    where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 12
-      and scai.cod_integration = 50000
-	  	and kpi_custom_field.flg_active = 1
+				b.cod_contact = a.cod_contact_parent(+)
+				and scai.cod_integration = 50000
+			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
@@ -1027,18 +1148,17 @@ from
     from
       (
         select
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast(count(distinct source.id) as varchar) custom_field_value --nr_ads_with_replies,
+          cast(count(distinct source.id) as varchar) custom_field_value --nr_replies_per_ad,
         from
-         (
+          (
             select
-              lkp_contact.cod_source_system,
-              lkp_contact.cod_contact,
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.sender_id,
-              lkp_user.cod_atlas_user,
+              lkp_contact.cod_source_system,
               ads.id,
               count(*) nr_replies
             from
@@ -1046,55 +1166,54 @@ from
               crm_integration_anlt.t_lkp_source_system lkp_source_system,
               db_atlas_verticals.ads ads,
               crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact, 
+              crm_integration_anlt.t_lkp_contact lkp_contact,
               crm_integration_anlt.t_rel_scai_country_integration scai
             where
               lkp_user.cod_source_system = 7
-              and lkp_contact.cod_source_system = 12 
+              and lkp_contact.cod_source_system = 12
               and lkp_user.cod_source_system = lkp_source_system.cod_source_system
-              and fac.ad_id = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and fac.ad_id = ads.id
+							and ads.status = 'active'
+              and fac.livesync_dbname = lkp_source_system.opr_source_system
+              and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+			  			and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
-              and scai.cod_integration = 50000 
-              and ads.status = 'active'
-			  and ads.livesync_dbname = 'otomotopl'
-			  and scai.cod_country = 2
-            group by
-              lkp_contact.cod_source_system,
-              lkp_contact.cod_contact,
+              and scai.cod_integration = 50000
+              and trunc(fac.posted) between trunc(sysdate) - 30 and trunc(sysdate)
+							and scai.cod_country = 2
+							and ads.livesync_dbname = 'otomotopl'
+						group by
+							lkp_contact.cod_contact_parent,
+              --lkp_contact.cod_contact,
               scai.dat_processing,
-              fac.sender_id,
-              lkp_user.cod_atlas_user,
+              lkp_contact.cod_source_system,
               ads.id
-        ) source
+          ) source
         group by
           source.cod_source_system,
-          source.cod_contact,
+          source.cod_contact_parent,
           source.dat_processing
-      ) A,
-      crm_integration_anlt.t_lkp_contact b,
-      crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
+      ) a,
+			(select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) b,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+					rel.cod_custom_field,
+					rel.flg_active
+				from
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# replies'
+					and rel.cod_source_system = 12
+			) kpi_custom_field
 			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = '# ads with replies'
-			  and rel.cod_source_system = 12
-		) kpi_custom_field
-    where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 12
-      and scai.cod_integration = 50000
-	  and kpi_custom_field.flg_active = 1
-	  and scai.cod_country = 2
+				b.cod_contact = a.cod_contact_parent(+)
+				and scai.cod_integration = 50000
+			and kpi_custom_field.flg_active = 1
+			and scai.cod_country = 2
   ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
@@ -1144,62 +1263,161 @@ from
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
-        select
-          lkp_contact.cod_contact,
-          scai.dat_processing dat_snap,
-          lkp_contact.cod_source_system,
-          cast(sum(nbr_occurrences) as varchar) custom_field_value
-        from
-          (
-            select
-              *
-            from
-              crm_integration_anlt.t_fac_web
-            where
-              cod_source_system = 7
-              and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
-              and cod_event = 170
-          ) fac,
-          db_atlas_verticals.ads ads,
-          crm_integration_anlt.t_lkp_atlas_user lkp_user,
-          crm_integration_anlt.t_lkp_contact lkp_contact,
-          crm_integration_anlt.t_rel_scai_country_integration scai
-        where
-          lkp_user.cod_source_system = 7
-          and lkp_user.cod_source_system = fac.cod_source_system
-          and lkp_user.cod_source_system = 12
-          and lkp_contact.cod_source_system = 12
-          and fac.opr_ad = ads.id 
-          and ads.user_id = lkp_user.cod_atlas_user
-		  and ads.livesync_dbname = 'otomotopl'
-          and lkp_user.valid_to = 20991231
-          and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
-          and lkp_contact.valid_to = 20991231
-          and scai.cod_integration = 50000
-          and scai.cod_country = 2
-        group by
-          lkp_contact.cod_contact,
-          scai.dat_processing,
-          lkp_contact.cod_source_system
+				select
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system,
+					cast(sum(nbr_views) as varchar) custom_field_value
+				from
+					(
+						select
+							base.cod_contact_parent,
+							web.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_views
+						from
+							hydra_verticals.web web,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							web.server_date_day >= dateadd(day,-30,sysdate)
+							and web.country_code = 'PL'
+							and web.stream = 'v-otomoto-web'
+							and web.user_id = base.opr_atlas_user
+							and trackname = 'ad_page'
+						group by
+							base.cod_contact_parent,
+							dat_snap,
+							cod_source_system,
+							web.server_date_day
+
+						union all
+
+						select
+							base.cod_contact_parent,
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra_verticals.ios ios,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							ios.server_date_day >= dateadd(day,-30,sysdate)
+							and ios.country_code = 'PL'
+							and ios.stream = 'v-otomoto-ios'
+							and ios.user_id = base.opr_atlas_user
+							and trackname = 'ad_page'
+						group by
+							base.cod_contact_parent,
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system
+
+						union all
+
+						select
+							base.cod_contact_parent,
+							android.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra_verticals.android android,
+							(
+								select
+									base_contact.cod_contact_parent,
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 7
+									and base_contact.cod_source_system = 12
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+									--and base_contact.cod_contact_parent = 306798
+							) base
+						where
+							android.server_date_day >= dateadd(day,-30,sysdate)
+							and android.country_code = 'PL'
+							and android.stream = 'v-otomoto-android'
+							and android.user_id = base.opr_atlas_user
+							and trackname = 'ad_page'
+						group by
+							base.cod_contact_parent,
+							android.server_date_day,
+							dat_snap,
+							cod_source_system
+					) core
+				group by
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system
       ) a,
-      crm_integration_anlt.t_lkp_contact B,
+      (select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) B,
       crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
-			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = '# views'
-			  and rel.cod_source_system = 12
-		) kpi_custom_field
+			(
+				select
+					rel.cod_custom_field,
+					rel.flg_active
+				from
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# views'
+					and rel.cod_source_system = 12
+			) kpi_custom_field
     where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 12
+      b.cod_contact = a.cod_contact_parent (+)
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
 	  and scai.cod_country = 2
@@ -1364,34 +1582,44 @@ from
       isnull(a.custom_field_value, '-') custom_field_value
     from
       (
-        select
-          lkp_contact.cod_contact,
-          scai.dat_processing dat_snap,
-          lkp_contact.cod_source_system,
-          case when (case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) = lkp_contact.cod_contact
-            then
-              cast(min(datediff(days, trunc(max(fac.updated_at)), trunc(sysdate))) over (partition by case when lkp_contact.cod_contact_parent is null then lkp_contact.cod_contact else lkp_contact.cod_contact_parent end) as varchar)
-            ELSE
-              cast(min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) as varchar)
-          end custom_field_value
-        from
-          crm_integration_anlt.t_fac_call fac,
-          crm_integration_anlt.t_lkp_contact lkp_contact,
-          crm_integration_anlt.t_rel_scai_country_integration scai
-        where
-          lkp_contact.cod_source_system = 12
-          and lkp_contact.cod_contact = fac.cod_contact
-          and lkp_contact.valid_to = 20991231
-          and scai.cod_integration = 50000
-          and fac.flg_missed = 0
-          and scai.cod_country = 2
-        group by
-          lkp_contact.cod_source_system,
-		  lkp_contact.cod_contact_parent,
-          lkp_contact.cod_contact,
-          scai.dat_processing
+				select
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system,
+					cast(min(custom_field_value) as varchar) custom_field_value
+				from
+					(
+						select
+							lkp_contact.cod_contact_parent,
+							lkp_contact.cod_contact,
+							scai.dat_processing dat_snap,
+							lkp_contact.cod_source_system,
+							min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) custom_field_value
+						from
+							crm_integration_anlt.t_fac_call fac,
+							crm_integration_anlt.t_lkp_contact lkp_contact,
+							crm_integration_anlt.t_rel_scai_country_integration scai
+						where
+							lkp_contact.cod_source_system = 12
+							and lkp_contact.cod_contact = fac.cod_contact
+							and lkp_contact.valid_to = 20991231
+							and scai.cod_integration = 50000
+							and fac.flg_missed = 0
+							and scai.cod_country = 2
+							and lkp_contact.cod_contact_parent is not null
+						group by
+							lkp_contact.cod_contact_parent,
+							lkp_contact.cod_source_system,
+							lkp_contact.cod_contact_parent,
+							lkp_contact.cod_contact,
+							scai.dat_processing
+					) core
+				group by
+					cod_contact_parent,
+					dat_snap,
+					cod_source_system
       ) a,
-      crm_integration_anlt.t_lkp_contact B,
+      (select * from crm_integration_anlt.t_lkp_contact where valid_to = 20991231 and cod_source_system = 12 and cod_contact_parent is null) B,
       crm_integration_anlt.t_rel_scai_country_integration scai,
 		(
 			select
@@ -1406,10 +1634,8 @@ from
 			  and rel.cod_source_system = 12
 		) kpi_custom_field
     where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 12
-      and scai.cod_integration = 50000
+      b.cod_contact = a.cod_contact_parent (+)
+			and scai.cod_integration = 50000
       and scai.cod_country = 2
 	  and kpi_custom_field.flg_active = 1
   ) source,
