@@ -998,7 +998,7 @@ from
 					crm_integration_anlt.t_rel_kpi_custom_field rel
 				where
 					kpi.cod_kpi = rel.cod_kpi
-					and lower(kpi.dsc_kpi) = '# replies'
+					and lower(kpi.dsc_kpi) = '# replies per ad'
 					and rel.cod_source_system = 12
 			) kpi_custom_field
 			where
@@ -1115,7 +1115,7 @@ from
 					crm_integration_anlt.t_rel_kpi_custom_field rel
 				where
 					kpi.cod_kpi = rel.cod_kpi
-					and lower(kpi.dsc_kpi) = '# replies'
+					and lower(kpi.dsc_kpi) = '# ads with replies'
 					and rel.cod_source_system = 12
 			) kpi_custom_field
 			where
