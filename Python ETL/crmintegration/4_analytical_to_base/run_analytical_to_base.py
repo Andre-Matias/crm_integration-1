@@ -37,9 +37,9 @@ if (scai_last_execution_status == 2):
 scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY) 	# SCAI
 
 # Calculate KPIs with data from the Analytical Model
-#for i in range(0, len(conf_files)):
-#	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
-#	calculate_kpis.main(db_conf_file, kpi_files[i], COD_COUNTRY)
+for i in range(0, len(conf_files)):
+	print('Calculating KPIs in file ' + kpi_files[i] + ' using configuration file ' + conf_files[i] + '...')
+	calculate_kpis.main(db_conf_file, kpi_files[i], COD_COUNTRY)
 	#input('Ready for next set of KPIs?')
 
 # Send all KPIs to Base
