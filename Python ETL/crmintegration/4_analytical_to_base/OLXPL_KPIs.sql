@@ -792,8 +792,6 @@ insert into crm_integration_anlt.t_fac_base_integration_snap2
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased;
 
---$$$
-
 --$$$ -- 10
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
