@@ -3204,7 +3204,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
     and rel_integr_proc.cod_status = 2
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
-	and proc.dsc_process_short = 't_fac_base_integration_snap_plcars';
+	and proc.dsc_process_short = 't_fac_base_integration_snap_plhorizontal';
 
 --$$$ -- 30
 	
@@ -3218,7 +3218,7 @@ from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 2
-and proc.dsc_process_short = 't_fac_base_integration_snap_plcars'
+and proc.dsc_process_short = 't_fac_base_integration_snap_plhorizontal'
 and t_rel_scai_integration_process.ind_active = 1;
 
 
