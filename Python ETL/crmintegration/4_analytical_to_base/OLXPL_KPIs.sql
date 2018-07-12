@@ -1902,33 +1902,31 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3;
 --$$$
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue Total / VAS / Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue as
-	select
-		inner_core.cod_contact,
-		inner_core.cod_source_system,
-		inner_core.wallet,
-		scai.dat_processing dat_snap,
-		inner_core.cod_month,
-		inner_core.val_revenue_vas_gross,
-		inner_core.val_revenue_listings_gross
+select
+	inner_core.cod_contact,
+	inner_core.cod_contact_parent,
+	inner_core.cod_source_system,
+	inner_core.wallet,
+	scai.dat_processing dat_snap,
+	inner_core.cod_month,
+	inner_core.val_revenue_vas_gross,
+	inner_core.val_revenue_listings_gross
 	from
 		(
 			select
 				cod_contact,
 				cod_contact_parent,
 				cod_source_system,
-				opr_atlas_user,
 				cod_month,
-				cod_index_type,
 				wallet,
 				round((sum(case when cod_index_type = 1 /* vas */ then price else 0 end)),2) val_revenue_vas_gross,
 				round((sum(case when cod_index_type = 2 /* package */then price else 0 end)),2) val_revenue_listings_gross
 			from
 				(
 					select
-						base_contact.cod_contact, 
-						base_contact.cod_contact_parent,
+						base_contact.cod_contact_parent ,
+						base_contact.cod_contact,
 						base_contact.cod_source_system,
-						u.id as opr_atlas_user,
 						atlas_user.dsc_atlas_user,
 						pup.name,
 						to_char(date,'yyyymm') cod_month,
@@ -1943,14 +1941,17 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue as
 								else 'regular'
 						end as wallet,
 						case
-							when (u.email like '%sunfra%'
-							or lower(u.email) like '%_deleted_%'
-							or lower(u.email) like '%shanthi.p667%'
-							or lower(u.email) like '%@olx.pl%'
-							or lower(u.email) like '%@olx.com%'
-							or lower(u.email) like '%satheeshmtiet1993%'
-							or lower(u.email) like '%testolxpawel%') then 'test_users'
-								else 'regular_users'
+							when
+								(
+									u.email like '%sunfra%'
+									or lower(u.email) like '%_deleted_%'
+									or lower(u.email) like '%shanthi.p667%'
+									or lower(u.email) like '%@olx.pl%'
+									or lower(u.email) like '%@olx.com%'
+									or lower(u.email) like '%satheeshmtiet1993%'
+									or lower(u.email) like '%testolxpawel%'
+								) then 'test_users'
+										else 'regular_users'
 						end as user_test,
 						sum((pup.price*(-1)) ) as price, count(*) as transactions,
 						idx.cod_index_type
@@ -1968,15 +1969,12 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue as
 						and coalesce(pup.id_ad, -1) = coalesce(pb.ad_id, -1)
 						and pup.id_user = pb.user_id
 						and abs(coalesce(pup.price, 0)) = abs(coalesce(pb.price, 0))
-						left outer join crm_integration_anlt.t_lkp_contact base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
-					--where pup.date between '2018-06-01 00:00:00' and '2018-07-01 00:00:00'
+						left outer join (select * from (select *,row_number() over (partition by cod_atlas_user order by cod_contact desc) rn from crm_integration_anlt.t_lkp_contact) core where rn = 1) base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
 					where
-						1=1
-						and date_trunc('month',pup.date) in ( date_trunc('month', sysdate), date_trunc('month',add_months(sysdate,-5)))
-						and idx.cod_index_type in (1,2)
+					1=1
 					group by
-					    base_contact.cod_contact,
 						base_contact.cod_contact_parent,
+						base_contact.cod_contact,
 						base_contact.cod_source_system,
 						u.id,
 						atlas_user.dsc_atlas_user,
@@ -1996,15 +1994,14 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue as
 				cod_contact_parent,
 				cod_source_system,
 				wallet,
-				opr_atlas_user,
-				cod_month,
-				cod_index_type,
-				wallet
+				cod_month
 	) inner_core,
 	crm_integration_anlt.t_rel_scai_country_integration scai
 where
 	scai.cod_integration = 50000
-	and scai.cod_country = 2;
+	and scai.cod_country = 2
+	and cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
+	;
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 as
