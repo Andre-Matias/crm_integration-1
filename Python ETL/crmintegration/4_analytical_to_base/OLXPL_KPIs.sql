@@ -1357,9 +1357,9 @@ insert into crm_integration_anlt.t_fac_base_integration_snap2
   select
       *
   from
-    (select * from crm_integration_anlt.tmp_pl_olx_calc_last_login_2
+    (select * from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2
 	union
-	select * from crm_integration_anlt.tmp_pl_olx_calc_last_login_3);
+	select * from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3);
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2;
@@ -3970,7 +3970,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap2
   select
     *
   from
-    (select * from crm_integration_anlt.tmp_pl_olx_calc_last_login_2
+    (select * from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_3);
 
