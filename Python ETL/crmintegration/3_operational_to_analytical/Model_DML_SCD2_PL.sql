@@ -3646,7 +3646,14 @@ from
       --source_table.opr_resource_type,
       source_table.hash_call,
       source_table.cod_source_system,
-      coalesce(lkp_contact.cod_contact,-2) cod_contact,
+      case
+        when coalesce(lkp_resource_type.cod_resource_type,-2) in (2,5) then coalesce(lkp_contact.cod_contact,-2)
+        else -2
+      end cod_contact,
+      case
+        when coalesce(lkp_resource_type.cod_resource_type,-2) = 4 then coalesce(lkp_lead.cod_lead,-2)
+        else -2
+      end cod_lead,
       coalesce(lkp_base_user.cod_base_user,-2) cod_base_user,
       source_table.opr_call_outcome,
       source_table.cod_execution,
@@ -3665,7 +3672,7 @@ from
         *,
         md5
         (coalesce(opr_base_user,0) +
-        coalesce(opr_contact,0) +
+        coalesce(opr_resource,0) +
         coalesce(phone_number,'') +
         decode(flg_missed,1,1,0) +
         coalesce(opr_associated_deal,'') +
@@ -3681,7 +3688,7 @@ from
           select
             base_account_country + base_account_category opr_source_system,
             id opr_call,
-            resource_id opr_contact,
+            resource_id opr_resource,
             user_id opr_base_user,
             phone_number,
             missed flg_missed,
@@ -3729,6 +3736,7 @@ from
       ) source_table,
       crm_integration_anlt.t_lkp_base_user lkp_base_user,
       crm_integration_anlt.t_lkp_contact lkp_contact,
+      crm_integration_anlt.t_lkp_lead lkp_lead,
       crm_integration_anlt.t_lkp_resource_type lkp_resource_type,
       (select coalesce(max(cod_call),0) max_cod from crm_integration_anlt.t_fac_call) max_cod_calls,
       crm_integration_anlt.t_fac_call target
@@ -3738,9 +3746,12 @@ from
       and coalesce(source_table.opr_base_user,-1) = lkp_base_user.opr_base_user
       and source_table.cod_source_system = lkp_base_user.cod_source_system
       and lkp_base_user.valid_to = 20991231
-      and coalesce(source_table.opr_contact,-1) = lkp_contact.opr_contact(+)
+      and coalesce(source_table.opr_resource,-1) = lkp_contact.opr_contact(+)
       and source_table.cod_source_system = lkp_contact.cod_source_system(+)
       and lkp_contact.valid_to(+) = 20991231
+      and coalesce(source_table.opr_resource,-1) = lkp_lead.opr_lead(+)
+      and source_table.cod_source_system = lkp_lead.cod_source_system(+)
+      and lkp_lead.valid_to(+) = 20991231
       and coalesce(source_table.opr_resource_type,'') = lkp_resource_type.opr_resource_type
       and lkp_resource_type.valid_to = 20991231
       and source_table.rn = 1
@@ -3782,6 +3793,7 @@ insert into crm_integration_anlt.t_fac_call
       end cod_call,
       opr_call,
       cod_contact,
+	  cod_lead,
       cod_base_user,
       phone_number,
       flg_missed,
