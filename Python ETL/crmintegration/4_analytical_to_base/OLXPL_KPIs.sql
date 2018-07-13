@@ -2071,7 +2071,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) a varchar) custom_field_value
+	,cast(sum(source.custom_field_value) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
