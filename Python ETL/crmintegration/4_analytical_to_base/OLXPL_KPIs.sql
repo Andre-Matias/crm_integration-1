@@ -1270,6 +1270,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1 as
               ads.id
           ) source
         group by
+		  source.cod_contact,	
           source.cod_source_system,
           source.cod_contact_parent,
           source.dat_processing
