@@ -793,7 +793,7 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_3;
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.012 (Last package purchased) --20180712 still needs to be changed as in trello card "OLX Poland KPIs" step 3)
-create table crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_1 as
+create table crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased as
 select
 	source.cod_contact,
 	source.cod_custom_field,
