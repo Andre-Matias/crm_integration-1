@@ -1823,8 +1823,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
 				  and rel.cod_source_system = 13
 			) kpi_custom_field
 		WHERE
-		  1 = 1 
-		  and b.cod_source_system = 13
+		  1 = 1  
 		  and scai.cod_integration = 50000
 		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
@@ -3476,7 +3475,7 @@ select
 	lower(email) email,
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
-	nvl(b.cod_source_system,core.cod_source_system) cod_source_system,
+	core.cod_source_system,
 	'OLX: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
@@ -3533,7 +3532,7 @@ select
 	lower(email) email,
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
-	nvl(b.cod_source_system,core.cod_source_system) cod_source_system,
+	core.cod_source_system,
 	'OTD: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
@@ -3590,7 +3589,7 @@ select
 	lower(email) email,
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
-	nvl(b.cod_source_system,core.cod_source_system) cod_source_system,
+	core.cod_source_system,
 	'OTM: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
@@ -3902,8 +3901,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 as
 					and lower(kpi.dsc_kpi) = '# of ads expiring in next 5 days'
 					and rel.cod_source_system = 13
 			) kpi_custom_field
-			where
-				b.cod_contact = a.cod_contact_parent(+)
+			where 
 				and scai.cod_integration = 50000
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
