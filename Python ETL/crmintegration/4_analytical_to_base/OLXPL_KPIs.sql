@@ -921,7 +921,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       coalesce(a.cod_source_system,13) cod_source_system,
-      coalesce(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value 
     from
       (
         select
@@ -997,7 +997,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_replies_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1014,8 +1014,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,sum(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(sum(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_replies_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1073,7 +1073,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       coalesce(a.cod_source_system,13) cod_source_system,
-      coalesce(a.custom_field_value, '-') custom_field_value
+       a.custom_field_value 
     from
       (
         select
@@ -1151,7 +1151,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1167,8 +1167,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,sum(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(sum(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1224,7 +1224,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       coalesce(a.cod_source_system,13) cod_source_system,
-      coalesce(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value  custom_field_value
     from
       (
         select
@@ -1300,7 +1300,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1317,8 +1317,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,sum(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(sum(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1374,7 +1374,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,13) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value custom_field_value
     from
       (
 				select
@@ -1549,7 +1549,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_views_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1566,8 +1566,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,sum(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(sum(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_views_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1623,7 +1623,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,13) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value custom_field_value
     from
       (
 				select
@@ -1691,7 +1691,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1708,8 +1708,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,max(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(max(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1763,7 +1763,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
 	  kpi_custom_field.cod_custom_field,
 	  scai.dat_processing dat_snap,
 	  coalesce(a.cod_source_system,12) cod_source_system,
-	  coalesce(a.custom_field_value, '') custom_field_value
+	  a.custom_field_value custom_field_value
 	FROM
 		(
 		SELECT
@@ -1833,7 +1833,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -1850,8 +1850,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,max(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(max(source.custom_field_value) as varchar), '') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3838,7 +3838,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 as
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       coalesce(a.cod_source_system,13) cod_source_system,
-      coalesce(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value custom_field_value
     from
       (
         select
@@ -3911,7 +3911,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	cast(coalesce(source.custom_field_value, '-') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3928,8 +3928,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_3 as
    select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
-	source.cod_source_system
-	,sum(source.custom_field_value) custom_field_value
+	source.cod_source_system,
+	coalesce(cast(sum(source.custom_field_value) as varchar), '-') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
