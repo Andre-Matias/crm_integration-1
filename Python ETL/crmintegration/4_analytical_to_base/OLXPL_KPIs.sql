@@ -1593,6 +1593,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap2
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_3)
+			;
 
 -- SNAP DELETE - KPI OLX.BASE.084 (# Views)
 delete from crm_integration_anlt.t_fac_base_integration_snap2
@@ -1600,6 +1601,7 @@ where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_3)
+			;
 
 -- OLX.BASE.084 (# Views)
 insert into crm_integration_anlt.t_fac_base_integration_snap2
@@ -1877,6 +1879,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap2
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3)
+			;
 
 -- SNAP DELETE - KPI OLX.BASE.XYZ (Max Value Package)
 delete from crm_integration_anlt.t_fac_base_integration_snap2
@@ -1884,6 +1887,7 @@ where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3)
+			;
 
 --KPI OLX.BASE.XYZ (Max Value Package)
 insert into crm_integration_anlt.t_fac_base_integration_snap2
@@ -4063,6 +4067,102 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
 
 --$$$
 
+
+-- CREATE TMP - KPI OLX.BASE.114 (marketing email)
+create table crm_integration_anlt.tmp_pl_olx_calc_marketing_email as
+select
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(
+select
+	a.cod_contact,
+	kpi_custom_field.cod_custom_field,
+	scai.dat_processing dat_snap,
+	isnull(a.cod_source_system,13) cod_source_system,
+	coalesce(a.custom_field_value,'-') custom_field_value
+from
+	(
+select
+					*
+				from
+					(
+						select
+							base_contact.cod_contact,
+							scai.dat_processing                                        dat_snap,
+							base_contact.cod_source_system,
+							cast(user_notifications.marketing_email as varchar) custom_field_value,
+							row_number()
+							over (
+								partition by cod_contact
+								order by coalesce(atlas_user.created_at, '1900-01-01') ) rn
+						from db_atlas.olxpl_users_notifications user_notifications,
+							crm_integration_anlt.t_lkp_atlas_user atlas_user,
+							crm_integration_anlt.t_lkp_contact base_contact,
+							crm_integration_anlt.t_rel_scai_country_integration scai
+						where 1 = 1
+									and user_notifications.id = atlas_user.opr_atlas_user
+									and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+									and atlas_user.cod_source_system = 9
+									and base_contact.cod_source_system = 13
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 2
+					)
+	WHERE 1=1
+	and rn = 1) a,
+   crm_integration_anlt.t_rel_scai_country_integration scai,
+		(
+			select
+			  rel.cod_custom_field,
+			  rel.flg_active
+			from
+			  crm_integration_anlt.t_lkp_kpi kpi,
+			  crm_integration_anlt.t_rel_kpi_custom_field2 rel
+			where
+			  kpi.cod_kpi = rel.cod_kpi
+			  and lower(kpi.dsc_kpi) = 'marketing email'
+			  and rel.cod_source_system = 13
+		) kpi_custom_field
+    where 1=1
+	  and scai.cod_integration = 50000
+    and scai.cod_country = 2
+	  and kpi_custom_field.flg_active = 1 )  source,
+	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+  ;
+
+-- HST INSERT - KPI OLX.BASE.114 (marketing email)
+insert into crm_integration_anlt.t_hst_base_integration_snap2
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap2 target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_marketing_email);
+
+-- SNAP DELETE - KPI OLX.BASE.114 (marketing email)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap2
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_marketing_email);
+
+--KPI OLX.BASE.114 (marketing email) 
+insert into crm_integration_anlt.t_fac_base_integration_snap2
+	SELECT
+		*
+	from
+		crm_integration_anlt.tmp_pl_olx_calc_marketing_email;
+
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_marketing_email;
+
+--$$$ 
+
+
 -- #######################
 -- ####    PASSO 5    ####
 -- #######################
@@ -4109,7 +4209,7 @@ and proc.dsc_process_short = 't_fac_base_integration_snap_plhorizontal'
 and t_rel_scai_integration_process.ind_active = 1;
 
 
-
+/*
 delete from crm_integration_anlt.t_fac_base_integration_snap2
 where cod_source_system = 13
 and cod_contact not in (211643575,
@@ -4198,4 +4298,4 @@ and cod_contact not in (211643575,
 203476598,
 203476533, 
 203475955
-);
+);*/
