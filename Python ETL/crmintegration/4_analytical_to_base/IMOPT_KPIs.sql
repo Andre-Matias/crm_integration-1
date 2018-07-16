@@ -1508,7 +1508,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1581,7 +1581,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1654,7 +1654,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1727,7 +1727,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1800,7 +1800,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
@@ -1874,7 +1874,7 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value
+			cast(round(nvl(val_revenue_listings_net,0),2) as varchar) custom_field_value
 		from
 			(
 				select
