@@ -1810,9 +1810,9 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value_total,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value_vas,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value_listings,
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value_total,
+			cast(round(nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value_vas,
+			cast(round(nvl(val_revenue_listings_net,0),2) as varchar) custom_field_value_listings,
 			dsc_kpi
 		from
 			(
@@ -1909,9 +1909,9 @@ from
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value_total,
-			cast(round(nvl(val_revenue_vas_net,0),0) as varchar) custom_field_value_vas,
-			cast(round(nvl(val_revenue_listings_net,0),0) as varchar) custom_field_value_listings,
+			cast(round(nvl(val_revenue_listings_net,0) + nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value_total,
+			cast(round(nvl(val_revenue_vas_net,0),2) as varchar) custom_field_value_vas,
+			cast(round(nvl(val_revenue_listings_net,0),2) as varchar) custom_field_value_listings,
 			dsc_kpi
 		from
 			(
