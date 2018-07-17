@@ -3743,9 +3743,9 @@ from
     where
       source_table.opr_call = target.opr_call(+)
       and source_table.cod_source_system = target.cod_source_system (+)
-      and coalesce(source_table.opr_base_user,-1) = lkp_base_user.opr_base_user
-      and source_table.cod_source_system = lkp_base_user.cod_source_system
-      and lkp_base_user.valid_to = 20991231
+      and coalesce(source_table.opr_base_user,-1) = lkp_base_user.opr_base_user (+)
+      and source_table.cod_source_system = lkp_base_user.cod_source_system (+)
+      and lkp_base_user.valid_to (+) = 20991231
       and coalesce(source_table.opr_resource,-1) = lkp_contact.opr_contact(+)
       and source_table.cod_source_system = lkp_contact.cod_source_system(+)
       and lkp_contact.valid_to(+) = 20991231
@@ -4148,7 +4148,7 @@ as
     source_table.opr_order = target.opr_order(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
     and source_table.rn = 1
-  and source_table.opr_deal = lkp_deals.opr_deal(+)
+	and source_table.opr_deal = lkp_deals.opr_deal(+)
 	and source_table.cod_source_system = lkp_deals.cod_source_system(+)
     and lkp_deals.valid_to(+) = 20991231;
 
@@ -4416,7 +4416,7 @@ as
     and lkp_product.valid_to(+) = 20991231
     and coalesce(source_table.opr_currency,'Unknown') = lkp_currency.opr_currency(+)
     and lkp_currency.valid_to(+) = 20991231
-      and coalesce(source_table.opr_order,-1) = lkp_orders.opr_order(+) -- TAMBÉM DEVEREMOS CONSIDERAR A DATA DAT_ORDER
+    and coalesce(source_table.opr_order,-1) = lkp_orders.opr_order(+) -- TAMBÉM DEVEREMOS CONSIDERAR A DATA DAT_ORDER
 	and source_table.cod_source_system = lkp_orders.cod_source_system(+)
 	and source_table.rn = 1; -- new
 
@@ -5794,7 +5794,7 @@ as
     crm_integration_anlt.tmp_pl_load_web_step1 source_table,
     crm_integration_anlt.t_lkp_event lkp_event
   where
-		coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
+	coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
     and lkp_event.valid_to(+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pl_load_web;

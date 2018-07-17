@@ -153,8 +153,8 @@ as
   where
     coalesce(source_table.opr_base_source,-1) = target.opr_base_source(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type
-	and lkp_resource_type.valid_to = 20991231;
+    and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type (+)
+	and lkp_resource_type.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_base_source;
 	
@@ -756,14 +756,14 @@ as
   where
     coalesce(source_table.opr_task,-1) = target.opr_task(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
-	and lkp_base_user_owner.valid_to = 20991231
-    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system -- new
-	and lkp_base_user_creator.valid_to = 20991231
-    and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type
-	and lkp_resource_type.valid_to = 20991231;
+	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system (+) -- new
+	and lkp_base_user_owner.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system (+) -- new
+	and lkp_base_user_creator.valid_to (+) = 20991231
+    and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type (+)
+	and lkp_resource_type.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_task;
 	
@@ -1375,15 +1375,15 @@ select
   where
 	source_table.opr_contact = target.opr_contact(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
-	and lkp_base_user_owner.valid_to = 20991231
-    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system -- new
-	and lkp_base_user_creator.valid_to = 20991231
-    and coalesce(source_table.opr_industry,'Unknown') = lkp_industry.opr_industry
-	and source_table.cod_source_system = lkp_industry.cod_source_system -- new
-	and lkp_industry.valid_to = 20991231;
+	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system (+) -- new
+	and lkp_base_user_owner.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system (+) -- new
+	and lkp_base_user_creator.valid_to (+) = 20991231
+    and coalesce(source_table.opr_industry,'Unknown') = lkp_industry.opr_industry (+)
+	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
+	and lkp_industry.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_contact;
 
@@ -2233,18 +2233,18 @@ as
   where
     coalesce(source_table.opr_lead,-1) = target.opr_lead(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
-	and lkp_base_user_owner.valid_to = 20991231
-    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user
-	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system -- new
-	and lkp_base_user_creator.valid_to = 20991231
-    and coalesce(source_table.opr_industry,'Unknown') = lkp_industry.opr_industry -- LOST DATA
-	and source_table.cod_source_system = lkp_industry.cod_source_system -- new
-	and lkp_industry.valid_to = 20991231
-    and coalesce(source_table.opr_lead_status,'Unknown') = lkp_lead_status.opr_lead_status
-	and source_table.cod_source_system = lkp_lead_status.cod_source_system -- new
-	and lkp_lead_status.valid_to = 20991231;
+    and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system (+) -- new
+	and lkp_base_user_owner.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system (+) -- new
+	and lkp_base_user_creator.valid_to (+) = 20991231
+    and coalesce(source_table.opr_industry,'Unknown') = lkp_industry.opr_industry (+) -- LOST DATA
+	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
+	and lkp_industry.valid_to (+) = 20991231
+    and coalesce(source_table.opr_lead_status,'Unknown') = lkp_lead_status.opr_lead_status (+)
+	and source_table.cod_source_system = lkp_lead_status.cod_source_system (+) -- new
+	and lkp_lead_status.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_lead;
 	
@@ -2529,9 +2529,9 @@ as
   where
     coalesce(source_table.opr_loss_reason,-1) = target.opr_loss_reason(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_base_user_creator,-1) = lkp_user_creator.opr_base_user
-	and source_table.cod_source_system = lkp_user_creator.cod_source_system -- new
-	and lkp_user_creator.valid_to = 20991231;
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_user_creator.opr_base_user (+)
+	and source_table.cod_source_system = lkp_user_creator.cod_source_system (+) -- new
+	and lkp_user_creator.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_loss_reason;
 	
@@ -3056,9 +3056,9 @@ as
   where
     coalesce(source_table.opr_stage,-1) = target.opr_stage(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_pipeline,-1) = lkp_pipeline.opr_pipeline
-	and source_table.cod_source_system = lkp_pipeline.cod_source_system -- new
-	and lkp_pipeline.valid_to = 20991231;
+    and coalesce(source_table.opr_pipeline,-1) = lkp_pipeline.opr_pipeline (+)
+	and source_table.cod_source_system = lkp_pipeline.cod_source_system (+) -- new
+	and lkp_pipeline.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_stage;
 	
@@ -3384,24 +3384,24 @@ as
   where
     source_table.opr_deal = target.opr_deal(+)
     and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user
-    and source_table.cod_source_system = lkp_base_user_owner.cod_source_system -- new
-    and lkp_base_user_owner.valid_to = 20991231
-    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user
-    and source_table.cod_source_system = lkp_base_user_creator.cod_source_system -- new
-    and lkp_base_user_creator.valid_to = 20991231
-    and coalesce(source_table.opr_currency,'Unknown') = lkp_currency.opr_currency
-    and lkp_currency.valid_to = 20991231
-    and coalesce(source_table.opr_loss_reason,-1) = lkp_loss_reason.opr_loss_reason
-    and lkp_currency.valid_to = 20991231
-    and coalesce(source_table.opr_stage,-1) = lkp_stages.opr_stage
-    and source_table.cod_source_system = lkp_stages.cod_source_system -- new
-    and lkp_currency.valid_to = 20991231
-    and coalesce(source_table.opr_base_source,-1) = lkp_base_source.opr_base_source
-    and lkp_base_source.valid_to = 20991231
-    and coalesce(source_table.opr_contact,-1) = lkp_contact.opr_contact
-    and source_table.cod_source_system = lkp_contact.cod_source_system -- new
-    and lkp_contact.valid_to = 20991231;
+    and coalesce(source_table.opr_base_user_owner,-1) = lkp_base_user_owner.opr_base_user (+)
+    and source_table.cod_source_system = lkp_base_user_owner.cod_source_system (+) -- new
+    and lkp_base_user_owner.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user (+)
+    and source_table.cod_source_system = lkp_base_user_creator.cod_source_system (+) -- new
+    and lkp_base_user_creator.valid_to (+) = 20991231
+    and coalesce(source_table.opr_currency,'Unknown') = lkp_currency.opr_currency (+)
+    and lkp_currency.valid_to (+) = 20991231
+    and coalesce(source_table.opr_loss_reason,-1) = lkp_loss_reason.opr_loss_reason (+)
+    and lkp_currency.valid_to (+) = 20991231
+    and coalesce(source_table.opr_stage,-1) = lkp_stages.opr_stage (+)
+    and source_table.cod_source_system = lkp_stages.cod_source_system (+) -- new
+    and lkp_currency.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_source,-1) = lkp_base_source.opr_base_source (+)
+    and lkp_base_source.valid_to (+) = 20991231
+    and coalesce(source_table.opr_contact,-1) = lkp_contact.opr_contact (+)
+    and source_table.cod_source_system (+) = lkp_contact.cod_source_system -- new
+    and lkp_contact.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_deals;
 	
@@ -3705,17 +3705,17 @@ from
     where
       source_table.opr_call = target.opr_call(+)
       and source_table.cod_source_system = target.cod_source_system (+)
-      and coalesce(source_table.opr_base_user,-1) = lkp_base_user.opr_base_user
-      and source_table.cod_source_system = lkp_base_user.cod_source_system
-      and lkp_base_user.valid_to = 20991231
+      and coalesce(source_table.opr_base_user,-1) = lkp_base_user.opr_base_user (+)
+      and source_table.cod_source_system = lkp_base_user.cod_source_system (+)
+      and lkp_base_user.valid_to (+) = 20991231
       and coalesce(source_table.opr_resource,-1) = lkp_contact.opr_contact(+)
       and source_table.cod_source_system = lkp_contact.cod_source_system(+)
       and lkp_contact.valid_to(+) = 20991231
       and coalesce(source_table.opr_resource,-1) = lkp_lead.opr_lead(+)
       and source_table.cod_source_system = lkp_lead.cod_source_system(+)
       and lkp_lead.valid_to(+) = 20991231
-      and coalesce(source_table.opr_resource_type,'') = lkp_resource_type.opr_resource_type
-      and lkp_resource_type.valid_to = 20991231
+      and coalesce(source_table.opr_resource_type,'') = lkp_resource_type.opr_resource_type (+)
+      and lkp_resource_type.valid_to (+) = 20991231
       and source_table.rn = 1
   ) source,
   crm_integration_anlt.t_lkp_call_outcome lkp_call_outcome
@@ -4110,9 +4110,9 @@ as
     source_table.opr_order = target.opr_order(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
     and source_table.rn = 1
-  and source_table.opr_deal = lkp_deals.opr_deal
-	and source_table.cod_source_system = lkp_deals.cod_source_system
-    and lkp_deals.valid_to = 20991231;
+  and source_table.opr_deal = lkp_deals.opr_deal (+)
+	and source_table.cod_source_system = lkp_deals.cod_source_system (+)
+    and lkp_deals.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_orders;
 	
@@ -4373,13 +4373,13 @@ as
   where
     coalesce(source_table.opr_order_line_item,-1) = target.opr_order_line_item(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_sku,'Unknown') = lkp_product.opr_sku
-	and source_table.cod_source_system = lkp_product.cod_source_system -- new
-    and lkp_product.valid_to = 20991231
-    and coalesce(source_table.opr_currency,'Unknown') = lkp_currency.opr_currency
-    and lkp_currency.valid_to = 20991231
-      and coalesce(source_table.opr_order,-1) = lkp_orders.opr_order -- TAMBÉM DEVEREMOS CONSIDERAR A DATA DAT_ORDER
-	and source_table.cod_source_system = lkp_orders.cod_source_system
+    and coalesce(source_table.opr_sku,'Unknown') = lkp_product.opr_sku (+)
+	and source_table.cod_source_system = lkp_product.cod_source_system (+) -- new
+    and lkp_product.valid_to (+) = 20991231
+    and coalesce(source_table.opr_currency,'Unknown') = lkp_currency.opr_currency (+)
+    and lkp_currency.valid_to (+) = 20991231
+      and coalesce(source_table.opr_order,-1) = lkp_orders.opr_order (+) -- TAMBÉM DEVEREMOS CONSIDERAR A DATA DAT_ORDER
+	and source_table.cod_source_system = lkp_orders.cod_source_system (+)
 	and source_table.rn = 1; -- new
 
 analyse crm_integration_anlt.tmp_pt_load_order_line_items;
@@ -4817,9 +4817,9 @@ select
   where
     coalesce(source_table.opr_paidad_index,-1) = target.opr_paidad_index(+)
 	and source_table.cod_source_system = target.cod_source_system (+)
-    and coalesce(source_table.opr_paidad_index_type,'Unknown') = lkp_paidad_index_type.opr_paidad_index_type
-	and source_table.cod_source_system = lkp_paidad_index_type.cod_source_system -- new
-	and lkp_paidad_index_type.valid_to = 20991231;
+    and coalesce(source_table.opr_paidad_index_type,'Unknown') = lkp_paidad_index_type.opr_paidad_index_type (+)
+	and source_table.cod_source_system = lkp_paidad_index_type.cod_source_system (+) -- new
+	and lkp_paidad_index_type.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_paidad_index;
 	
