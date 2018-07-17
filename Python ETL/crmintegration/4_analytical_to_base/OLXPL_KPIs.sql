@@ -2112,7 +2112,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2222,7 +2222,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2334,7 +2334,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2447,7 +2447,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2559,7 +2559,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2671,7 +2671,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2783,7 +2783,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -2895,7 +2895,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3007,7 +3007,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3119,7 +3119,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3231,7 +3231,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
@@ -3343,7 +3343,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(source.custom_field_value) as varchar) custom_field_value
+	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
