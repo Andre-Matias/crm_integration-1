@@ -54,7 +54,7 @@ for results in result_list:
 
 	slack_text = "The integration for " + results[1] + " executed on the " + str(results[2]) + " having finished with " + results[4] + ". It started it's execution at " +  str(results[5])[0:19] + " and ended at " + str(results[6])[0:19] + ", and it took a total of " + str(results[7])[0:8]  
 
-	response = test_slack.sendToSlack(slack_text, "crm_integration_team")
+	response = slack.sendToSlack(slack_text, "crm_integration_team")
 	
 	if response["ok"]:
 		print("Message posted successfully: " + response["message"]["ts"])
