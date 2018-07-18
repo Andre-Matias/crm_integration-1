@@ -1806,49 +1806,88 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
 	  a.cod_contact_parent,
 	  kpi_custom_field.cod_custom_field,
 	  scai.dat_processing dat_snap,
-	  coalesce(a.cod_source_system,12) cod_source_system,
+	  coalesce(a.cod_source_system,13) cod_source_system,
 	  a.custom_field_value custom_field_value
 	FROM
 		(
-		SELECT
-			--fac.dat_payment,
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			scai.dat_processing dat_snap,
-			base_contact.cod_source_system,
-			cast(min(payments.price) as varchar) custom_field_value
-		FROM
-			db_atlas_verticals.paidads_user_payments payments,
-			db_atlas_verticals.payment_session session,
-			crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			crm_integration_anlt.t_lkp_contact base_contact,
-			crm_integration_anlt.t_lkp_paidad_index index,
-			crm_integration_anlt.v_lkp_paidad_index v_index,
-			crm_integration_anlt.v_lkp_paidad_index_type v_index_type,
-			crm_integration_anlt.t_rel_scai_country_integration scai
-		WHERE
-			payments.id_user = atlas_user.opr_atlas_user
-			and atlas_user.cod_source_system = 9
-			AND base_contact.cod_source_system = 13
-			AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
-			and payments.id_transaction = session.id
-			and payments.id_index = index.opr_paidad_index
-			and index.cod_paidad_index = v_index.cod_paidad_index
-			and v_index.cod_index_type = v_index_type.cod_index_type
-			and payments.date > dateadd(month,-3,to_date(sysdate,'yyyy-mm-dd'))
-			and v_index_type.cod_index_type = 2
-			and session.provider not in ('admin','volume')
-			and session.status = 'finished'
-			AND atlas_user.valid_to = 20991231
-			AND base_contact.valid_to = 20991231
-			AND scai.cod_integration = 50000
-			and scai.cod_country = 2
-		group BY
-			--fac.dat_payment,
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			scai.dat_processing,
-			base_contact.cod_source_system
+		select
+				cod_contact,
+				cod_contact_parent,
+				cod_source_system,
+				round((max(case when cod_index_type = 2 /* package */then price else 0 end)),2) custom_field_value
+			from
+				(
+					select
+						base_contact.cod_contact_parent ,
+						base_contact.cod_contact,
+						base_contact.cod_source_system,
+						atlas_user.dsc_atlas_user,
+						pup.name,
+						to_char(date,'yyyymm') cod_month,
+						id_index,
+						ads.category_id,
+						c.name_pl,
+						payment_provider,
+						case
+							when pb.from_bonus_credits>0 then 'bonus_points'
+							when pb.from_refund_credits>0 then 'refund'
+							when pb.from_account>0 then 'wallet'
+								else 'regular'
+						end as wallet,
+						case
+							when
+								(
+									u.email like '%sunfra%'
+									or lower(u.email) like '%_deleted_%'
+									or lower(u.email) like '%shanthi.p667%'
+									or lower(u.email) like '%@olx.pl%'
+									or lower(u.email) like '%@olx.com%'
+									or lower(u.email) like '%satheeshmtiet1993%'
+									or lower(u.email) like '%testolxpawel%'
+								) then 'test_users'
+										else 'regular_users'
+						end as user_test,
+						sum((pup.price*(-1)) ) as price, count(*) as transactions,
+						idx.cod_index_type
+					from
+						db_atlas.olxpl_paidads_user_payments as pup
+						left outer join crm_integration_anlt.v_lkp_paidad_index_new as idx on pup.id_index = idx.opr_paidad_index and idx.cod_source_system = 9
+						left outer join db_atlas.olxpl_ads as ads on ads.id=pup.id_ad
+						left outer join db_atlas.olxpl_categories as c on c.id=ads.category_id
+						left outer join db_atlas.olxpl_users as u on pup.id_user=u.id
+						left outer join crm_integration_anlt.t_lkp_atlas_user atlas_user on atlas_user.valid_to = 20991231 and atlas_user.cod_source_system = 9 and u.id = atlas_user.opr_atlas_user
+						left outer join db_atlas.olxpl_payment_session as ps on ps.id = pup.id_transaction
+						left outer join db_atlas.olxpl_payment_basket as pb
+						on pup.id_transaction = pb.session_id
+						and pup.id_index = pb.index_id
+						and coalesce(pup.id_ad, -1) = coalesce(pb.ad_id, -1)
+						and pup.id_user = pb.user_id
+						and abs(coalesce(pup.price, 0)) = abs(coalesce(pb.price, 0))
+						left outer join (select * from (select *,row_number() over (partition by cod_atlas_user order by cod_contact desc) rn from crm_integration_anlt.t_lkp_contact where valid_to = 20991231) core where rn = 1) base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
+					where
+					1=1
+					group by
+						base_contact.cod_contact_parent,
+						base_contact.cod_contact,
+						base_contact.cod_source_system,
+						u.id,
+						atlas_user.dsc_atlas_user,
+						name,
+						to_char(date,'yyyymm'),
+						id_index,
+						category_id,
+						c.name_pl,
+						payment_provider,
+						wallet,user_test,
+						cod_index_type
+				) core
+			where
+				cod_contact is not null
+        and cod_month in (to_char( add_months( sysdate, -1),'YYYYMM') ,  to_char( add_months( sysdate, -2),'YYYYMM'), to_char( add_months( sysdate, -3),'YYYYMM') )
+			group by
+				cod_contact,
+				cod_contact_parent,
+				cod_source_system
 		  ) A,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
@@ -1864,7 +1903,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
 				  and rel.cod_source_system = 13
 			) kpi_custom_field
 		WHERE
-		  1 = 1  
+		  1 = 1
 		  and scai.cod_integration = 50000
 		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
@@ -1894,7 +1933,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	coalesce(cast(max(cast(source.custom_field_value as float )) as varchar), '') custom_field_value
+	coalesce(cast(max(cast(source.custom_field_value as numeric(15,2) )) as varchar), '') custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
