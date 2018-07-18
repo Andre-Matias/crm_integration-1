@@ -4337,7 +4337,9 @@ select
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	source.custom_field_value
+	case when source.custom_field_value = '1' then 'Yes' 
+		 when source.custom_field_value = '0' then 'No'
+		 else source.custom_field_value end as custom_field_value
 from
 	(
 select
