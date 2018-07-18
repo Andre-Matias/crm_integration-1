@@ -3400,7 +3400,7 @@ as
     and coalesce(source_table.opr_base_source,-1) = lkp_base_source.opr_base_source (+)
     and lkp_base_source.valid_to (+) = 20991231
     and coalesce(source_table.opr_contact,-1) = lkp_contact.opr_contact (+)
-    and source_table.cod_source_system (+) = lkp_contact.cod_source_system -- new
+    and source_table.cod_source_system = lkp_contact.cod_source_system (+) -- new
     and lkp_contact.valid_to (+) = 20991231;
 
 analyze crm_integration_anlt.tmp_pt_load_deals;
