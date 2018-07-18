@@ -134,6 +134,8 @@ no_results_data$filters <- paste(no_results_data$brand, no_results_data$model, n
                                  no_results_data$distance_filt, no_results_data$item_condition_all, no_results_data$item_condition_new, 
                                  no_results_data$item_condition_used, no_results_data$free_text, sep=" ")
 
+
+
 # Summarize # of searches by filter combinations ------------------------------
 ## will then visualize it via Tableau
 df_viz <- no_results_data %>%
