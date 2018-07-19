@@ -1412,7 +1412,7 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3;
 create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
     select
       a.cod_contact,
-	  a.cod_contact_parent,
+	    a.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,13) cod_source_system,
@@ -1456,13 +1456,16 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 									and scai.cod_integration = 50000
 									and scai.cod_country = 2
 									--and base_contact.cod_contact_parent = 306798
-							) base
+							) base,
+              db_atlas.olxpl_ads ads
 						where
 							web.server_date_day >= dateadd(day,-30,sysdate)
 							and web.country_code = 'PL'
 							and web.host like '%olx.pl%'
-							and web.user_id = base.opr_atlas_user
+							--and web.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
+              and web.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
 						group by
 							base.cod_contact,
 							base.cod_contact_parent,
@@ -1501,12 +1504,15 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 									and scai.cod_integration = 50000
 									and scai.cod_country = 2
 									--and base_contact.cod_contact_parent = 306798
-							) base
+							) base,
+              db_atlas.olxpl_ads ads
 						where
 							ios.server_date_day >= dateadd(day,-30,sysdate)
 							and ios.country_code = 'PL'
-							and ios.user_id = base.opr_atlas_user
+							--and ios.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
+              and ios.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
 						group by
 						    base.cod_contact,
 							base.cod_contact_parent,
@@ -1517,7 +1523,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 						union all
 
 						select
-						    base.cod_contact,
+						  base.cod_contact,
 							base.cod_contact_parent,
 							android.server_date_day,
 							dat_snap,
@@ -1545,14 +1551,17 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 									and scai.cod_integration = 50000
 									and scai.cod_country = 2
 									--and base_contact.cod_contact_parent = 306798
-							) base
+							) base,
+              db_atlas.olxpl_ads ads
 						where
 							android.server_date_day >= dateadd(day,-30,sysdate)
 							and android.country_code = 'PL'
-							and android.user_id = base.opr_atlas_user
+							--and android.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
+              and android.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
 						group by
-						    base.cod_contact,
+						  base.cod_contact,
 							base.cod_contact_parent,
 							android.server_date_day,
 							dat_snap,
@@ -1584,7 +1593,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 	  and scai.cod_country = 2
 	  ;
 
-	  
+
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_views_2 as
    select source.cod_contact,
@@ -1621,8 +1630,7 @@ where 1 = 1
   source.cod_custom_field,
   source.dat_snap,
   source.cod_source_system,
-	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	nvl(source.cod_contact_parent,source.cod_contact);
 	 
 -- HST INSERT - KPI OLX.BASE.084 (# Views)
 insert into crm_integration_anlt.t_hst_base_integration_snap2
