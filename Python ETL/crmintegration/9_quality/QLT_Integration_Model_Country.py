@@ -22,7 +22,7 @@ try:
 	cur.execute(
 		" select token "\
 		" from crm_integration_anlt.t_lkp_token "\
-		" where 1 = 1 "\ 
+		" where 1 = 1 "\
 		" and application = 'Slack' ")	
 except Exception as e:  
 	print (e)
