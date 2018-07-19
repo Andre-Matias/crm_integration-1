@@ -1915,7 +1915,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2 as
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	cast(coalesce(source.custom_field_value, '') as varchar) custom_field_value
+	cast(coalesce(cast(source.custom_field_value as varchar), '') as varchar) custom_field_value
 	from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap2 fac_snap
 where 1 = 1
