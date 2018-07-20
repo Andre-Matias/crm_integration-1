@@ -69,7 +69,7 @@ try:
 		" select token "\
 		" from crm_integration_anlt.t_lkp_token "\
 		" where 1 = 1 "\
-		" and application = 'Base - PL - OTODOM' ")	
+		" and application = '" + BASE_APPLICATON + "' ")	
 except Exception as e: 
 	scai.processEnd(DB_CONF_FILE, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, '', '',3)	# SCAI
 	scai.integrationEnd(DB_CONF_FILE, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
@@ -114,7 +114,7 @@ for result in result_list:
 	resource_type 	= result[2]
 	due_date 		= result[3]
 	owner_id 		= result[4] 
-	resource_id 	= result[5]#211216854#999999999
+	resource_id 	= result[5]
 	completed 		= result[6]
 	remind_at 		= result[7]
 	
