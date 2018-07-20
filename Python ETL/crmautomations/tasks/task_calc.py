@@ -71,9 +71,14 @@ conn = getDatabaseConnection(DB_CONF_FILE)
 cur = conn.cursor()
 
 
-
 #SCAI Last run validation
+country_execution_status = scai.getCountryIntegrationStatus(DB_CONF_FILE, COD_COUNTRY)	# SCAI
+
 scai_last_execution_status = scai.getLastExecutionStatus(DB_CONF_FILE, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+if (country_execution_status != 1 and scai_last_execution_status == 1):
+	print ('The integration executed successfuly on last execution. The problem is further ahead.')
+	sys.exit(0)
 
 if (scai_last_execution_status == 2):
 	sys.exit("The integration is already running...")
