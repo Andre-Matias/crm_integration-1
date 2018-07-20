@@ -4384,9 +4384,7 @@ select
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	case when source.custom_field_value = '1' then 'Yes' 
-		 when source.custom_field_value = '0' then 'No'
-		 else source.custom_field_value end as custom_field_value
+	source.custom_field_value
 from
 	(
 select
@@ -4394,7 +4392,9 @@ select
 	kpi_custom_field.cod_custom_field,
 	scai.dat_processing dat_snap,
 	isnull(a.cod_source_system,13) cod_source_system,
-	coalesce(a.custom_field_value,'-') custom_field_value
+	coalesce(case when a.custom_field_value = '1' then 'Yes'
+		 when a.custom_field_value = '0' then 'No'
+		 else a.custom_field_value end ,'-') custom_field_value
 from
 	(
 select
