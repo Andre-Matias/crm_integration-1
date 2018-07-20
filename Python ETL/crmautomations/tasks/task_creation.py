@@ -51,6 +51,7 @@ DB_CONF_FILE = sys.argv[1]
 CONF_FILE 	 = sys.argv[2]
 
 data = json.load(open(CONF_FILE))
+BASE_APPLICATON	  = data['BASE_APPLICATON']
 COD_COUNTRY 	  = data['COD_COUNTRY']
 COD_INTEGRATION   = data['COD_INTEGRATION']
 DSC_PROCESS		  = data['DSC_PROCESS']
