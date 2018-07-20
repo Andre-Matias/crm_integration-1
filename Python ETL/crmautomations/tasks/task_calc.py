@@ -58,7 +58,7 @@ def executeSQL(DB_CONF_FILE, sql_script, cod_rule, return_value=False):
 #MAIN PROGRAM
 
 DB_CONF_FILE = sys.argv[1] 	
-CONF_FILE 	 = sys.argv[2]
+CONF_FILE 	 = sys.argv[2] #When it is necessary to automate for more sites, add argument and below variables attribution, and add all cod_source_systems to variable so that it goes something like: COD_SOURCE_SYSTEM= (12,13,14)
 
 data = json.load(open(CONF_FILE))
 COD_COUNTRY 	  = data['COD_COUNTRY']
@@ -120,7 +120,7 @@ if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai
 			" from crm_integration_anlt.t_lkp_auto_task_rule "\
 			" where 1 = 1 "\
 			" and active = 1 "\
-			" and cod_source_system = ' " + COD_SOURCE_SYSTEM + "' "\
+			" and cod_source_system in( ' " + COD_SOURCE_SYSTEM + "') "\
 			" and cod_rule >= " + str(block_nbr) + " "\
 			" order by 1 asc ")	
 	except Exception as e: 
