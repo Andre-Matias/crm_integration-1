@@ -141,7 +141,7 @@ if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai
 	for result in result_list: 
 
 		cod_rule = result[0]
-		sql_script = PATH_TO_SQL + result[1] + '.sql'
+		sql_script = result[1] + '.sql'
 		print ("SQL script path: ", sql_script)
 		try:
 			sql_script = open(sql_script).read()
