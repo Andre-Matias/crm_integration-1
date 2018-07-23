@@ -838,6 +838,9 @@ from
 							join db_atlas.olxpl_ads a4 on a4.id=a3.ad_id
 							left outer join db_atlas.olxpl_nnl_packets packets on packets.packet_id = a1.packet_id
 							left outer join db_atlas.olxpl_nnl_variants variants on variants.variant_id = a1.variant_id
+							left outer join crm_integration_anlt.v_lkp_paidad_index_new index on index.cod_source_system = 9 
+																								and (index.dsc_paidad_index != 'Ogłoszenie na 30 dni' or index.dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni')
+																								and index.paidad_index_code = variants.variant_id
 							where 1=1) package,
 				crm_integration_anlt.t_lkp_atlas_user atlas_user,
 				crm_integration_anlt.t_lkp_contact base_contact,
