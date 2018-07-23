@@ -335,7 +335,7 @@ def getCountryIntegrationStatus(conf_file, cod_country):
 		" from crm_integration_anlt.t_rel_scai_country_integration "\
 		" where "\
 		" cod_country = %(cod_country)d "\
-		" and cod_integration in (10000, 11000, 12000, 30000, 50000)"\
+		" and cod_integration in (10000, 11000, 12000, 30000, 50000, 90000)"\
 		" and ind_active = 1;" \
 	% { 
 		'cod_country':cod_country
