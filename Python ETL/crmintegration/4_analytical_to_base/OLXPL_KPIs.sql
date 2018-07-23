@@ -4596,7 +4596,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
 		 cod_source_system
 		from  crm_integration_anlt.tmp_pl_olx_calc_number_calls_1
 		where 1=1
-		and a.custom_field_value = to_char(sysdate, 'YYYYMM')
+		and custom_field_value = to_char(sysdate, 'YYYYMM')
 		group by cod_contact,
 		 cod_contact_parent,
 		 dat_snap,
