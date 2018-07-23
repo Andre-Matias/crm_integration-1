@@ -3791,7 +3791,7 @@ select
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
 	core.cod_source_system,
-	'OLX: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
+	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
 		select
@@ -3848,7 +3848,7 @@ select
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
 	core.cod_source_system,
-	'OTD: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
+	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
 		select
@@ -3905,7 +3905,7 @@ select
 	kpi_custom_field.cod_custom_field,
 	scai.dat_snap,
 	core.cod_source_system,
-	'OTM: ' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
+	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
 		select
@@ -3960,7 +3960,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_otodom.cod_custom_field,
 		source_otodom.dat_snap,
 		source_otodom.cod_source_system,
-		source_otodom.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
+		'OTD: ' + source_otodom.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core source_otodom,
 		crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx 
@@ -3975,7 +3975,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_otomoto.cod_custom_field,
 		source_otomoto.dat_snap,
 		source_otomoto.cod_source_system,
-		source_otomoto.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
+		'OTM: ' + source_otomoto.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto,
 		crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx 
@@ -3990,7 +3990,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_olx.cod_custom_field,
 		source_olx.dat_snap,
 		source_olx.cod_source_system,
-		source_olx.custom_field_value
+		'OLX: ' + source_olx.custom_field_value
 		+ case
 				when source_otodom.cod_contact is not null then ' || ' + source_otodom.custom_field_value
 					else ''
@@ -4028,23 +4028,99 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3 as
-   select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+  select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
-	,cast(sum(cast(substring(source.custom_field_value,6) as int)) as varchar) as custom_field_value 
-	from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final source,
+	,source.custom_field_value
+	from (
+			select
+		 cod_contact,
+		 cod_custom_field,
+		 dat_snap,
+		 cod_source_system,
+		 'OLX: ' || custom_field_value_olx  || ' || OTD: ' ||   sum(custom_field_value_otd) || ' || OTM: ' || sum(custom_field_value_otm) custom_field_value
+	from (
+			select
+				distinct nvl(source_otodom.cod_contact_parent, source_otodom.cod_contact) cod_contact,
+				source_otodom.cod_custom_field,
+				source_otodom.dat_snap,
+				source_otodom.cod_source_system,
+				case when source_olx.cod_contact is not null then  cast(sum(source_olx.custom_field_value) as varchar) else '0' end custom_field_value_olx,
+				cast(sum(source_otodom.custom_field_value) as varchar)  custom_field_value_otd,
+			  null as custom_field_value_otm
+			from
+				crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core source_otodom,
+				crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx
+			 where
+				source_otodom.email = source_olx.email(+)
+			group by
+			  nvl(source_otodom.cod_contact_parent, source_otodom.cod_contact),
+				source_olx.cod_contact,
+			  source_otodom.cod_custom_field,
+			  source_otodom.dat_snap,
+			  source_otodom.cod_source_system
+
+
+			union  all
+
+			select
+				distinct nvl(source_otomoto.cod_contact_parent, source_otomoto.cod_contact) cod_contact,
+				source_otomoto.cod_custom_field,
+				source_otomoto.dat_snap,
+				source_otomoto.cod_source_system,
+				case when source_olx.cod_contact is not null then   cast(sum(source_olx.custom_field_value) as varchar) else '0' end custom_field_value_olx,
+				null as custom_field_value_otd,
+				cast(sum(source_otomoto.custom_field_value) as varchar) custom_field_value
+			from
+				crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto,
+				crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx
+			 where
+				source_otomoto.email = source_olx.email(+)
+			  group by
+			nvl(source_otomoto.cod_contact_parent, source_otomoto.cod_contact),
+			source_olx.cod_contact,
+			source_otomoto.cod_custom_field,
+			source_otomoto.dat_snap,
+			source_otomoto.cod_source_system
+
+			union all
+
+			select
+				distinct nvl(source_olx.cod_contact_parent, source_olx.cod_contact) cod_contact,
+				source_olx.cod_custom_field,
+				source_olx.dat_snap,
+				source_olx.cod_source_system,
+				cast(sum(source_olx.custom_field_value) as varchar) custom_field_value_olx,
+				case when source_otodom.cod_contact is not null then   cast(sum(source_otodom.custom_field_value) as varchar)	else '0'	end custom_field_value_old,
+				case when source_otomoto.cod_contact is not null then   cast(sum(source_otomoto.custom_field_value) as varchar)	else '0'	end custom_field_value_otm
+			from
+				crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx,
+				crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core source_otodom,
+				crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto
+			 where
+				source_olx.email = source_otodom.email(+)
+			group by
+			  nvl(source_olx.cod_contact_parent, source_olx.cod_contact),
+				source_otomoto.cod_contact,
+				source_otodom.cod_contact,
+			  source_olx.cod_custom_field,
+			  source_olx.dat_snap,
+			  source_olx.cod_source_system
+	  ) source
+	 where 1=1
+	group by cod_contact,
+			 cod_custom_field,
+			 dat_snap,
+			 cod_source_system,
+			 custom_field_value_olx
+	  ) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
-where 1 = 1
+	where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
-  and nvl(source.cod_contact_parent, source.cod_contact) = fac_snap.cod_contact (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
-  group by
-  source.cod_custom_field,
-  source.dat_snap,
-  source.cod_source_system,
-	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;		
 
 -- HST INSERT - KPI OLX.BASE.006 (# Active ads per category)
