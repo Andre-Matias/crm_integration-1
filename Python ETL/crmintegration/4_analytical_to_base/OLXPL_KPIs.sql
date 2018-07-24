@@ -3960,7 +3960,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_otodom.cod_custom_field,
 		source_otodom.dat_snap,
 		source_otodom.cod_source_system,
-		'OTD: ' + source_otodom.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
+		'OTD: ' + source_otodom.custom_field_value + case when source_olx.cod_contact is not null then ' || OLX: ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core source_otodom,
 		crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx 
@@ -3975,7 +3975,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_otomoto.cod_custom_field,
 		source_otomoto.dat_snap,
 		source_otomoto.cod_source_system,
-		'OTM: ' + source_otomoto.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
+		'OTM: ' + source_otomoto.custom_field_value + case when source_olx.cod_contact is not null then ' || OLX: ' + source_olx.custom_field_value else '' end custom_field_value
 	from
 		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto,
 		crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core source_olx 
@@ -3992,11 +3992,11 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_olx.cod_source_system,
 		'OLX: ' + source_olx.custom_field_value
 		+ case
-				when source_otodom.cod_contact is not null then ' || ' + source_otodom.custom_field_value
+				when source_otodom.cod_contact is not null then ' || OTD: ' + source_otodom.custom_field_value
 					else ''
 			end
 		+ case
-				when source_otomoto.cod_contact is not null then ' || ' + source_otomoto.custom_field_value
+				when source_otomoto.cod_contact is not null then ' || OTM: ' + source_otomoto.custom_field_value
 					else ''
 			end custom_field_value
 	from
