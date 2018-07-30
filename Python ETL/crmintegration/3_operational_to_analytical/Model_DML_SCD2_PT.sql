@@ -1053,7 +1053,7 @@ select
           union
           select distinct source from db_atlas_verticals.answers, crm_integration_anlt.t_lkp_source_system where source is not null and livesync_dbname = opr_source_system and cod_country = 1
           union
-          select distinct source from db_atlas.olxpt_answers where source is not null;
+          select distinct source from db_atlas.olxpt_answers where source is not null
         ) a,
         (
           select

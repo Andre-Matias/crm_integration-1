@@ -108,6 +108,9 @@ def copyHydraTable(db_conf_file, sc_schema, tg_schema, resource, last_update_dat
 
 	cur.close()
 	cur.close()
+	
+	# If error was solved here, return new status to use in subsequent processes
+	return scai_last_execution_status
 
 
 def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names, scai_last_execution_status=1):		
@@ -201,11 +204,11 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	
 	# Copy tables 'web' from schema 'hydra' to Operational Model
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra, [resource])[resource]						# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
-	copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name,scai_last_execution_status)			# Function that effectively copies 'hydra.web' table
+	scai_last_execution_status = copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name,scai_last_execution_status)			# Function that effectively copies 'hydra.web' table
 	print(datetime.now().time())
 	# Copy tables 'web' from schema 'hydra_verticals' to Operational Model
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra_verticals, [resource])[resource]			# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
-	copyHydraVerticalsTable(db_conf_file, sc_schema_hydra_verticals, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names,scai_last_execution_status)	# Function that effectively copies 'hydra_verticals.web' table
+	scai_last_execution_status = copyHydraVerticalsTable(db_conf_file, sc_schema_hydra_verticals, tg_schema, resource, last_update_date, hydra_verticals_names, anlt_verticals_names,scai_last_execution_status)	# Function that effectively copies 'hydra_verticals.web' table
 
 	print('Done copying all Hydra tables!')
 	print(datetime.now().time())
