@@ -143,6 +143,9 @@ def copyAtlasTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_
 	
 	cur_target.close()
 	conn_target.close()
+	
+	# If error was solved here, return new status to use in subsequent processes
+	return scai_last_execution_status
 
 
 def main(conf_file, db_conf_file, scai_last_execution_status):
@@ -168,7 +171,10 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	print('Done copying all Atlas tables!')
 	print(datetime.now().time())
 
-	
+	# If error was solved here, return new status to use in subsequent processes
+	return scai_last_execution_status
+
+
 # Test if this is being run as a standalone program and not an utility module
 if __name__ == "__main__":
 	# Get information from configuration files

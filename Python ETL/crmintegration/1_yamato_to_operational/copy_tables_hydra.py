@@ -175,6 +175,9 @@ def copyHydraVerticalsTable(db_conf_file, sc_schema, tg_schema, resource, last_u
 	cur.close()
 	cur.close()
 	
+	# If error was solved here, return new status to use in subsequent processes
+	return scai_last_execution_status
+	
 		
 def main(conf_file, db_conf_file, scai_last_execution_status):
 	print(datetime.now().time())
@@ -206,6 +209,9 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 
 	print('Done copying all Hydra tables!')
 	print(datetime.now().time())
+	
+	# If error was solved here, return new status to use in subsequent processes
+	return scai_last_execution_status
 	
 
 # Test if this is being run as a standalone program and not an utility module

@@ -7,6 +7,1359 @@ from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
     from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_resource_type'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_resource_type';
+	
+
+-- #############################################
+-- # 			 BASE - Portugal               #
+-- #		LOADING t_lkp_resource_type (SCD1) #
+-- #############################################
+	
+drop table if exists crm_integration_anlt.tmp_pt_load_resource_type;
+
+create table crm_integration_anlt.tmp_pt_load_resource_type
+as
+select
+  row_number() over (order by source_table.opr_resource_type) new_cod,
+  source_table.opr_resource_type,
+  source_table.opr_resource_type dsc_resource_type,
+  -1 cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_resource_type.max_cod,
+  case
+    when target.opr_resource_type is null then 'I'
+    else 'X'
+  end dml_type
+  from
+    (
+      select
+        resource_type opr_resource_type,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct resource_type from crm_integration_stg.stg_pt_d_base_calls where resource_type is not null
+          union
+          select distinct resource_type from crm_integration_stg.stg_pt_d_base_tags where resource_type is not null
+          union
+          select distinct resource_type from crm_integration_stg.stg_pt_d_base_sources where resource_type is not null
+          union
+          select distinct resource_type from crm_integration_stg.stg_pt_d_base_tasks where resource_type is not null
+        ) a,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_resource_type'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+  ) source_table,
+  (select coalesce(max(cod_resource_type),0) max_cod from crm_integration_anlt.t_lkp_resource_type) max_cod_resource_type,
+  crm_integration_anlt.t_lkp_resource_type target
+where
+  source_table.opr_resource_type = target.opr_resource_type (+);
+
+analyze crm_integration_anlt.tmp_pt_load_resource_type;
+
+insert into crm_integration_anlt.t_lkp_resource_type
+    select
+      (max_cod + new_cod) cod_resource_type,
+      opr_resource_type,
+      dsc_resource_type,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_resource_type') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_resource_type
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_resource_type;
+
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_resource_type';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_resource_type'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_resource_type'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_resource_type;
+
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_industry'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_industry';
+	
+
+-- #############################################
+-- # 			 BASE - Portugal               #
+-- #		LOADING t_lkp_industry (SCD1)      #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pt_load_industry;
+
+create table crm_integration_anlt.tmp_pt_load_industry
+as
+select
+  row_number() over (order by source_table.opr_industry) new_cod,
+  source_table.opr_industry,
+  source_table.opr_industry dsc_industry,
+  source_table.cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_industry.max_cod,
+  case
+    when target.opr_industry is null then 'I'
+    else 'X'
+  end dml_type
+from
+    (
+      select
+        b.cod_source_system,
+        a.industry opr_industry,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct base_account_country+base_account_category opr_source_system,industry from crm_integration_stg.stg_pt_d_base_contacts where industry is not null
+          union
+          select distinct base_account_country+base_account_category opr_source_system,industry from crm_integration_stg.stg_pt_d_base_leads where industry is not null
+        ) a,
+        crm_integration_anlt.t_lkp_source_system b,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_industry'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+      where
+        a.opr_source_system = b.opr_source_system
+        and cod_country = 1
+  ) source_table,
+  (select coalesce(max(cod_industry),0) max_cod from crm_integration_anlt.t_lkp_industry) max_cod_industry,
+  crm_integration_anlt.t_lkp_industry target
+where
+  source_table.opr_industry = target.opr_industry (+)
+  and source_table.cod_source_system = target.cod_source_system (+);
+
+analyze crm_integration_anlt.tmp_pt_load_industry;
+
+insert into crm_integration_anlt.t_lkp_industry
+    select
+      (max_cod + new_cod) cod_industry,
+      opr_industry,
+      dsc_industry,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_industry') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_industry
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_industry;
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_industry';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_industry'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_industry'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_industry;
+
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_lead_status'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_lead_status';
+
+	
+-- #############################################
+-- # 			 BASE - Portugal               #
+-- #		LOADING t_lkp_lead_status (SCD1)   #
+-- #############################################	
+
+drop table if exists crm_integration_anlt.tmp_pt_load_lead_status;
+
+create table crm_integration_anlt.tmp_pt_load_lead_status
+as
+select
+  row_number() over (order by source_table.opr_lead_status) new_cod,
+  source_table.opr_lead_status,
+  source_table.opr_lead_status dsc_lead_status,
+  source_table.cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_lead_status.max_cod,
+  case
+    when target.opr_lead_status is null then 'I'
+    else 'X'
+  end dml_type
+from
+    (
+      select
+        b.cod_source_system,
+        a.status opr_lead_status,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct base_account_country+base_account_category opr_source_system,status from crm_integration_stg.stg_pt_d_base_leads where status is not null
+        ) a,
+        crm_integration_anlt.t_lkp_source_system b,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_lead_status'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+      where
+        a.opr_source_system = b.opr_source_system
+        and cod_country = 1
+  ) source_table,
+  (select coalesce(max(cod_lead_status),0) max_cod from crm_integration_anlt.t_lkp_lead_status) max_cod_lead_status,
+  crm_integration_anlt.t_lkp_lead_status target
+where
+  source_table.opr_lead_status = target.opr_lead_status (+)
+  and source_table.cod_source_system = target.cod_source_system (+);	
+
+analyze crm_integration_anlt.tmp_pt_load_lead_status;
+
+insert into crm_integration_anlt.t_lkp_lead_status
+    select
+      (max_cod + new_cod) cod_lead_status,
+      opr_lead_status,
+      dsc_lead_status,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_lead_status') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_lead_status
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_lead_status;
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_lead_status';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_lead_status'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_lead_status'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_lead_status;
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_product'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_product';
+
+	
+-- #############################################
+-- # 			 BASE - Portugal               #
+-- #		LOADING t_lkp_product (SCD1)   	   #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pt_load_product;
+
+create table crm_integration_anlt.tmp_pt_load_product
+as
+select
+  row_number() over (order by source_table.opr_sku) new_cod,
+  source_table.opr_sku,
+  source_table.opr_sku dsc_sku,
+  source_table.cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_sku.max_cod,
+  case
+    when target.opr_sku is null then 'I'
+    else 'X'
+  end dml_type
+from
+    (
+      select
+        b.cod_source_system,
+        a.sku opr_sku,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct base_account_country+base_account_category opr_source_system,sku from crm_integration_stg.stg_pt_d_base_line_items where sku is not null
+        ) a,
+        crm_integration_anlt.t_lkp_source_system b,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_product'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+      where
+        a.opr_source_system = b.opr_source_system
+        and cod_country = 1
+  ) source_table,
+  (select coalesce(max(cod_sku),0) max_cod from crm_integration_anlt.t_lkp_product) max_cod_sku,
+  crm_integration_anlt.t_lkp_product target
+where
+  source_table.opr_sku = target.opr_sku (+)
+  and source_table.cod_source_system = target.cod_source_system (+);
+  
+analyze crm_integration_anlt.tmp_pt_load_product;
+
+insert into crm_integration_anlt.t_lkp_product
+    select
+      (max_cod + new_cod) cod_sku,
+      opr_sku,
+      dsc_sku,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_product') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_product
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_product;
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_product';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_product'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_product'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_product;
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_currency'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_currency';
+
+	
+-- #############################################
+-- # 			 BASE - Portugal               #
+-- #		LOADING t_lkp_currency (SCD1)      #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pt_load_currency;
+
+create table crm_integration_anlt.tmp_pt_load_currency
+as
+select
+  row_number() over (order by source_table.opr_currency) new_cod,
+  source_table.opr_currency,
+  source_table.opr_currency dsc_currency,
+  -1 cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_currency.max_cod,  
+  case
+    when target.opr_currency is null then 'I'
+    else 'X'
+  end dml_type
+  from
+    (
+      select
+        currency opr_currency,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct currency from crm_integration_stg.stg_pt_d_base_line_items where currency is not null
+        ) a,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_currency'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+  ) source_table,
+  (select coalesce(max(cod_currency),0) max_cod from crm_integration_anlt.t_lkp_currency) max_cod_currency,
+  crm_integration_anlt.t_lkp_currency target
+where
+  source_table.opr_currency = target.opr_currency (+);
+
+analyze crm_integration_anlt.tmp_pt_load_currency;
+
+insert into crm_integration_anlt.t_lkp_currency
+    select
+      (max_cod + new_cod) cod_currency,
+      opr_currency,
+      dsc_currency,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_currency') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_currency
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_currency;
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_currency';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_currency'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_currency'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_currency;
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_source'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_source';
+
+	
+-- #############################################
+-- # 			 ATLAS - Portugal              #
+-- #		LOADING t_lkp_source (SCD1)        #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pt_load_source;
+
+create table crm_integration_anlt.tmp_pt_load_source
+as
+select
+  row_number() over (order by source_table.opr_source) new_cod,
+  source_table.opr_source,
+  source_table.opr_source dsc_source,
+  -1 cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_source.max_cod,
+  case
+    when target.opr_source is null then 'I'
+    else 'X'
+  end dml_type
+  from
+    (
+      select
+        source opr_source,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct source from db_atlas_verticals.ads, crm_integration_anlt.t_lkp_source_system where source is not null and livesync_dbname = opr_source_system and cod_country = 1
+          union
+          select distinct source from db_atlas.olxpt_ads where source is not null
+          union
+          select distinct source from db_atlas_verticals.payment_session, crm_integration_anlt.t_lkp_source_system where source is not null and livesync_dbname = opr_source_system and cod_country = 1
+          union
+          select distinct source from db_atlas.olxpt_payment_session where source is not null
+          union
+          select distinct source from db_atlas_verticals.answers, crm_integration_anlt.t_lkp_source_system where source is not null and livesync_dbname = opr_source_system and cod_country = 1
+          union
+          select distinct source from db_atlas.olxpt_answers where source is not null;
+        ) a,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_source'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+  ) source_table,
+  (select coalesce(max(cod_source),0) max_cod from crm_integration_anlt.t_lkp_source) max_cod_source,
+  crm_integration_anlt.t_lkp_source target
+where
+  source_table.opr_source = target.opr_source (+);
+  
+analyze crm_integration_anlt.tmp_pt_load_source;
+
+insert into crm_integration_anlt.t_lkp_source
+    select
+      (max_cod + new_cod) cod_source,
+      opr_source,
+      dsc_source,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_source') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_source
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_source;
+
+
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_source';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_source'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_source'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_source;
+
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_event'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_event';
+
+	
+-- #############################################
+-- # 			 ATLAS - Portugal              #
+-- #		LOADING t_lkp_event (SCD1)         #
+-- #############################################
+
+drop table if exists crm_integration_anlt.tmp_pt_load_event;
+
+create table crm_integration_anlt.tmp_pt_load_event
+as
+select
+  row_number() over (order by source_table.opr_event) new_cod,
+  source_table.opr_event,
+  source_table.opr_event dsc_event,
+  -1 cod_source_system,
+  source_table.cod_execution,
+  source_table.dat_processing,
+  max_cod_event.max_cod,
+  case
+    when target.opr_event is null then 'I'
+    else 'X'
+  end dml_type
+  from
+    (
+      select
+        event_type opr_event,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      from
+        (
+          select distinct action_type event_type from crm_integration_stg.stg_pt_hydra_web where action_type is not null
+          union
+          select distinct trackname event_type from crm_integration_stg.stg_pt_hydra_verticals_web where trackname is not null
+        ) a,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 1
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_event'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+  ) source_table,
+  (select coalesce(max(cod_event),0) max_cod from crm_integration_anlt.t_lkp_event) max_cod_event,
+  crm_integration_anlt.t_lkp_event target
+where
+  source_table.opr_event = target.opr_event (+);
+
+analyze crm_integration_anlt.tmp_pt_load_event;
+
+insert into crm_integration_anlt.t_lkp_event
+    select
+      (max_cod + new_cod) cod_event,
+      opr_event,
+      dsc_event,
+      (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_event') valid_from, 
+      20991231 valid_to,
+      cod_source_system,
+	  cod_execution
+    from
+      crm_integration_anlt.tmp_pt_load_event
+    where
+      dml_type = 'I';
+
+analyze crm_integration_anlt.t_lkp_event;
+  
+ 
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 1 -- Portugal
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_event';
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce(sysdate,last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_event'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 1
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 1
+and proc.dsc_process_short = 't_lkp_event'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+drop table if exists crm_integration_anlt.tmp_pt_load_event;
+  
+  
+  
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
     where proc.dsc_process_short = 't_lkp_base_source'
     and proc.cod_process = rel_integr_proc.cod_process
     and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
