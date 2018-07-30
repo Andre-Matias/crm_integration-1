@@ -58,7 +58,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   select
     base_contact.cod_contact,
-    4484 cod_custom_field,
+    7094 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -84,7 +84,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   SELECT
     base_contact.cod_contact,
-    4482 cod_custom_field,
+    7089 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -109,7 +109,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   SELECT
     base_contact.cod_contact,
-    4480 cod_custom_field,
+    7090 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -135,7 +135,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   SELECT
     base_contact.cod_contact,
-    4483 cod_custom_field,
+    7093 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -161,7 +161,59 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   SELECT
     base_contact.cod_contact,
-    4481 cod_custom_field,
+    7091 cod_custom_field,
+    scai.dat_processing dat_snap,
+    base_contact.cod_source_system,
+    ' ' as custom_field_value
+  FROM
+    crm_integration_anlt.t_lkp_contact base_contact,
+    crm_integration_anlt.t_rel_scai_country_integration scai
+  WHERE
+    base_contact.cod_source_system = 13
+    AND base_contact.valid_to = 20991231
+    AND scai.cod_integration = 50000
+    and scai.cod_country = 2
+) source,
+    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and fac_snap.cod_contact is null
+);
+
+
+--(------NEW FIELDS-------)
+insert into crm_integration_anlt.t_fac_base_integration_snap (
+select source.* from (
+  SELECT
+    base_contact.cod_contact,
+    7095 cod_custom_field,
+    scai.dat_processing dat_snap,
+    base_contact.cod_source_system,
+    ' ' as custom_field_value
+  FROM
+    crm_integration_anlt.t_lkp_contact base_contact,
+    crm_integration_anlt.t_rel_scai_country_integration scai
+  WHERE
+    base_contact.cod_source_system = 13
+    AND base_contact.valid_to = 20991231
+    AND scai.cod_integration = 50000
+    and scai.cod_country = 2
+) source,
+    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and fac_snap.cod_contact is null
+);
+
+
+--(-----OLD FIELDS-----)
+insert into crm_integration_anlt.t_fac_base_integration_snap (
+select source.* from (
+  SELECT
+    base_contact.cod_contact,
+    7092 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
