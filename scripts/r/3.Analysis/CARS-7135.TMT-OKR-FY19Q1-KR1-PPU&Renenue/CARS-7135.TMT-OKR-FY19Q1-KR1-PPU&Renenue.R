@@ -1,3 +1,6 @@
+#  queries can be found here:
+# https://docs.google.com/spreadsheets/d/1OLcxW5uyQPTGpa7FdbAQsZiIThf2bhM2M4hA-DYHwoo
+
 library("data.table")
 library("RMySQL")
 library("lubridate")
