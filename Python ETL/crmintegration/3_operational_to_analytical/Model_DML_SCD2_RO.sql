@@ -1646,6 +1646,8 @@ insert into crm_integration_anlt.t_lkp_base_source
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_base_source;
 	  
 --$$$
@@ -1680,6 +1682,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_base_source';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -1706,6 +1710,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_base_source;
 
 --$$$
@@ -1730,6 +1736,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -1965,6 +1973,8 @@ insert into crm_integration_anlt.t_lkp_base_user
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_base_user;
 	  
 --$$$
@@ -1999,6 +2009,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_base_user';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -2025,6 +2037,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_base_user;
 
 --$$$
@@ -2049,6 +2063,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -2262,9 +2278,11 @@ insert into crm_integration_anlt.t_lkp_task
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_task;
 	 
-	  --$$$
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -2296,6 +2314,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_task';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -2322,6 +2342,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_task;
 
 --$$$
@@ -2346,6 +2368,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -2377,7 +2401,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_call_outcome';
 
-	--$$$ -- 20
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -2528,9 +2552,11 @@ insert into crm_integration_anlt.t_lkp_call_outcome
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_call_outcome;
 	  
-	  --$$$
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -2562,6 +2588,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_call_outcome';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -2588,6 +2616,8 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_call_outcome;
 
 --$$$
@@ -2612,6 +2642,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -2643,7 +2675,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_contact';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 		     BASE - ROMANIA                #
@@ -2898,9 +2930,11 @@ insert into crm_integration_anlt.t_lkp_contact
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_contact;
 	  
-	--$$$
+--$$$
 
 -- update do contact_id/cod_contact_parent - CARS RO
 update crm_integration_anlt.t_lkp_contact
@@ -2974,6 +3008,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_contact';
 
+--$$$
+	
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -3023,6 +3059,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3078,6 +3115,8 @@ select
           where
             gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_ro_load_contact);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field_2;
 			
 create table crm_integration_anlt.tmp_ro_contact_custom_field_2 as
@@ -3093,6 +3132,8 @@ select
       where
         split_part(custom_fields, '","', s.gen_num) != ''
         and custom_fields != '{}';
+		
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field;
 		
@@ -3156,9 +3197,9 @@ as
 
 analyze crm_integration_anlt.tmp_ro_contact_custom_field;
 
-drop table if exists crm_integration_anlt.tmp_ro_load_custom_field;
+--$$$
 
-	--$$$
+drop table if exists crm_integration_anlt.tmp_ro_load_custom_field;
 	
 create table crm_integration_anlt.tmp_ro_load_custom_field as
    select
@@ -3246,9 +3287,11 @@ insert into crm_integration_anlt.t_lkp_custom_field
     where
       dml_type = 'I';
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_custom_field;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3280,6 +3323,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_custom_field';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -3306,10 +3351,12 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 --drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field; ######### ESTA TABELA É ELIMINADA NO PROCESSO SEGUINTE
 drop table if exists crm_integration_anlt.tmp_ro_load_custom_field;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3332,6 +3379,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3363,7 +3411,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_rel_contact_custom_field';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	  BASE - Romania                       #
@@ -3462,9 +3510,11 @@ insert into crm_integration_anlt.t_rel_contact_custom_field
   where
     dml_type in ('I','U');
 
+--$$$
+
 analyze crm_integration_anlt.t_rel_contact_custom_field;
 	
-	--$$$ -- 40
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3496,6 +3546,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_rel_contact_custom_field';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -3522,11 +3574,13 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_rel_contact_custom_field;
 drop table if exists crm_integration_anlt.tmp_ro_contact_custom_field;
 drop table if exists crm_integration_anlt.tmp_ro_load_contact;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3548,6 +3602,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3579,7 +3635,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_lead';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -3806,9 +3862,11 @@ insert into crm_integration_anlt.t_lkp_lead
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_lead;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3840,6 +3898,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_lead';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -3866,9 +3926,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_lead;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3890,6 +3952,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3921,7 +3985,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_loss_reason';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -4049,6 +4113,8 @@ where source.cod_loss_reason = crm_integration_anlt.t_lkp_loss_reason.cod_loss_r
 and crm_integration_anlt.t_lkp_loss_reason.valid_to = 20991231
 and source.dml_type in('U','D');
 
+--$$$
+
 insert into crm_integration_anlt.t_lkp_loss_reason
 	select
 	  case
@@ -4070,9 +4136,11 @@ insert into crm_integration_anlt.t_lkp_loss_reason
 	where
 	  dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_loss_reason;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4104,6 +4172,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_loss_reason';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -4130,9 +4200,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_loss_reason;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -4154,6 +4226,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -4185,7 +4259,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_pipeline';
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -4308,6 +4382,8 @@ where source.cod_pipeline = crm_integration_anlt.t_lkp_pipeline.cod_pipeline
 and crm_integration_anlt.t_lkp_pipeline.valid_to = 20991231
 and source.dml_type in('U','D');
 
+--$$$
+
 insert into crm_integration_anlt.t_lkp_pipeline
     select
       case
@@ -4329,9 +4405,11 @@ insert into crm_integration_anlt.t_lkp_pipeline
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_pipeline;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4363,6 +4441,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_pipeline';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -4389,9 +4469,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_pipeline;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -4414,6 +4496,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -4445,7 +4528,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_stage';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -4567,7 +4650,7 @@ where
 	and t_lkp_stage.opr_stage = tmp_ro_load_stage.opr_stage
 	and t_lkp_stage.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage');
 
-	--$$$ -- 60
+	--$$$
 	
 update crm_integration_anlt.t_lkp_stage
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage') 
@@ -4600,9 +4683,11 @@ insert into crm_integration_anlt.t_lkp_stage
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_stage;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4634,6 +4719,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_stage';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -4660,9 +4747,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_stage;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -4685,6 +4774,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -4716,7 +4806,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_deal';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -4919,6 +5009,8 @@ where source.cod_deal = crm_integration_anlt.t_lkp_deal.cod_deal
 and crm_integration_anlt.t_lkp_deal.valid_to = 20991231
 and source.dml_type in('U','D');
 	
+	--$$$
+	
 insert into crm_integration_anlt.t_lkp_deal
     select
       case
@@ -4955,9 +5047,11 @@ insert into crm_integration_anlt.t_lkp_deal
     where
       dml_type in ('U','I');
 
+--$$$
+	  
 analyze crm_integration_anlt.t_lkp_deal;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4989,6 +5083,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_deal';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -5015,9 +5111,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_deals;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -5040,6 +5138,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -5071,7 +5170,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_call';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -5272,9 +5371,11 @@ insert into crm_integration_anlt.t_fac_call
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_call;
 	  
-	--$$$
+--$$$
 	
 insert into crm_integration_anlt.t_fac_call_deal
 select
@@ -5404,9 +5505,11 @@ from
         rel_integr_proc.dat_processing
 	) scai_execution;
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_call_deal;
 	
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -5438,6 +5541,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_call';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -5464,9 +5569,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_calls;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -5489,6 +5596,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -5520,7 +5628,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_order';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -5653,7 +5761,11 @@ insert into crm_integration_anlt.t_fac_order
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_order;
+
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -5685,6 +5797,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_order';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -5711,9 +5825,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_orders;
 
-	--$$$ -- 80
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -5736,6 +5852,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -5767,7 +5884,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_order_line_item';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 	          BASE - Romania               #
@@ -5926,9 +6043,11 @@ insert into crm_integration_anlt.t_fac_order_line_item
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_order_line_item;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -5960,6 +6079,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_order_line_item';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -5986,10 +6107,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_order_line_items;
 
 --$$$
-
 
 -- #######################
 -- ####    PASSO 3    ####
@@ -6012,6 +6134,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -6043,7 +6166,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_paidad_index';	
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 		     ATLAS - ROMANIA               #
@@ -6403,11 +6526,12 @@ insert into crm_integration_anlt.t_lkp_paidad_index
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_paidad_index;
 	  
 -- New -> Lookup to itself
-
-	--$$$
+--$$$
 	
 update crm_integration_anlt.t_lkp_paidad_index
 set cod_paidad_index_related = lkp.cod_paidad_index
@@ -6418,7 +6542,7 @@ and ss.cod_country = 4
 and lkp.cod_paidad_index_related = -2
 and lkp.valid_to = 20991231;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -6450,6 +6574,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_paidad_index';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -6476,9 +6602,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_paidad_index;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -6500,6 +6628,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -6531,7 +6661,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_atlas_user';
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 		      ATLAS - ROMANIA              #
@@ -6733,7 +6863,7 @@ select a.*  from (
 
 analyze crm_integration_anlt.tmp_ro_load_atlas_user;	
 
-	--$$$ -- 120
+--$$$ 
 	
 delete from crm_integration_anlt.t_lkp_atlas_user
 using crm_integration_anlt.tmp_ro_load_atlas_user
@@ -6788,9 +6918,11 @@ insert into crm_integration_anlt.t_lkp_atlas_user
     where
       dml_type in ('U','I');
 
+--$$$
+
 analyze crm_integration_anlt.t_lkp_atlas_user;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -6822,6 +6954,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_atlas_user';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -6848,10 +6982,11 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_atlas_user;
 
-
-  --$$$
+--$$$
 
 -- #######################
 -- ####    PASSO 3    ####
@@ -6873,6 +7008,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -6904,7 +7041,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
   and rel_integr_proc.ind_active = 1
   and proc.dsc_process_short = 't_lkp_contact_upd_atlas_user';
 
-  --$$$
+--$$$
 
 -- ##########################################################
 -- #        ATLAS / BASE - ROMANIA                          #
@@ -6949,6 +7086,8 @@ where
   and t_lkp_contact.valid_from = source.valid_from
   and t_lkp_contact.cod_source_system = source.cod_source_system;
 
+--$$$
+
 -- Updating BASE CONTACT - Autovit
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = source.cod_atlas_user
@@ -6986,6 +7125,8 @@ where
   t_lkp_contact.cod_contact = source.cod_contact
   and t_lkp_contact.valid_from = source.valid_from
   and t_lkp_contact.cod_source_system = source.cod_source_system;
+
+--$$$
 
 -- Updating BASE CONTACT - Storia
 update crm_integration_anlt.t_lkp_contact
@@ -7025,6 +7166,8 @@ where
   and t_lkp_contact.valid_from = source.valid_from
   and t_lkp_contact.cod_source_system = source.cod_source_system;
 
+--$$$
+
 -- Updating BASE CONTACT - Not found
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = -2
@@ -7045,7 +7188,7 @@ and valid_from =
     )
 and cod_source_system in (select cod_source_system from crm_integration_anlt.t_lkp_source_system where cod_country = 4);
 
-  --$$$
+--$$$
 
 -- #######################
 -- ####    PASSO 5    ####
@@ -7077,6 +7220,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
     and rel_integr_proc.ind_active = 1
     and proc.dsc_process_short = 't_lkp_contact_upd_atlas_user';
 
+--$$$
+	
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -7090,8 +7235,7 @@ and t_rel_scai_integration_process.cod_country = 4
 and proc.dsc_process_short = 't_lkp_contact_upd_atlas_user'
 and t_rel_scai_integration_process.ind_active = 1;
 
-	--$$$
-
+--$$$
 
 -- #######################
 -- ####    PASSO 3    ####
@@ -7113,6 +7257,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -7144,7 +7290,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_outgoing';
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- # 		   ATLAS - ROMANIA                 #
@@ -7257,6 +7403,8 @@ as
 	--and 1 = 0
 );
 
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_answer_step1_outgoing;
 
 --$$$
@@ -7298,21 +7446,25 @@ as
     coalesce(source_table.opr_atlas_user_receiver,-1) = lkp_atlas_receiver.opr_atlas_user
     and source_table.cod_source_system = lkp_atlas_receiver.cod_source_system -- new
     and lkp_atlas_receiver.valid_to = 20991231 ;
- 
+
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
  	
-	--$$$
+--$$$
 	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing);
 
+--$$$
+
 delete from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step2_outgoing);
 
---$$$ -- 140
+--$$$
 
 insert into crm_integration_anlt.t_fac_answer_outgoing
     select
@@ -7341,7 +7493,11 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
     from
       crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_answer_outgoing;
+
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -7373,6 +7529,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_outgoing';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -7386,10 +7544,12 @@ and t_rel_scai_integration_process.cod_country = 4
 and proc.dsc_process_short = 't_fac_answer_outgoing'
 and t_rel_scai_integration_process.ind_active = 1;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step1_outgoing;
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step2_outgoing;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -7411,6 +7571,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -7442,7 +7604,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_incoming';
 
-	--$$$
+--$$$
 
 -- #############################################
 -- # 		   ATLAS - ROMANIA                 #
@@ -7555,6 +7717,8 @@ as
 	--and 1 = 0
 );
 
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_answer_step1_incoming;
 
 --$$$
@@ -7596,14 +7760,18 @@ as
     and source_table.cod_source_system = lkp_atlas_sender.cod_source_system -- new
     and lkp_atlas_sender.valid_to = 20991231 ;
 
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
 		
-	--$$$
+--$$$
 
 insert into crm_integration_anlt.t_hst_answer_incoming
 select * from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_incoming)
 and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_answer_step2_incoming);
+
+--$$$
 
 delete from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_ro_load_answer_step2_incoming)
@@ -7638,9 +7806,11 @@ insert into crm_integration_anlt.t_fac_answer_incoming
     from
       crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_answer_incoming;
 	  
-	  --$$$
+--$$$
 
 -- #######################
 -- ####    PASSO 5    ####
@@ -7672,6 +7842,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_answer_incoming';
 
+--$$$
+
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
@@ -7685,10 +7857,12 @@ and t_rel_scai_integration_process.cod_country = 4
 and proc.dsc_process_short = 't_fac_answer_incoming'
 and t_rel_scai_integration_process.ind_active = 1;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step1_incoming;
 drop table if exists crm_integration_anlt.tmp_ro_load_answer_step2_incoming;
 
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -7710,6 +7884,8 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -7741,7 +7917,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_web';
 
-	--$$$
+--$$$
 	
 -- #############################################
 -- #     HYDRA - ROMANIA                       #
@@ -7830,7 +8006,11 @@ sortkey(opr_ad, opr_event, cod_source_system)
            --and 1 = 0
         );
 
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_web_step1;
+
+--$$$
 		
 create table crm_integration_anlt.tmp_ro_load_web
 distkey(dat_event)
@@ -7853,11 +8033,17 @@ as
     coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
     and lkp_event.valid_to(+) = 20991231;
 
+--$$$
+
 analyze crm_integration_anlt.tmp_ro_load_web;
+
+--$$$
 	
 delete from crm_integration_anlt.t_fac_web
 where crm_integration_anlt.t_fac_web.dat_event in (select distinct dat_event from crm_integration_anlt.tmp_ro_load_web)
 and crm_integration_anlt.t_fac_web.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_ro_load_web);
+
+--$$$
 
 insert into crm_integration_anlt.t_fac_web
     select 
@@ -7872,7 +8058,11 @@ insert into crm_integration_anlt.t_fac_web
     from
       crm_integration_anlt.tmp_ro_load_web;
 
+--$$$
+
 analyze crm_integration_anlt.t_fac_web;
+
+--$$$
 
 -- #######################
 -- ####    PASSO 5    ####
@@ -7904,6 +8094,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_web';
 
+--$$$
 	
 -- #######################
 -- ####    PASSO 6    ####
@@ -7931,7 +8122,7 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_ro_load_web_step1;
-
 drop table if exists crm_integration_anlt.tmp_ro_load_web;
-

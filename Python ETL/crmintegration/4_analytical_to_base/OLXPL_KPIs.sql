@@ -78,6 +78,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------REPLIES--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -104,6 +105,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
+
 --(--------PACKAGE--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
@@ -129,6 +132,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------ACTIVITY--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -155,6 +159,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------OTHER--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -181,6 +186,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(------NEW FIELDS-------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -207,6 +213,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(-----OLD FIELDS-----)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -232,7 +239,6 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and fac_snap.cod_contact is null
 );
-
 
 --$$$
 
@@ -294,6 +300,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_last_login_1 as
 		  and kpi_custom_field.flg_active = 1
 		  and scai.cod_country = 2
 	 ;
+
+--$$$
 	 
 --Calculate for employees	 
 create table crm_integration_anlt.tmp_pl_olx_calc_last_login_2 as
@@ -312,6 +320,7 @@ where 1 = 1
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 	 ;	 
 	 
+--$$$
 	 
 --Calculate for companies and contacts not associated with companies	
 create table crm_integration_anlt.tmp_pl_olx_calc_last_login_3 as
@@ -334,6 +343,8 @@ where 1 = 1
   nvl(source.cod_contact_parent, source.cod_contact)
 	 ;	 
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.085 (Last login)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -345,12 +356,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union 
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_login_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.085 (Last login)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in 
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_login_2
 			union 
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_login_3);
+
+--$$$
 
 --KPI OLX.BASE.085 (Last login)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -360,6 +375,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		(select * from crm_integration_anlt.tmp_pl_olx_calc_last_login_2
 		union 
 		select * from crm_integration_anlt.tmp_pl_olx_calc_last_login_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_login_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_login_2;
@@ -425,6 +442,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_created_date_1 as
 		  and kpi_custom_field.flg_active = 1
 		  and scai.cod_country = 2
 	;
+
+--$$$
 	
 --Calculate for employees	
 create table crm_integration_anlt.tmp_pl_olx_calc_created_date_2 as
@@ -442,6 +461,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);	
   
+--$$$
   
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_created_date_3 as
@@ -464,6 +484,8 @@ where 1 = 1
   nvl(source.cod_contact_parent,source.cod_contact)
 	 ;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.031 (Created date)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -475,12 +497,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_created_date_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.031 (Created date)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_created_date_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_created_date_3);
+
+--$$$
 
 --KPI OLX.BASE.031 (Created date)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -490,6 +516,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		(select * from crm_integration_anlt.tmp_pl_olx_calc_created_date_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_created_date_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_created_date_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_created_date_2;
@@ -555,7 +583,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_account_status_1 as
 		  and kpi_custom_field.flg_active = 1
 		  and scai.cod_country = 2
 		  ;
-		  
+	
+--$$$
+	
 --Calculate for employees, companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_account_status_2 as
    select source.cod_contact,
@@ -571,7 +601,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);		
  
-	 
+--$$$	 
 
 -- HST INSERT - KPI OLX.BASE.112 (Account Status)
 insert into crm_integration_anlt.t_hst_base_integration_snap
@@ -581,9 +611,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_account_status_2);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.112 (Account Status)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_account_status_2);
+
+--$$$
 
 --KPI OLX.BASE.112 (Account Status)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -591,6 +625,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pl_olx_calc_account_status_2;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_account_status_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_account_status_2;
@@ -773,7 +809,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_1 as
 			and scai.cod_country = 2
 			;
 			
-			
+--$$$
+		
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_2 as
    select source.cod_contact,
@@ -789,6 +826,8 @@ where 1 = 1
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);	
+
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_3 as
@@ -811,6 +850,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.086 (# Logins last 30 days)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -822,12 +863,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.086 (# Logins last 30 days)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_3);
+
+--$$$
 
 --KPI OLX.BASE.086 (# Logins last 30 days)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -837,6 +882,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		(select * from crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_logins_last_30_days_2;
@@ -938,7 +985,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
   ;
   
-  			
+--$$$
+		
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_2 as
    select source.cod_contact,
@@ -954,6 +1002,8 @@ where 1 = 1
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);	
+
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3 as
@@ -976,6 +1026,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.012 (Last package purchased)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -987,12 +1039,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.012 (Last package purchased)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3);
+
+--$$$
 
 --KPI OLX.BASE.012 (Last package purchased) 
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1003,11 +1059,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3;
 
---$$$ -- 10
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_1 as
@@ -1086,6 +1144,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_1 as
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
   ;
+
+--$$$
   
  --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_2 as
@@ -1103,7 +1163,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
- 
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_3 as
@@ -1126,6 +1186,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.023 (# Replies)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1146,6 +1208,8 @@ where (cod_contact, cod_custom_field) in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_replies_3);
 
+--$$$
+
 -- OLX.BASE.023 (# Replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
@@ -1154,6 +1218,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     (select * from crm_integration_anlt.tmp_pl_olx_calc_replies_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_replies_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_replies_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_replies_2;
@@ -1240,8 +1306,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_1 as
 			and scai.cod_country = 2
  ;
 
+--$$$
  
- --Calculate for employees
+--Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_2 as
    select source.cod_contact,
 	source.cod_custom_field,
@@ -1257,6 +1324,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
  
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_3 as
@@ -1279,6 +1347,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1290,12 +1360,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.081 (# Replies per Ad)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_3);
+
+--$$$
 
 -- OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1305,6 +1379,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     (select * from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_2
 	union
 	select * from crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_replies_per_ad_2;
@@ -1390,6 +1466,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1 as
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
    ;
+
+--$$$
    
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2 as
@@ -1407,7 +1485,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3 as
@@ -1430,6 +1508,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;   
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.082 (# Ads with replies)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1440,6 +1520,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3);
+--$$$
 
 -- SNAP DELETE - KPI OLX.BASE.082 (# Ads with replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
@@ -1447,6 +1528,8 @@ where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3);
+
+--$$$
 
  -- OLX.BASE.082 (# Ads with replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1456,6 +1539,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     (select * from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2
 	union
 	select * from crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_with_replies_2;
@@ -1648,6 +1733,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_views_1 as
 	  and scai.cod_country = 2
 	  ;
 
+--$$$
 
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_views_2 as
@@ -1665,7 +1751,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_views_3 as
@@ -1686,7 +1772,9 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact);
-	 
+
+--$$$
+	
 -- HST INSERT - KPI OLX.BASE.084 (# Views)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1699,6 +1787,8 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_3)
 			;
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.084 (# Views)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
@@ -1706,6 +1796,8 @@ where (cod_contact, cod_custom_field) in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_views_3)
 			;
+
+--$$$
 
 -- OLX.BASE.084 (# Views)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1791,6 +1883,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_1 as
 	  and kpi_custom_field.flg_active = 1
 	  ;
 	  
+--$$$
 	  
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_2 as
@@ -1808,7 +1901,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3 as
@@ -1831,6 +1924,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;	  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.014 (Max days since last call)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1842,12 +1937,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.014 (Max days since last call)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field)  in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3);
+
+--$$$
 
 --KPI OLX.BASE.014 (Max days since last call)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1858,9 +1957,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_days_since_last_call_3;
+
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
 create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
@@ -1971,6 +2074,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1 as
 		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
 		  ;
+
+--$$$
 		  
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2 as
@@ -1988,7 +2093,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3 as
@@ -2010,8 +2115,10 @@ where 1 = 1
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;		  
-  
- -- HST INSERT - KPI OLX.BASE.XYZ (Max Value Package)
+
+--$$$
+	 
+-- HST INSERT - KPI OLX.BASE.XYZ (Max Value Package)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
       target.*
@@ -2023,6 +2130,8 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3)
 			;
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.XYZ (Max Value Package)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
@@ -2030,6 +2139,8 @@ where (cod_contact, cod_custom_field) in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3)
 			;
+
+--$$$
 
 --KPI OLX.BASE.XYZ (Max Value Package)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2040,11 +2151,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	union
 	select * from crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_value_package_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_value_package_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3;
-
-
 
 --$$$
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue Total / VAS / Listings)
@@ -2150,6 +2261,8 @@ where
 	and cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
 	;
 
+--$$$
+
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 as
 		select
@@ -2190,6 +2303,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 as
 			) core
 ;
 
+--$$$
+
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_2 as
    select source.cod_contact,
@@ -2206,7 +2321,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3 as
@@ -2229,6 +2344,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.099 (Revenue (0) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2240,12 +2357,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3);
+
+--$$$
 
 --KPI OLX.BASE.099 (Revenue (0) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2256,9 +2377,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_3;
+
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.100 (Revenue (0) - Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_1 as
@@ -2299,6 +2424,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_2 as
@@ -2316,7 +2443,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3 as
@@ -2339,6 +2466,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.100 (Revenue (0) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2350,12 +2479,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.100 (Revenue (0) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3);
+
+--$$$
 
 --KPI OLX.BASE.100 (Revenue (0) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2366,10 +2499,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_3;
 
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.101 (Revenue (0) - VAS)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_1 as
@@ -2411,6 +2547,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_1 as
 			) core
 			;
 
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_2 as
@@ -2428,7 +2565,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_3 as
@@ -2451,6 +2588,7 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;
 	 
+--$$$
 	 
 -- HST INSERT - KPI OLX.BASE.101 (Revenue (0) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
@@ -2463,12 +2601,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.101 (Revenue (0) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_3);
+
+--$$$			
 
 --KPI OLX.BASE.101 (Revenue (0) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2524,6 +2666,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_2 as
@@ -2541,7 +2685,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3 as
@@ -2564,6 +2708,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.102 (Revenue (-1) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2575,12 +2721,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.102 (Revenue (-1) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3);
+
+--$$$
 
 --KPI OLX.BASE.102 (Revenue (-1) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2591,11 +2741,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_1 as
@@ -2636,6 +2788,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_2 as
@@ -2653,7 +2807,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3 as
@@ -2676,6 +2830,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2687,12 +2843,17 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3);
+
+--$$$
+
 
 --KPI OLX.BASE.103 (Revenue (-1) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2703,11 +2864,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_1 as
@@ -2748,6 +2911,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_2 as
@@ -2765,7 +2930,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3 as
@@ -2788,6 +2953,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2799,12 +2966,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3);
+
+--$$$
 
 --KPI OLX.BASE.104 (Revenue (-1) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2815,11 +2986,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.106 (Revenue (-2) - Total)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_1 as
@@ -2860,6 +3033,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_2 as
@@ -2877,7 +3052,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3 as
@@ -2900,6 +3075,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.106 (Revenue (-2) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2911,12 +3088,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.106 (Revenue (-2) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3);
+
+--$$$
 
 --KPI OLX.BASE.106 (Revenue (-2) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2927,11 +3108,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.107 (Revenue (-2) - Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_1 as
@@ -2972,6 +3155,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_2 as
@@ -2989,7 +3174,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3 as
@@ -3012,6 +3197,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.107 (Revenue (-2) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3023,12 +3210,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.107 (Revenue (-2) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3);
+
+--$$$
 
 --KPI OLX.BASE.107 (Revenue (-2) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3039,11 +3230,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.108 (Revenue (-2) - VAS)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_1 as
@@ -3084,6 +3277,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_2 as
@@ -3101,7 +3296,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3 as
@@ -3124,6 +3319,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.108 (Revenue (-2) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3135,12 +3332,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.108 (Revenue (-2) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3);
+
+--$$$
 
 --KPI OLX.BASE.108 (Revenue (-2) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3151,11 +3352,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.109 (Revenue (-3) - Total)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_1 as
@@ -3196,7 +3399,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
-			
+	
+--$$$
+	
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_2 as
    select source.cod_contact,
@@ -3213,7 +3418,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3 as
@@ -3236,6 +3441,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.109 (Revenue (-3) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3247,12 +3454,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.109 (Revenue (-3) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3);
+
+--$$$
 
 --KPI OLX.BASE.109 (Revenue (-3) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3262,12 +3473,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		(select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3);
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.110 (Revenue (-3) - Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_1 as
@@ -3308,6 +3520,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_2 as
@@ -3325,7 +3539,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3 as
@@ -3348,6 +3562,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.110 (Revenue (-3) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3359,12 +3575,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.110 (Revenue (-3) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3);
+
+--$$$
 
 --KPI OLX.BASE.110 (Revenue (-3) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3375,11 +3595,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.111 (Revenue (-3) - VAS)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_1 as
@@ -3420,6 +3642,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_1 as
 					and rev_olx.wallet = 'regular'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_2 as
@@ -3437,7 +3661,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3 as
@@ -3460,6 +3684,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.111 (Revenue (-3) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3471,12 +3697,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.111 (Revenue (-3) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3);
+
+--$$$
 
 --KPI OLX.BASE.111 (Revenue (-3) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3487,11 +3717,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_3;
-
-
 --drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue; (drop will be executed after wallet)
 
 --$$$
@@ -3535,7 +3765,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_wallet_1 as
 					and rev_olx.wallet = 'wallet'
 			) core
 			;
-			
+	
+--$$$
+	
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_wallet_2 as
    select source.cod_contact,
@@ -3552,7 +3784,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_wallet_3 as
@@ -3575,6 +3807,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3586,12 +3820,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_wallet_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_wallet_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_wallet_3);
+
+--$$$
 
 -- KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3602,11 +3840,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_wallet_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_wallet_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_wallet_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_wallet_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.091 (refund)
 create table crm_integration_anlt.tmp_pl_olx_calc_refund_1 as
@@ -3647,6 +3887,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_refund_1 as
 					and rev_olx.wallet = 'refund'
 			) core
 			;
+
+--$$$
 			
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_refund_2 as
@@ -3664,7 +3906,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_refund_3 as
@@ -3687,6 +3929,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3698,12 +3942,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_refund_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_refund_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_refund_3);
+
+--$$$
 
 -- KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3714,11 +3962,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_refund_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_refund_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_refund_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_refund_3;
 
-
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.091 (bonus points)
 create table crm_integration_anlt.tmp_pl_olx_calc_bonus_1 as
@@ -3759,7 +4009,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_bonus_1 as
 					and rev_olx.wallet = 'bonus points'
 			) core
 			;
-			
+	
+--$$$
+	
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_bonus_2 as
    select source.cod_contact,
@@ -3776,7 +4028,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_bonus_3 as
@@ -3799,6 +4051,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;			
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -3810,12 +4064,16 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_bonus_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_bonus_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_bonus_3);
+
+--$$$
 
 -- KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -3826,10 +4084,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_bonus_3);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_bonus_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_bonus_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_bonus_3;
-
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_revenue;
 
 --$$$
@@ -3892,6 +4151,8 @@ where
 	1=1 
 	and kpi_custom_field.flg_active = 1;
 
+--$$$
+	
 create table crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core as
 select
 	cod_contact,
@@ -3949,6 +4210,8 @@ where
 	1=1
 	and kpi_custom_field.flg_active = 1;
 
+--$$$
+
 create table crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core as
 select
 	cod_contact,
@@ -4005,6 +4268,8 @@ from
 where 1=1
 	and kpi_custom_field.flg_active = 1;
 
+--$$$
+
 create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final as
 	select
 		distinct source_otodom.cod_contact,
@@ -4059,6 +4324,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		source_olx.email = source_otodom.email(+) 
 		;
 		
+--$$$
 
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_2 as
@@ -4076,7 +4342,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3 as
@@ -4175,6 +4441,8 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
 	 ;		
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.006 (# Active ads per category)
 insert into crm_integration_anlt.t_hst_base_integration_snap
 select *
@@ -4184,12 +4452,16 @@ where (cod_contact, cod_custom_field)  in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.006 (# Active ads per category)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field)  in
 			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_2
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3);
+			
+--$$$
 
 --KPI OLX.BASE.006 (# Active ads per category)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -4199,6 +4471,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     (select * from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_2
 		union
 		select * from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3);
+		
+--$$$
 
 drop table crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core;
 drop table crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core;
@@ -4256,6 +4530,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_user_id as
 		and scai.cod_country = 2
 		;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.105 (User_ID)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4264,9 +4540,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_user_id);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.105 (User_ID)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_user_id);
+
+--$$$
 
 --KPI OLX.BASE.105 (User_ID)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -4275,7 +4555,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	from
 		crm_integration_anlt.tmp_pl_olx_calc_user_id;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_user_id;
+
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.113 (# of ads expiring in next 5 DAYS)
 create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 as
@@ -4349,7 +4633,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1 as
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
   ;
-  
+ 
+--$$$
+ 
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_2 as
    select source.cod_contact,
@@ -4366,7 +4652,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_3 as
@@ -4389,6 +4675,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.113 (# of ads expiring in next 5 DAYS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4409,6 +4697,8 @@ where (cod_contact, cod_custom_field)  in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_3);
 
+--$$$
+
 -- KPI OLX.BASE.113 (# of ads expiring in next 5 DAYS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
@@ -4417,6 +4707,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     (select * from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_2
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_3);
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_1;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_ads_expiring_5d_2;
@@ -4507,7 +4799,6 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
 
 --$$$
 
-
 -- CREATE TMP - KPI OLX.BASE.114 (Permission to email/call / marketing_email)
 create table crm_integration_anlt.tmp_pl_olx_calc_marketing_email as
 select
@@ -4581,6 +4872,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
   ;
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.114 (Permission to email/call)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4589,9 +4882,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_marketing_email);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.114 (Permission to email/call)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_marketing_email);
+
+--$$$
 
 --KPI OLX.BASE.114 (Permission to email/call) 
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -4600,10 +4897,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	from
 		crm_integration_anlt.tmp_pl_olx_calc_marketing_email;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_marketing_email;
 
 --$$$ 
-
 
 -- CREATE TMP - KPI OLX.BASE.117 KPI OLX.BASE.118 KPI OLX.BASE.119 (# of calls 0 / -1 / -2)
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_1 as
@@ -4627,8 +4925,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_1 as
 	  and call.created_at > sysdate - 90
 	  ;
 
-	  
-	  
+--$$$
 	  
 --KPI OLX.BASE.117 (# of calls 0)  	  
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
@@ -4672,6 +4969,7 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
 	and scai.cod_country = 2
   ;
 
+--$$$
 
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_3 as
@@ -4689,7 +4987,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_4 as
@@ -4712,6 +5010,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.117 (# of calls 0)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4732,6 +5032,8 @@ where (cod_contact, cod_custom_field)  in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
+--$$$
+
 -- KPI OLX.BASE.117 (# of calls 0)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
@@ -4741,11 +5043,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_3;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_4;
 
-
+--$$$
 
 --KPI OLX.BASE.118 (# of calls -1)  	  
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
@@ -4788,7 +5092,9 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
 	and kpi_custom_field.flg_active = 1
 	and scai.cod_country = 2
   ;
-  
+
+--$$$
+
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_3 as
    select source.cod_contact,
@@ -4805,7 +5111,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_4 as
@@ -4828,6 +5134,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+	 
 -- HST INSERT - KPI OLX.BASE.118 (# of calls -1)  
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4848,6 +5156,8 @@ where (cod_contact, cod_custom_field)  in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
+--$$$
+
 -- KPI OLX.BASE.118 (# of calls -1)  
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
@@ -4857,11 +5167,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
-		
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_3;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_4;
 
+--$$$
 
 --KPI OLX.BASE.119 (# of calls -2)  	  
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
@@ -4904,6 +5216,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
 	and kpi_custom_field.flg_active = 1
 	and scai.cod_country = 2
   ;
+
+--$$$
   
 --Calculate for employees
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_3 as
@@ -4921,7 +5235,7 @@ where 1 = 1
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
-
+--$$$
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_4 as
@@ -4944,6 +5258,8 @@ where 1 = 1
 	nvl(source.cod_contact_parent,source.cod_contact)
 	 ;  
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.119 (# of calls -2)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -4964,6 +5280,8 @@ where (cod_contact, cod_custom_field)  in
 			union
 			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
+--$$$
+
 -- KPI OLX.BASE.119 (# of calls -2)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
@@ -4973,16 +5291,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from crm_integration_anlt.tmp_pl_olx_calc_number_calls_4);
 
+--$$$
 		
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_3;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_4;
-
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_number_calls_1;
 
-
 --$$$
-
 
 -- #######################
 -- ####    PASSO 5    ####
@@ -5014,7 +5330,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_fac_base_integration_snap_plhorizontal';
 
---$$$ -- 30
+--$$$
 	
 -- #######################
 -- ####    PASSO 6    ####

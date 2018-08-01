@@ -78,6 +78,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------REPLIES--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -104,6 +105,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------PACKAGE--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -130,6 +132,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------ACTIVITY--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -156,6 +159,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and fac_snap.cod_contact is null
 );
 
+--$$$
 
 --(--------OTHER--------)
 insert into crm_integration_anlt.t_fac_base_integration_snap (
@@ -181,7 +185,6 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and fac_snap.cod_contact is null
 );
-
 
 --$$$
 
@@ -257,6 +260,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.085 (Last login)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -265,9 +270,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_last_login);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.085 (Last login)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_last_login);
+
+--$$$
 
 --KPI OLX.BASE.085 (Last login)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -276,8 +285,9 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_last_login;
 
-drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_last_login;
+--$$$
 
+drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_last_login;
 
 --$$$
 
@@ -348,6 +358,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.093 (City)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -356,9 +368,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_city);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.093 (City)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_city);
+
+--$$$
 
 --KPI OLX.BASE.093 (City)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -367,6 +383,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_city;
 
+--$$$
+		
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_city;
 
 --$$$
@@ -435,6 +453,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.031 (Created date)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -443,9 +463,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_created_date);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.031 (Created date)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_created_date);
+
+--$$$
 
 --KPI OLX.BASE.031 (Created date)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -453,6 +477,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_created_date;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_created_date;
 
@@ -526,6 +552,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.086 (# Logins last 30 days)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -534,9 +562,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_logins_last_30_days);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.086 (# Logins last 30 days)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_logins_last_30_days);
+
+--$$$
 
 --KPI OLX.BASE.086 (# Logins last 30 days)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -544,6 +576,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_logins_last_30_days;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_logins_last_30_days;
 
@@ -597,7 +631,7 @@ from
 									atlas_user.cod_source_system = 3
 									and atlas_user.valid_to = 20991231
 									and scai.cod_integration = 50000
-									and atlas_user.cod_atlas_user = fac.id_user (+)
+									and atlas_user.opr_atlas_user = fac.id_user (+)
 									and fac.id_index = idx.opr_paidad_index (+)
 									and 3 = idx.cod_source_system (+)
 									and idx.cod_index_type = idx_type.cod_index_type(+) 
@@ -646,6 +680,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.012 (Last package purchased)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -654,9 +690,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_last_package_purchased);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.012 (Last package purchased)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_last_package_purchased);
+
+--$$$
 
 --KPI OLX.BASE.012 (Last package purchased)
 /*XXXXX: Como identificar um package?*/
@@ -665,6 +705,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_last_package_purchased;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_last_package_purchased;
 
@@ -750,6 +792,8 @@ where
  and core.cod_contact = fac_snap.cod_contact (+)
  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -758,9 +802,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_wallet);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_wallet);
+
+--$$$
 
 -- KPI OLX.BASE.091 (Wallet)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -768,6 +816,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     *
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_wallet;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_wallet;
 
@@ -814,7 +864,7 @@ from
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
               and fac.opr_ad = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and ads.user_id = lkp_user.opr_atlas_user
 			  and ads.livesync_dbname = 'imovirtualpt'
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
@@ -862,6 +912,8 @@ where
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.023 (# Replies)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -870,11 +922,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_replies);
 
---$$$ -- 10
+--$$$
 
 -- SNAP DELETE - KPI OLX.BASE.023 (# Replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_replies);
+
+--$$$
 
 -- OLX.BASE.023 (# Replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -882,6 +936,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     *
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_replies;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_replies;
 
@@ -931,7 +987,7 @@ from
               and lkp_contact.cod_source_system = 17
               and fac.opr_ad = ads.id  
               and ads.status = 'active'
-              and ads.user_id = lkp_user.cod_atlas_user
+              and ads.user_id = lkp_user.opr_atlas_user
 			  and ads.livesync_dbname = 'imovirtualpt'
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
@@ -980,6 +1036,7 @@ where
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
 
 -- HST INSERT - KPI OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_hst_base_integration_snap
@@ -989,9 +1046,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_replies_per_ad);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.081 (# Replies per Ad)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_replies_per_ad);
+
+--$$$
 
 -- OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -999,6 +1060,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
     *
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_replies_per_ad;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_replies_per_ad;
 
@@ -1047,7 +1110,7 @@ from
               lkp_user.cod_source_system = 3
               and lkp_contact.cod_source_system = 17
               and fac.opr_ad = ads.id 
-              and ads.user_id = lkp_user.cod_atlas_user
+              and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
               and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
               and lkp_contact.valid_to = 20991231
@@ -1097,6 +1160,8 @@ where
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.082 (# Ads with replies)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1105,9 +1170,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.082 (# Ads with replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies);
+
+--$$$
 
  -- OLX.BASE.082 (# Ads with replies)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1116,8 +1185,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies;
 
+--$$$
+
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_ads_with_replies;
 
+--$$$
 
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Expiry Date)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date as
@@ -1140,35 +1212,28 @@ from
         select
           coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
           inner_core.dat_snap,
-          cast(max(dateadd(day,duration,date)) as varchar) custom_field_value
+          cast(max(expires_at) as varchar) custom_field_value
         from
           (
             select
               atlas_user.dsc_atlas_user,
-              idx_type.dsc_index_type,
-              scai.dat_processing dat_snap,
-              fac.paidads_valid_to, 
-			  fac.date,
-			  duration
+              users_limits.expires_at,
+              scai.dat_processing dat_snap
             from
-              crm_integration_anlt.t_lkp_atlas_user atlas_user,
-              db_atlas_verticals.paidads_user_payments fac,
-			  crm_integration_anlt.t_lkp_paidad_index paidad_index,
+              crm_integration_anlt.t_lkp_source_system source_system,
               crm_integration_anlt.t_rel_scai_country_integration scai,
-              crm_integration_anlt.v_lkp_paidad_index idx,
-              crm_integration_anlt.v_lkp_paidad_index_type idx_type
+              crm_integration_anlt.t_lkp_atlas_user atlas_user,
+              db_atlas_verticals.users_limits users_limits
             where
-              atlas_user.cod_source_system = 3
+              atlas_user.opr_atlas_user = users_limits.user_id
+              and atlas_user.cod_source_system = source_system.cod_source_system
+              and users_limits.livesync_dbname = source_system.opr_source_system
               and atlas_user.valid_to = 20991231
+              and source_system.cod_source_system = 3
               and scai.cod_integration = 50000
-              and atlas_user.cod_atlas_user = fac.id_user (+)
-              and fac.id_index = idx.opr_paidad_index (+)
-              and 3 = idx.cod_source_system (+)
-			  and idx.cod_paidad_index = paidad_index.cod_paidad_index (+)
-              and idx.cod_index_type = idx_type.cod_index_type(+)
-			  and fac.livesync_dbname = 'imovirtualpt'
-              and lower(idx_type.dsc_index_type) = 'package'
-			  and scai.cod_country = 1
+              and scai.cod_country = source_system.cod_country
+              and users_limits.starts_at <= sysdate
+              and users_limits.expires_at >= sysdate
 			) inner_core
         group by
           coalesce(dsc_atlas_user,'unknown'),
@@ -1210,6 +1275,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.088 (Expiry Date)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1218,10 +1285,14 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.088 (Expiry Date)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
   (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date);
+
+--$$$
 
 --KPI OLX.BASE.088 (Expiry Date)
 /*XXXXX: Como identificar um package?*/
@@ -1231,6 +1302,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date;
 -- 8106 Active package expiry date
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_active_package_expiry_date;
 
@@ -1310,6 +1383,8 @@ where
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.014 (Max days since last call)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1318,9 +1393,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_max_days_since_last_call);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.014 (Max days since last call)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_max_days_since_last_call);
+
+--$$$
 
 --KPI OLX.BASE.014 (Max days since last call)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1329,8 +1408,9 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   from
     crm_integration_anlt.tmp_pt_imovirtual_calc_max_days_since_last_call;
 
-drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_max_days_since_last_call;
+--$$$
 
+drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_max_days_since_last_call;
 
 --$$$
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings)
@@ -1413,6 +1493,8 @@ where
 	and scai.cod_integration = 50000
 	and scai.cod_country = 1;
 	
+--$$$
+
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue (-1) - Total / VAS / Listings)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_1 as
 	select
@@ -1493,6 +1575,8 @@ where
 	and scai.cod_integration = 50000
 	and scai.cod_country = 1;
 
+--$$$
+
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_total as
 select
@@ -1543,6 +1627,8 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.099 (Revenue (0) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1551,9 +1637,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_total);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - Total)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_total);
+
+--$$$
 
 --KPI OLX.BASE.099 (Revenue (0) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1561,6 +1651,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_total;
+
+--$$$
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_total;
 
@@ -1616,6 +1708,8 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.102 (Revenue (-1) - Total)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1624,9 +1718,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_total);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.102 (Revenue (-1) - Total)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_total);
+
+--$$$
 
 --KPI OLX.BASE.102 (Revenue (-1) - Total)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1634,6 +1732,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_total;
+
+--$$$
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_total;
 
@@ -1689,6 +1789,8 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.101 (Revenue (0) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1697,9 +1799,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_vas);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.101 (Revenue (0) - VAS)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_vas);
+
+--$$$
 
 --KPI OLX.BASE.101 (Revenue (0) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1707,6 +1813,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_vas;
+
+--$$$
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_vas;
 
@@ -1762,6 +1870,8 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1770,9 +1880,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_vas);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.104 (Revenue (-1) - VAS)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_vas);
+
+--$$$
 
 --KPI OLX.BASE.104 (Revenue (-1) - VAS)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1780,6 +1894,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_vas;
+
+--$$$
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_vas;
 
@@ -1835,6 +1951,7 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
 
 -- HST INSERT - KPI OLX.BASE.100 (Revenue (0) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
@@ -1844,9 +1961,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_listings);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.100 (Revenue (0) - Listings)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_listings);
+
+--$$$
 
 --KPI OLX.BASE.100 (Revenue (0) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1854,6 +1975,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_listings;
+
+--$$$
 
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_0_listings;
 
@@ -1909,6 +2032,8 @@ where
 	and core.cod_contact = fac_snap.cod_contact (+)
 	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -1917,9 +2042,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.103 (Revenue (-1) - Listings)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings);
+
+--$$$
 
 --KPI OLX.BASE.103 (Revenue (-1) - Listings)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -1928,13 +2057,13 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings;
 
-drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings;
+--$$$
 
+drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_1_listings;
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_0;
 drop table crm_integration_anlt.tmp_pt_imovirtual_calc_revenue_re_1;
 
-
---$$$ -- 20
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.105 (User_ID)
 create table crm_integration_anlt.tmp_pt_imovirtual_calc_user_id as
@@ -2000,6 +2129,8 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
+--$$$
+
 -- HST INSERT - KPI OLX.BASE.105 (User_ID)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
@@ -2008,9 +2139,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_user_id);
 
+--$$$
+
 -- SNAP DELETE - KPI OLX.BASE.105 (User_ID)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_imovirtual_calc_user_id);
+
+--$$$
 
 --KPI OLX.BASE.105 (User_ID)
 insert into crm_integration_anlt.t_fac_base_integration_snap
@@ -2018,6 +2153,8 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		*
 	from
 		crm_integration_anlt.tmp_pt_imovirtual_calc_user_id;
+
+--$$$
 
 drop table if exists crm_integration_anlt.tmp_pt_imovirtual_calc_user_id;
 
