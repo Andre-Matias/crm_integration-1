@@ -945,11 +945,11 @@ from
 				crm_integration_anlt.t_lkp_contact base_contact,
 				crm_integration_anlt.t_rel_scai_country_integration scai
 			where 1 = 1
-				and package.user_id = atlas_user.opr_atlas_user
-				and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-				and atlas_user.cod_source_system = 9
+				and package.user_id (+) = atlas_user.opr_atlas_user
+				and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user (+))
+				and atlas_user.cod_source_system (+) = 9
 				and base_contact.cod_source_system = 13
-				and atlas_user.valid_to = 20991231
+				and atlas_user.valid_to (+) = 20991231
 				and base_contact.valid_to = 20991231
 				and scai.cod_integration = 50000
 				and scai.cod_country = 2
@@ -2161,105 +2161,120 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_max_value_package_3;
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue Total / VAS / Listings)
 create table crm_integration_anlt.tmp_pl_olx_calc_revenue as
 select
-	inner_core.cod_contact,
-	inner_core.cod_contact_parent,
-	inner_core.cod_source_system,
-	inner_core.wallet,
-	scai.dat_processing dat_snap,
-	inner_core.cod_month,
-	inner_core.val_revenue_vas_gross,
-	inner_core.val_revenue_listings_gross
-	from
-		(
-			select
-				cod_contact,
-				cod_contact_parent,
-				cod_source_system,
-				cod_month,
-				wallet,
-				round((sum(case when cod_index_type = 1 /* vas */ then price else 0 end)),2) val_revenue_vas_gross,
-				round((sum(case when cod_index_type = 2 /* package */then price else 0 end)),2) val_revenue_listings_gross
-			from
-				(
-					select
-						base_contact.cod_contact_parent ,
-						base_contact.cod_contact,
-						base_contact.cod_source_system,
-						atlas_user.dsc_atlas_user,
-						pup.name,
-						to_char(date,'yyyymm') cod_month,
-						id_index,
-						ads.category_id,
-						c.name_pl,
-						payment_provider,
-						case
-							when pb.from_bonus_credits>0 then 'bonus_points'
-							when pb.from_refund_credits>0 then 'refund'
-							when pb.from_account>0 then 'wallet'
-								else 'regular'
-						end as wallet,
-						case
-							when
-								(
-									u.email like '%sunfra%'
-									or lower(u.email) like '%_deleted_%'
-									or lower(u.email) like '%shanthi.p667%'
-									or lower(u.email) like '%@olx.pl%'
-									or lower(u.email) like '%@olx.com%'
-									or lower(u.email) like '%satheeshmtiet1993%'
-									or lower(u.email) like '%testolxpawel%'
-								) then 'test_users'
-										else 'regular_users'
-						end as user_test,
-						sum((pup.price*(-1)) ) as price, count(*) as transactions,
-						idx.cod_index_type
-					from
-						db_atlas.olxpl_paidads_user_payments as pup
-						left outer join crm_integration_anlt.v_lkp_paidad_index_new as idx on pup.id_index = idx.opr_paidad_index and idx.cod_source_system = 9
-						left outer join db_atlas.olxpl_ads as ads on ads.id=pup.id_ad
-						left outer join db_atlas.olxpl_categories as c on c.id=ads.category_id
-						left outer join db_atlas.olxpl_users as u on pup.id_user=u.id
-						left outer join crm_integration_anlt.t_lkp_atlas_user atlas_user on atlas_user.valid_to = 20991231 and atlas_user.cod_source_system = 9 and u.id = atlas_user.opr_atlas_user
-						left outer join db_atlas.olxpl_payment_session as ps on ps.id = pup.id_transaction
-						left outer join db_atlas.olxpl_payment_basket as pb
-						on pup.id_transaction = pb.session_id
-						and pup.id_index = pb.index_id
-						and coalesce(pup.id_ad, -1) = coalesce(pb.ad_id, -1)
-						and pup.id_user = pb.user_id
-						and abs(coalesce(pup.price, 0)) = abs(coalesce(pb.price, 0))
-						left outer join (select * from (select *,row_number() over (partition by cod_atlas_user order by cod_contact desc) rn from crm_integration_anlt.t_lkp_contact where valid_to = 20991231) core where rn = 1) base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
-					where
-					1=1
-					group by
-						base_contact.cod_contact_parent,
-						base_contact.cod_contact,
-						base_contact.cod_source_system,
-						u.id,
-						atlas_user.dsc_atlas_user,
-						name,
-						to_char(date,'yyyymm'),
-						id_index,
-						category_id,
-						c.name_pl,
-						payment_provider,
-						wallet,user_test,
-						cod_index_type
-				) core
-			where
-				cod_contact is not null
-			group by
-				cod_contact,
-				cod_contact_parent,
-				cod_source_system,
-				wallet,
-				cod_month
-	) inner_core,
-	crm_integration_anlt.t_rel_scai_country_integration scai
+	lkp_contact.cod_contact,
+	lkp_contact.cod_contact_parent,
+	lkp_contact.cod_source_system,
+	core.wallet,
+	core.dat_snap,
+	core.cod_month,
+	core.val_revenue_vas_gross,
+	core.val_revenue_listings_gross
+from (
+	select
+		inner_core.cod_contact,
+		inner_core.cod_contact_parent,
+		inner_core.cod_source_system,
+		inner_core.wallet,
+		scai.dat_processing dat_snap,
+		inner_core.cod_month,
+		inner_core.val_revenue_vas_gross,
+		inner_core.val_revenue_listings_gross
+		from
+			(
+				select
+					cod_contact,
+					cod_contact_parent,
+					cod_source_system,
+					cod_month,
+					wallet,
+					round((sum(case when cod_index_type = 1 /* vas */ then price else 0 end)),2) val_revenue_vas_gross,
+					round((sum(case when cod_index_type = 2 /* package */then price else 0 end)),2) val_revenue_listings_gross
+				from
+					(
+						select
+							base_contact.cod_contact_parent ,
+							base_contact.cod_contact,
+							base_contact.cod_source_system,
+							atlas_user.dsc_atlas_user,
+							pup.name,
+							to_char(date,'yyyymm') cod_month,
+							id_index,
+							ads.category_id,
+							c.name_pl,
+							payment_provider,
+							case
+								when pb.from_bonus_credits>0 then 'bonus_points'
+								when pb.from_refund_credits>0 then 'refund'
+								when pb.from_account>0 then 'wallet'
+									else 'regular'
+							end as wallet,
+							case
+								when
+									(
+										u.email like '%sunfra%'
+										or lower(u.email) like '%_deleted_%'
+										or lower(u.email) like '%shanthi.p667%'
+										or lower(u.email) like '%@olx.pl%'
+										or lower(u.email) like '%@olx.com%'
+										or lower(u.email) like '%satheeshmtiet1993%'
+										or lower(u.email) like '%testolxpawel%'
+									) then 'test_users'
+											else 'regular_users'
+							end as user_test,
+							sum((pup.price*(-1)) ) as price, count(*) as transactions,
+							idx.cod_index_type
+						from
+							db_atlas.olxpl_paidads_user_payments as pup
+							left outer join crm_integration_anlt.v_lkp_paidad_index_new as idx on pup.id_index = idx.opr_paidad_index and idx.cod_source_system = 9
+							left outer join db_atlas.olxpl_ads as ads on ads.id=pup.id_ad
+							left outer join db_atlas.olxpl_categories as c on c.id=ads.category_id
+							left outer join db_atlas.olxpl_users as u on pup.id_user=u.id
+							left outer join crm_integration_anlt.t_lkp_atlas_user atlas_user on atlas_user.valid_to = 20991231 and atlas_user.cod_source_system = 9 and u.id = atlas_user.opr_atlas_user
+							left outer join db_atlas.olxpl_payment_session as ps on ps.id = pup.id_transaction
+							left outer join db_atlas.olxpl_payment_basket as pb
+							on pup.id_transaction = pb.session_id
+							and pup.id_index = pb.index_id
+							and coalesce(pup.id_ad, -1) = coalesce(pb.ad_id, -1)
+							and pup.id_user = pb.user_id
+							and abs(coalesce(pup.price, 0)) = abs(coalesce(pb.price, 0))
+							left outer join (select * from (select *,row_number() over (partition by cod_atlas_user order by cod_contact desc) rn from crm_integration_anlt.t_lkp_contact where valid_to = 20991231) core where rn = 1) base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
+						where
+						1=1
+						group by
+							base_contact.cod_contact_parent,
+							base_contact.cod_contact,
+							base_contact.cod_source_system,
+							u.id,
+							atlas_user.dsc_atlas_user,
+							name,
+							to_char(date,'yyyymm'),
+							id_index,
+							category_id,
+							c.name_pl,
+							payment_provider,
+							wallet,user_test,
+							cod_index_type
+					) core
+				where
+					cod_contact is not null
+				group by
+					cod_contact,
+					cod_contact_parent,
+					cod_source_system,
+					wallet,
+					cod_month
+		) inner_core,
+		crm_integration_anlt.t_rel_scai_country_integration scai
+	where
+		scai.cod_integration = 50000
+		and scai.cod_country = 2
+		and cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
+	) core,
+	crm_integration_anlt.t_lkp_contact lkp_contact
 where
-	scai.cod_integration = 50000
-	and scai.cod_country = 2
-	and cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
-	;
+  lkp_contact.cod_contact = core.cod_contact (+)
+  and lkp_contact.cod_source_system = core.cod_source_system (+)
+  and lkp_contact.valid_to = 20991231;
 
 --$$$
 
@@ -2298,8 +2313,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_total_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 ;
 
@@ -2420,8 +2435,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_listings_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -2542,8 +2557,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_0_vas_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -2662,8 +2677,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_total_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-1),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -2784,8 +2799,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_listings_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-1),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -2907,8 +2922,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_1_vas_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-1),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3029,8 +3044,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_total_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-2),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3151,8 +3166,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_listings_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-2),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3273,8 +3288,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_2_vas_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-2),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3395,8 +3410,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_total_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-3),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 	
@@ -3516,8 +3531,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_listings_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-3),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3638,8 +3653,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_revenue_3_vas_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,-3),'yyyymm')
-					and rev_olx.wallet = 'regular'
+					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+					and nvl(rev_olx.wallet,'regular') = 'regular'
 			) core
 			;
 
@@ -3761,8 +3776,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_wallet_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'wallet'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'wallet') = 'wallet'
 			) core
 			;
 	
@@ -3883,8 +3898,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_refund_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'refund'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'refund') = 'refund'
 			) core
 			;
 
@@ -4005,8 +4020,8 @@ create table crm_integration_anlt.tmp_pl_olx_calc_bonus_1 as
 					) kpi_custom_field
 				where
 					kpi_custom_field.flg_active = 1
-					and cod_month = to_char(add_months(sysdate,0),'yyyymm')
-					and rev_olx.wallet = 'bonus points'
+					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+					and nvl(rev_olx.wallet,'bonus points') = 'bonus points'
 			) core
 			;
 	
