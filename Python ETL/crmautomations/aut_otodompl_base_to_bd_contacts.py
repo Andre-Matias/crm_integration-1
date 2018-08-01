@@ -105,7 +105,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 			else:
 				contact.customer_type = ''
 			if 'Admin ID' in contact_data.custom_fields:
-				contact.admin_id = contact_data.custom_fields['Ddmin ID']
+				contact.admin_id = contact_data.custom_fields['Admin ID']
 			else:
 				contact.admin_id = ''
 			contact.country = country
