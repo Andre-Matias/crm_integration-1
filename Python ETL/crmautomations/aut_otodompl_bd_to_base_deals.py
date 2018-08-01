@@ -105,6 +105,7 @@ cur.execute(
               "and aut_otodompl_base_to_bd_contact.customer_type = aut_otodompl_base_to_bd_deal.customer_type (+) "\
               "and aut_otodompl_base_to_bd_contact.admin_id = aut_otodompl_base_to_bd_deal.admin_id (+) "\
               "and aut_otodompl_base_to_bd_contact.numer_telefonu = aut_otodompl_base_to_bd_deal.numer_telefonu (+) "\
+			  "and aut_otodompl_base_to_bd_contact.contact_id in (160681995,164482882,177638177) "\
               "and aut_otodompl_base_to_bd_deal.id is null;")
 result_list = cur.fetchall()
 

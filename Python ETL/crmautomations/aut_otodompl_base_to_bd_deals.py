@@ -93,29 +93,29 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 
 		#Iterate the list of deals
 		for deal_data in data:
-			if  str(datetime.strptime(deal_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
-				deal = Munch()
-				deal.id = deal_data.id
-				deal.contact_id = deal_data.contact_id
-				if 'NIP' in deal_data.custom_fields:
-					deal.nip = deal_data.custom_fields['NIP']
-				else:
-					deal.nip = ''
-				if 'Customer Type' in deal_data.custom_fields:
-					deal.customer_type = deal_data.custom_fields['Customer Type']
-				else:
-					deal.customer_type = ''
-				if 'Admin ID' in deal_data.custom_fields:
-					deal.admin_id = deal_data.custom_fields['Admin ID']
-				else:
-					deal.designacao_fiscal = ''
-				if 'Numer telefonu' in deal_data.custom_fields:
-					deal.numer_telefonu = deal_data.custom_fields['Numer telefonu']
-				else:
-					deal.numer_telefonu = ''
-				deal.country = country
-				deal.category = category
-				output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
+			#if  str(datetime.strptime(deal_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
+			deal = Munch()
+			deal.id = deal_data.id
+			deal.contact_id = deal_data.contact_id
+			if 'NIP' in deal_data.custom_fields:
+				deal.nip = deal_data.custom_fields['NIP']
+			else:
+				deal.nip = ''
+			if 'Customer Type' in deal_data.custom_fields:
+				deal.customer_type = deal_data.custom_fields['Customer Type']
+			else:
+				deal.customer_type = ''
+			if 'Admin ID' in deal_data.custom_fields:
+				deal.admin_id = deal_data.custom_fields['Admin ID']
+			else:
+				deal.designacao_fiscal = ''
+			if 'Numer telefonu' in deal_data.custom_fields:
+				deal.numer_telefonu = deal_data.custom_fields['Numer telefonu']
+			else:
+				deal.numer_telefonu = ''
+			deal.country = country
+			deal.category = category
+			output.write((json.dumps(deal,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()

@@ -92,25 +92,25 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 		#Iterate the list of contacts
 		for contact_data in data:
-			if str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
-				contact = Munch()
-				contact.id = contact_data.id
-				contact.numer_telefonu = contact_data.phone
-				if 'VATIN' in contact_data.custom_fields:
-					contact.nip = contact_data.custom_fields['VATIN']
-				else:
-					contact.nip = ''
-				if 'Customer Type' in contact_data.custom_fields:
-					contact.customer_type = contact_data.custom_fields['Customer Type']
-				else:
-					contact.customer_type = ''
-				if 'Admin ID' in contact_data.custom_fields:
-					contact.admin_id = contact_data.custom_fields['Ddmin ID']
-				else:
-					contact.admin_id = ''
-				contact.country = country
-				contact.category = category
-				output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
+			#if str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
+			contact = Munch()
+			contact.id = contact_data.id
+			contact.numer_telefonu = contact_data.phone
+			if 'VATIN' in contact_data.custom_fields:
+				contact.nip = contact_data.custom_fields['VATIN']
+			else:
+				contact.nip = ''
+			if 'Customer Type' in contact_data.custom_fields:
+				contact.customer_type = contact_data.custom_fields['Customer Type']
+			else:
+				contact.customer_type = ''
+			if 'Admin ID' in contact_data.custom_fields:
+				contact.admin_id = contact_data.custom_fields['Ddmin ID']
+			else:
+				contact.admin_id = ''
+			contact.country = country
+			contact.category = category
+			output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
