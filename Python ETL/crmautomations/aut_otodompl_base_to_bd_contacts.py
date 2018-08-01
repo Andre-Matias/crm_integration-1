@@ -95,6 +95,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 			if str(datetime.strptime(contact_data.updated_at[:10], '%Y-%m-%d')) >= str(datetime.today().date() - timedelta(days=7)):
 				contact = Munch()
 				contact.id = contact_data.id
+				contact.numer_telefonu = contact_data.phone
 				if 'VATIN' in contact_data.custom_fields:
 					contact.nip = contact_data.custom_fields['VATIN']
 				else:
@@ -107,10 +108,6 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,data_path,category,count
 					contact.admin_id = contact_data.custom_fields['Ddmin ID']
 				else:
 					contact.admin_id = ''
-				if 'Numer służbowy' in contact_data.custom_fields:
-					contact.numer_telefonu = contact_data.custom_fields['Numer służbowy']
-				else:
-					contact.numer_telefonu = ''
 				contact.country = country
 				contact.category = category
 				output.write((json.dumps(contact,use_decimal=True)+"\n").encode('utf-8'))
