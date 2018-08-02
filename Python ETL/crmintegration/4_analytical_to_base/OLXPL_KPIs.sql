@@ -2165,7 +2165,7 @@ select
 	lkp_contact.cod_contact_parent,
 	lkp_contact.cod_source_system,
 	core.wallet,
-	core.dat_snap,
+	scai.dat_processing dat_snap,
 	core.cod_month,
 	core.val_revenue_vas_gross,
 	core.val_revenue_listings_gross
@@ -2175,7 +2175,6 @@ from (
 		inner_core.cod_contact_parent,
 		inner_core.cod_source_system,
 		inner_core.wallet,
-		scai.dat_processing dat_snap,
 		inner_core.cod_month,
 		inner_core.val_revenue_vas_gross,
 		inner_core.val_revenue_listings_gross
@@ -2263,18 +2262,18 @@ from (
 					cod_source_system,
 					wallet,
 					cod_month
-		) inner_core,
-		crm_integration_anlt.t_rel_scai_country_integration scai
+		) inner_core
 	where
-		scai.cod_integration = 50000
-		and scai.cod_country = 2
-		and cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
+		cod_month between to_char(date_trunc('month',add_months(sysdate,-5)),'yyyymm') and to_char(date_trunc('month', sysdate),'yyyymm')
 	) core,
-	crm_integration_anlt.t_lkp_contact lkp_contact
+	crm_integration_anlt.t_lkp_contact lkp_contact,
+	crm_integration_anlt.t_rel_scai_country_integration scai
 where
   lkp_contact.cod_contact = core.cod_contact (+)
   and lkp_contact.cod_source_system = core.cod_source_system (+)
-  and lkp_contact.valid_to = 20991231;
+  and lkp_contact.valid_to = 20991231
+  and scai.cod_integration = 50000
+  and scai.cod_country = 2;
 
 --$$$
 
