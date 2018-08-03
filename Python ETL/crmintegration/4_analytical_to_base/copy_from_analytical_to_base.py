@@ -64,8 +64,8 @@ def updateContactsInBase(client, contact_list, conf_file, return_queue):
 				print("Error: requests.exceptions.ConnectionError\nDescription: " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 			except Exception as err:
-				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err))
-				print("Error\nDescription: " + str(err) + "\nTrying again in 1 second...")
+				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err.__class__.__name__) + ": " + str(err))
+				print("Error\nDescription: " + str(err.__class__.__name__) + ": " + str(err) + "\nTrying again in 1 second...")
 				number_of_errors = number_of_errors + 1; time.sleep(1)
 				
 		number_of_updates = number_of_updates + 1
