@@ -51,6 +51,10 @@ def updateContactsInBase(client, contact_list, conf_file, return_queue):
 				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ResourceError", str(err));
 				print("Error: basecrm.errors.ResourceError\nDescription: " + str(err) + "\nSkipping update of contact with ID " + str(contact.id))
 				number_of_errors = number_of_errors + 1; keep_trying = False
+			except basecrm.errors.RequestError as err:
+				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.RequestError", str(err));
+				print("Error: basecrm.errors.RequestError\nDescription: " + str(err) + "\nSkipping update of contact with ID " + str(contact.id))
+				number_of_errors = number_of_errors + 1; keep_trying = False
 			except basecrm.errors.ServerError as err:
 				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "basecrm.errors.ServerError", str(err))
 				print("Error: basecrm.errors.ServerError\nDescription: " + str(err) + "\nTrying again...")
