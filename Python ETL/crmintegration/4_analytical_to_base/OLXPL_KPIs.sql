@@ -899,7 +899,7 @@ select
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	to_char(source.custom_field_value, 'YYYYMMDD HH24:MI:SS') as custom_field_value
+	source.custom_field_value
 from
 	(
 select
@@ -908,7 +908,7 @@ select
 	cod_custom_field,
 	dat_snap,
 	cod_source_system,
-	custom_field_value
+	coalesce(to_char(custom_field_value, 'YYYYMMDD HH24:MI:SS'), ' ') as custom_field_value
 from
 	(
 	select
