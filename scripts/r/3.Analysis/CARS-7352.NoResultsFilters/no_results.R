@@ -129,14 +129,15 @@ no_results_data$free_text <- ifelse(is.na(no_results_data$keyword)==FALSE, "free
 
 
 
-# Concatenate all filters together
-no_results_data$filters <- paste(no_results_data$brand, no_results_data$model, no_results_data$from_price, no_results_data$to_price,
-                                 no_results_data$distance_filt, no_results_data$item_condition_all, no_results_data$item_condition_new, 
-                                 no_results_data$item_condition_used, no_results_data$free_text, sep=" ")
+# Concatenate all filters together --------------------------------------------
+no_results_data$filters <- 
+  paste(no_results_data$brand, no_results_data$model, no_results_data$from_price, no_results_data$to_price,
+        no_results_data$distance_filt, no_results_data$item_condition_all, no_results_data$item_condition_new, 
+        no_results_data$item_condition_used, no_results_data$free_text, sep=" ")
 
 
 
-# Summarize # of searches by filter combinations ------------------------------
+# Summarize number of searches by filter combinations -------------------------
 ## will then visualize it via Tableau
 df_viz <- no_results_data %>%
   group_by(br, filters) %>%
@@ -148,7 +149,7 @@ df_viz <- no_results_data %>%
 head(df_viz)
 
 
-
+# Next step: possibly analyse the % of searches with no results for each combination of filters.
 
 
 ###################
