@@ -2341,7 +2341,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -2358,7 +2358,47 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_total_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         --a.cod_contact in (320977,322379,327830,289792,327855)
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
@@ -2501,7 +2541,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -2518,7 +2558,46 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_total_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
@@ -2661,7 +2740,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -2678,7 +2757,46 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_vas_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
@@ -2821,7 +2939,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -2838,7 +2956,46 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_vas_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
@@ -2981,7 +3138,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -2998,7 +3155,46 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_0_listings_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
@@ -3141,7 +3337,7 @@ where 1 = 1
 
 --Calculate for companies and contacts not associated with companies
 create table crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings_3 as
-select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+/*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
@@ -3158,7 +3354,46 @@ where 1 = 1
   source.dat_snap,
   source.cod_source_system,
 	nvl(source.cod_contact_parent,source.cod_contact)
-	 ;
+	 ;*/
+select
+ coalesce(core.cod_contact_parent,core.cod_contact) cod_contact,
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system,
+ cast(round(sum(core.revenue),2) as varchar) custom_field_value
+from
+ (
+   select
+     *,
+     sum(cast(custom_field_value as numeric(15,2))) over (partition by cod_atlas_user) / nbr_atlas_users revenue,
+     row_number() over (partition by coalesce(cod_contact_parent,cod_contact), cod_atlas_user order by cod_contact) rn
+   from
+     (
+       select
+         a.*,
+         b.cod_atlas_user,
+         count(*) over (partition by cod_atlas_user) nbr_atlas_users
+       from
+         crm_integration_anlt.tmp_pl_otomoto_calc_revenue_1_listings_1 a,
+         crm_integration_anlt.t_lkp_contact b
+       where 1
+         and a.cod_contact = b.cod_contact
+         and a.cod_source_system = b.cod_source_system
+         and b.valid_to = 20991231
+     ) inner_core
+ ) core,
+ crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  rn = 1
+  and core.cod_source_system = fac_snap.cod_source_system (+)
+  and core.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(core.cod_contact_parent, core.cod_contact) = fac_snap.cod_contact (+)
+  and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+group by
+ coalesce(core.cod_contact_parent,core.cod_contact),
+ core.cod_custom_field,
+ core.dat_snap,
+ core.cod_source_system;
 
 --$$$
 
