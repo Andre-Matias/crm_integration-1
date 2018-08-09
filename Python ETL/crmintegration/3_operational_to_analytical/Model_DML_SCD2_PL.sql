@@ -7028,6 +7028,7 @@ from
       atlas_user.cod_source_system = 9
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+	  and trim(base_contact.email) != ''
       and base_contact.cod_source_system = 13
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
@@ -7068,6 +7069,7 @@ from
       atlas_user.cod_source_system = 7
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+	  and trim(base_contact.email) != ''
       and base_contact.cod_source_system = 12
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
@@ -7108,6 +7110,7 @@ from
       atlas_user.cod_source_system = 6
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+	  and trim(base_contact.email) != ''
       and base_contact.cod_source_system = 14
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source

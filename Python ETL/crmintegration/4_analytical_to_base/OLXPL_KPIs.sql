@@ -4119,50 +4119,64 @@ select
 	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
+    select
+      base_contact.cod_contact,
+      base_contact.cod_contact_parent,
+      inner_core.email,
+      inner_core.dat_snap,
+      base_contact.cod_source_system,
+      inner_core.custom_field_value
+    from
+      (
+        select
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          max(scai.dat_processing) dat_snap,
+          base_contact.cod_source_system,
+          count(ads.status) custom_field_value
+        from
+          crm_integration_anlt.t_lkp_atlas_user atlas_user,
+          crm_integration_anlt.t_lkp_contact base_contact,
+          db_atlas.olxpl_ads ads,
+          crm_integration_anlt.t_rel_scai_country_integration scai
+        where
+          atlas_user.cod_source_system = 9
+          and base_contact.cod_source_system = 13
+          and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+          and atlas_user.valid_to = 20991231
+          and base_contact.valid_to = 20991231
+          and ads.user_id = atlas_user.opr_atlas_user
+          and ads.status = 'active'
+          and scai.cod_integration = 50000
+          and scai.cod_country = 2
+        group by
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          base_contact.cod_source_system
+      ) inner_core,
+      crm_integration_anlt.t_lkp_contact base_contact
+    where
+      base_contact.cod_contact = inner_core.cod_contact (+)
+      and base_contact.cod_source_system = 13
+      and base_contact.valid_to = 20991231
+	) core,
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
+	(
 		select
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			max(scai.dat_processing) dat_snap,
-			base_contact.cod_source_system,
-			count(ads.status) custom_field_value
+			rel.cod_custom_field,
+			rel.flg_active
 		from
-			crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			crm_integration_anlt.t_lkp_contact base_contact,
-			db_atlas.olxpl_ads ads, 
-			crm_integration_anlt.t_rel_scai_country_integration scai
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
 		where
-			atlas_user.cod_source_system = 9
-			and base_contact.cod_source_system = 13
-			and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			and atlas_user.valid_to = 20991231
-			and base_contact.valid_to = 20991231
-			and scai.cod_integration = 50000 
-			--and atlas_user.valid_from = scai.dat_processing 
-			and ads.user_id = atlas_user.opr_atlas_user
-			and ads.status = 'active' 
-			and scai.cod_country = 1
-		group by
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			base_contact.cod_source_system
-	) core, 
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
-(
-	select
-		rel.cod_custom_field,
-		rel.flg_active
-	from
-		crm_integration_anlt.t_lkp_kpi kpi,
-		crm_integration_anlt.t_rel_kpi_custom_field rel
-	where
-		kpi.cod_kpi = rel.cod_kpi
-		and lower(kpi.dsc_kpi) = '# active ads per category'
-		and rel.cod_source_system = 13
-) kpi_custom_field
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# active ads per category'
+			and rel.cod_source_system = 13
+	) kpi_custom_field
 where
-	1=1 
+	1=1
 	and kpi_custom_field.flg_active = 1;
 
 --$$$
@@ -4178,48 +4192,63 @@ select
 	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
-		select
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			max(scai.dat_processing) dat_snap,
-			base_contact.cod_source_system,
-			count(ads.status) custom_field_value
-		from
-			crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			crm_integration_anlt.t_lkp_contact base_contact,
-			db_atlas.olxpl_ads ads, 
-			crm_integration_anlt.t_rel_scai_country_integration scai
-		where
-			atlas_user.cod_source_system = 3
-			and base_contact.cod_source_system = 14
-			and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			and atlas_user.valid_to = 20991231
-			and base_contact.valid_to = 20991231
-			and scai.cod_integration = 50000 
-			--and atlas_user.valid_from = scai.dat_processing 
-			and ads.user_id = atlas_user.cod_atlas_user
-			and ads.status = 'active'
-			and scai.cod_country = 1
-		group by
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			base_contact.cod_source_system
+    select
+      base_contact.cod_contact,
+      base_contact.cod_contact_parent,
+      inner_core.email,
+      inner_core.dat_snap,
+      base_contact.cod_source_system,
+      inner_core.custom_field_value
+    from
+      (
+        select
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          max(scai.dat_processing) dat_snap,
+          base_contact.cod_source_system,
+          count(ads.status) custom_field_value
+        from
+          crm_integration_anlt.t_lkp_atlas_user atlas_user,
+          crm_integration_anlt.t_lkp_contact base_contact,
+          db_atlas_verticals.ads ads,
+          crm_integration_anlt.t_rel_scai_country_integration scai
+        where
+          atlas_user.cod_source_system = 3
+          and base_contact.cod_source_system = 14
+          and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+          and atlas_user.valid_to = 20991231
+          and base_contact.valid_to = 20991231
+          and ads.user_id = atlas_user.opr_atlas_user
+          and ads.status = 'active'
+          and ads.livesync_dbname = 'otodompl'
+          and scai.cod_integration = 50000
+          and scai.cod_country = 2
+        group by
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          base_contact.cod_source_system
+      ) inner_core,
+      crm_integration_anlt.t_lkp_contact base_contact
+    where
+      base_contact.cod_contact = inner_core.cod_contact (+)
+      and base_contact.cod_source_system = 14
+      and base_contact.valid_to = 20991231
 	) core,
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
-(
-	select
-		rel.cod_custom_field,
-		rel.flg_active
-	from
-		crm_integration_anlt.t_lkp_kpi kpi,
-		crm_integration_anlt.t_rel_kpi_custom_field rel
-	where
-		kpi.cod_kpi = rel.cod_kpi
-		and lower(kpi.dsc_kpi) = '# active ads per category'
-		and rel.cod_source_system = 14
-) kpi_custom_field
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
+	(
+		select
+			rel.cod_custom_field,
+			rel.flg_active
+		from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# active ads per category'
+			and rel.cod_source_system = 14
+	) kpi_custom_field
 where
 	1=1
 	and kpi_custom_field.flg_active = 1;
@@ -4237,48 +4266,63 @@ select
 	'' + cast(nvl(core.custom_field_value,0) as varchar) custom_field_value
 from
 	(
-		select
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			max(scai.dat_processing) dat_snap,
-			base_contact.cod_source_system,
-			count(ads.status) custom_field_value
-		from
-			crm_integration_anlt.t_lkp_atlas_user atlas_user,
-			crm_integration_anlt.t_lkp_contact base_contact,
-			db_atlas.olxpl_ads ads,
-			crm_integration_anlt.t_rel_scai_country_integration scai
-		where
-			atlas_user.cod_source_system = 7
-			and base_contact.cod_source_system = 12
-			and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-			and atlas_user.valid_to = 20991231
-			and base_contact.valid_to = 20991231
-			and scai.cod_integration = 50000 
-			--and atlas_user.valid_from = scai.dat_processing
-			and ads.user_id = atlas_user.cod_atlas_user
-			and ads.status = 'active'
-			and scai.cod_country = 1
-		group by
-			base_contact.cod_contact,
-			base_contact.cod_contact_parent,
-			base_contact.email,
-			base_contact.cod_source_system
+    select
+      base_contact.cod_contact,
+      base_contact.cod_contact_parent,
+      inner_core.email,
+      inner_core.dat_snap,
+      base_contact.cod_source_system,
+      inner_core.custom_field_value
+    from
+      (
+        select
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          max(scai.dat_processing) dat_snap,
+          base_contact.cod_source_system,
+          count(ads.status) custom_field_value
+        from
+          crm_integration_anlt.t_lkp_atlas_user atlas_user,
+          crm_integration_anlt.t_lkp_contact base_contact,
+          db_atlas_verticals.ads ads,
+          crm_integration_anlt.t_rel_scai_country_integration scai
+        where
+          atlas_user.cod_source_system = 7
+          and base_contact.cod_source_system = 12
+          and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+          and atlas_user.valid_to = 20991231
+          and base_contact.valid_to = 20991231
+          and ads.user_id = atlas_user.opr_atlas_user
+          and ads.status = 'active'
+          and ads.livesync_dbname = 'otomotopl'
+          and scai.cod_integration = 50000
+          and scai.cod_country = 2
+        group by
+          base_contact.cod_contact,
+          base_contact.cod_contact_parent,
+          base_contact.email,
+          base_contact.cod_source_system
+      ) inner_core,
+      crm_integration_anlt.t_lkp_contact base_contact
+    where
+      base_contact.cod_contact = inner_core.cod_contact (+)
+      and base_contact.cod_source_system = 12
+      and base_contact.valid_to = 20991231
 	) core,
-	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 1) scai,
-(
-	select
-		rel.cod_custom_field,
-		rel.flg_active
-	from
-		crm_integration_anlt.t_lkp_kpi kpi,
-		crm_integration_anlt.t_rel_kpi_custom_field rel
-	where
-		kpi.cod_kpi = rel.cod_kpi
-		and lower(kpi.dsc_kpi) = '# active ads per category'
-		and rel.cod_source_system = 12
-) kpi_custom_field
+	(select max(dat_processing) dat_snap from crm_integration_anlt.t_rel_scai_integration_process where cod_integration = 50000 and cod_country = 2) scai,
+	(
+		select
+			rel.cod_custom_field,
+			rel.flg_active
+		from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# active ads per category'
+			and rel.cod_source_system = 12
+	) kpi_custom_field
 where 1=1
 	and kpi_custom_field.flg_active = 1;
 
@@ -4336,6 +4380,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto 
 	 where
 		source_olx.email = source_otodom.email(+) 
+		source_olx.email = source_otomoto.email(+) 
 		;
 		
 --$$$
@@ -4347,7 +4392,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-	from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final source,
+from crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -4371,7 +4416,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
 		 cod_custom_field,
 		 dat_snap,
 		 cod_source_system,
-		 'OLX: ' || custom_field_value_olx  || ' || OTD: ' ||   sum(custom_field_value_otd) || ' || OTM: ' || sum(custom_field_value_otm) custom_field_value
+		 'OLX: ' || nvl(custom_field_value_olx,0)  || ' || OTD: ' ||   nvl(sum(custom_field_value_otd),0) || ' || OTM: ' || nvl(sum(custom_field_value_otm),0) custom_field_value
 	from (
 			select
 				distinct nvl(source_otodom.cod_contact_parent, source_otodom.cod_contact) cod_contact,
@@ -4431,7 +4476,8 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
 				crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core source_otodom,
 				crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto
 			 where
-				source_olx.email = source_otodom.email(+)
+				source_olx.email = source_otodom.email(+) 
+				source_olx.email = source_otomoto.email(+) 
 			group by
 			  nvl(source_olx.cod_contact_parent, source_olx.cod_contact),
 				source_otomoto.cod_contact,
