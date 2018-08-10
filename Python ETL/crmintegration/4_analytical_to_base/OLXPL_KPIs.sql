@@ -4534,12 +4534,12 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		
 --$$$
 
-drop table crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final;
-drop table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_2;
-drop table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3;
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_ads_per_category_core;
+drop table if exists crm_integration_anlt.tmp_pl_otodom_calc_active_ads_per_category_core;
+drop table if exists crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core;
+drop table if exists crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final;
+drop table if exists crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_2;
+drop table if exists crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_3;
 
 --$$$
 
