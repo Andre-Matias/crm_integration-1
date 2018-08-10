@@ -4416,7 +4416,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
 		 cod_custom_field,
 		 dat_snap,
 		 cod_source_system,
-		 'OLX: ' || nvl(custom_field_value_olx,0)  || ' || OTD: ' ||   nvl(sum(custom_field_value_otd),0) || ' || OTM: ' || nvl(sum(custom_field_value_otm),0) custom_field_value
+		 'OLX: ' || nvl(custom_field_value_olx,'0')  || ' || OTD: ' ||   nvl(sum(custom_field_value_otd),'0') || ' || OTM: ' || nvl(sum(custom_field_value_otm),'0') custom_field_value
 	from (
 			select
 				distinct nvl(source_otodom.cod_contact_parent, source_otodom.cod_contact) cod_contact,
