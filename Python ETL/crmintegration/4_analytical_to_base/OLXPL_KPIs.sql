@@ -4380,7 +4380,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final 
 		crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto 
 	 where
 		source_olx.email = source_otodom.email(+) 
-		source_olx.email = source_otomoto.email(+) 
+		and source_olx.email = source_otomoto.email(+) 
 		;
 		
 --$$$
@@ -4477,7 +4477,7 @@ create table crm_integration_anlt.tmp_pl_all_calc_active_ads_per_category_final_
 				crm_integration_anlt.tmp_pl_otomoto_calc_active_ads_per_category_core source_otomoto
 			 where
 				source_olx.email = source_otodom.email(+) 
-				source_olx.email = source_otomoto.email(+) 
+				and source_olx.email = source_otomoto.email(+) 
 			group by
 			  nvl(source_olx.cod_contact_parent, source_olx.cod_contact),
 				source_otomoto.cod_contact,
