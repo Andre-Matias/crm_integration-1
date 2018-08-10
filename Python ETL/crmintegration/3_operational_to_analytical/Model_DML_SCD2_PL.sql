@@ -3212,7 +3212,8 @@ create table crm_integration_anlt.tmp_pl_load_custom_field as
     crm_integration_anlt.t_lkp_custom_field_context cf_context
   where
     coalesce(source_table.opr_custom_field,'-1') = target.opr_custom_field(+)
-    and cf_context.opr_custom_field_context = 'Contacts';
+    and cf_context.opr_custom_field_context = 'Contacts'
+	and source_table.cod_source_system = target.cod_source_system (+);
 
 analyze crm_integration_anlt.tmp_pl_load_custom_field;
 	
