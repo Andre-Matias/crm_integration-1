@@ -82,8 +82,8 @@ def main(conf_file, COD_COUNTRY):
 	if (not scai_process_status):
 		scai_process_status = 1
 
-	if (scai_process_status != 1):
-		sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
+	#if (scai_process_status != 1):
+	#	sys.exit("The integration is already running or there was an error with the last execution that has to be fixed manually.")
 
 	scai.integrationStart(conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI	
 	scai.processStart(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
