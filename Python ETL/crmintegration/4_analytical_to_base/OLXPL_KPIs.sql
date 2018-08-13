@@ -937,10 +937,13 @@ from
 							join db_atlas.olxpl_ads a4 on a4.id=a3.ad_id
 							left outer join db_atlas.olxpl_nnl_packets packets on packets.packet_id = a1.packet_id
 							left outer join db_atlas.olxpl_nnl_variants variants on variants.variant_id = a1.variant_id
-							left outer join crm_integration_anlt.v_lkp_paidad_index_new index on index.cod_source_system = 9 
-																								and (index.dsc_paidad_index != 'Ogłoszenie na 30 dni' or index.dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni')
+							left outer join crm_integration_anlt.v_lkp_paidad_index_new index on index.cod_source_system = 9 																				
 																								and index.paidad_index_code = variants.variant_id
-							where 1=1) package,
+							where 1=1
+							and index.dsc_paidad_index != 'Ogłoszenie na 30 dni' 
+							and index.dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni'
+							and index.cod_index_type = 2
+				 ) package,
 				crm_integration_anlt.t_lkp_atlas_user atlas_user,
 				crm_integration_anlt.t_lkp_contact base_contact,
 				crm_integration_anlt.t_rel_scai_country_integration scai
@@ -977,12 +980,7 @@ from
     where 1=1
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
-	and kpi_custom_field.flg_active = 1 )  source,
-	crm_integration_anlt.t_fac_base_integration_snap fac_snap
-where source.cod_source_system = fac_snap.cod_source_system (+)
-  and source.cod_custom_field = fac_snap.cod_custom_field (+)
-  and source.cod_contact = fac_snap.cod_contact (+)
-  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+	and kpi_custom_field.flg_active = 1 )  source 
   ;
   
 --$$$
@@ -1066,6 +1064,182 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_last_package_purchased_3;
 
 --$$$
+
+
+
+-- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Expiry Date)
+create table crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_1 as
+select
+	source.cod_contact,
+	cod_contact_parent,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(
+select
+	cod_contact,
+	cod_contact_parent,
+	cod_custom_field,
+	dat_snap,
+	cod_source_system,
+	coalesce(to_char(custom_field_value, 'YYYYMMDD HH24:MI:SS'), ' ') as custom_field_value
+from
+	(
+	select
+		cod_contact,
+		cod_contact_parent,
+		dat_snap,
+		cod_source_system,
+		max(custom_field_value) as custom_field_value
+	from(
+			select
+				base_contact.cod_contact,
+				base_contact.cod_contact_parent,
+				scai.dat_processing dat_snap,
+				base_contact.cod_source_system,
+				package.expiry as custom_field_value,
+				row_number()
+				over (
+					partition by cod_contact
+					order by coalesce(atlas_user.created_at, '1900-01-01') ) rn
+			from (select
+							a1.*, packets.name packet_name, variants.name variant_name
+						from
+							db_atlas.olxpl_nnl_userpackets a1
+							join db_atlas.olxpl_nnl_variants a2 on a2.variant_id=a1.variant_id
+							join db_atlas.olxpl_nnl_usage_log a3 on a1.userpacket_id=a3.userpacket_id
+							join db_atlas.olxpl_ads a4 on a4.id=a3.ad_id
+							left outer join db_atlas.olxpl_nnl_packets packets on packets.packet_id = a1.packet_id
+							left outer join db_atlas.olxpl_nnl_variants variants on variants.variant_id = a1.variant_id
+							left outer join crm_integration_anlt.v_lkp_paidad_index_new index on index.cod_source_system = 9 																				
+																								and index.paidad_index_code = variants.variant_id
+							where 1=1
+							and index.dsc_paidad_index != 'Ogłoszenie na 30 dni' 
+							and index.dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni'
+							and index.cod_index_type = 2
+				 ) package,
+				crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				crm_integration_anlt.t_lkp_contact base_contact,
+				crm_integration_anlt.t_rel_scai_country_integration scai
+			where 1 = 1
+				and package.user_id (+) = atlas_user.opr_atlas_user
+				and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user (+))
+				and atlas_user.cod_source_system (+) = 9
+				and base_contact.cod_source_system = 13
+				and atlas_user.valid_to (+) = 20991231
+				and base_contact.valid_to = 20991231
+				and scai.cod_integration = 50000
+				and scai.cod_country = 2
+		)
+		where 1=1
+		and rn = 1
+		group by 	cod_contact,
+							cod_contact_parent,
+							dat_snap ,
+							cod_source_system
+	) a,
+   crm_integration_anlt.t_rel_scai_country_integration scai,
+		(
+			select
+			  rel.cod_custom_field,
+			  rel.flg_active
+			from
+			  crm_integration_anlt.t_lkp_kpi kpi,
+			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			where
+			  kpi.cod_kpi = rel.cod_kpi
+			  and lower(kpi.dsc_kpi) = 'last package purchased'
+			  and rel.cod_source_system = 13
+		) kpi_custom_field
+    where 1=1
+	and scai.cod_integration = 50000
+    and scai.cod_country = 2
+	and kpi_custom_field.flg_active = 1 )  source 
+  ;
+
+--$$$
+		
+--Calculate for employees
+create table crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2 as
+   select source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+	from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_contact_parent is not null
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);	
+
+--$$$
+
+--Calculate for companies and contacts not associated with companies
+create table crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3 as
+   select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system
+	,max(source.custom_field_value) custom_field_value
+	from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(source.cod_contact_parent, source.cod_contact) = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+  group by
+  source.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+	nvl(source.cod_contact_parent,source.cod_contact)
+	 ;  
+
+--$$$
+
+-- HST INSERT - KPI OLX.BASE.088 (Expiry Date)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2
+			union
+			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3);
+
+--$$$
+
+-- SNAP DELETE - KPI OLX.BASE.088 (Expiry Date)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2
+			union
+			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3);
+
+--$$$
+
+--KPI OLX.BASE.088 (Expiry Date)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+	SELECT
+		*
+	from
+		(select * from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2
+		union
+		select * from crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3);
+
+--$$$
+
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_1;
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2;
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3;
+
+--$$$----------------------
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_1 as
@@ -2236,6 +2410,7 @@ from (
 							and coalesce(pup.id_ad, -1) = coalesce(pb.ad_id, -1)
 							and pup.id_user = pb.user_id
 							and abs(coalesce(pup.price, 0)) = abs(coalesce(pb.price, 0))
+							and pup.price < 0
 							left outer join (select * from (select *,row_number() over (partition by cod_atlas_user order by cod_contact desc) rn from crm_integration_anlt.t_lkp_contact where valid_to = 20991231) core where rn = 1) base_contact on atlas_user.cod_atlas_user = base_contact.cod_atlas_user and base_contact.cod_source_system = 13
 						where
 						1=1
@@ -5000,12 +5175,11 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
     (	select
 		 cod_contact,
 		 cod_contact_parent,
-		 count(custom_field_value) custom_field_value,
+		 sum(case when custom_field_value = to_char(sysdate, 'YYYYMM') then 1 else 0 end ) custom_field_value,
 		 dat_snap,
 		 cod_source_system
 		from  crm_integration_anlt.tmp_pl_olx_calc_number_calls_1
-		where 1=1
-		and custom_field_value = to_char(sysdate, 'YYYYMM')
+		where 1=1 
 		group by cod_contact,
 		 cod_contact_parent,
 		 dat_snap,
@@ -5124,12 +5298,11 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
     (	select
 		 cod_contact,
 		 cod_contact_parent,
-		 count(custom_field_value) custom_field_value,
+		 sum(case when custom_field_value = to_char(dateadd(month,-1,sysdate), 'YYYYMM') then 1 else 0 end ) custom_field_value,
 		 dat_snap,
 		 cod_source_system
 		from  crm_integration_anlt.tmp_pl_olx_calc_number_calls_1
 		where 1=1
-		and custom_field_value = to_char(dateadd(month,-1,sysdate), 'YYYYMM')
 		group by cod_contact,
 		 cod_contact_parent,
 		 dat_snap,
@@ -5248,12 +5421,11 @@ create table crm_integration_anlt.tmp_pl_olx_calc_number_calls_2 as
     (	select
 		 cod_contact,
 		 cod_contact_parent,
-		 count(custom_field_value) custom_field_value,
+		 sum(case when custom_field_value = to_char(dateadd(month,-2,sysdate), 'YYYYMM') then 1 else 0 end ) custom_field_value,
 		 dat_snap,
 		 cod_source_system
 		from  crm_integration_anlt.tmp_pl_olx_calc_number_calls_1
-		where 1=1
-		and custom_field_value = to_char(dateadd(month,-2,sysdate), 'YYYYMM')
+		where 1=1 
 		group by cod_contact,
 		 cod_contact_parent,
 		 dat_snap,
