@@ -119,8 +119,6 @@ where
 
 analyze tmp_pt_load_resource_type;
 
---$$$
-
 insert into crm_integration_anlt.t_lkp_resource_type
     select
       (max_cod + new_cod) cod_resource_type,
@@ -134,8 +132,6 @@ insert into crm_integration_anlt.t_lkp_resource_type
       tmp_pt_load_resource_type
     where
       dml_type = 'I';
-
---$$$
 	  
 analyze crm_integration_anlt.t_lkp_resource_type;
 
@@ -323,7 +319,6 @@ where
 
 analyze tmp_pt_load_industry;
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_industry
     select
@@ -338,8 +333,6 @@ insert into crm_integration_anlt.t_lkp_industry
       tmp_pt_load_industry
     where
       dml_type = 'I';
-
---$$$
 
 analyze crm_integration_anlt.t_lkp_industry;
 
@@ -525,8 +518,6 @@ where
 
 analyze tmp_pt_load_lead_status;
 
---$$$
-
 insert into crm_integration_anlt.t_lkp_lead_status
     select
       (max_cod + new_cod) cod_lead_status,
@@ -540,8 +531,6 @@ insert into crm_integration_anlt.t_lkp_lead_status
       tmp_pt_load_lead_status
     where
       dml_type = 'I';
-
---$$$
 
 analyze crm_integration_anlt.t_lkp_lead_status;
 
@@ -726,7 +715,6 @@ where
   
 analyze tmp_pt_load_product;
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_product
     select
@@ -742,7 +730,6 @@ insert into crm_integration_anlt.t_lkp_product
     where
       dml_type = 'I';
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_product;
 
@@ -922,7 +909,6 @@ where
 
 analyze tmp_pt_load_currency;
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_currency
     select
@@ -938,7 +924,6 @@ insert into crm_integration_anlt.t_lkp_currency
     where
       dml_type = 'I';
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_currency;
 
@@ -1128,7 +1113,6 @@ where
   
 analyze tmp_pt_load_source;
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_source
     select
@@ -1144,7 +1128,6 @@ insert into crm_integration_anlt.t_lkp_source
     where
       dml_type = 'I';
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_source;
 
@@ -1327,7 +1310,6 @@ where
 
 analyze tmp_pt_load_event;
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_event
     select
@@ -1343,7 +1325,6 @@ insert into crm_integration_anlt.t_lkp_event
     where
       dml_type = 'I';
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_event;
 
@@ -1571,8 +1552,6 @@ as
 
 analyze tmp_pt_load_base_source;
 	
---$$$
-	
 delete from crm_integration_anlt.t_lkp_base_source
 using tmp_pt_load_base_source
 where 
@@ -1580,7 +1559,6 @@ where
 	and t_lkp_base_source.opr_base_source = tmp_pt_load_base_source.opr_base_source 
 	and t_lkp_base_source.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_source');
 
---$$$
 	
 update crm_integration_anlt.t_lkp_base_source
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_source')
@@ -1589,7 +1567,6 @@ where source.cod_base_source = crm_integration_anlt.t_lkp_base_source.cod_base_s
 and crm_integration_anlt.t_lkp_base_source.valid_to = 20991231
 and source.dml_type in('U','D');
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_base_source
     select
@@ -1612,7 +1589,6 @@ insert into crm_integration_anlt.t_lkp_base_source
     where
       dml_type in ('U','I');
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_base_source;
 	  
@@ -1880,7 +1856,6 @@ as
 
 analyze tmp_pt_load_base_user;
 
---$$$
 	
 delete from crm_integration_anlt.t_lkp_base_user
 using tmp_pt_load_base_user
@@ -1889,7 +1864,6 @@ where
 	and t_lkp_base_user.opr_base_user = tmp_pt_load_base_user.opr_base_user 
 	and t_lkp_base_user.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_user');
 
---$$$
 
 -- update valid_to in the updated/deleted records on source	
 update crm_integration_anlt.t_lkp_base_user
@@ -1899,7 +1873,6 @@ where source.cod_base_user = crm_integration_anlt.t_lkp_base_user.cod_base_user
 and crm_integration_anlt.t_lkp_base_user.valid_to = 20991231
 and source.dml_type in('U','D');
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_base_user
     select
@@ -1934,7 +1907,6 @@ insert into crm_integration_anlt.t_lkp_base_user
     where
       dml_type in ('U','I');
 
---$$$
 
 analyze crm_integration_anlt.t_lkp_base_user;
 	  
@@ -2187,7 +2159,6 @@ as
 
 analyze tmp_pt_load_task;
 	
-	--$$$
 	
 delete from crm_integration_anlt.t_lkp_task
 using tmp_pt_load_task
@@ -2195,8 +2166,7 @@ where
 	tmp_pt_load_task.dml_type = 'I' 
 	and t_lkp_task.opr_task = tmp_pt_load_task.opr_task 
 	and t_lkp_task.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_task');
-
-	--$$$
+	
 	
 update crm_integration_anlt.t_lkp_task
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_task')
@@ -2205,7 +2175,6 @@ where source.cod_task = crm_integration_anlt.t_lkp_task.cod_task
 and crm_integration_anlt.t_lkp_task.valid_to = 20991231
 and source.dml_type in('U','D');
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_task
     select
@@ -2235,11 +2204,10 @@ insert into crm_integration_anlt.t_lkp_task
     where
       dml_type in ('U','I');
 
-	  --$$$
 	  
 analyze crm_integration_anlt.t_lkp_task;
 	 
-	  --$$$
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -2464,7 +2432,6 @@ select
 
 analyze tmp_pt_load_call_outcome;
 
-	--$$$
 	
 delete from crm_integration_anlt.t_lkp_call_outcome
 using tmp_pt_load_call_outcome
@@ -2473,7 +2440,6 @@ where
 	and t_lkp_call_outcome.opr_call_outcome = tmp_pt_load_call_outcome.opr_call_outcome 
 	and t_lkp_call_outcome.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_call_outcome');
 
-	--$$$
 	
 update crm_integration_anlt.t_lkp_call_outcome
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_call_outcome') 
@@ -2482,7 +2448,6 @@ where source.cod_call_outcome = crm_integration_anlt.t_lkp_call_outcome.cod_call
 and crm_integration_anlt.t_lkp_call_outcome.valid_to = 20991231
 and source.dml_type in('U','D');
 
---$$$
 
 insert into crm_integration_anlt.t_lkp_call_outcome
     select
@@ -2505,11 +2470,10 @@ insert into crm_integration_anlt.t_lkp_call_outcome
     where
       dml_type in ('U','I');
 
-	  --$$$
 	  
 analyze crm_integration_anlt.t_lkp_call_outcome;
 	  
-	  --$$$
+--$$$
 	  
 -- #######################
 -- ####    PASSO 5    ####
@@ -2815,7 +2779,7 @@ select
 
 analyze tmp_pt_load_contact;
 
-	--$$$
+
 
 delete from crm_integration_anlt.t_lkp_contact
 using tmp_pt_load_contact
@@ -2824,7 +2788,7 @@ where
 	and t_lkp_contact.opr_contact = tmp_pt_load_contact.opr_contact
 	and t_lkp_contact.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact');
 
-	--$$$
+
 
 -- update valid_to in the updated/deleted records on source
 update crm_integration_anlt.t_lkp_contact
@@ -2834,7 +2798,7 @@ where source.cod_contact = crm_integration_anlt.t_lkp_contact.cod_contact
 and crm_integration_anlt.t_lkp_contact.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_contact
     select
@@ -2880,11 +2844,11 @@ insert into crm_integration_anlt.t_lkp_contact
     where
       dml_type in ('U','I','DI');
 
-	--$$$
+
 	  
 analyze crm_integration_anlt.t_lkp_contact;
 	  
-	--$$$
+--$$$
 
 -- update do contact_id/cod_contact_parent - CARS PT
 update crm_integration_anlt.t_lkp_contact
@@ -3092,7 +3056,6 @@ as
 
 analyze tmp_pt_contact_custom_field;
 
---$$$
 
 
 create temp table tmp_pt_load_custom_field as
@@ -3165,7 +3128,7 @@ create temp table tmp_pt_load_custom_field as
 	
 analyze tmp_pt_load_custom_field;
 	
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_custom_field
     select
@@ -3182,7 +3145,7 @@ insert into crm_integration_anlt.t_lkp_custom_field
     where
       dml_type = 'I';
 
---$$$
+
 
 analyze crm_integration_anlt.t_lkp_custom_field;
 	  
@@ -3373,7 +3336,7 @@ create temp table tmp_pt_rel_contact_custom_field as
 
 analyze tmp_pt_rel_contact_custom_field;
 	
-	--$$$
+
 	
 update crm_integration_anlt.t_rel_contact_custom_field
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_rel_contact_custom_field') 
@@ -3384,7 +3347,7 @@ and source.cod_source_system = crm_integration_anlt.t_rel_contact_custom_field.c
 and crm_integration_anlt.t_rel_contact_custom_field.valid_to = 20991231
 and source.dml_type = 'U';
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_rel_contact_custom_field
   select
@@ -3400,11 +3363,11 @@ insert into crm_integration_anlt.t_rel_contact_custom_field
   where
     dml_type in ('I','U');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_rel_contact_custom_field;
 	
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3684,7 +3647,7 @@ as
 
 analyze tmp_pt_load_lead;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_lead
 using tmp_pt_load_lead
@@ -3693,7 +3656,7 @@ where
 	and t_lkp_lead.opr_lead = tmp_pt_load_lead.opr_lead 
 	and t_lkp_lead.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_lead');
 
-	--$$$
+
 	
 -- update valid_to in the updated/deleted records on source	
 update crm_integration_anlt.t_lkp_lead
@@ -3703,7 +3666,7 @@ where source.cod_lead = crm_integration_anlt.t_lkp_lead.cod_lead
 and crm_integration_anlt.t_lkp_lead.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_lead
     select
@@ -3746,11 +3709,11 @@ insert into crm_integration_anlt.t_lkp_lead
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	  
 analyze crm_integration_anlt.t_lkp_lead;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3974,7 +3937,7 @@ as
 
 analyze tmp_pt_load_loss_reason;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_loss_reason
 using tmp_pt_load_loss_reason
@@ -3983,7 +3946,6 @@ where
 	and t_lkp_loss_reason.opr_loss_reason = tmp_pt_load_loss_reason.opr_loss_reason 
 	and t_lkp_loss_reason.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_loss_reason');
 
-	--$$$
 	
 update crm_integration_anlt.t_lkp_loss_reason
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_loss_reason') 
@@ -4013,11 +3975,11 @@ insert into crm_integration_anlt.t_lkp_loss_reason
 	where
 	  dml_type in ('U','I');
 
-	--$$$
+
 	  
 analyze crm_integration_anlt.t_lkp_loss_reason;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4237,7 +4199,7 @@ as
 
 analyze tmp_pt_load_pipeline;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_pipeline
 using tmp_pt_load_pipeline
@@ -4246,7 +4208,7 @@ where
 	and t_lkp_pipeline.opr_pipeline = tmp_pt_load_pipeline.opr_pipeline
 	and t_lkp_pipeline.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_pipeline');
 
-	--$$$
+
 	
 update crm_integration_anlt.t_lkp_pipeline
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_pipeline') 
@@ -4276,11 +4238,11 @@ insert into crm_integration_anlt.t_lkp_pipeline
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_lkp_pipeline;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4508,7 +4470,7 @@ as
 
 analyze tmp_pt_load_stage;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_stage
 using tmp_pt_load_stage
@@ -4517,7 +4479,7 @@ where
 	and t_lkp_stage.opr_stage = tmp_pt_load_stage.opr_stage
 	and t_lkp_stage.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage');
 
-	--$$$
+
 	
 update crm_integration_anlt.t_lkp_stage
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage') 
@@ -4526,7 +4488,7 @@ where source.cod_stage = crm_integration_anlt.t_lkp_stage.cod_stage
 and crm_integration_anlt.t_lkp_stage.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_stage
     select
@@ -4550,11 +4512,11 @@ insert into crm_integration_anlt.t_lkp_stage
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_lkp_stage;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -4854,7 +4816,7 @@ as
 
 analyze tmp_pt_load_deals;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_deal
 using tmp_pt_load_deals
@@ -4863,7 +4825,7 @@ where
 	and t_lkp_deal.opr_deal = tmp_pt_load_deals.opr_deal
 	and t_lkp_deal.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_deal');
 
-	--$$$
+
 	
 update crm_integration_anlt.t_lkp_deal
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_deal') 
@@ -4872,7 +4834,7 @@ where source.cod_deal = crm_integration_anlt.t_lkp_deal.cod_deal
 and crm_integration_anlt.t_lkp_deal.valid_to = 20991231
 and source.dml_type in('U','D');
 	
---$$$
+
 
 insert into crm_integration_anlt.t_lkp_deal
     select
@@ -4910,11 +4872,11 @@ insert into crm_integration_anlt.t_lkp_deal
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_lkp_deal;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -5180,7 +5142,7 @@ where
 
 analyze tmp_pt_load_calls;
 	
-	--$$$
+
 	
 insert into crm_integration_anlt.t_hst_call
     select
@@ -5192,14 +5154,14 @@ insert into crm_integration_anlt.t_hst_call
       target.opr_call = source.opr_call
       and source.dml_type = 'U';
 
-	--$$$
+
 	
 delete from crm_integration_anlt.t_fac_call
 using tmp_pt_load_calls
 where crm_integration_anlt.t_fac_call.opr_call = tmp_pt_load_calls.opr_call
 and tmp_pt_load_calls.dml_type = 'U';
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_fac_call
     select
@@ -5230,11 +5192,11 @@ insert into crm_integration_anlt.t_fac_call
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_fac_call;
 	  
-	--$$$
+
 	
 insert into crm_integration_anlt.t_fac_call_deal
 select
@@ -5364,11 +5326,11 @@ from
         rel_integr_proc.dat_processing
 	) scai_execution;
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_fac_call_deal;
 	
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -5575,7 +5537,7 @@ as
 
 analyze tmp_pt_load_orders;
 	
-	--$$$
+
 	
 insert into crm_integration_anlt.t_hst_order
     select
@@ -5587,14 +5549,14 @@ insert into crm_integration_anlt.t_hst_order
       target.opr_order = source.opr_order
       and source.dml_type = 'U';
 
-	--$$$
+
 	
 delete from crm_integration_anlt.t_fac_order
 using tmp_pt_load_orders
 where crm_integration_anlt.t_fac_order.opr_order = tmp_pt_load_orders.opr_order
 and tmp_pt_load_orders.dml_type = 'U';
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_fac_order
     select
@@ -5616,7 +5578,7 @@ insert into crm_integration_anlt.t_fac_order
     where
       dml_type in ('U','I');
 
---$$$
+
 
 analyze crm_integration_anlt.t_fac_order;
 
@@ -5848,7 +5810,7 @@ as
 
 analyse tmp_pt_load_order_line_items;
 	
-	--$$$
+
 	
 insert into crm_integration_anlt.t_hst_order_line_item
     select
@@ -5860,14 +5822,12 @@ insert into crm_integration_anlt.t_hst_order_line_item
       target.opr_order_line_item = source.opr_order_line_item
       and source.dml_type = 'U';
 
-	--$$$
 	
 delete from crm_integration_anlt.t_fac_order_line_item
 using tmp_pt_load_order_line_items
 where crm_integration_anlt.t_fac_order_line_item.opr_order_line_item=tmp_pt_load_order_line_items.opr_order_line_item
 and tmp_pt_load_order_line_items.dml_type = 'U';
 
-	--$$$
 	
 insert into crm_integration_anlt.t_fac_order_line_item
     select
@@ -5894,11 +5854,11 @@ insert into crm_integration_anlt.t_fac_order_line_item
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_fac_order_line_item;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -6288,7 +6248,7 @@ select
 
 analyze tmp_pt_load_paidad_index;
 	
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_paidad_index
 using tmp_pt_load_paidad_index
@@ -6297,7 +6257,7 @@ where
 	and t_lkp_paidad_index.opr_paidad_index = tmp_pt_load_paidad_index.opr_paidad_index
 	and t_lkp_paidad_index.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_paidad_index');
 
-	--$$$
+
 	
 update crm_integration_anlt.t_lkp_paidad_index
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_paidad_index') 
@@ -6306,7 +6266,7 @@ where source.cod_paidad_index = crm_integration_anlt.t_lkp_paidad_index.cod_paid
 and crm_integration_anlt.t_lkp_paidad_index.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_paidad_index
     select
@@ -6372,7 +6332,7 @@ insert into crm_integration_anlt.t_lkp_paidad_index
     where
       dml_type in ('U','I');
 
---$$$
+
 
 analyze crm_integration_anlt.t_lkp_paidad_index;
 	  
@@ -6704,7 +6664,7 @@ select a.*  from (
 
 analyze tmp_pt_load_atlas_user;	
 
-	--$$$
+
 	
 delete from crm_integration_anlt.t_lkp_atlas_user
 using tmp_pt_load_atlas_user
@@ -6713,7 +6673,7 @@ where
 	and t_lkp_atlas_user.opr_atlas_user = tmp_pt_load_atlas_user.opr_atlas_user
 	and t_lkp_atlas_user.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user');
 	
-	--$$$
+
 	
 update crm_integration_anlt.t_lkp_atlas_user
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') 
@@ -6722,7 +6682,7 @@ where source.cod_atlas_user = crm_integration_anlt.t_lkp_atlas_user.cod_atlas_us
 and crm_integration_anlt.t_lkp_atlas_user.valid_to = 20991231
 and source.dml_type in('U','D');
 
-	--$$$
+
 	
 insert into crm_integration_anlt.t_lkp_atlas_user
 	 select
@@ -6759,11 +6719,11 @@ insert into crm_integration_anlt.t_lkp_atlas_user
     where
       dml_type in ('U','I');
 
-	--$$$
+
 	
 analyze crm_integration_anlt.t_lkp_atlas_user;
 	  
-	--$$$
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -7244,11 +7204,11 @@ as
 	--and 1 = 0
 );
 
---$$$
+
 
 analyze tmp_pt_load_answer_step1_outgoing;
 
---$$$
+
 
 create temp table tmp_pt_load_answer_step2_outgoing
 distkey(opr_ad)
@@ -7288,24 +7248,24 @@ as
     and source_table.cod_source_system = lkp_atlas_receiver.cod_source_system -- new
     and lkp_atlas_receiver.valid_to = 20991231 ;
  
---$$$
+
 
 analyze tmp_pt_load_answer_step2_outgoing;
   
---$$$
+
 	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_outgoing);
 
---$$$
+
 
 delete from crm_integration_anlt.t_fac_answer_outgoing
 where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_outgoing)
 and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_outgoing);
 
---$$$
+
 
 insert into crm_integration_anlt.t_fac_answer_outgoing
     select
@@ -7334,7 +7294,7 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
     from
       tmp_pt_load_answer_step2_outgoing;
 
---$$$
+
 
 analyze crm_integration_anlt.t_fac_answer_outgoing;
 
@@ -7553,11 +7513,10 @@ as
 	--and 1 = 0
 );
 
---$$$
+
 
 analyze tmp_pt_load_answer_step1_incoming;
 
---$$$
 
 create temp table tmp_pt_load_answer_step2_incoming
 distkey(opr_ad)
@@ -7596,24 +7555,24 @@ as
     and source_table.cod_source_system = lkp_atlas_sender.cod_source_system -- new
     and lkp_atlas_sender.valid_to = 20991231 ;
 
---$$$
+
 
 analyze tmp_pt_load_answer_step2_incoming;
 
---$$$
+
 
 insert into crm_integration_anlt.t_hst_answer_incoming
 select * from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_incoming)
 and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_incoming);
 
---$$$
+
 
 delete from crm_integration_anlt.t_fac_answer_incoming
 where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_incoming)
 and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_incoming);
 
---$$$
+
 
 insert into crm_integration_anlt.t_fac_answer_incoming
     select
@@ -7642,7 +7601,7 @@ insert into crm_integration_anlt.t_fac_answer_incoming
     from
       tmp_pt_load_answer_step2_incoming;
 
---$$$
+
 
 analyze crm_integration_anlt.t_fac_answer_incoming;
 	  
@@ -7838,11 +7797,11 @@ sortkey(opr_ad, opr_event, cod_source_system)
            --and 1 = 0
         );
 
---$$$
+
 
 analyze tmp_pt_load_web_step1;
 
---$$$
+
 		
 create temp table tmp_pt_load_web
 distkey(dat_event)
@@ -7865,17 +7824,17 @@ as
         coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
     and lkp_event.valid_to(+) = 20991231;
 
---$$$
+
 
 analyze tmp_pt_load_web;
 
---$$$
+
 	
 delete from crm_integration_anlt.t_fac_web
 where crm_integration_anlt.t_fac_web.dat_event in (select distinct dat_event from tmp_pt_load_web)
 and crm_integration_anlt.t_fac_web.cod_source_system in (select distinct cod_source_system from tmp_pt_load_web);
 
---$$$
+
 
 insert into crm_integration_anlt.t_fac_web
     select 
@@ -7890,7 +7849,7 @@ insert into crm_integration_anlt.t_fac_web
     from
       tmp_pt_load_web;
 
---$$$
+
 
 analyze crm_integration_anlt.t_fac_web;
 
