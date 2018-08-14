@@ -1099,7 +1099,7 @@ from
 				base_contact.cod_contact_parent,
 				scai.dat_processing dat_snap,
 				base_contact.cod_source_system,
-				package.expiry as custom_field_value,
+				package.expire as custom_field_value,
 				row_number()
 				over (
 					partition by cod_contact
