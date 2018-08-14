@@ -1239,7 +1239,176 @@ drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_2;
 drop table if exists crm_integration_anlt.tmp_pl_olx_calc_active_package_expiry_date_3;
 
---$$$----------------------
+--$$$
+
+-- CREATE TEMPORARY TABLE - KPI OLX.BASE.120 (# Units left)
+create table crm_integration_anlt.tmp_pl_olx_calc_package_units_left_1 as
+select
+	source.cod_contact,
+	cod_contact_parent,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(
+select
+	cod_contact,
+	cod_contact_parent,
+	cod_custom_field,
+	dat_snap,
+	cod_source_system,
+	coalesce( custom_field_value,0) as custom_field_value
+from
+	(
+	select
+		cod_contact,
+		cod_contact_parent,
+		dat_snap,
+		cod_source_system,
+		max(custom_field_value) as custom_field_value
+	from(
+			select
+				base_contact.cod_contact,
+				base_contact.cod_contact_parent,
+				scai.dat_processing dat_snap,
+				base_contact.cod_source_system,
+				package.units_left_in_packet as custom_field_value,
+				row_number()
+				over (
+					partition by cod_contact
+					order by coalesce(atlas_user.created_at, '1900-01-01') ) rn
+			from (select bought bought_at, user_id, q.limit-usage as units_left_in_packet,  name type_of_packet, expire expires 
+					from
+					(select bought, expire, a2.name, a2.limit, a1.left unit_left, count(*) as usage, a4.user_id
+					from main.db_atlas.olxpl_nnl_userpackets a1
+					  join main.db_atlas.olxpl_nnl_variants a2 on a2.variant_id=a1.variant_id
+					  join main.db_atlas.olxpl_nnl_usage_log a3 on a1.userpacket_id=a3.userpacket_id
+					  join db_atlas.olxpl_ads a4 on a4.id=a3.ad_id
+					where a2.limit>1 
+						  and expire>current_date
+					group by bought, expire, a2.name, a2.limit, a1.left, a4.user_id) q
+				 ) package,
+				crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				crm_integration_anlt.t_lkp_contact base_contact,
+				crm_integration_anlt.t_rel_scai_country_integration scai
+			where 1 = 1
+				and package.user_id (+) = atlas_user.opr_atlas_user
+				and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user (+))
+				and atlas_user.cod_source_system (+) = 9
+				and base_contact.cod_source_system = 13
+				and atlas_user.valid_to (+) = 20991231
+				and base_contact.valid_to = 20991231
+				and scai.cod_integration = 50000
+				and scai.cod_country = 2
+		)
+		where 1=1
+		and rn = 1
+		group by 	cod_contact,
+							cod_contact_parent,
+							dat_snap ,
+							cod_source_system
+	) a,
+   crm_integration_anlt.t_rel_scai_country_integration scai,
+		(
+			select
+			  rel.cod_custom_field,
+			  rel.flg_active
+			from
+			  crm_integration_anlt.t_lkp_kpi kpi,
+			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			where
+			  kpi.cod_kpi = rel.cod_kpi
+			  and lower(kpi.dsc_kpi) = '# units left'
+			  and rel.cod_source_system = 13
+		) kpi_custom_field
+    where 1=1
+	and scai.cod_integration = 50000
+    and scai.cod_country = 2
+	and kpi_custom_field.flg_active = 1 )  source 
+  ;
+
+--$$$
+		
+--Calculate for employees
+create table crm_integration_anlt.tmp_pl_olx_calc_package_units_left_2 as
+   select source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+	from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_contact_parent is not null
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);	
+
+--$$$
+
+--Calculate for companies and contacts not associated with companies
+create table crm_integration_anlt.tmp_pl_olx_calc_package_units_left_3 as
+   select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system
+	,sum(source.custom_field_value) custom_field_value
+	from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(source.cod_contact_parent, source.cod_contact) = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+  group by
+  source.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+	nvl(source.cod_contact_parent,source.cod_contact)
+	 ;  
+
+--$$$
+
+-- HST INSERT - KPI OLX.BASE.120 (# Units left)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_2
+			union
+			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_3);
+
+--$$$
+
+-- SNAP DELETE - KPI OLX.BASE.120 (# Units left)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_2
+			union
+			select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_3);
+
+--$$$
+
+--KPI OLX.BASE.120 (# Units left)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+	SELECT
+		*
+	from
+		(select * from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_2
+		union
+		select * from crm_integration_anlt.tmp_pl_olx_calc_package_units_left_3);
+
+--$$$
+
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_package_units_left_1;
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_package_units_left_2;
+drop table if exists crm_integration_anlt.tmp_pl_olx_calc_package_units_left_3;
+
+--$$$
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
 create table crm_integration_anlt.tmp_pl_olx_calc_replies_1 as
