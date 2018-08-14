@@ -1499,6 +1499,7 @@ as
     max_cod_base_source.max_cod,
     row_number() over (order by source_table.opr_base_source desc) new_cod,
     target.cod_base_source,
+	target.valid_from,
     case
       --when target.cod_base_source is null then 'I'
 	  when target.cod_base_source is null or (source_table.hash_base_source != target.hash_base_source and target.valid_from = source_table.dat_processing) then 'I'
@@ -1603,7 +1604,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_base_source
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_source')
+									then cod_base_source else max_cod + new_cod end
         when dml_type = 'U' then cod_base_source
       end cod_base_source,
       opr_base_source,
@@ -1784,6 +1787,7 @@ as
     max_cod_base_user.max_cod,
     row_number() over (order by source_table.opr_base_user desc) new_cod,
     target.cod_base_user,
+	target.valid_from,
     case
       --when target.cod_base_user is null then 'I'
 	  when target.cod_base_user is null or (source_table.hash_base_user != target.hash_base_user and target.valid_from = source_table.dat_processing) then 'I'
@@ -1916,7 +1920,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_base_user
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_user')
+									then cod_base_user else max_cod + new_cod end
         when dml_type = 'U' then cod_base_user
       end cod_base_user,
       opr_base_user,
@@ -2100,6 +2106,7 @@ as
     max_cod_task.max_cod,
     row_number() over (order by source_table.opr_task desc) new_cod,
     target.cod_task,
+	target.valid_from,
     case
       --when target.cod_task is null then 'I'
 	  when target.cod_task is null or (source_table.hash_task != target.hash_task and target.valid_from = source_table.dat_processing) then 'I'
@@ -2220,7 +2227,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_task
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_task')
+									then cod_task else max_cod + new_cod end
         when dml_type = 'U' then cod_task
       end cod_task,
       opr_task,
@@ -2394,6 +2403,7 @@ select
     max_cod_call_outcome.max_cod,
     row_number() over (order by source_table.opr_call_outcome desc) new_cod,
     target.cod_call_outcome,
+	target.valid_from,
     case
       --when target.cod_call_outcome is null then 'I'
 	  when target.cod_call_outcome is null or (source_table.hash_call_outcome != target.hash_call_outcome and target.valid_from = source_table.dat_processing) then 'I'
@@ -2498,7 +2508,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_call_outcome
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_call_outcome')
+									then cod_call_outcome else max_cod + new_cod end
         when dml_type = 'U' then cod_call_outcome
       end cod_call_outcome,
       opr_call_outcome,
@@ -2686,6 +2698,7 @@ select
     max_cod_contacts.max_cod,
     row_number() over (order by source_table.opr_contact desc) new_cod,
     target.cod_contact,
+	target.valid_from,
     case
       --when target.cod_contact is null then 'I'
 	  when target.cod_contact is null or (source_table.hash_contact != target.hash_contact and target.valid_from = source_table.dat_processing) then 'I'
@@ -2850,7 +2863,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_contact
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact')
+									then cod_contact else max_cod + new_cod end
         when dml_type = 'U' then cod_contact
       end cod_contact,
       opr_contact,
@@ -3580,6 +3595,7 @@ as
     source_table.custom_fields,
     source_table.tags,
     source_table.cod_execution,
+	target.valid_from,
     case
       --when target.cod_lead is null then 'I'
 	  when target.cod_lead is null or (source_table.hash_lead != target.hash_lead and target.valid_from = source_table.dat_processing) then 'I'
@@ -3721,7 +3737,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_lead
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_lead')
+									then cod_lead else max_cod + new_cod end
         when dml_type = 'U' then cod_lead
       end cod_lead,
       opr_lead,
@@ -3908,6 +3926,7 @@ as
     source_table.created_at,
     source_table.updated_at,
     source_table.cod_execution,
+	target.valid_from,
     case
       --when target.cod_loss_reason is null then 'I'
 	  when target.cod_loss_reason is null or (source_table.hash_loss_reason != target.hash_loss_reason and target.valid_from = source_table.dat_processing) then 'I'
@@ -4012,7 +4031,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_loss_reason
 	select
 	  case
-		when dml_type = 'I' then max_cod + new_cod
+		when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_loss_reason')
+									then cod_loss_reason else max_cod + new_cod end
 		when dml_type = 'U' then cod_loss_reason
 	  end cod_loss_reason,
 	  opr_loss_reason,
@@ -4178,6 +4199,7 @@ as
     max_cod_pipeline.max_cod,
     row_number() over (order by source_table.opr_pipeline desc) new_cod,
     target.cod_pipeline,
+	target.valid_from,
     case
       --when target.cod_pipeline is null then 'I'
 	  when target.cod_pipeline is null or (source_table.hash_pipeline != target.hash_pipeline and target.valid_from = source_table.dat_processing) then 'I'
@@ -4278,7 +4300,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_pipeline
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_pipeline')
+									then cod_pipeline else max_cod + new_cod end
         when dml_type = 'U' then cod_pipeline
       end cod_pipeline,
       opr_pipeline,
@@ -4446,6 +4470,7 @@ as
     source_table.likelihood,
     source_table.flg_active,
     source_table.cod_execution,
+	target.valid_from,
     case
       --when target.cod_stage is null then 'I'
 	  when target.cod_stage is null or (source_table.hash_stages != target.hash_stages and target.valid_from = source_table.dat_processing) then 'I'
@@ -4553,7 +4578,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_stage
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage')
+									then cod_stage else max_cod + new_cod end
         when dml_type = 'U' then cod_stage
       end cod_stage,
       opr_stage,
@@ -4736,6 +4763,7 @@ as
     max_cod_deals.max_cod,
     row_number() over (order by source_table.opr_deal desc) new_cod,
     target.cod_deal,
+	target.valid_from,
     case
       --when target.cod_deal is null then 'I'
 	  when target.cod_deal is null or (source_table.hash_deal != target.hash_deal and target.valid_from = source_table.dat_processing) then 'I'
@@ -4900,7 +4928,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_deal
     select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_deal')
+									then cod_deal else max_cod + new_cod end
         when dml_type = 'U' then cod_deal
       end cod_deal,
       opr_deal,
@@ -6578,6 +6608,7 @@ select a.*  from (
     max_cod_atlas_user.max_cod,
     row_number() over (order by source_table.opr_atlas_user desc) new_cod,
     target.cod_atlas_user,
+	target.valid_from,
     case
       --when target.cod_atlas_user is null then 'I'
 	  when target.cod_atlas_user is null or (source_table.hash_atlas_user != target.hash_atlas_user and target.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user')) then 'I'
@@ -6761,7 +6792,9 @@ and source.dml_type in('U','D');
 insert into crm_integration_anlt.t_lkp_atlas_user
 	 select
       case
-        when dml_type = 'I' then max_cod + new_cod
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 2 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') 
+									then cod_atlas_user else max_cod + new_cod end
         when dml_type = 'U' then cod_atlas_user
       end cod_atlas_user,
 	  opr_atlas_user,
