@@ -189,7 +189,7 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (Last login)
-create table crm_integration_anlt.tmp_pt_olx_calc_last_login as
+create temp table tmp_pt_olx_calc_last_login as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -268,13 +268,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_login);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_last_login);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.085 (Last login)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_login);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_last_login);
 
 --$$$
 
@@ -283,16 +283,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_last_login;
+		tmp_pt_olx_calc_last_login;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_last_login;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.093 (City)
-create table crm_integration_anlt.tmp_pt_olx_calc_city as
+create temp table tmp_pt_olx_calc_city as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -365,13 +363,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_city);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_city);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.093 (City)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_city);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_city);
 
 --$$$
 
@@ -380,16 +378,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_city;
+		tmp_pt_olx_calc_city;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_city;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.031 (Created date)
-create table crm_integration_anlt.tmp_pt_olx_calc_created_date as
+create temp table tmp_pt_olx_calc_created_date as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -460,13 +456,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_created_date);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_created_date);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.031 (Created date)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_created_date);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_created_date);
 
 --$$$
 
@@ -475,16 +471,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_created_date;
+		tmp_pt_olx_calc_created_date;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_created_date;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.086 (# Logins last 30 days)
-create table crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days as
+create temp table tmp_pt_olx_calc_logins_last_30_days as
 SELECT
 	source.cod_contact,
 	source.cod_custom_field,
@@ -559,13 +553,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_logins_last_30_days);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.086 (# Logins last 30 days)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_logins_last_30_days);
 
 --$$$
 
@@ -574,16 +568,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days;
+		tmp_pt_olx_calc_logins_last_30_days;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_logins_last_30_days;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.012 (Last package purchased)
-create table crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased as
+create temp table tmp_pt_olx_calc_last_package_purchased as
 select
 	source.cod_contact,
 	source.cod_custom_field,
@@ -686,13 +678,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_last_package_purchased);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.012 (Last package purchased)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_last_package_purchased);
 
 --$$$
 
@@ -702,16 +694,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	SELECT
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased;
+		tmp_pt_olx_calc_last_package_purchased;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_last_package_purchased;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.091 (Wallet)
-create table crm_integration_anlt.tmp_pt_olx_calc_wallet as
+create temp table tmp_pt_olx_calc_wallet as
 select
  core.cod_contact,
  core.cod_custom_field,
@@ -796,13 +786,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_wallet);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_wallet);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_wallet);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_wallet);
 
 --$$$
 
@@ -811,16 +801,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_wallet;
+    tmp_pt_olx_calc_wallet;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_wallet;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.006 (# Active ads per category)
-create table crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core as
+create temp table tmp_pt_olx_calc_active_ads_per_category_core as
 select
 	b.cod_contact,
 	lower(b.email) email,
@@ -881,7 +869,7 @@ where
 
 --$$$
 
-create table crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core as
+create temp table tmp_pt_imovirtual_calc_active_ads_per_category_core as
 select
 	b.cod_contact,
 	lower(b.email) email,
@@ -942,7 +930,7 @@ where
 
 --$$$
 
-create table crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core as
+create temp table tmp_pt_standvirtual_calc_active_ads_per_category_core as
 select
 	b.cod_contact,
 	lower(b.email) email,
@@ -1003,7 +991,7 @@ where
 
 --$$$
 
-create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final as
+create temp table tmp_pt_all_calc_active_ads_per_category_final as
 	select
 		distinct source_imo.cod_contact,
 		source_imo.cod_custom_field,
@@ -1011,8 +999,8 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 		source_imo.cod_source_system,
 		source_imo.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
-		crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
+		tmp_pt_olx_calc_active_ads_per_category_core source_olx,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 	 where
 		source_imo.email = source_olx.email(+)
@@ -1030,8 +1018,8 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 		source_stv.cod_source_system,
 		source_stv.custom_field_value + case when source_olx.cod_contact is not null then ' || ' + source_olx.custom_field_value else '' end custom_field_value
 	from
-		crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
+		tmp_pt_olx_calc_active_ads_per_category_core source_olx,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 	 where
 		source_stv.email = source_olx.email(+)
@@ -1057,9 +1045,9 @@ create table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final 
 					else ''
 			end custom_field_value
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core source_olx,
-		crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
-		crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
+		tmp_pt_olx_calc_active_ads_per_category_core source_olx,
+		tmp_pt_imovirtual_calc_active_ads_per_category_core source_imo,
+		tmp_pt_standvirtual_calc_active_ads_per_category_core source_stv,
 		crm_integration_anlt.t_fac_base_integration_snap fac_snap
 	 where
 		source_olx.email = source_imo.email(+)
@@ -1080,7 +1068,7 @@ where (cod_contact, cod_custom_field) in (
     cod_contact,
     cod_custom_field
   from
-    crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final
+    tmp_pt_all_calc_active_ads_per_category_final
   )
 ;
 
@@ -1093,7 +1081,7 @@ where (cod_contact, cod_custom_field) in (
     cod_contact,
     cod_custom_field
   from
-    crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final
+    tmp_pt_all_calc_active_ads_per_category_final
   )
 ;
 
@@ -1104,19 +1092,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final;
+    tmp_pt_all_calc_active_ads_per_category_final;
 
---$$$
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pt_imovirtual_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pt_standvirtual_calc_active_ads_per_category_core;
-drop table crm_integration_anlt.tmp_pt_all_calc_active_ads_per_category_final;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
-create table crm_integration_anlt.tmp_pt_olx_calc_replies as
+create temp table tmp_pt_olx_calc_replies as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1211,13 +1194,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_replies);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.023 (# Replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_replies);
 
 --$$$
 
@@ -1226,16 +1209,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_replies;
+    tmp_pt_olx_calc_replies;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_replies;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
-create table crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad as
+create temp table tmp_pt_olx_calc_replies_per_ad as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1334,13 +1315,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_replies_per_ad);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.081 (# Replies per Ad)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_replies_per_ad);
 
 --$$$
 
@@ -1349,16 +1330,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad;
+    tmp_pt_olx_calc_replies_per_ad;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_replies_per_ad;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.082 (# Ads with replies)
-create table crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies as
+create temp table tmp_pt_olx_calc_ads_with_replies as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1457,13 +1436,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_ads_with_replies);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.082 (# Ads with replies)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_ads_with_replies);
 
 --$$$
 
@@ -1472,16 +1451,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
       *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies;
+    tmp_pt_olx_calc_ads_with_replies;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_ads_with_replies;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.084 (# Views)
-create table crm_integration_anlt.tmp_pt_olx_calc_views as
+create temp table tmp_pt_olx_calc_views as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1570,13 +1547,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_views);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_views);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.084 (# Views)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_views);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_views);
 
 --$$$
 
@@ -1585,16 +1562,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_views;
+    tmp_pt_olx_calc_views;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_views;
 
 --$$$
 
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Active package expiry date)
-create table crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date as
+create temp table tmp_pt_olx_calc_active_package_expiry_date as
 select
 	source.cod_contact,
 	source.cod_custom_field,
@@ -1687,14 +1662,14 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_active_package_expiry_date);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.088 (Active package expiry date)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-  (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date);
+  (select cod_contact, cod_custom_field from tmp_pt_olx_calc_active_package_expiry_date);
 
 --$$$
 
@@ -1703,17 +1678,15 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date;
+    tmp_pt_olx_calc_active_package_expiry_date;
 -- 8106 Active package expiry date
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_active_package_expiry_date;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.014 (Max days since last call)
-create table crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call as
+create temp table tmp_pt_olx_calc_max_days_since_last_call as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -1794,13 +1767,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_max_days_since_last_call);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.014 (Max days since last call)
 delete from crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_max_days_since_last_call);
 
 --$$$
 
@@ -1809,16 +1782,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
   from
-    crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call;
+    tmp_pt_olx_calc_max_days_since_last_call;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_max_days_since_last_call;
 
 --$$$
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue (0) - Total / VAS / Listings) 
 -- CREATE TMP - KPI OLX.BASE.XXX (Revenue (-1) - Total / VAS / Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue as
+create temp table tmp_pt_olx_calc_revenue as
 	select
 		base_contact.cod_contact,
 		base_contact.cod_source_system,
@@ -1900,7 +1871,7 @@ where
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
 -- CREATE TMP - KPI OLX.BASE.101 (Revenue (0) - VAS)
 -- CREATE TMP - KPI OLX.BASE.100 (Revenue (0) - Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_kpi as
+create temp table tmp_pt_olx_calc_revenue_0_kpi as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -1934,7 +1905,7 @@ from
 					rev_olx.val_revenue_vas_net,
 					dsc_kpi
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue rev_olx,
+					tmp_pt_olx_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -1977,7 +1948,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_kpi);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_revenue_0_kpi);
 
 --$$$
 
@@ -1985,7 +1956,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 -- SNAP DELETE - KPI OLX.BASE.101 (Revenue (0) - VAS)
 -- SNAP DELETE - KPI OLX.BASE.100 (Revenue (0) - Listings)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_0_kpi);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_revenue_0_kpi);
 
 --$$$
 
@@ -1996,18 +1967,16 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_0_kpi;
+		tmp_pt_olx_calc_revenue_0_kpi;
 
---$$$
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_0_kpi;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (-1) - Total)
 -- CREATE TMP - KPI OLX.BASE.101 (Revenue (-1) - VAS)
 -- CREATE TMP - KPI OLX.BASE.103 (Revenue (-1) - Listings)
-create table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_kpi as
+create temp table tmp_pt_olx_calc_revenue_1_kpi as
 select
 	core.cod_contact,
 	core.cod_custom_field,
@@ -2041,7 +2010,7 @@ from
 					rev_olx.val_revenue_vas_net,
 					dsc_kpi
 				from
-					crm_integration_anlt.tmp_pt_olx_calc_revenue rev_olx,
+					tmp_pt_olx_calc_revenue rev_olx,
 					(
 						select
 							rel.cod_custom_field,
@@ -2081,13 +2050,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_kpi);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_revenue_1_kpi);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.102 (Revenue (-1) - Total)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_revenue_1_kpi);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_revenue_1_kpi);
 
 --$$$
 
@@ -2096,20 +2065,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_revenue_1_kpi;
+		tmp_pt_olx_calc_revenue_1_kpi;
 
---$$$
 
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue_1_kpi;
-
---$$$
-
-drop table crm_integration_anlt.tmp_pt_olx_calc_revenue;
 
 --$$$
 
 -- CREATE TMP - KPI OLX.BASE.105 (User_ID)
-create table crm_integration_anlt.tmp_pt_olx_calc_user_id as
+create temp table tmp_pt_olx_calc_user_id as
 select
   source.cod_contact,
   source.cod_custom_field,
@@ -2180,13 +2143,13 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
       target.*
     from
       crm_integration_anlt.t_fac_base_integration_snap target
-    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_user_id);
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_user_id);
 
 --$$$
 
 -- SNAP DELETE - KPI OLX.BASE.105 (User_ID)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
-where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from crm_integration_anlt.tmp_pt_olx_calc_user_id);
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_olx_calc_user_id);
 
 --$$$
 
@@ -2195,11 +2158,9 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		crm_integration_anlt.tmp_pt_olx_calc_user_id;
+		tmp_pt_olx_calc_user_id;
 
---$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_olx_calc_user_id;
 
 --$$$
 

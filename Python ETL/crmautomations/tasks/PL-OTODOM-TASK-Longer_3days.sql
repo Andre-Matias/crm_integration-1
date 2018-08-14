@@ -21,3 +21,6 @@ insert into crm_integration_anlt.t_fac_auto_task
   where
 		1=1
 limit 3;	
+
+
+---alterar para só criar se não existir

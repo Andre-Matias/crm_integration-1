@@ -7,7 +7,7 @@ insert into crm_integration_anlt.t_fac_auto_task
 	cast(to_char(sysdate, 'YYYYMMDD') as integer) dat_task_rule,
 	null dat_task_sync,
 	2 cod_rule,
-	'Testing auto task creation script rule 1' content,
+	'Testing auto task creation script rule (Auto_task_1)' content,
 	'contact' resource_type,
 	to_char (sysdate + 5000, 'YYYYMMDD HH24:MI:SS') due_date,
 	1 owner_id,

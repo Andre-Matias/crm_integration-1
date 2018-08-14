@@ -58,9 +58,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_resource_type (SCD1) #
 -- #############################################
 	
-drop table if exists crm_integration_anlt.tmp_pt_load_resource_type;
 
-create table crm_integration_anlt.tmp_pt_load_resource_type
+
+create temp table tmp_pt_load_resource_type
 as
 select
   row_number() over (order by source_table.opr_resource_type) new_cod,
@@ -117,7 +117,7 @@ select
 where
   source_table.opr_resource_type = target.opr_resource_type (+);
 
-analyze crm_integration_anlt.tmp_pt_load_resource_type;
+analyze tmp_pt_load_resource_type;
 
 --$$$
 
@@ -131,7 +131,7 @@ insert into crm_integration_anlt.t_lkp_resource_type
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_resource_type
+      tmp_pt_load_resource_type
     where
       dml_type = 'I';
 
@@ -201,10 +201,6 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 --$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_load_resource_type;
-
---$$$
-
 -- #######################
 -- ####    PASSO 3    ####
 -- #######################
@@ -265,9 +261,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_industry (SCD1)      #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_industry;
 
-create table crm_integration_anlt.tmp_pt_load_industry
+create temp table tmp_pt_load_industry
 as
 select
   row_number() over (order by source_table.opr_industry) new_cod,
@@ -326,7 +321,7 @@ where
   source_table.opr_industry = target.opr_industry (+)
   and source_table.cod_source_system = target.cod_source_system (+);
 
-analyze crm_integration_anlt.tmp_pt_load_industry;
+analyze tmp_pt_load_industry;
 
 --$$$
 
@@ -340,7 +335,7 @@ insert into crm_integration_anlt.t_lkp_industry
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_industry
+      tmp_pt_load_industry
     where
       dml_type = 'I';
 
@@ -408,9 +403,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_industry;
 
 --$$$
 
@@ -474,9 +466,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_lead_status (SCD1)   #
 -- #############################################	
 
-drop table if exists crm_integration_anlt.tmp_pt_load_lead_status;
-
-create table crm_integration_anlt.tmp_pt_load_lead_status
+create temp table tmp_pt_load_lead_status
 as
 select
   row_number() over (order by source_table.opr_lead_status) new_cod,
@@ -533,7 +523,7 @@ where
   source_table.opr_lead_status = target.opr_lead_status (+)
   and source_table.cod_source_system = target.cod_source_system (+);	
 
-analyze crm_integration_anlt.tmp_pt_load_lead_status;
+analyze tmp_pt_load_lead_status;
 
 --$$$
 
@@ -547,7 +537,7 @@ insert into crm_integration_anlt.t_lkp_lead_status
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_lead_status
+      tmp_pt_load_lead_status
     where
       dml_type = 'I';
 
@@ -617,10 +607,6 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 --$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_load_lead_status;
-
---$$$
-
 -- #######################
 -- ####    PASSO 3    ####
 -- #######################
@@ -681,9 +667,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_product (SCD1)   	   #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_product;
-
-create table crm_integration_anlt.tmp_pt_load_product
+create temp table tmp_pt_load_product
 as
 select
   row_number() over (order by source_table.opr_sku) new_cod,
@@ -740,7 +724,7 @@ where
   source_table.opr_sku = target.opr_sku (+)
   and source_table.cod_source_system = target.cod_source_system (+);
   
-analyze crm_integration_anlt.tmp_pt_load_product;
+analyze tmp_pt_load_product;
 
 --$$$
 
@@ -754,7 +738,7 @@ insert into crm_integration_anlt.t_lkp_product
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_product
+      tmp_pt_load_product
     where
       dml_type = 'I';
 
@@ -822,9 +806,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_product;
 
 --$$$
 
@@ -888,9 +869,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_currency (SCD1)      #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_currency;
-
-create table crm_integration_anlt.tmp_pt_load_currency
+create temp table tmp_pt_load_currency
 as
 select
   row_number() over (order by source_table.opr_currency) new_cod,
@@ -941,7 +920,7 @@ select
 where
   source_table.opr_currency = target.opr_currency (+);
 
-analyze crm_integration_anlt.tmp_pt_load_currency;
+analyze tmp_pt_load_currency;
 
 --$$$
 
@@ -955,7 +934,7 @@ insert into crm_integration_anlt.t_lkp_currency
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_currency
+      tmp_pt_load_currency
     where
       dml_type = 'I';
 
@@ -1025,10 +1004,6 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 --$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_load_currency;
-
---$$$
-
 -- #######################
 -- ####    PASSO 3    ####
 -- #######################
@@ -1089,9 +1064,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_source (SCD1)        #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_source;
 
-create table crm_integration_anlt.tmp_pt_load_source
+create temp table tmp_pt_load_source
 as
 select
   row_number() over (order by source_table.opr_source) new_cod,
@@ -1152,7 +1126,7 @@ select
 where
   source_table.opr_source = target.opr_source (+);
   
-analyze crm_integration_anlt.tmp_pt_load_source;
+analyze tmp_pt_load_source;
 
 --$$$
 
@@ -1166,7 +1140,7 @@ insert into crm_integration_anlt.t_lkp_source
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_source
+      tmp_pt_load_source
     where
       dml_type = 'I';
 
@@ -1234,9 +1208,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_source;
 
 --$$$
 
@@ -1300,9 +1271,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_event (SCD1)         #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_event;
 
-create table crm_integration_anlt.tmp_pt_load_event
+create temp table tmp_pt_load_event
 as
 select
   row_number() over (order by source_table.opr_event) new_cod,
@@ -1355,7 +1325,7 @@ select
 where
   source_table.opr_event = target.opr_event (+);
 
-analyze crm_integration_anlt.tmp_pt_load_event;
+analyze tmp_pt_load_event;
 
 --$$$
 
@@ -1369,7 +1339,7 @@ insert into crm_integration_anlt.t_lkp_event
       cod_source_system,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_event
+      tmp_pt_load_event
     where
       dml_type = 'I';
 
@@ -1437,9 +1407,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_event;
   
 --$$$
   
@@ -1503,9 +1470,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		 LOADING t_lkp_base_source         #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_base_source;
 
-create table crm_integration_anlt.tmp_pt_load_base_source 
+create temp table tmp_pt_load_base_source 
 distkey(cod_source_system)
 sortkey(cod_base_source, opr_base_source)
 as
@@ -1603,12 +1569,12 @@ as
     and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type (+)
 	and lkp_resource_type.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_base_source;
+analyze tmp_pt_load_base_source;
 	
 --$$$
 	
 delete from crm_integration_anlt.t_lkp_base_source
-using crm_integration_anlt.tmp_pt_load_base_source
+using tmp_pt_load_base_source
 where 
 	tmp_pt_load_base_source.dml_type = 'I' 
 	and t_lkp_base_source.opr_base_source = tmp_pt_load_base_source.opr_base_source 
@@ -1618,7 +1584,7 @@ where
 	
 update crm_integration_anlt.t_lkp_base_source
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_source')
-from crm_integration_anlt.tmp_pt_load_base_source source
+from tmp_pt_load_base_source source
 where source.cod_base_source = crm_integration_anlt.t_lkp_base_source.cod_base_source
 and crm_integration_anlt.t_lkp_base_source.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -1642,7 +1608,7 @@ insert into crm_integration_anlt.t_lkp_base_source
       hash_base_source,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_base_source
+      tmp_pt_load_base_source
     where
       dml_type in ('U','I');
 
@@ -1689,7 +1655,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_base_source),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_base_source),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -1709,10 +1675,6 @@ and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
-
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_base_source;
 
 --$$$
 
@@ -1776,9 +1738,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		 LOADING t_lkp_base_user          #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_base_user;
 
-create table crm_integration_anlt.tmp_pt_load_base_user 
+create temp table tmp_pt_load_base_user 
 distkey(cod_source_system)
 sortkey(cod_base_user, opr_base_user)
 as
@@ -1917,12 +1878,12 @@ as
 	and coalesce(source_table.reports_to,-1) = target_base_user_responsible.opr_base_user(+)
 	and source_table.cod_source_system = target_base_user_responsible.cod_source_system (+); -- Portugal
 
-analyze crm_integration_anlt.tmp_pt_load_base_user;
+analyze tmp_pt_load_base_user;
 
 --$$$
 	
 delete from crm_integration_anlt.t_lkp_base_user
-using crm_integration_anlt.tmp_pt_load_base_user
+using tmp_pt_load_base_user
 where 
 	tmp_pt_load_base_user.dml_type = 'I' 
 	and t_lkp_base_user.opr_base_user = tmp_pt_load_base_user.opr_base_user 
@@ -1933,7 +1894,7 @@ where
 -- update valid_to in the updated/deleted records on source	
 update crm_integration_anlt.t_lkp_base_user
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_base_user') 
-from crm_integration_anlt.tmp_pt_load_base_user source
+from tmp_pt_load_base_user source
 where source.cod_base_user = crm_integration_anlt.t_lkp_base_user.cod_base_user
 and crm_integration_anlt.t_lkp_base_user.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -1969,7 +1930,7 @@ insert into crm_integration_anlt.t_lkp_base_user
       hash_base_user,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_base_user
+      tmp_pt_load_base_user
     where
       dml_type in ('U','I');
 
@@ -2016,7 +1977,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_base_user),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_base_user),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -2037,9 +1998,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_base_user;
 
 --$$$
 
@@ -2103,9 +2061,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		    LOADING t_lkp_task             #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_task;
 
-create table crm_integration_anlt.tmp_pt_load_task 
+create temp table tmp_pt_load_task 
 distkey(cod_source_system)
 sortkey(cod_task, opr_task)
 as
@@ -2228,12 +2185,12 @@ as
     and coalesce(source_table.opr_resource_type,'Unknown') = lkp_resource_type.opr_resource_type (+)
 	and lkp_resource_type.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_task;
+analyze tmp_pt_load_task;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_task
-using crm_integration_anlt.tmp_pt_load_task
+using tmp_pt_load_task
 where 
 	tmp_pt_load_task.dml_type = 'I' 
 	and t_lkp_task.opr_task = tmp_pt_load_task.opr_task 
@@ -2243,7 +2200,7 @@ where
 	
 update crm_integration_anlt.t_lkp_task
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_task')
-from crm_integration_anlt.tmp_pt_load_task source
+from tmp_pt_load_task source
 where source.cod_task = crm_integration_anlt.t_lkp_task.cod_task
 and crm_integration_anlt.t_lkp_task.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -2274,7 +2231,7 @@ insert into crm_integration_anlt.t_lkp_task
 	  hash_task,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_task
+      tmp_pt_load_task
     where
       dml_type in ('U','I');
 
@@ -2321,7 +2278,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_task),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_task),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -2342,9 +2299,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_task;
 
 --$$$
 
@@ -2408,9 +2362,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #        LOADING t_lkp_call_outcome         #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_call_outcome;
 
-create table crm_integration_anlt.tmp_pt_load_call_outcome 
+create temp table tmp_pt_load_call_outcome 
 distkey(cod_source_system)
 sortkey(cod_call_outcome, opr_call_outcome)
 as
@@ -2509,12 +2462,12 @@ select
 	and source.cod_source_system = lkp_user_creator.cod_source_system (+) -- new
 	and lkp_user_creator.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_call_outcome;
+analyze tmp_pt_load_call_outcome;
 
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_call_outcome
-using crm_integration_anlt.tmp_pt_load_call_outcome
+using tmp_pt_load_call_outcome
 where 
 	tmp_pt_load_call_outcome.dml_type = 'I' 
 	and t_lkp_call_outcome.opr_call_outcome = tmp_pt_load_call_outcome.opr_call_outcome 
@@ -2524,7 +2477,7 @@ where
 	
 update crm_integration_anlt.t_lkp_call_outcome
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_call_outcome') 
-from crm_integration_anlt.tmp_pt_load_call_outcome source
+from tmp_pt_load_call_outcome source
 where source.cod_call_outcome = crm_integration_anlt.t_lkp_call_outcome.cod_call_outcome
 and crm_integration_anlt.t_lkp_call_outcome.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -2548,7 +2501,7 @@ insert into crm_integration_anlt.t_lkp_call_outcome
       hash_call_outcome,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_call_outcome
+      tmp_pt_load_call_outcome
     where
       dml_type in ('U','I');
 
@@ -2595,7 +2548,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_call_outcome),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_call_outcome),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -2616,9 +2569,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_call_outcome;
 
 --$$$
 
@@ -2682,9 +2632,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_contact;
 
-create table crm_integration_anlt.tmp_pt_load_contact
+create temp table tmp_pt_load_contact
 distkey(cod_source_system)
 sortkey(cod_contact, opr_contact)
 as
@@ -2864,12 +2813,12 @@ select
 	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
 	and lkp_industry.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_contact;
+analyze tmp_pt_load_contact;
 
 	--$$$
 
 delete from crm_integration_anlt.t_lkp_contact
-using crm_integration_anlt.tmp_pt_load_contact
+using tmp_pt_load_contact
 where
 	tmp_pt_load_contact.dml_type = 'I'
 	and t_lkp_contact.opr_contact = tmp_pt_load_contact.opr_contact
@@ -2880,7 +2829,7 @@ where
 -- update valid_to in the updated/deleted records on source
 update crm_integration_anlt.t_lkp_contact
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact')
-from crm_integration_anlt.tmp_pt_load_contact source
+from tmp_pt_load_contact source
 where source.cod_contact = crm_integration_anlt.t_lkp_contact.cod_contact
 and crm_integration_anlt.t_lkp_contact.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -2927,7 +2876,7 @@ insert into crm_integration_anlt.t_lkp_contact
       hash_contact,
       cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_contact
+      tmp_pt_load_contact
     where
       dml_type in ('U','I','DI');
 
@@ -3016,7 +2965,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3099,9 +3048,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_lkp_custom_field          #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_contact_custom_field;
 
-create table crm_integration_anlt.tmp_pt_contact_custom_field 
+create temp table tmp_pt_contact_custom_field 
 distkey(cod_source_system)
 sortkey(custom_field_name, cod_source_system)
 as
@@ -3120,7 +3068,7 @@ as
         ts.cod_source_system,
         split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
       from
-        crm_integration_anlt.tmp_pt_load_contact ts,
+        tmp_pt_load_contact ts,
         (
           select
             *
@@ -3134,7 +3082,7 @@ as
                 (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
             )
           where
-            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_pt_load_contact)
+            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pt_load_contact)
         ) s
       where
         split_part(custom_fields, '","', s.gen_num) != ''
@@ -3142,13 +3090,12 @@ as
     )
 ;
 
-analyze crm_integration_anlt.tmp_pt_contact_custom_field;
+analyze tmp_pt_contact_custom_field;
 
 --$$$
 
-drop table if exists crm_integration_anlt.tmp_pt_load_custom_field;
-	
-create table crm_integration_anlt.tmp_pt_load_custom_field as
+
+create temp table tmp_pt_load_custom_field as
    select
     source_table.opr_custom_field,
     source_table.opr_custom_field dsc_custom_field,
@@ -3169,7 +3116,7 @@ create table crm_integration_anlt.tmp_pt_load_custom_field as
         cod_source_system,
         scai_execution.cod_execution
       from
-        crm_integration_anlt.tmp_pt_contact_custom_field,
+        tmp_pt_contact_custom_field,
         (
           select
             rel_integr_proc.dat_processing,
@@ -3216,7 +3163,7 @@ create table crm_integration_anlt.tmp_pt_load_custom_field as
     and cf_context.opr_custom_field_context = 'Contacts'
 	and source_table.cod_source_system = target.cod_source_system (+);
 	
-analyze crm_integration_anlt.tmp_pt_load_custom_field;
+analyze tmp_pt_load_custom_field;
 	
 	--$$$
 	
@@ -3231,7 +3178,7 @@ insert into crm_integration_anlt.t_lkp_custom_field
       20991231 valid_to,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_custom_field
+      tmp_pt_load_custom_field
     where
       dml_type = 'I';
 
@@ -3278,7 +3225,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3299,12 +3246,9 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+
+
 --$$$
-
---drop table if exists crm_integration_anlt.tmp_pt_contact_custom_field; ######### ESTA TABELA É ELIMINADA NO PROCESSO SEGUINTE
-drop table if exists crm_integration_anlt.tmp_pt_load_custom_field;
-
-	--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3366,9 +3310,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #    LOADING t_rel_contact_custom_field     #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_rel_contact_custom_field;
-
-create table crm_integration_anlt.tmp_pt_rel_contact_custom_field as
+create temp table tmp_pt_rel_contact_custom_field as
   select
     source.cod_contact,
     source.cod_custom_field,
@@ -3389,7 +3331,7 @@ create table crm_integration_anlt.tmp_pt_rel_contact_custom_field as
         tmp_cf.custom_field_value,
         scai_execution.cod_execution
       from
-        crm_integration_anlt.tmp_pt_contact_custom_field tmp_cf,
+        tmp_pt_contact_custom_field tmp_cf,
         crm_integration_anlt.t_lkp_contact contact,
         crm_integration_anlt.t_lkp_custom_field cf,
         (
@@ -3429,13 +3371,13 @@ create table crm_integration_anlt.tmp_pt_rel_contact_custom_field as
     and source.cod_source_system = target.cod_source_system(+)
     and target.valid_to(+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_rel_contact_custom_field;
+analyze tmp_pt_rel_contact_custom_field;
 	
 	--$$$
 	
 update crm_integration_anlt.t_rel_contact_custom_field
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_rel_contact_custom_field') 
-from crm_integration_anlt.tmp_pt_rel_contact_custom_field source
+from tmp_pt_rel_contact_custom_field source
 where source.cod_contact = crm_integration_anlt.t_rel_contact_custom_field.cod_contact
 and source.cod_custom_field = crm_integration_anlt.t_rel_contact_custom_field.cod_custom_field
 and source.cod_source_system = crm_integration_anlt.t_rel_contact_custom_field.cod_source_system
@@ -3454,7 +3396,7 @@ insert into crm_integration_anlt.t_rel_contact_custom_field
     20991231 valid_to,
 	cod_execution
   from
-    crm_integration_anlt.tmp_pt_rel_contact_custom_field
+    tmp_pt_rel_contact_custom_field
   where
     dml_type in ('I','U');
 
@@ -3501,7 +3443,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3522,11 +3464,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_rel_contact_custom_field;
-drop table if exists crm_integration_anlt.tmp_pt_contact_custom_field;
-drop table if exists crm_integration_anlt.tmp_pt_load_contact;
 
 --$$$
 	
@@ -3590,9 +3527,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_lead             #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_lead;
 
-create table crm_integration_anlt.tmp_pt_load_lead 
+create temp table tmp_pt_load_lead 
 distkey(cod_source_system)
 sortkey(cod_lead, opr_lead)
 as
@@ -3746,12 +3682,12 @@ as
 	and source_table.cod_source_system = lkp_lead_status.cod_source_system (+) -- new
 	and lkp_lead_status.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_lead;
+analyze tmp_pt_load_lead;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_lead
-using crm_integration_anlt.tmp_pt_load_lead
+using tmp_pt_load_lead
 where 
 	tmp_pt_load_lead.dml_type = 'I' 
 	and t_lkp_lead.opr_lead = tmp_pt_load_lead.opr_lead 
@@ -3762,7 +3698,7 @@ where
 -- update valid_to in the updated/deleted records on source	
 update crm_integration_anlt.t_lkp_lead
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_lead') 
-from crm_integration_anlt.tmp_pt_load_lead source
+from tmp_pt_load_lead source
 where source.cod_lead = crm_integration_anlt.t_lkp_lead.cod_lead
 and crm_integration_anlt.t_lkp_lead.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -3806,7 +3742,7 @@ insert into crm_integration_anlt.t_lkp_lead
       hash_lead,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_lead
+      tmp_pt_load_lead
     where
       dml_type in ('U','I');
 
@@ -3853,7 +3789,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_lead),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_lead),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3873,10 +3809,6 @@ and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
-
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_lead;
 
 --$$$
 	
@@ -3940,9 +3872,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #        LOADING t_lkp_loss_reason          #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_loss_reason;
 
-create table crm_integration_anlt.tmp_pt_load_loss_reason 
+create temp table tmp_pt_load_loss_reason 
 distkey(cod_source_system)
 sortkey(cod_loss_reason, opr_loss_reason)
 as
@@ -4041,12 +3972,12 @@ as
 	and source_table.cod_source_system = lkp_user_creator.cod_source_system (+) -- new
 	and lkp_user_creator.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_loss_reason;
+analyze tmp_pt_load_loss_reason;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_loss_reason
-using crm_integration_anlt.tmp_pt_load_loss_reason
+using tmp_pt_load_loss_reason
 where 
 	tmp_pt_load_loss_reason.dml_type = 'I' 
 	and t_lkp_loss_reason.opr_loss_reason = tmp_pt_load_loss_reason.opr_loss_reason 
@@ -4056,7 +3987,7 @@ where
 	
 update crm_integration_anlt.t_lkp_loss_reason
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_loss_reason') 
-from crm_integration_anlt.tmp_pt_load_loss_reason source
+from tmp_pt_load_loss_reason source
 where source.cod_loss_reason = crm_integration_anlt.t_lkp_loss_reason.cod_loss_reason
 and crm_integration_anlt.t_lkp_loss_reason.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -4078,7 +4009,7 @@ insert into crm_integration_anlt.t_lkp_loss_reason
 	  hash_loss_reason,
 	  cod_execution
 	from
-	  crm_integration_anlt.tmp_pt_load_loss_reason
+	  tmp_pt_load_loss_reason
 	where
 	  dml_type in ('U','I');
 
@@ -4125,7 +4056,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_loss_reason),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_loss_reason),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -4146,9 +4077,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_loss_reason;
 
 --$$$
 	
@@ -4212,9 +4140,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		   LOADING t_lkp_pipeline          #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_pipeline;
 
-create table crm_integration_anlt.tmp_pt_load_pipeline 
+create temp table tmp_pt_load_pipeline 
 distkey(cod_source_system)
 sortkey(cod_pipeline, opr_pipeline)
 as
@@ -4308,12 +4235,12 @@ as
     coalesce(source_table.opr_pipeline,-1) = target.opr_pipeline(+)
 	and source_table.cod_source_system = target.cod_source_system (+);
 
-analyze crm_integration_anlt.tmp_pt_load_pipeline;
+analyze tmp_pt_load_pipeline;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_pipeline
-using crm_integration_anlt.tmp_pt_load_pipeline
+using tmp_pt_load_pipeline
 where 
 	tmp_pt_load_pipeline.dml_type = 'I' 
 	and t_lkp_pipeline.opr_pipeline = tmp_pt_load_pipeline.opr_pipeline
@@ -4323,7 +4250,7 @@ where
 	
 update crm_integration_anlt.t_lkp_pipeline
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_pipeline') 
-from crm_integration_anlt.tmp_pt_load_pipeline source
+from tmp_pt_load_pipeline source
 where source.cod_pipeline = crm_integration_anlt.t_lkp_pipeline.cod_pipeline
 and crm_integration_anlt.t_lkp_pipeline.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -4345,7 +4272,7 @@ insert into crm_integration_anlt.t_lkp_pipeline
       hash_pipeline,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_pipeline
+      tmp_pt_load_pipeline
     where
       dml_type in ('U','I');
 
@@ -4392,7 +4319,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_pipeline),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_pipeline),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -4413,9 +4340,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_pipeline;
 
 --$$$
 	
@@ -4479,9 +4403,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		   LOADING t_lkp_stage             #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_stage;
 
-create table crm_integration_anlt.tmp_pt_load_stage 
+create temp table tmp_pt_load_stage 
 distkey(cod_source_system)
 sortkey(cod_stage, opr_stage)
 as
@@ -4583,12 +4506,12 @@ as
 	and source_table.cod_source_system = lkp_pipeline.cod_source_system (+) -- new
 	and lkp_pipeline.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_stage;
+analyze tmp_pt_load_stage;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_stage
-using crm_integration_anlt.tmp_pt_load_stage
+using tmp_pt_load_stage
 where 
 	tmp_pt_load_stage.dml_type = 'I' 
 	and t_lkp_stage.opr_stage = tmp_pt_load_stage.opr_stage
@@ -4598,7 +4521,7 @@ where
 	
 update crm_integration_anlt.t_lkp_stage
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_stage') 
-from crm_integration_anlt.tmp_pt_load_stage source
+from tmp_pt_load_stage source
 where source.cod_stage = crm_integration_anlt.t_lkp_stage.cod_stage
 and crm_integration_anlt.t_lkp_stage.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -4623,7 +4546,7 @@ insert into crm_integration_anlt.t_lkp_stage
       hash_stages,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_stage
+      tmp_pt_load_stage
     where
       dml_type in ('U','I');
 
@@ -4670,7 +4593,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_stage),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_stage),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -4691,9 +4614,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_stage;
 
 --$$$
 	
@@ -4757,9 +4677,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_deal              #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_deals;
 
-create table crm_integration_anlt.tmp_pt_load_deals 
+create temp table tmp_pt_load_deals 
 distkey(cod_source_system)
 sortkey(cod_deal, opr_deal)
 as
@@ -4933,12 +4852,12 @@ as
     and source_table.cod_source_system = lkp_contact.cod_source_system (+) -- new
     and lkp_contact.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_deals;
+analyze tmp_pt_load_deals;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_deal
-using crm_integration_anlt.tmp_pt_load_deals
+using tmp_pt_load_deals
 where 
 	tmp_pt_load_deals.dml_type = 'I' 
 	and t_lkp_deal.opr_deal = tmp_pt_load_deals.opr_deal
@@ -4948,7 +4867,7 @@ where
 	
 update crm_integration_anlt.t_lkp_deal
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_deal') 
-from crm_integration_anlt.tmp_pt_load_deals source
+from tmp_pt_load_deals source
 where source.cod_deal = crm_integration_anlt.t_lkp_deal.cod_deal
 and crm_integration_anlt.t_lkp_deal.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -4987,7 +4906,7 @@ insert into crm_integration_anlt.t_lkp_deal
       hash_deal,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_deals
+      tmp_pt_load_deals
     where
       dml_type in ('U','I');
 
@@ -5034,7 +4953,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_deals),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_deals),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -5055,9 +4974,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_deals;
 
 --$$$
 	
@@ -5121,9 +5037,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_fac_call             #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_calls;
 
-create table crm_integration_anlt.tmp_pt_load_calls 
+create temp table tmp_pt_load_calls 
 distkey(cod_source_system)
 sortkey(opr_call)
 as
@@ -5263,7 +5178,7 @@ where
   and source.cod_source_system = lkp_call_outcome.cod_source_system (+)
   and lkp_call_outcome.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_calls;
+analyze tmp_pt_load_calls;
 	
 	--$$$
 	
@@ -5272,7 +5187,7 @@ insert into crm_integration_anlt.t_hst_call
       target.*
     from
       crm_integration_anlt.t_fac_call target,
-      crm_integration_anlt.tmp_pt_load_calls source
+      tmp_pt_load_calls source
     where
       target.opr_call = source.opr_call
       and source.dml_type = 'U';
@@ -5280,9 +5195,9 @@ insert into crm_integration_anlt.t_hst_call
 	--$$$
 	
 delete from crm_integration_anlt.t_fac_call
-using crm_integration_anlt.tmp_pt_load_calls
-where crm_integration_anlt.t_fac_call.opr_call = crm_integration_anlt.tmp_pt_load_calls.opr_call
-and crm_integration_anlt.tmp_pt_load_calls.dml_type = 'U';
+using tmp_pt_load_calls
+where crm_integration_anlt.t_fac_call.opr_call = tmp_pt_load_calls.opr_call
+and tmp_pt_load_calls.dml_type = 'U';
 
 	--$$$
 	
@@ -5311,7 +5226,7 @@ insert into crm_integration_anlt.t_fac_call
       hash_call,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_calls
+      tmp_pt_load_calls
     where
       dml_type in ('U','I');
 
@@ -5339,7 +5254,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(opr_associated_deal,'[',''),']','') cases -- 0
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5352,7 +5267,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(split_part(opr_associated_deal, ',', 1),'[',''),']','') cases -- 1
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5365,7 +5280,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(split_part(opr_associated_deal, ',', 2),']',''),'[','') cases -- 2
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5378,7 +5293,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(split_part(opr_associated_deal, ',', 3),']',''),'[','') cases -- 3
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5391,7 +5306,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(split_part(opr_associated_deal, ',', 4),']',''),'[','') cases -- 4
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5404,7 +5319,7 @@ from
 			  opr_associated_deal,
 			  replace(replace(split_part(opr_associated_deal, ',', 5),']',''),'[','') cases -- 5
 			FROM
-			  crm_integration_anlt.tmp_pt_load_calls a,
+			  tmp_pt_load_calls a,
 			  crm_integration_anlt.t_lkp_source_system b
 			WHERE
 			  a.cod_source_system = b.cod_source_system
@@ -5420,7 +5335,7 @@ from
 		case when cod_call is null then new_cod else cod_call end cod_call,
 		-2 cod_deal
 	FROM
-		crm_integration_anlt.tmp_pt_load_calls a,
+		tmp_pt_load_calls a,
 		crm_integration_anlt.t_lkp_source_system b
 	WHERE
 		a.cod_source_system = b.cod_source_system
@@ -5492,7 +5407,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_calls),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_calls),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -5513,9 +5428,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_calls;
 
 --$$$
 	
@@ -5579,9 +5491,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_fac_order            #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_orders;
 
-create table crm_integration_anlt.tmp_pt_load_orders 
+create temp table tmp_pt_load_orders 
 distkey(cod_source_system)
 sortkey(opr_order)
 as
@@ -5662,7 +5573,7 @@ as
 	and source_table.cod_source_system = lkp_deals.cod_source_system (+)
     and lkp_deals.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_orders;
+analyze tmp_pt_load_orders;
 	
 	--$$$
 	
@@ -5671,7 +5582,7 @@ insert into crm_integration_anlt.t_hst_order
       target.*
     from
       crm_integration_anlt.t_fac_order target,
-      crm_integration_anlt.tmp_pt_load_orders source
+      tmp_pt_load_orders source
     where
       target.opr_order = source.opr_order
       and source.dml_type = 'U';
@@ -5679,9 +5590,9 @@ insert into crm_integration_anlt.t_hst_order
 	--$$$
 	
 delete from crm_integration_anlt.t_fac_order
-using crm_integration_anlt.tmp_pt_load_orders
-where crm_integration_anlt.t_fac_order.opr_order = crm_integration_anlt.tmp_pt_load_orders.opr_order
-and crm_integration_anlt.tmp_pt_load_orders.dml_type = 'U';
+using tmp_pt_load_orders
+where crm_integration_anlt.t_fac_order.opr_order = tmp_pt_load_orders.opr_order
+and tmp_pt_load_orders.dml_type = 'U';
 
 	--$$$
 	
@@ -5701,7 +5612,7 @@ insert into crm_integration_anlt.t_fac_order
       hash_order,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_orders
+      tmp_pt_load_orders
     where
       dml_type in ('U','I');
 
@@ -5748,7 +5659,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_orders),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_orders),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -5769,9 +5680,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_orders;
 
 --$$$
 	
@@ -5835,9 +5743,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #      LOADING t_fac_order_line_item       #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_order_line_items;
 
-create table crm_integration_anlt.tmp_pt_load_order_line_items 
+create temp table tmp_pt_load_order_line_items 
 distkey(cod_source_system)
 sortkey(opr_order_line_item)
 as
@@ -5939,7 +5846,7 @@ as
 	and source_table.cod_source_system = lkp_orders.cod_source_system (+)
 	and source_table.rn = 1; -- new
 
-analyse crm_integration_anlt.tmp_pt_load_order_line_items;
+analyse tmp_pt_load_order_line_items;
 	
 	--$$$
 	
@@ -5948,7 +5855,7 @@ insert into crm_integration_anlt.t_hst_order_line_item
       target.*
     from
       crm_integration_anlt.t_fac_order_line_item target,
-      crm_integration_anlt.tmp_pt_load_order_line_items source
+      tmp_pt_load_order_line_items source
     where
       target.opr_order_line_item = source.opr_order_line_item
       and source.dml_type = 'U';
@@ -5956,9 +5863,9 @@ insert into crm_integration_anlt.t_hst_order_line_item
 	--$$$
 	
 delete from crm_integration_anlt.t_fac_order_line_item
-using crm_integration_anlt.tmp_pt_load_order_line_items
-where crm_integration_anlt.t_fac_order_line_item.opr_order_line_item=crm_integration_anlt.tmp_pt_load_order_line_items.opr_order_line_item
-and crm_integration_anlt.tmp_pt_load_order_line_items.dml_type = 'U';
+using tmp_pt_load_order_line_items
+where crm_integration_anlt.t_fac_order_line_item.opr_order_line_item=tmp_pt_load_order_line_items.opr_order_line_item
+and tmp_pt_load_order_line_items.dml_type = 'U';
 
 	--$$$
 	
@@ -5983,7 +5890,7 @@ insert into crm_integration_anlt.t_fac_order_line_item
 	  hash_order_line_item,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_order_line_items
+      tmp_pt_load_order_line_items
     where
       dml_type in ('U','I');
 
@@ -6030,7 +5937,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_pt_load_order_line_items),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_pt_load_order_line_items),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -6050,10 +5957,6 @@ and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
-
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_order_line_items;
 
 --$$$
 
@@ -6117,9 +6020,8 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #		LOADING t_lkp_paidad_index  	   #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_paidad_index;
 
-create table crm_integration_anlt.tmp_pt_load_paidad_index 
+create temp table tmp_pt_load_paidad_index 
 distkey(cod_source_system)
 sortkey(cod_paidad_index, opr_paidad_index)
 as
@@ -6384,12 +6286,12 @@ select
 	and source_table.cod_source_system = lkp_paidad_index_type.cod_source_system (+) -- new
 	and lkp_paidad_index_type.valid_to (+) = 20991231;
 
-analyze crm_integration_anlt.tmp_pt_load_paidad_index;
+analyze tmp_pt_load_paidad_index;
 	
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_paidad_index
-using crm_integration_anlt.tmp_pt_load_paidad_index
+using tmp_pt_load_paidad_index
 where 
 	tmp_pt_load_paidad_index.dml_type = 'I' 
 	and t_lkp_paidad_index.opr_paidad_index = tmp_pt_load_paidad_index.opr_paidad_index
@@ -6399,7 +6301,7 @@ where
 	
 update crm_integration_anlt.t_lkp_paidad_index
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_paidad_index') 
-from crm_integration_anlt.tmp_pt_load_paidad_index source
+from tmp_pt_load_paidad_index source
 where source.cod_paidad_index = crm_integration_anlt.t_lkp_paidad_index.cod_paidad_index
 and crm_integration_anlt.t_lkp_paidad_index.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -6466,7 +6368,7 @@ insert into crm_integration_anlt.t_lkp_paidad_index
       hash_paidad_index,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_paidad_index
+      tmp_pt_load_paidad_index
     where
       dml_type in ('U','I');
 
@@ -6479,7 +6381,7 @@ analyze crm_integration_anlt.t_lkp_paidad_index;
 	
 update crm_integration_anlt.t_lkp_paidad_index
 set cod_paidad_index_related = lkp.cod_paidad_index
-from crm_integration_anlt.tmp_pt_load_paidad_index source, crm_integration_anlt.t_lkp_paidad_index lkp, crm_integration_anlt.t_lkp_source_system ss
+from tmp_pt_load_paidad_index source, crm_integration_anlt.t_lkp_paidad_index lkp, crm_integration_anlt.t_lkp_source_system ss
 where coalesce(source.opr_paidad_index_related,-1) = lkp.opr_paidad_index
 and source.cod_source_system = ss.cod_source_system
 and ss.cod_country = 1
@@ -6525,7 +6427,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pt_load_paidad_index),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from tmp_pt_load_paidad_index),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -6546,9 +6448,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_paidad_index;
  
 --$$$
 	
@@ -6612,9 +6511,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #	      LOADING t_lkp_atlas_user     	   #
 -- #############################################
 
-drop table if exists crm_integration_anlt.tmp_pt_load_atlas_user;
-
-create table crm_integration_anlt.tmp_pt_load_atlas_user 
+create temp table tmp_pt_load_atlas_user 
 distkey(cod_source_system)
 sortkey(cod_atlas_user, opr_atlas_user)
 as
@@ -6805,12 +6702,12 @@ select a.*  from (
 	and source_table.cod_source_system = target.cod_source_system (+) 
 	) a ;
 
-analyze crm_integration_anlt.tmp_pt_load_atlas_user;	
+analyze tmp_pt_load_atlas_user;	
 
 	--$$$
 	
 delete from crm_integration_anlt.t_lkp_atlas_user
-using crm_integration_anlt.tmp_pt_load_atlas_user
+using tmp_pt_load_atlas_user
 where 
 	tmp_pt_load_atlas_user.dml_type = 'I' 
 	and t_lkp_atlas_user.opr_atlas_user = tmp_pt_load_atlas_user.opr_atlas_user
@@ -6820,7 +6717,7 @@ where
 	
 update crm_integration_anlt.t_lkp_atlas_user
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') 
-from crm_integration_anlt.tmp_pt_load_atlas_user source
+from tmp_pt_load_atlas_user source
 where source.cod_atlas_user = crm_integration_anlt.t_lkp_atlas_user.cod_atlas_user
 and crm_integration_anlt.t_lkp_atlas_user.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -6858,7 +6755,7 @@ insert into crm_integration_anlt.t_lkp_atlas_user
       hash_atlas_user,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_atlas_user
+      tmp_pt_load_atlas_user
     where
       dml_type in ('U','I');
 
@@ -6905,7 +6802,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pt_load_atlas_user),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from tmp_pt_load_atlas_user),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -6926,9 +6823,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_atlas_user;
 
 --$$$
 
@@ -7244,7 +7138,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_fac_answer_outgoing       #
 -- #############################################
 
-create table crm_integration_anlt.tmp_pt_load_answer_step1_outgoing
+create temp table tmp_pt_load_answer_step1_outgoing
 distkey(opr_atlas_user_receiver)
 sortkey(opr_atlas_user_receiver, opr_source, cod_source_system)
 as
@@ -7352,11 +7246,11 @@ as
 
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_answer_step1_outgoing;
+analyze tmp_pt_load_answer_step1_outgoing;
 
 --$$$
 
-create table crm_integration_anlt.tmp_pt_load_answer_step2_outgoing
+create temp table tmp_pt_load_answer_step2_outgoing
 distkey(opr_ad)
 sortkey(opr_ad, cod_source_system)
 as
@@ -7386,7 +7280,7 @@ as
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
-    crm_integration_anlt.tmp_pt_load_answer_step1_outgoing source_table,
+    tmp_pt_load_answer_step1_outgoing source_table,
     crm_integration_anlt.t_lkp_atlas_user lkp_atlas_receiver, 
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_outgoing) max_cod_answer
   where
@@ -7396,20 +7290,20 @@ as
  
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_answer_step2_outgoing;
+analyze tmp_pt_load_answer_step2_outgoing;
   
 --$$$
 	
 insert into crm_integration_anlt.t_hst_answer_outgoing
 select * from crm_integration_anlt.t_fac_answer_outgoing
-where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pt_load_answer_step2_outgoing)
-and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_answer_step2_outgoing);
+where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_outgoing)
+and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_outgoing);
 
 --$$$
 
 delete from crm_integration_anlt.t_fac_answer_outgoing
-where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pt_load_answer_step2_outgoing)
-and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_answer_step2_outgoing);
+where crm_integration_anlt.t_fac_answer_outgoing.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_outgoing)
+and crm_integration_anlt.t_fac_answer_outgoing.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_outgoing);
 
 --$$$
 
@@ -7438,7 +7332,7 @@ insert into crm_integration_anlt.t_fac_answer_outgoing
       null hash_answer,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_answer_step2_outgoing;
+      tmp_pt_load_answer_step2_outgoing;
 
 --$$$
 
@@ -7483,18 +7377,13 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pt_load_answer_step2_outgoing),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from tmp_pt_load_answer_step2_outgoing),last_processing_datetime)
 from crm_integration_anlt.t_lkp_scai_process proc 
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
 and t_rel_scai_integration_process.cod_country = 1
 and proc.dsc_process_short = 't_fac_answer_outgoing'
 and t_rel_scai_integration_process.ind_active = 1;
-
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_answer_step1_outgoing;
-drop table if exists crm_integration_anlt.tmp_pt_load_answer_step2_outgoing;
 
 --$$$
 	
@@ -7558,7 +7447,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_fac_answer_incoming       #
 -- #############################################
 
-create table crm_integration_anlt.tmp_pt_load_answer_step1_incoming
+create temp table tmp_pt_load_answer_step1_incoming
 distkey(opr_atlas_user_sender)
 sortkey(opr_atlas_user_sender, opr_source, cod_source_system)
 as
@@ -7666,11 +7555,11 @@ as
 
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_answer_step1_incoming;
+analyze tmp_pt_load_answer_step1_incoming;
 
 --$$$
 
-create table crm_integration_anlt.tmp_pt_load_answer_step2_incoming
+create temp table tmp_pt_load_answer_step2_incoming
 distkey(opr_ad)
 sortkey(opr_ad, cod_source_system)
 as
@@ -7699,7 +7588,7 @@ as
     max_cod_answer.max_cod,
     row_number() over (order by source_table.opr_answer desc) new_cod
   from
-    crm_integration_anlt.tmp_pt_load_answer_step1_incoming source_table,
+    tmp_pt_load_answer_step1_incoming source_table,
     crm_integration_anlt.t_lkp_atlas_user lkp_atlas_sender, 
     (select coalesce(max(cod_answer),0) max_cod from crm_integration_anlt.t_fac_answer_incoming) max_cod_answer
   where
@@ -7709,20 +7598,20 @@ as
 
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_answer_step2_incoming;
+analyze tmp_pt_load_answer_step2_incoming;
 
 --$$$
 
 insert into crm_integration_anlt.t_hst_answer_incoming
 select * from crm_integration_anlt.t_fac_answer_incoming
-where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pt_load_answer_step2_incoming)
-and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_answer_step2_incoming);
+where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_incoming)
+and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_incoming);
 
 --$$$
 
 delete from crm_integration_anlt.t_fac_answer_incoming
-where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from crm_integration_anlt.tmp_pt_load_answer_step2_incoming)
-and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_answer_step2_incoming);
+where crm_integration_anlt.t_fac_answer_incoming.opr_answer in (select distinct opr_answer from tmp_pt_load_answer_step2_incoming)
+and crm_integration_anlt.t_fac_answer_incoming.cod_source_system in (select distinct cod_source_system from tmp_pt_load_answer_step2_incoming);
 
 --$$$
 
@@ -7751,7 +7640,7 @@ insert into crm_integration_anlt.t_fac_answer_incoming
       null hash_answer,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_answer_step2_incoming;
+      tmp_pt_load_answer_step2_incoming;
 
 --$$$
 
@@ -7796,7 +7685,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(operation_timestamp) from crm_integration_anlt.tmp_pt_load_answer_step2_incoming),last_processing_datetime)
+last_processing_datetime = coalesce((select max(operation_timestamp) from tmp_pt_load_answer_step2_incoming),last_processing_datetime)
 from crm_integration_anlt.t_lkp_scai_process proc
 where t_rel_scai_integration_process.cod_process = proc.cod_process
 and t_rel_scai_integration_process.cod_status = 2
@@ -7804,10 +7693,6 @@ and t_rel_scai_integration_process.cod_country = 1
 and proc.dsc_process_short = 't_fac_answer_incoming'
 and t_rel_scai_integration_process.ind_active = 1;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_answer_step1_incoming;
-drop table if exists crm_integration_anlt.tmp_pt_load_answer_step2_incoming;
 
 --$$$
 	
@@ -7871,7 +7756,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_fac_web                   #
 -- #############################################
 
-create table crm_integration_anlt.tmp_pt_load_web_step1
+create temp table tmp_pt_load_web_step1
 distkey(opr_ad)
 sortkey(opr_ad, opr_event, cod_source_system)
   as
@@ -7955,11 +7840,11 @@ sortkey(opr_ad, opr_event, cod_source_system)
 
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_web_step1;
+analyze tmp_pt_load_web_step1;
 
 --$$$
 		
-create table crm_integration_anlt.tmp_pt_load_web
+create temp table tmp_pt_load_web
 distkey(dat_event)
 sortkey(dat_event, cod_source_system)
 as
@@ -7974,7 +7859,7 @@ as
     source_table.hash_web,
 	source_table.cod_execution
   from
-    crm_integration_anlt.tmp_pt_load_web_step1 source_table,
+    tmp_pt_load_web_step1 source_table,
     crm_integration_anlt.t_lkp_event lkp_event 
   where 
         coalesce(source_table.opr_event,'Unknown') = lkp_event.opr_event(+)
@@ -7982,13 +7867,13 @@ as
 
 --$$$
 
-analyze crm_integration_anlt.tmp_pt_load_web;
+analyze tmp_pt_load_web;
 
 --$$$
 	
 delete from crm_integration_anlt.t_fac_web
-where crm_integration_anlt.t_fac_web.dat_event in (select distinct dat_event from crm_integration_anlt.tmp_pt_load_web)
-and crm_integration_anlt.t_fac_web.cod_source_system in (select distinct cod_source_system from crm_integration_anlt.tmp_pt_load_web);
+where crm_integration_anlt.t_fac_web.dat_event in (select distinct dat_event from tmp_pt_load_web)
+and crm_integration_anlt.t_fac_web.cod_source_system in (select distinct cod_source_system from tmp_pt_load_web);
 
 --$$$
 
@@ -8003,7 +7888,7 @@ insert into crm_integration_anlt.t_fac_web
       hash_web,
 	  cod_execution
     from
-      crm_integration_anlt.tmp_pt_load_web;
+      tmp_pt_load_web;
 
 --$$$
 
@@ -8048,7 +7933,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(server_date_day_datetime) from crm_integration_anlt.tmp_pt_load_web),last_processing_datetime)
+last_processing_datetime = coalesce((select max(server_date_day_datetime) from tmp_pt_load_web),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -8069,7 +7954,3 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
---$$$
-
-drop table if exists crm_integration_anlt.tmp_pt_load_web_step1;
-drop table if exists crm_integration_anlt.tmp_pt_load_web;
