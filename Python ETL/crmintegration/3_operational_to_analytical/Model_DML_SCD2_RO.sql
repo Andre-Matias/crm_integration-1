@@ -3111,7 +3111,7 @@ select
         split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
       from
         tmp_ro_load_contact ts,
-        tmp_ro_contact_custom_field_teste1 s
+        crm_integration_anlt.tmp_ro_contact_custom_field_teste1 s
       where
         split_part(custom_fields, '","', s.gen_num) != ''
         and custom_fields != '{}';
