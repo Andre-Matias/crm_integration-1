@@ -74,6 +74,34 @@ for results in result_list:
 		print("Message posted successfully: " + response["message"]["ts"])
 	elif response["ok"] is False:
 		print("Message not posted due to error: " + response["message"]["ts"]) 
+		
+		
+		
+#Check if there are different cods for the same opr
+cur.execute("select  count(*) from ( "\
+			" select opr_atlas_user, cod_source_system,  count(distinct cod_atlas_user) "\
+			" from crm_integration_anlt.t_lkp_atlas_user "\
+			" where 1=1 "\
+			"  --and opr_deal = 53313170 "\
+			" group by opr_atlas_user, cod_source_system "\
+			" having count(distinct cod_atlas_user) >1  )" 
+		)
+			
+conn.commit()
+
+#results = cur.fetchone()
+result_list = cur.fetchall()
+
+for results in result_list: 
+
+	slack_text = "There are " + results[1] + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
+
+	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
+	
+	if response["ok"]:
+		print("Message posted successfully: " + response["message"]["ts"])
+	elif response["ok"] is False:
+		print("Message not posted due to error: " + response["message"]["ts"]) 		
 
 
 	
