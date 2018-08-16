@@ -2926,7 +2926,7 @@ set cod_contact_parent = contact_parent.cod_contact
 from
 (
 select * from crm_integration_anlt.t_lkp_contact
-where cod_source_system = 18
+where cod_source_system = -1
 and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
@@ -2940,7 +2940,7 @@ set cod_contact_parent = contact_parent.cod_contact
 from
 (
 select * from crm_integration_anlt.t_lkp_contact
-where cod_source_system = 19
+where cod_source_system = -1
 and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
@@ -2954,7 +2954,7 @@ set cod_contact_parent = contact_parent.cod_contact
 from
 (
 select * from crm_integration_anlt.t_lkp_contact
-where cod_source_system = 20
+where cod_source_system = 22
 and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
@@ -7020,11 +7020,11 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 10
+      atlas_user.cod_source_system = 21
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = 20
+      and base_contact.cod_source_system = 22
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
@@ -7034,7 +7034,7 @@ where
 
 --$$$
 
--- Updating BASE CONTACT - Autovit
+-- Updating BASE CONTACT - Autovit (vertical does not exist yet for Bulgaria)
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = source.cod_atlas_user
 from
@@ -7061,11 +7061,11 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 5
+      atlas_user.cod_source_system = -1
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = 18
+      and base_contact.cod_source_system = -1
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
@@ -7075,7 +7075,7 @@ where
 
 --$$$
 
--- Updating BASE CONTACT - Storia
+-- Updating BASE CONTACT - Storia (vertical does not exist yet for Bulgaria)
 update crm_integration_anlt.t_lkp_contact
 set cod_atlas_user = source.cod_atlas_user
 from
@@ -7102,11 +7102,11 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 1
+      atlas_user.cod_source_system = -1
       and atlas_user.valid_to = 20991231
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
 	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = 19
+      and base_contact.cod_source_system = -1
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
