@@ -4710,6 +4710,12 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 -- CREATE TMP - KPI OLX.BASE.105 (User_ID)
 create temp table tmp_pl_olx_calc_user_id as
+ select source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system
+	,source.custom_field_value
+	from (
 	SELECT
 	  a.cod_contact, 
 	  kpi_custom_field.cod_custom_field,
@@ -4752,7 +4758,14 @@ create temp table tmp_pl_olx_calc_user_id as
 	WHERE 1=1 
 	  and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 2
+		and scai.cod_country = 2 ) source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+	where 1 = 1
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+	 ;		
 		;
 
 
