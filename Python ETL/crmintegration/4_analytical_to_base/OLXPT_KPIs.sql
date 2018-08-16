@@ -1464,79 +1464,180 @@ select
   source.dat_snap,
   source.cod_source_system,
   source.custom_field_value
-from
-  (
+from (
     select
-      b.cod_contact,
+      a.cod_contact, 
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,16) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      a.custom_field_value custom_field_value
     from
       (
-        select
-          lkp_contact.cod_contact,
-          scai.dat_processing dat_snap,
-          lkp_contact.cod_source_system,
-          cast(sum(nbr_occurrences) as varchar) custom_field_value
-        from
-          (
-            select
-              *
-            from
-              crm_integration_anlt.t_fac_web
-            where
-              cod_source_system = 8
-              and dat_event between to_char(sysdate - 30,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
-              and cod_event = 170
-          ) fac,
-          db_atlas.olxpt_ads ads,
-          crm_integration_anlt.t_lkp_atlas_user lkp_user,
-          crm_integration_anlt.t_lkp_contact lkp_contact,
-          crm_integration_anlt.t_rel_scai_country_integration scai
-        where
-          lkp_user.cod_source_system = 8
-          and lkp_user.cod_source_system = fac.cod_source_system 
-          and lkp_contact.cod_source_system = 16
-          and fac.opr_ad = ads.id 
-          and ads.user_id = lkp_user.opr_atlas_user
-          and lkp_user.valid_to = 20991231
-          and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
-          and lkp_contact.valid_to = 20991231
-          and scai.cod_integration = 50000
-          and scai.cod_country = 1
-        group by
-          lkp_contact.cod_contact,
-          scai.dat_processing,
-          lkp_contact.cod_source_system
+				select
+				    cod_contact, 
+					dat_snap,
+					cod_source_system,
+					cast(sum(nbr_views) as varchar) custom_field_value
+				from
+					(
+						select
+						    base.cod_contact, 
+							web.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_views
+						from
+							hydra.web web,
+							(
+								select 
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 8
+									and base_contact.cod_source_system = 16
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 1 
+							) base,
+              db_atlas.olxpt_ads ads
+						where
+							web.server_date_day >= dateadd(day,-30,sysdate)
+							and web.country_code = 'PT'
+							and web.host like '%olx.pt%'
+							--and web.user_id = base.opr_atlas_user
+							and action_type = 'ad_page'
+              and web.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
+						group by
+							base.cod_contact, 
+							dat_snap,
+							cod_source_system,
+							web.server_date_day
+
+						union all
+
+						select
+						    base.cod_contact, 
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra.ios ios,
+							(
+								select 
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 8
+									and base_contact.cod_source_system = 16
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 1 
+							) base,
+              db_atlas.olxpt_ads ads
+						where
+							ios.server_date_day >= dateadd(day,-30,sysdate)
+							and ios.country_code = 'PT'
+							--and ios.user_id = base.opr_atlas_user
+							and action_type = 'ad_page'
+              and ios.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
+						group by
+						    base.cod_contact, 
+							ios.server_date_day,
+							dat_snap,
+							cod_source_system
+
+						union all
+
+						select
+						  base.cod_contact, 
+							android.server_date_day,
+							dat_snap,
+							cod_source_system,
+							count(*) nbr_platform_interactions
+						from
+							hydra.android android,
+							(
+								select 
+									base_contact.cod_contact,
+									scai.dat_processing dat_snap,
+									base_contact.cod_source_system,
+									atlas_user.opr_atlas_user
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									crm_integration_anlt.t_lkp_contact base_contact,
+									crm_integration_anlt.t_rel_scai_country_integration scai
+								where
+									atlas_user.cod_source_system = 8
+									and base_contact.cod_source_system = 16
+									and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
+									and atlas_user.valid_to = 20991231
+									and base_contact.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and scai.cod_country = 1 
+							) base,
+              db_atlas.olxpt_ads ads
+						where
+							android.server_date_day >= dateadd(day,-30,sysdate)
+							and android.country_code = 'PT'
+							--and android.user_id = base.opr_atlas_user
+							and action_type = 'ad_page'
+              and android.ad_id = ads.id
+              and ads.user_id = base.opr_atlas_user
+						group by
+						  base.cod_contact, 
+							android.server_date_day,
+							dat_snap,
+							cod_source_system
+					) core
+				group by
+				    cod_contact, 
+					dat_snap,
+					cod_source_system
       ) a,
-      crm_integration_anlt.t_lkp_contact B,
       crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
-			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = '# views'
-			  and rel.cod_source_system = 16
-		) kpi_custom_field
+			(
+				select
+					rel.cod_custom_field,
+					rel.flg_active
+				from
+					crm_integration_anlt.t_lkp_kpi kpi,
+					crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+					kpi.cod_kpi = rel.cod_kpi
+					and lower(kpi.dsc_kpi) = '# views'
+					and rel.cod_source_system = 16
+			) kpi_custom_field
     where
-      b.cod_contact = a.cod_contact (+)
-      and b.valid_to = 20991231
-      and b.cod_source_system = 16
+      1=1
       and scai.cod_integration = 50000
 	  and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 1
-  ) source,
+	  and scai.cod_country = 1
+	  ) source,
   crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
-  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+	  ;
 
 
 
