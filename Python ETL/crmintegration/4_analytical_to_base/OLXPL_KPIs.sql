@@ -865,97 +865,99 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		select * from tmp_pl_olx_calc_logins_last_30_days_3);
 
 --$$$
-
--- CREATE TMP - KPI OLX.BASE.012 (Last package purchased) 
+ 
+-- CREATE TMP - KPI OLX.BASE.012 (Last package purchased)
 create temp table tmp_pl_olx_calc_last_package_purchased_1 as
 select
 	source.cod_contact,
-	cod_contact_parent,
+	source.cod_contact_parent,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
 from
 	(
-select
-	cod_contact,
-	cod_contact_parent,
-	cod_custom_field,
-	dat_snap,
-	cod_source_system,
-	coalesce(to_char(custom_field_value, 'YYYYMMDD HH24:MI:SS'), ' ') as custom_field_value
-from
-	(
-	select
-		cod_contact,
-		cod_contact_parent,
-		dat_snap,
-		cod_source_system,
-		max(custom_field_value) as custom_field_value
-	from(
-			select
-				base_contact.cod_contact,
-				base_contact.cod_contact_parent,
-				scai.dat_processing dat_snap,
-				base_contact.cod_source_system,
-				package.bought as custom_field_value,
-				row_number()
-				over (
-					partition by cod_contact
-					order by coalesce(atlas_user.created_at, '1900-01-01') ) rn
-			from (select
-							a1.*, packets.name packet_name, variants.name variant_name
+		select
+		  cod_contact,
+			cod_contact_parent,
+		  kpi_custom_field.cod_custom_field,
+		  scai.dat_processing dat_snap,
+		  contact.cod_source_system cod_source_system,
+		  core.custom_field_value
+		from
+		  (
+				select
+					coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
+					dat_snap,
+					custom_field_value
+				from
+					(
+						select
+							dsc_atlas_user,
+							inner_core.dat_snap,
+							inner_core.custom_field_value,
+							row_number() over (partition by dsc_atlas_user order by inner_core.date desc, inner_core.id desc) rn
 						from
-							db_atlas.olxpl_nnl_userpackets a1
-							join db_atlas.olxpl_nnl_variants a2 on a2.variant_id=a1.variant_id
-							join db_atlas.olxpl_nnl_usage_log a3 on a1.userpacket_id=a3.userpacket_id
-							join db_atlas.olxpl_ads a4 on a4.id=a3.ad_id
-							left outer join db_atlas.olxpl_nnl_packets packets on packets.packet_id = a1.packet_id
-							left outer join db_atlas.olxpl_nnl_variants variants on variants.variant_id = a1.variant_id
-							left outer join crm_integration_anlt.v_lkp_paidad_index_new index on index.cod_source_system = 9 																				
-																								and index.paidad_index_code = variants.variant_id
-							where 1=1
-							and index.dsc_paidad_index != 'Ogłoszenie na 30 dni' 
-							and index.dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni'
-							and index.cod_index_type = 2
-				 ) package,
-				crm_integration_anlt.t_lkp_atlas_user atlas_user,
-				crm_integration_anlt.t_lkp_contact base_contact,
-				crm_integration_anlt.t_rel_scai_country_integration scai
-			where 1 = 1
-				and package.user_id (+) = atlas_user.opr_atlas_user
-				and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user (+))
-				and atlas_user.cod_source_system (+) = 9
-				and base_contact.cod_source_system = 13
-				and atlas_user.valid_to (+) = 20991231
-				and base_contact.valid_to = 20991231
-				and scai.cod_integration = 50000
-				and scai.cod_country = 2
-		)
-		where 1=1
-		and rn = 1
-		group by 	cod_contact,
-							cod_contact_parent,
-							dat_snap ,
-							cod_source_system
-	) a,
-   crm_integration_anlt.t_rel_scai_country_integration scai,
-		(
-			select
-			  rel.cod_custom_field,
-			  rel.flg_active
-			from
-			  crm_integration_anlt.t_lkp_kpi kpi,
-			  crm_integration_anlt.t_rel_kpi_custom_field rel
-			where
-			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = 'last package purchased'
-			  and rel.cod_source_system = 13
-		) kpi_custom_field
-    where 1=1
-	and scai.cod_integration = 50000
-    and scai.cod_country = 2
-	and kpi_custom_field.flg_active = 1 )  source 
+							(
+								select
+									atlas_user.dsc_atlas_user,
+									scai.dat_processing dat_snap,
+									fac.date custom_field_value,
+									fac.date,
+									fac.id
+								from
+									crm_integration_anlt.t_lkp_atlas_user atlas_user,
+									db_atlas.olxpl_paidads_user_payments fac,
+									crm_integration_anlt.t_rel_scai_country_integration scai,
+									crm_integration_anlt.v_lkp_paidad_index_new idx
+								where
+									atlas_user.cod_source_system = 9
+									and atlas_user.valid_to = 20991231
+									and scai.cod_integration = 50000
+									and atlas_user.opr_atlas_user = fac.id_user (+)
+									and fac.id_index = idx.opr_paidad_index (+)
+									and 9 = idx.cod_source_system (+)
+									and idx.cod_index_type = 2
+									and lower(fac.payment_provider) != 'admin'
+									and scai.cod_country = 2
+								and dsc_paidad_index != 'Ogłoszenie na 30 dni'
+									and dsc_paidad_index != 'Dodanie ogłoszenia na 30 dni'
+							) inner_core
+					)
+				where
+					rn = 1
+		  ) core,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+				  rel.cod_custom_field,
+				  rel.flg_active
+				from
+				  crm_integration_anlt.t_lkp_kpi kpi,
+				  crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+				  kpi.cod_kpi = rel.cod_kpi
+				  and lower(kpi.dsc_kpi) = 'last package purchased'
+				  and rel.cod_source_system = 13
+			) kpi_custom_field,
+			(
+				select
+					cod_contact,
+					cod_contact_parent,
+					coalesce(email,'unknown') email,
+					cod_source_system
+				from
+					crm_integration_anlt.t_lkp_contact
+				where
+					valid_to = 20991231
+					and cod_source_system = 13
+			) contact
+	where
+	  scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+		and lower(contact.email) = lower(dsc_atlas_user (+))
+		and scai.cod_country = 2
+	) source
   ;
   
 
