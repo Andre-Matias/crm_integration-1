@@ -2663,9 +2663,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
+drop table if exists crm_integration_anlt.tmp_ro_load_contact;
 
-
-create temp table tmp_ro_load_contact 
+create table crm_integration_anlt.tmp_ro_load_contact 
 distkey(cod_source_system)
 sortkey(cod_contact, opr_contact)
 as
@@ -2845,15 +2845,15 @@ select
 	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
 	and lkp_industry.valid_to (+) = 20991231;
 
-analyze tmp_ro_load_contact;
+analyze crm_integration_anlt.tmp_ro_load_contact;
 	
 
 	
 delete from crm_integration_anlt.t_lkp_contact
-using tmp_ro_load_contact
+using crm_integration_anlt.tmp_ro_load_contact
 where 
-	tmp_ro_load_contact.dml_type = 'I' 
-	and t_lkp_contact.opr_contact = tmp_ro_load_contact.opr_contact 
+	crm_integration_anlt.tmp_ro_load_contact.dml_type = 'I' 
+	and t_lkp_contact.opr_contact = crm_integration_anlt.tmp_ro_load_contact.opr_contact 
 	and t_lkp_contact.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact');
 
 
@@ -2861,7 +2861,7 @@ where
 -- update valid_to in the updated/deleted records on source	
 update crm_integration_anlt.t_lkp_contact
 set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_contact') 
-from tmp_ro_load_contact source
+from crm_integration_anlt.tmp_ro_load_contact source
 where source.cod_contact = crm_integration_anlt.t_lkp_contact.cod_contact
 and crm_integration_anlt.t_lkp_contact.valid_to = 20991231
 and source.dml_type in('U','D');
@@ -2910,7 +2910,7 @@ insert into crm_integration_anlt.t_lkp_contact
       hash_contact,
 	  cod_execution
     from
-      tmp_ro_load_contact
+      crm_integration_anlt.tmp_ro_load_contact
     where
       dml_type in ('U','I');
 
@@ -2918,7 +2918,7 @@ insert into crm_integration_anlt.t_lkp_contact
 
 analyze crm_integration_anlt.t_lkp_contact;
 	  
- 
+--$$$
 
 -- update do contact_id/cod_contact_parent - CARS RO
 update crm_integration_anlt.t_lkp_contact
@@ -2932,7 +2932,7 @@ and cod_contact_parent is null
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	  
- 
+	--$$$
 
 -- update do contact_id/cod_contact_parent - RE RO
 update crm_integration_anlt.t_lkp_contact
@@ -2946,7 +2946,7 @@ and cod_contact_parent is null
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	  
- 
+	--$$$
 
 -- update do contact_id/cod_contact_parent - OLX RO
 update crm_integration_anlt.t_lkp_contact
@@ -2960,7 +2960,7 @@ and cod_contact_parent is null
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	  
- 
+	--$$$	
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -2992,14 +2992,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_contact';
 
- 
+--$$$
 	
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from tmp_ro_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_ro_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3020,7 +3020,7 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
- 
+	--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3043,7 +3043,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
- 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3075,7 +3075,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_custom_field';	
 
- 
+	--$$$
 	
 -- #############################################
 -- # 	     BASE - Romania                    #
@@ -3097,7 +3097,7 @@ select
                 (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
             )
           where
-            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from tmp_ro_load_contact);
+            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_ro_load_contact);
 
 
 
@@ -3110,7 +3110,7 @@ select
         ts.cod_source_system,
         split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
       from
-        tmp_ro_load_contact ts,
+        crm_integration_anlt.tmp_ro_load_contact ts,
         crm_integration_anlt.tmp_ro_contact_custom_field_teste1 s
       where
         split_part(custom_fields, '","', s.gen_num) != ''
@@ -3274,7 +3274,7 @@ insert into crm_integration_anlt.t_lkp_custom_field
 
 analyze crm_integration_anlt.t_lkp_custom_field;
 	  
- 
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3306,14 +3306,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_custom_field';
 
- 
+--$$$
 
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from tmp_ro_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_ro_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
@@ -3336,7 +3336,7 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source
 
 
 
- 
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3359,7 +3359,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
 
- 
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3391,7 +3391,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_rel_contact_custom_field';	
 
- 
+--$$$
 	
 -- #############################################
 -- # 	  BASE - Romania                       #
@@ -3493,7 +3493,7 @@ insert into crm_integration_anlt.t_rel_contact_custom_field
 
 analyze crm_integration_anlt.t_rel_contact_custom_field;
 	
- 
+--$$$
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3525,14 +3525,14 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_rel_contact_custom_field';
 
- 
+--$$$
 
 -- #######################
 -- ####    PASSO 6    ####
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from tmp_ro_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from crm_integration_anlt.tmp_ro_load_contact),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
