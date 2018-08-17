@@ -1744,7 +1744,7 @@ select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	coalesce(cast(sum(source.custom_field_value) as varchar), '0') custom_field_value
+	coalesce(cast(max(source.custom_field_value) as varchar), '0') custom_field_value
 from tmp_pl_otomoto_calc_views_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
