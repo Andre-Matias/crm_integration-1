@@ -1037,7 +1037,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 
 
--- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Expiry Date)
+-- CREATE TEMPORARY TABLE - KPI OLX.BASE.088 (Active package expiry date)
 create temp table tmp_pl_olx_calc_active_package_expiry_date_1 as
 select
 	source.cod_contact,
@@ -1120,7 +1120,7 @@ from
 			  crm_integration_anlt.t_rel_kpi_custom_field rel
 			where
 			  kpi.cod_kpi = rel.cod_kpi
-			  and lower(kpi.dsc_kpi) = 'last package purchased'
+			  and lower(kpi.dsc_kpi) = 'active package expiry date'
 			  and rel.cod_source_system = 13
 		) kpi_custom_field
     where 1=1
@@ -1172,7 +1172,7 @@ where 1 = 1
 
 
 
--- HST INSERT - KPI OLX.BASE.088 (Expiry Date)
+-- HST INSERT - KPI OLX.BASE.088 (Active package expiry date)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
       target.*
@@ -1185,7 +1185,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 
 
 
--- SNAP DELETE - KPI OLX.BASE.088 (Expiry Date)
+-- SNAP DELETE - KPI OLX.BASE.088 (Active package expiry date)
 DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from tmp_pl_olx_calc_active_package_expiry_date_2
@@ -1194,7 +1194,7 @@ where (cod_contact, cod_custom_field) in
 
 
 
---KPI OLX.BASE.088 (Expiry Date)
+--KPI OLX.BASE.088 (Active package expiry date)
 insert into crm_integration_anlt.t_fac_base_integration_snap
 	SELECT
 		*
