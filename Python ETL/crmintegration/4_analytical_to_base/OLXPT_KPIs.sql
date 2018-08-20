@@ -1515,7 +1515,7 @@ from (
 							--and web.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
               and web.ad_id = ads.id
-              and ads.user_id = base.opr_atlas_user
+              and web.seller_id = base.opr_atlas_user
 						group by
 							base.cod_contact, 
 							dat_snap,
@@ -1558,7 +1558,7 @@ from (
 							--and ios.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
               and ios.ad_id = ads.id
-              and ads.user_id = base.opr_atlas_user
+              and ios.seller_id = base.opr_atlas_user
 						group by
 						    base.cod_contact, 
 							ios.server_date_day,
@@ -1601,7 +1601,7 @@ from (
 							--and android.user_id = base.opr_atlas_user
 							and action_type = 'ad_page'
               and android.ad_id = ads.id
-              and ads.user_id = base.opr_atlas_user
+              and android.seller_id = base.opr_atlas_user
 						group by
 						  base.cod_contact, 
 							android.server_date_day,

@@ -1583,7 +1583,7 @@ select
 									and web.stream = 'v-otomoto-web'
 									and trackname = 'ad_page'
 									and web.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and web.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'otomotopl'
 								group by
 									base.cod_contact,
@@ -1631,7 +1631,7 @@ select
 									and trackname = 'ad_page'
 									and ios.stream = 'v-otomoto-ios'
 									and ios.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and ios.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'otomotopl'
 								group by
 										base.cod_contact,
@@ -1679,7 +1679,7 @@ select
 									and android.stream = 'v-otomoto-android'
 									and trackname = 'ad_page'
 									and android.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and android.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'otomotopl'
 								group by
 									base.cod_contact,

@@ -1233,7 +1233,7 @@ from (
 									and web.stream = 'v-standvirtual-web'
 									and trackname = 'ad_page'
 									and web.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and web.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'carspt'
 								group by
 									base.cod_contact, 
@@ -1277,7 +1277,7 @@ from (
 									and trackname = 'ad_page'
 									and ios.stream = 'v-standvirtual-ios'
 									and ios.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and ios.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'carspt'
 								group by
 										base.cod_contact, 
@@ -1321,7 +1321,7 @@ from (
 									and android.stream = 'v-standvirtual-android'
 									and trackname = 'ad_page'
 									and android.ad_id = ads.id
-									and ads.user_id = base.opr_atlas_user
+									and android.seller_id = base.opr_atlas_user
 									and ads.livesync_dbname = 'carspt'
 								group by
 									base.cod_contact, 
