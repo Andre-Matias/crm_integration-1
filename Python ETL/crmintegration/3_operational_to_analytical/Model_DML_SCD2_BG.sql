@@ -2917,8 +2917,7 @@ insert into crm_integration_anlt.t_lkp_contact
 
 
 analyze crm_integration_anlt.t_lkp_contact;
-	  
---$$$
+	   
 
 -- update do contact_id/cod_contact_parent - CARS RO
 update crm_integration_anlt.t_lkp_contact
@@ -2931,8 +2930,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$
+	   
 
 -- update do contact_id/cod_contact_parent - RE RO
 update crm_integration_anlt.t_lkp_contact
@@ -2945,8 +2943,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$
+	   
 
 -- update do contact_id/cod_contact_parent - OLX RO
 update crm_integration_anlt.t_lkp_contact
@@ -2959,8 +2956,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$	
+	   
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -2991,8 +2987,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_contact';
-
---$$$
+ 
 	
 -- #######################
 -- ####    PASSO 6    ####
@@ -3019,8 +3014,7 @@ and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
-
-	--$$$
+ 
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3042,8 +3036,7 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
-
---$$$
+ 
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3082,58 +3075,6 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #       LOADING t_lkp_custom_field          #
 -- #############################################
 
-
-
-create temp table tmp_bg_contact_custom_field_1 as
-select
-            *
-          from
-            (
-              select (1000 * t1.num) + (100 * t2.num) + (10 * t3.num) + t4.num AS gen_num
-              from
-                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t1,
-                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t2,
-                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t3,
-                (select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
-            )
-          where
-            gen_num between 1 and (select max(regexp_count(custom_fields, '\\","') + 1) from tmp_bg_load_contact);
-
-
-
-			
-create temp table tmp_bg_contact_custom_field_2 as
-select
-        ts.opr_contact,
-        ts.custom_fields,
-        s.gen_num,
-        ts.cod_source_system,
-        split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
-      from
-        tmp_bg_load_contact ts,
-        tmp_bg_contact_custom_field_teste1 s
-      where
-        split_part(custom_fields, '","', s.gen_num) != ''
-        and custom_fields != '{}';
-		
-
-
-		
-create temp table tmp_bg_contact_custom_field
-distkey(cod_source_system)
-sortkey(custom_field_name, cod_source_system)
-as
-  select
-    opr_contact,
-    custom_fields,
-    cod_source_system,
-    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',1),'{"',''),'"}','') end custom_field_name,
-    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',2),'{"',''),'"}','') end custom_field_value
-  from
-    tmp_bg_contact_custom_field_2
-;
-/*		
-drop table if exists tmp_bg_contact_custom_field;
 
 create temp table tmp_bg_contact_custom_field 
 distkey(cod_source_system)
@@ -3175,14 +3116,11 @@ as
         and custom_fields != '{}'
     )
 ;
-*/
 
 analyze tmp_bg_contact_custom_field;
 
 
 
-
-	
 create temp table tmp_bg_load_custom_field as
    select
     source_table.opr_custom_field,
@@ -3250,8 +3188,8 @@ create temp table tmp_bg_load_custom_field as
     coalesce(source_table.opr_custom_field,'-1') = target.opr_custom_field(+)
     and cf_context.opr_custom_field_context = 'Contacts'
 	and source_table.cod_source_system = target.cod_source_system (+);
-
-analyze tmp_bg_load_custom_field;
+	
+analyze tmp_pt_load_custom_field;
 	
 
 	
