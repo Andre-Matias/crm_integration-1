@@ -3189,7 +3189,7 @@ create temp table tmp_bg_load_custom_field as
     and cf_context.opr_custom_field_context = 'Contacts'
 	and source_table.cod_source_system = target.cod_source_system (+);
 	
-analyze tmp_pt_load_custom_field;
+analyze tmp_bg_load_custom_field;
 	
 
 	
@@ -6778,7 +6778,7 @@ insert into crm_integration_anlt.t_lkp_atlas_user
       end cod_atlas_user,
 	  opr_atlas_user,
 	  dsc_atlas_user,
-	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 1 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
+	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 5 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_atlas_user') valid_from, 
       20991231 valid_to,
 	  cod_source_system,
 	  opr_source,
