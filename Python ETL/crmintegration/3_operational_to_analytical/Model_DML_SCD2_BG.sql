@@ -6579,7 +6579,8 @@ select a.*  from (
 	source_table.last_modification_date,
 	source_table.flg_autorenew, 
 	source_table.bonus_credits,
-	source_table.bonus_credits_expire_at,  
+	source_table.bonus_credits_expire_at, 
+	source_table.flg_uses_crm, 
 	source_table.opr_city,
     source_table.cod_source_system,
     source_table.hash_atlas_user,
@@ -6617,7 +6618,9 @@ select a.*  from (
 			coalesce(suspend_reason                                      ,'') + 
 			--coalesce(last_modification_date                              ,'2099-12-31 00:00:00.000000') +
 			coalesce(flg_autorenew                                       ,0) + 
-			cast(coalesce(bonus_credits                                  ,0) as varchar)  
+			cast(coalesce(bonus_credits                                  ,0) as varchar) +
+			--coalesce(bonus_credits_expire_at                             ,'2099-12-31 00:00:00.000000') + 
+			coalesce(flg_uses_crm                                        ,0)
 	    ) hash_atlas_user
 	  FROM
 	  (
@@ -6642,7 +6645,8 @@ select a.*  from (
 		last_modification_date,
 		autorenew flg_autorenew, 
 		cast(null as numeric(10,2)) bonus_credits,
-		cast(null as timestamp) bonus_credits_expire_at,  
+		cast(null as timestamp) bonus_credits_expire_at, 
+		cast(null as bigint) flg_uses_crm, 
 		scai_execution.cod_execution
       FROM
         crm_integration_stg.stg_bg_db_atlas_verticals_users a,
@@ -6694,6 +6698,7 @@ select a.*  from (
 		null flg_autorenew, 
 		bonus_credits,
 		bonus_credits_expire_at, 
+		cast(null as bigint) flg_uses_crm, 
 		scai_execution.cod_execution
 	  FROM
 		crm_integration_stg.stg_bg_db_atlas_olxbg_users,
@@ -6791,7 +6796,8 @@ insert into crm_integration_anlt.t_lkp_atlas_user
 	  last_modification_date,
 	  flg_autorenew, 
 	  cast(bonus_credits as numeric(10,2)) bonus_credits,
-	  cast(bonus_credits_expire_at as timestamp) bonus_credits_expire_at,  
+	  cast(bonus_credits_expire_at as timestamp) bonus_credits_expire_at, 
+	  cast(flg_uses_crm as bigint) flg_uses_crm, 
       hash_atlas_user,
 	  cod_execution
     from
