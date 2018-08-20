@@ -207,6 +207,8 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra, [resource])[resource]						# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
 	scai_last_execution_status = copyHydraTable(db_conf_file, sc_schema_hydra, tg_schema, resource, last_update_date, horizontal_name,scai_last_execution_status)			# Function that effectively copies 'hydra.web' table
 	print(datetime.now().time())
+	print hydra_verticals_names
+	print len(hydra_verticals_names)
 	if(len(hydra_verticals_names) > 0):
 		# Copy tables 'web' from schema 'hydra_verticals' to Operational Model
 		last_update_date = getLastUpdateDates(db_conf_file, sc_schema_hydra_verticals, [resource])[resource]			# Function returns as dictionary, so we need to index by the key 'web' (in 'resource' variable)
