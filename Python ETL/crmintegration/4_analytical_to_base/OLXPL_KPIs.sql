@@ -4944,45 +4944,110 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 --$$$
 
---(Chat response %)
-insert into crm_integration_anlt.t_fac_base_integration_snap (
-select source.* from (
-  SELECT
-    base_contact.cod_contact,
-    kpi_custom_field.cod_custom_field,
-    scai.dat_processing dat_snap,
-    base_contact.cod_source_system,
-    ' ' as custom_field_value
-  FROM
-    crm_integration_anlt.t_lkp_contact base_contact,
-    crm_integration_anlt.t_rel_scai_country_integration scai,
-	(
-		select
-		  rel.cod_custom_field,
-		  rel.flg_active
-		from
-		  crm_integration_anlt.t_lkp_kpi kpi,
-		  crm_integration_anlt.t_rel_kpi_custom_field rel
-		where
-		  kpi.cod_kpi = rel.cod_kpi
-		  and lower(kpi.dsc_kpi) = 'chat response %'
-		  and rel.cod_source_system = 13
-	) kpi_custom_field
-  WHERE
-    base_contact.cod_source_system = 13
-    AND base_contact.valid_to = 20991231
-    AND scai.cod_integration = 50000
-	and kpi_custom_field.flg_active = 1
-	and scai.cod_country = 2
-    --and atlas_user.valid_from = scai.dat_processing
-) source,
-    crm_integration_anlt.t_fac_base_integration_snap fac_snap
-where source.cod_source_system = fac_snap.cod_source_system (+)
+-- CREATE TMP - KPI OLX.BASE.087 ( Chat response % )
+create temp table tmp_pl_olx_calc_chat_response as
+select
+  source.cod_contact,
+  source.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+  source.custom_field_value
+from
+  (
+    select
+      b.cod_contact,
+      kpi_custom_field.cod_custom_field,
+      scai.dat_processing dat_snap,
+      isnull(a.cod_source_system,13) cod_source_system,
+      isnull(a.custom_field_value, '0') custom_field_value
+    from
+      (
+        select
+          source.cod_contact,
+          source.dat_processing dat_snap,
+          source.cod_source_system,
+          cast(case when repliestotal>0 then replies48*100/repliestotal else 0 end as varchar) custom_field_value
+        from
+          (
+            select
+              lkp_contact.cod_contact,
+              scai.dat_processing,
+              lkp_contact.cod_source_system,
+              sum(reply24) + sum(reply48) replies48,
+							sum(reply24) + sum(reply48) + sum(replylonger48) repliestotal
+            from
+              crm_integration_anlt.v_agg_olxpl_answer answer,
+              crm_integration_anlt.t_lkp_atlas_user lkp_user,
+              crm_integration_anlt.t_lkp_contact lkp_contact,
+              crm_integration_anlt.t_rel_scai_country_integration scai
+            where
+              lkp_user.cod_source_system = 9
+              and lkp_contact.cod_source_system = 13
+              and answer.seller_id = lkp_user.opr_atlas_user
+              and lkp_user.valid_to = 20991231
+              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.valid_to = 20991231
+              and scai.cod_integration = 50000
+			  and scai.cod_country = 2
+            group by
+              lkp_contact.cod_contact,
+              scai.dat_processing,
+              lkp_contact.cod_source_system
+          ) source
+      ) a,
+        crm_integration_anlt.t_lkp_contact b,
+        crm_integration_anlt.t_rel_scai_country_integration scai,
+		(
+			select
+			  rel.cod_custom_field,
+			  rel.flg_active
+			from
+			  crm_integration_anlt.t_lkp_kpi kpi,
+			  crm_integration_anlt.t_rel_kpi_custom_field rel
+			where
+			  kpi.cod_kpi = rel.cod_kpi
+			  and lower(kpi.dsc_kpi) = 'chat response %'
+			  and rel.cod_source_system = 13
+		) kpi_custom_field
+    where
+      b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 13
+      and scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
+  ) source,
+  crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+  source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
-  and source.custom_field_value = fac_snap.custom_field_value (+)
-  and fac_snap.cod_contact is null
-);
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+
+
+-- HST INSERT - KPI OLX.BASE.087 ( Chat response % )
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pl_olx_calc_chat_response);
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.087 ( Chat response % )
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pl_olx_calc_chat_response);
+
+
+
+--KPI OLX.BASE.087 ( Chat response % )
+insert into crm_integration_anlt.t_fac_base_integration_snap
+	select
+		*
+	from
+		tmp_pl_olx_calc_chat_response;
 
 --$$$
 
