@@ -40,7 +40,7 @@ scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 scai_last_execution_status = copy_tables_atlas.main(conf_file, db_conf_file, scai_last_execution_status)
 
 # Copy Hydra tables from Yamato to Operational Model (tables aren't fully copied here)
-scai_last_execution_status = copy_tables_hydra.main(conf_file, db_conf_file, scai_last_execution_status)
+#scai_last_execution_status = copy_tables_hydra.main(conf_file, db_conf_file, scai_last_execution_status)
 
 #End scai execution
 scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)		# SCAI
