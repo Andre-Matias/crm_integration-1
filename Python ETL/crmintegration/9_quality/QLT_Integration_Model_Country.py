@@ -102,6 +102,32 @@ for results in result_list:
 		print("Message posted successfully: " + response["message"]["ts"])
 	elif response["ok"] is False:
 		print("Message not posted due to error: " + response["message"]["ts"]) 		
+		
+		
+#Check if there are duplicates in t_lkp_deal
+cur.execute("select  count(*) from ( "\
+			" select opr_deal, valid_from , cod_source_system, count(*) "\
+			" from crm_integration_anlt.t_lkp_deal "\
+			" where valid_to = 20991231 "\
+			" group by opr_deal, cod_source_system, valid_from "\
+			" having count(*) > 1  )" 
+		)
+			
+conn.commit()
+
+#results = cur.fetchone()
+result_list = cur.fetchall()
+
+for results in result_list: 
+
+	slack_text = "There are " + results[1] + " duplicates on the table t_lkp_deal. Please verify this problem!"  
+
+	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
+	
+	if response["ok"]:
+		print("Message posted successfully: " + response["message"]["ts"])
+	elif response["ok"] is False:
+		print("Message not posted due to error: " + response["message"]["ts"]) 				
 
 
 	
