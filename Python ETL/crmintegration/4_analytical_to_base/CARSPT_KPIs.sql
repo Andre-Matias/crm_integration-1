@@ -1517,6 +1517,265 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 --$$$
 
+
+
+-- CREATE TMP - KPI OLX.BASE.117 KPI OLX.BASE.118 KPI OLX.BASE.119 (# of calls 0 / -1 / -2)
+create temp table tmp_pt_standvirtual_calc_number_calls_1 as
+select
+  base_contact.cod_contact, 
+  to_char(call.created_at,'YYYYMM') as custom_field_value,
+  scai.dat_processing dat_snap,
+  coalesce(base_contact.cod_source_system,15) cod_source_system
+from
+  crm_integration_anlt.t_fac_call call,
+  crm_integration_anlt.t_lkp_contact base_contact,
+  crm_integration_anlt.t_rel_scai_country_integration scai
+where 1=1
+  and call.cod_source_system = 15
+  and call.cod_source_system = base_contact.cod_source_system
+  and base_contact.valid_to = 20991231
+  and scai.cod_integration = 50000
+  and scai.cod_country = 1
+  and call.cod_contact = base_contact.cod_contact
+  and call.created_at > sysdate - 90
+ ;
+	 
+
+
+	  
+--KPI OLX.BASE.117 (# of calls 0)  	  
+create temp table tmp_pt_standvirtual_calc_number_calls_2 as
+select
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(    select
+      a.cod_contact, 
+      kpi_custom_field.cod_custom_field,
+      scai.dat_processing dat_snap,
+      coalesce(a.cod_source_system,15) cod_source_system,
+      a.custom_field_value custom_field_value
+    from
+    (	select
+		 cod_contact, 
+		 sum(case when custom_field_value = to_char(sysdate, 'YYYYMM') then 1 else 0 end ) custom_field_value,
+		 dat_snap,
+		 cod_source_system
+		from  tmp_pt_standvirtual_calc_number_calls_1
+		where 1=1 
+		group by cod_contact, 
+		 dat_snap,
+		 cod_source_system ) a,
+	crm_integration_anlt.t_rel_scai_country_integration scai,
+	(
+		select
+			rel.cod_custom_field,
+			rel.flg_active
+		from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# of calls (0)'
+			and rel.cod_source_system = 15
+	) kpi_custom_field
+	where 1=1 
+	and scai.cod_integration = 50000
+	and kpi_custom_field.flg_active = 1
+	and scai.cod_country = 1 ) source,
+crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+and source.cod_custom_field = fac_snap.cod_custom_field (+)
+and source.cod_contact = fac_snap.cod_contact (+)
+and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)  ;
+
+
+
+-- HST INSERT - KPI OLX.BASE.117 (# of calls 0)  	  
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_2);
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.117 (# of calls 0)  	  
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_2);
+
+
+
+--KPI OLX.BASE.014 KPI OLX.BASE.117 (# of calls 0)  	  
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    tmp_pt_standvirtual_calc_number_calls_2;
+	
+	
+	
+	
+	
+--KPI OLX.BASE.118 (# of calls -1)  	  
+create temp table tmp_pt_standvirtual_calc_number_calls_3 as
+select
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(    select
+      a.cod_contact, 
+      kpi_custom_field.cod_custom_field,
+      scai.dat_processing dat_snap,
+      coalesce(a.cod_source_system,15) cod_source_system,
+      a.custom_field_value custom_field_value
+    from
+    (	select
+		 cod_contact, 
+		 sum(case when custom_field_value = to_char(dateadd(month,-1,sysdate), 'YYYYMM') then 1 else 0 end ) custom_field_value,
+		 dat_snap,
+		 cod_source_system
+		from  tmp_pt_standvirtual_calc_number_calls_1
+		where 1=1 
+		group by cod_contact, 
+		 dat_snap,
+		 cod_source_system ) a,
+	crm_integration_anlt.t_rel_scai_country_integration scai,
+	(
+		select
+			rel.cod_custom_field,
+			rel.flg_active
+		from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# of calls (-1)'
+			and rel.cod_source_system = 15
+	) kpi_custom_field
+	where 1=1 
+	and scai.cod_integration = 50000
+	and kpi_custom_field.flg_active = 1
+	and scai.cod_country = 1 ) source,
+crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+and source.cod_custom_field = fac_snap.cod_custom_field (+)
+and source.cod_contact = fac_snap.cod_contact (+)
+and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)  ;
+
+
+
+-- HST INSERT - KPI OLX.BASE.117 (# of calls -1)  	  
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_3);
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.117 (# of calls -1)  	  
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_3);
+
+
+
+--KPI OLX.BASE.014 KPI OLX.BASE.117 (# of calls -1)  	  
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    tmp_pt_standvirtual_calc_number_calls_3;
+	
+	
+	
+	
+	
+--KPI OLX.BASE.119 (# of calls -2)  	  
+create temp table tmp_pt_standvirtual_calc_number_calls_4 as
+select
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(    select
+      a.cod_contact, 
+      kpi_custom_field.cod_custom_field,
+      scai.dat_processing dat_snap,
+      coalesce(a.cod_source_system,15) cod_source_system,
+      a.custom_field_value custom_field_value
+    from
+    (	select
+		 cod_contact, 
+		 sum(case when custom_field_value = to_char(dateadd(month,-2,sysdate), 'YYYYMM') then 1 else 0 end ) custom_field_value,
+		 dat_snap,
+		 cod_source_system
+		from  tmp_pt_standvirtual_calc_number_calls_1
+		where 1=1 
+		group by cod_contact, 
+		 dat_snap,
+		 cod_source_system ) a,
+	crm_integration_anlt.t_rel_scai_country_integration scai,
+	(
+		select
+			rel.cod_custom_field,
+			rel.flg_active
+		from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = '# of calls (-2)'
+			and rel.cod_source_system = 15
+	) kpi_custom_field
+	where 1=1 
+	and scai.cod_integration = 50000
+	and kpi_custom_field.flg_active = 1
+	and scai.cod_country = 1 ) source,
+crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+and source.cod_custom_field = fac_snap.cod_custom_field (+)
+and source.cod_contact = fac_snap.cod_contact (+)
+and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)  ;
+
+
+
+-- HST INSERT - KPI OLX.BASE.118 (# of calls -2)  	  
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_4);
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.118 (# of calls -2)  	  
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_pt_standvirtual_calc_number_calls_4);
+
+
+
+--KPI OLX.BASE.014 KPI OLX.BASE.118 (# of calls -2)  	  
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    tmp_pt_standvirtual_calc_number_calls_4;	
+	
+--$$$	
+
+
 -- CREATE TMP - KPI OLX.BASE.014 (Max days since last call)
 create temp table tmp_calc_max_days_since_last_call as
 select
