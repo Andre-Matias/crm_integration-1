@@ -89,6 +89,8 @@ where
   on ads.user_id = task.atlas_id
 where 1=1
   and task_insert_rules.cod_auto_task is null
-  and ads.active_ads is not null;	
+  and ads.active_ads is not null
+    and sales_rep_id =1088989
+limit 3;	
 
  
