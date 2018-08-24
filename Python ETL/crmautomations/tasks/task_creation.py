@@ -86,7 +86,7 @@ try:
 	cur.execute(
 		" select "\
 		"	task.cod_auto_task, "\
-		"	task.content || '(Auto_task_' || task.cod_auto_task || ')' as content, "\
+		"	task.content, "\
 		"	task.resource_type, "\
 		"	task.due_date, "\
 		"	task.owner_id, "\
