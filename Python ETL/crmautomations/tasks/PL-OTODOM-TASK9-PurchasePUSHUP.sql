@@ -85,7 +85,7 @@ select
       group by base_contact.cod_contact, base_contact.cod_base_user_owner, atlas_user.opr_atlas_user,base_contact.email, base_contact.opr_contact,base_contact.cod_atlas_user, to_char(a.date,'YYYYMM') ) a,
       crm_integration_anlt.t_lkp_base_user base_user
   where 1=1
-    and purchase_value between -330 and -80
+    and purchase_value < -100
     and a.cod_base_user_owner = base_user.cod_base_user
     and base_user.valid_to = 20991231) b
 where rn = 1) task
