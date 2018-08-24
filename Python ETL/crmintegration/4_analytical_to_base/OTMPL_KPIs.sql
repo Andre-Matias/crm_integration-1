@@ -3344,8 +3344,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 		union
 		select * from tmp_pl_otomoto_calc_revenue_1_listings_3);
 
-
---$$$
+ 
 
 -- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
 create temp table tmp_pl_otomoto_calc_max_value_package_1 as
@@ -3518,6 +3517,170 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select * from tmp_pl_otomoto_calc_max_value_package_3);
 
 
+	
+	
+	
+
+-- CREATE TMP - KPI OLX.BASE.121 (Maximum package purchased)
+create temp table tmp_pl_otomoto_calc_max_package_1 as
+select
+	core.cod_contact,
+	core.cod_contact_parent,
+	core.cod_custom_field,
+	core.dat_snap,
+	core.cod_source_system,
+	core.custom_field_value
+from
+	(
+		select
+			cod_contact,
+			cod_contact_parent,
+			cod_custom_field,
+			dat_snap,
+			cod_source_system,
+			package_name || ', ' || package_value as custom_field_value
+		from
+			(
+				select
+					inner_core.cod_contact,
+					inner_core.cod_contact_parent,
+					kpi_custom_field.cod_custom_field,
+					inner_core.dat_snap,
+					inner_core.cod_source_system,
+					package_name,
+					cast(round(nvl(package_value,0),2) as varchar) package_value
+				from
+              (
+                select
+                  lkp_contact.cod_contact,
+                  lkp_contact.cod_contact_parent,
+                  lkp_contact.cod_source_system,
+                  scai.dat_processing dat_snap,
+                  idx.name_pl as package_name,
+                  max(tmp_revenue.subs_value) package_value
+                from
+                  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
+                  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
+                  crm_integration_anlt.t_lkp_contact lkp_contact,
+                  crm_integration_anlt.t_rel_scai_country_integration scai,
+				  db_atlas_verticals.paidads_indexes idx
+                where
+                  lkp_contact.cod_atlas_user = lkp_atlas_user.cod_atlas_user (+)
+                  and lkp_atlas_user.opr_atlas_user = tmp_revenue.user_id (+)
+                  and lkp_contact.valid_to = 20991231
+                  and lkp_contact.cod_source_system = 12
+                  and lkp_atlas_user.valid_to (+) = 20991231
+                  and lkp_atlas_user.cod_source_system (+) = 7
+                  and scai.cod_integration = 50000
+                  and scai.cod_country = 2
+				  and idx.livesync_dbname = 'otomotopl'
+				  and tmp_revenue.id_index = idx.id
+                group by
+                  lkp_contact.cod_contact,
+                  lkp_contact.cod_contact_parent,
+                  lkp_contact.cod_source_system,
+                  scai.dat_processing,
+                  idx.name_pl
+              ) inner_core ,
+					(
+						select
+							rel.cod_custom_field,
+							rel.flg_active
+						from
+							crm_integration_anlt.t_lkp_kpi kpi,
+							crm_integration_anlt.t_rel_kpi_custom_field rel
+						where
+							kpi.cod_kpi = rel.cod_kpi
+							and lower(kpi.dsc_kpi) = 'maximum package purchased'
+							and rel.cod_source_system = 12
+					) kpi_custom_field
+				where
+					kpi_custom_field.flg_active = 1
+			) core
+	) core,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where
+	core.cod_source_system = fac_snap.cod_source_system (+)
+	and core.cod_custom_field = fac_snap.cod_custom_field (+)
+	and core.cod_contact = fac_snap.cod_contact (+)
+	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+
+		  
+--Calculate for employees
+create temp table tmp_pl_otomoto_calc_max_package_2 as
+select source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	cast(coalesce(cast(source.custom_field_value as varchar), '0') as varchar) custom_field_value
+from tmp_pl_otomoto_calc_max_package_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_contact_parent is not null
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+
+
+
+--Calculate for companies and contacts not associated with companies
+create temp table tmp_pl_otomoto_calc_max_package_3 as
+select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	coalesce(cast(max(cast(source.custom_field_value as numeric(15,2) )) as varchar), '0') custom_field_value
+from tmp_pl_otomoto_calc_max_package_1 source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where 1 = 1
+  and source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and nvl(source.cod_contact_parent, source.cod_contact) = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+  group by
+  source.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+	nvl(source.cod_contact_parent,source.cod_contact)
+	 ;		  
+
+
+	 
+-- HST INSERT - KPI OLX.BASE.121 (Maximum package purchased)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_max_package_2
+			union
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_max_package_3)
+			;
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.121 (Maximum package purchased)
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_max_package_2
+			union
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_max_package_3)
+			;
+
+
+
+--KPI KPI OLX.BASE.121 (Maximum package purchased)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    (select * from tmp_pl_otomoto_calc_max_package_2
+	union
+	select * from tmp_pl_otomoto_calc_max_package_3);
+	
 
 
 --$$$
