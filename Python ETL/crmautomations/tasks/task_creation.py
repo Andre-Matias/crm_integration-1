@@ -27,14 +27,14 @@ def getDatabaseConnection(DB_CONF_FILE):
 	data = json.load(open(DB_CONF_FILE))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 
-def updateFacAutoTask(cod_auto_task, cod_status, message, cod_base_task = 0):
+def updateFacAutoTask(cod_auto_task, cod_status, message, opr_task = 0):
 	try:
 		cur.execute(
 		" update "\
 		"	crm_integration_anlt.t_fac_auto_task "\
 		"	set cod_status = " + cod_status + ", "\
 		"   dat_task_sync = cast(to_char(sysdate,'YYYYMMDD') as integer), "\
-		"   cod_base_task = case when '" + str(cod_base_task) + "' = 0 then cod_base_task else '" + str(cod_base_task) + "' end "\
+		"   opr_task = case when '" + str(opr_task) + "' = 0 then opr_task else '" + str(opr_task) + "' end "\
 		"	where cod_auto_task = " + str(cod_auto_task) + " ")	
 	except Exception as e: 
 		scai.processEnd(DB_CONF_FILE, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, '', '',3)	# SCAI
