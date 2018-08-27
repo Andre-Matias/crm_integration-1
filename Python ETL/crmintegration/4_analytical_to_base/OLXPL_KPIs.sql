@@ -1054,7 +1054,7 @@ select
 	cod_custom_field,
 	dat_snap,
 	cod_source_system,
-	coalesce(to_char(custom_field_value, 'YYYYMMDD HH24:MI:SS'), ' ') as custom_field_value
+	coalesce(to_char(custom_field_value, 'YYYY-MM-DD HH24:MI:SS'), ' ') as custom_field_value
 from
 	(
 	select
