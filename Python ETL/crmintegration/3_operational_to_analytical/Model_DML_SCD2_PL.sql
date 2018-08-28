@@ -2949,6 +2949,7 @@ and cod_contact_parent is null
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	   	
+--$$$	
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -3007,6 +3008,7 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
  
+--$$$
 	
 -- #######################
 -- ####    PASSO 3    ####
