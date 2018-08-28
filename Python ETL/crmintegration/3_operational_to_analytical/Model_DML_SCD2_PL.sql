@@ -3031,6 +3031,7 @@ where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.c
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
  
+--$$$
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3062,6 +3063,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_custom_field';	
  
+--$$$
 	
 -- #############################################
 -- # 	     BASE - Poland                     #
