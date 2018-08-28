@@ -90,7 +90,6 @@ where
 where 1=1
   and task_insert_rules.cod_auto_task is null
   and ads.active_ads is not null
-    and sales_rep_id =1088989
-limit 3;	
+;	
 
  
