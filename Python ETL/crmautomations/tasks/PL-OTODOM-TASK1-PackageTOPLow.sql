@@ -12,9 +12,9 @@ with task_insert_rules as (select * from (
 				and task.opr_task = auto_task.opr_task
 				and task.valid_to = 20991231
 				and task.cod_source_system = 14 --change this to right site
-				and task.flg_completed = 1  --this sould be set to 1 = closed/completed
-				and auto_task.cod_rule = 1 --change this to this task rule
-				and auto_task.dat_task_rule >	to_char(sysdate - 30, 'YYYYMMDD') --change this to specific date, in case its monthly (30)
+				and ( (task.flg_completed = 1  --this sould be set to 1 = closed/completed
+					and auto_task.dat_task_rule >	to_char(sysdate - 30, 'YYYYMMDD')) or task.flg_completed = 0 ) --change this to specific date, in case its monthly (30)
+				and auto_task.cod_rule = 1 --change this to this task rule 
 )
 	where 1=1
 	and rnumber = 1)

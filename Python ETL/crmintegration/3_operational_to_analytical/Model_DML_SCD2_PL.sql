@@ -2909,8 +2909,7 @@ insert into crm_integration_anlt.t_lkp_contact
 
 
 analyze crm_integration_anlt.t_lkp_contact;
-	  
---$$$
+	   
 
 -- update do contact_id/cod_contact_parent - CARS PL
 update crm_integration_anlt.t_lkp_contact
@@ -2923,8 +2922,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$
+	   
 
 -- update do contact_id/cod_contact_parent - OLX PL
 update crm_integration_anlt.t_lkp_contact
@@ -2937,8 +2935,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$
+	   
 
 -- update do contact_id/cod_contact_parent - RE PL
 update crm_integration_anlt.t_lkp_contact
@@ -2951,8 +2948,7 @@ and cod_contact_parent is null
 ) contact_parent
 where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
 and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
-	  
-	--$$$	
+	   	
 	
 -- #######################
 -- ####    PASSO 5    ####
@@ -2983,8 +2979,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_contact';
-
---$$$
+ 
 
 -- #######################
 -- ####    PASSO 6    ####
@@ -3011,8 +3006,7 @@ and t_rel_scai_integration_process.ind_active = 1
 /*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
-
---$$$
+ 
 	
 -- #######################
 -- ####    PASSO 3    ####
@@ -3034,8 +3028,7 @@ from
 where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
-
---$$$
+ 
 
 -- #######################
 -- ####    PASSO 4    ####
@@ -3066,8 +3059,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 	and rel_country_integr.ind_active = 1
 	and rel_integr_proc.ind_active = 1
 	and proc.dsc_process_short = 't_lkp_custom_field';	
-
---$$$
+ 
 	
 -- #############################################
 -- # 	     BASE - Poland                     #
