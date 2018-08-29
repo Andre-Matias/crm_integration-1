@@ -89,12 +89,12 @@ cur.execute("select  count(*) from ( "\
 			
 conn.commit()
 
-#results = cur.fetchone()
-result_list = cur.fetchall()
+results = cur.fetchone()
+#result_list = cur.fetchall()
 
 for results in result_list: 
 
-	slack_text = "There are " + results[1] + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
+	slack_text = "There are " + results[0] + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
 
 	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 	
@@ -115,12 +115,12 @@ cur.execute("select  count(*) from ( "\
 			
 conn.commit()
 
-#results = cur.fetchone()
-result_list = cur.fetchall()
+results = cur.fetchone()
+#result_list = cur.fetchall()
 
 for results in result_list: 
 
-	slack_text = "There are " + results[1] + " duplicates on the table t_lkp_deal. Please verify this problem!"  
+	slack_text = "There are " + results[0] + " duplicates on the table t_lkp_deal. Please verify this problem!"  
 
 	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 	
