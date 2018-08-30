@@ -1,0 +1,298 @@
+---
+title: "Car Parts Parameters Usage"
+output: html_notebook
+---
+
+# ######################################################################################################################
+#' Analysis: Car Parts Parameters Usage
+#' 
+#' verticals: otomoto, autovit, standvirtual
+#' 
+#' ticket: https://naspersclassifieds.atlassian.net/browse/CARS-8354
+#' 
+#' car parts categories id:
+#' pl: 163 -> Car Parts
+#' pt: 661 -> Parts
+#' ro: 69 -> Car Parts
+#' 
+#'
+#'#####################################################################################################################
+
+
+## Set up environment
+```{r}
+setwd("~/Verticals-bi/scripts/r/3.Analysis/CARS-8354.ParamsCarParts/")
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+```{r}
+# Load libraries
+library("config")
+library("RPostgreSQL")
+library("DBI")
+library("RMySQL")
+library("tidyr")
+library("tidyverse")
+library("stringr")
+```
+
+```{r}
+# Load personal credentials
+load("~/Documents/r_scripts_miei/personal_credentials.Rdata")
+```
+
+
+# Extract data from Yamato ====================================================
+
+```{r, eval=FALSE}
+
+# Yamato auth -----
+
+config <- config::get(file = "~/verticals-bi/yml_config/config.yml", 
+                      config = Sys.getenv("R_CONFIG_ACTIVE", "yamato") )
+
+conDB <-
+  dbConnect(
+    drv,
+    user= YamatoUser, 
+    password= YamatoPsw,
+    host= config$DbHost, 
+    port= config$DbPort,
+    dbname = config$DbName
+  )
+
+# Extract ads data --------
+
+requestDB <-
+  dbSendQuery(
+    conDB,
+    "
+    SELECT
+      livesync_dbname,
+      id,
+      -- created_at_first,
+      params
+    FROM livesync.verticals_ads
+    WHERE 1=1
+      AND livesync_dbname IN ('otomotopl', 'carspt', 'autovitro')
+      AND category_id IN ('163', '661', '69') 
+      AND created_at_first >= '2018-06-01 00:00:00' AND created_at_first <= '2018-08-27 00:00:00'
+      AND net_ad_counted = 1
+      AND status ='active'
+
+    ;
+    "
+  )
+
+
+ads<- dbFetch(requestDB)
+```
+
+
+```{r}
+head(ads, 3)
+```
+
+
+
+## Split ads dataset by country ---------------------------------------------
+### We do the analysis separately for each country since parameter names are different
+
+```{r}
+ads_pl <- filter(ads, livesync_dbname =='otomotopl') 
+dim(ads_pl)
+length(unique(ads_pl$id)) #there are dupplcated ads
+
+ads_pt <- filter(ads, livesync_dbname =='carspt') 
+dim(ads_pt)
+length(unique(ads_pt$id)) # no duplicated ads
+
+ads_ro <- filter(ads, livesync_dbname =='autovitro') 
+dim(ads_ro)
+length(unique(ads_ro$id)) #there are dupplcated ads
+```
+
+## Remove duplicated ads -----------------------------------------------------
+```{r}
+ads_pl<- ads_pl[!duplicated(ads_pl), ]
+ads_pt<- ads_pt[!duplicated(ads_pt), ]
+ads_ro<- ads_ro[!duplicated(ads_ro), ]
+```
+
+
+## Parse parameters field ----------------------------------------------------
+
+```{r}
+# Define some functions
+
+#' extract_params()
+##' output of strsplit is a list where each element is a split
+##' since it is a list-column, unnest() makes each element of the list its own row 
+
+extract_params <- function(data) {
+  t <- as_tibble(data[, c("id", "params")])
+  colnames(t) <- c("ad_id", "params")
+
+  t0 <-
+    t %>%
+    unnest(params = strsplit(params, "<br>")) %>% 
+    mutate(new = strsplit(params, "<=>")) %>%
+    mutate(paramName = unlist(lapply(new, function(x) x[1])),
+         paramValue = unlist(lapply(new, function(x) x[2]))
+          ) %>%
+    select(ad_id, paramName, paramValue)
+  return(t0)
+}
+
+
+
+
+#' fix_price_param()
+#' fix price as there are duplicated paramNames for price: change name to priceValue to the one with numerical value
+#' also change it to pricevalue if the value is NA
+
+fix_price_param <- function(t0) {
+  t0[t0$paramName=="price" & !is.na(as.numeric(t0$paramValue)), c("paramName")] <- "priceValue"
+  t0[t0$paramName=="price" & is.na(t0$paramValue), c("paramName")] <- "priceValue"
+  
+  return(t0)
+}
+
+```
+
+
+## PL processing --------------------------------------------------------------
+```{r}
+df_params_pl <- extract_params(data=ads_pl)
+```
+
+```{r}
+df_params_pl <- fix_price_param(t0= df_params_pl)
+head(df_params_pl)
+```
+
+```{r}
+df_params_tidy_pl <- spread(df_params_pl, key= paramName, value= paramValue)
+head(df_params_tidy_pl)
+```
+
+Count number of characters in reference number field
+```{r}
+# in PL is called manufacturer_number
+df_params_tidy_pl$reference_code_nchar <- nchar(df_params_tidy_pl$manufacturer_code)
+df_params_tidy_pl$reference_code_nchar[is.na(df_params_tidy_pl$reference_code_nchar)] <- 0
+df_params_tidy_pl %>% filter(!is.na(manufacturer_code)) %>% select(manufacturer_code, reference_code_nchar) %>% head()
+```
+
+Histogram of reference number
+```{r}
+ggplot(df_params_tidy_pl, aes(reference_code_nchar)) +
+  geom_histogram(binwidth=1)
+```
+
+
+```{r}
+df_params_tidy_pl <- df_params_tidy_pl %>% mutate(site="pl")
+```
+
+
+```{r}
+param_usage_pl <- df_params_pl %>% 
+  mutate(total_ads=n_distinct(ad_id)) %>% 
+  group_by(paramName) %>% 
+  summarise(freq= sum(!is.na(paramValue)), total_ads=mean(total_ads)) %>%
+  mutate(site="pl")
+```
+
+
+
+## PT processing --------------------------------------------------------------
+```{r}
+df_params_pt <- extract_params(data=ads_pt)
+```
+
+```{r}
+df_params_pt <- fix_price_param(t0= df_params_pt)
+head(df_params_pt)
+```
+
+```{r}
+df_params_tidy_pt <- spread(df_params_pt, key= paramName, value= paramValue)
+head(df_params_tidy_pt)
+```
+
+Count number of characters in reference field
+```{r}
+# in PT is 'reference'
+df_params_tidy_pt$reference_code_nchar <- nchar(df_params_tidy_pt$reference)
+df_params_tidy_pt %>% filter(!is.na(reference)) %>% select(reference, reference_code_nchar) %>% head()
+```
+```{r}
+df_params_tidy_pt <- df_params_tidy_pt %>% mutate(site="pt")
+```
+
+
+```{r}
+param_usage_pt <- df_params_pt %>% 
+  mutate(total_ads=n_distinct(ad_id)) %>% 
+  group_by(paramName) %>% 
+  summarise(freq= sum(!is.na(paramValue)), total_ads=mean(total_ads)) %>%
+  mutate(site="pt")
+```
+
+
+## RO processing --------------------------------------------------------------
+```{r}
+df_params_ro <- extract_params(data=ads_ro)
+```
+
+```{r}
+df_params_ro <- fix_price_param(t0= df_params_ro)
+head(df_params_ro)
+```
+
+```{r}
+df_params_tidy_ro <- spread(df_params_ro, key= paramName, value= paramValue)
+head(df_params_tidy_ro)
+```
+
+Count number of characters in reference field
+```{r}
+# in RO is 'manufacturer_code'
+df_params_tidy_ro$reference_code_nchar <- nchar(df_params_tidy_ro$manufacturer_code)
+df_params_tidy_ro %>% filter(!is.na(manufacturer_code)) %>% select(manufacturer, manufacturer_code, reference_code_nchar) %>% head()
+```
+
+```{r}
+df_params_tidy_ro <- df_params_tidy_ro %>% mutate(site="ro")
+```
+
+
+```{r}
+param_usage_ro <- df_params_ro %>% 
+  mutate(total_ads=n_distinct(ad_id)) %>% 
+  group_by(paramName) %>% 
+  summarise(freq= sum(!is.na(paramValue)), total_ads=mean(total_ads)) %>%
+  mutate(site="ro")
+```
+
+
+## Bind params usage and df_params_tidy vertically ----------------------------
+```{r}
+params_usage <- bind_rows(param_usage_pl, param_usage_pt, param_usage_ro)
+
+df_params_tidy <- bind_rows(df_params_tidy_pl, df_params_tidy_pt, df_params_tidy_ro)
+```
+
+Export datasets to be analysed via Tableau
+```{r}
+write_csv(params_usage, "params_usage.csv")
+
+write_csv(df_params_tidy, "df_params_tidy.csv")
+```
+
+
+
