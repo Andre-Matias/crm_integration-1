@@ -27,34 +27,36 @@ select  (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integr
 	6 cod_rule, --change this to this task rule
 	'Konto Twojego klienta zostało zablokowano. Przypomnij o zapłaceniu faktury! (Auto_task_' || (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integration_anlt.t_fac_auto_task) + row_number() over () || ')' content,
 	'contact' resource_type,
-	to_char (sysdate + 365, 'YYYY-MM-DD HH24:MI:SS') due_date,
+	to_char (sysdate + 1, 'YYYY-MM-DD HH24:MI:SS') due_date,
 	sales_rep_id owner_id,
 	task.base_id resource_id,
 	False completed,
 	to_char (sysdate + 1, 'YYYY-MM-DD') || ' 09:00:00' remind_at
 from (
-select
-  base_user.dsc_base_user sales_rep,
-  base_user.email sales_rep_email,
-  base_user.opr_base_user sales_rep_id,
-  base_contact.opr_contact base_id,
-  atlas_user.opr_atlas_user,
-  base_contact.email
-from
-  crm_integration_anlt.t_lkp_atlas_user atlas_user,
-  crm_integration_anlt.t_lkp_contact base_contact,
-  crm_integration_anlt.t_lkp_base_user base_user
-where
-  1=1
-  and atlas_user.cod_source_system = 6
-  and base_contact.cod_source_system = 14
-  and atlas_user.valid_to = 20991231
-  and base_contact.valid_to = 20991231
-  and atlas_user.type = 'suspended'
-  and atlas_user.suspend_reason = 'unpaid_invoice'
-  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-  and base_contact.cod_base_user_owner = base_user.cod_base_user
-  and base_user.valid_to = 20991231) task
+	select
+	  base_user.dsc_base_user sales_rep,
+	  base_user.email sales_rep_email,
+	  base_user.opr_base_user sales_rep_id,
+	  (select company.opr_contact from crm_integration_anlt.t_lkp_contact company where company.valid_to = 20991231 and company.cod_source_system = 14 and company.cod_contact = base_contact.cod_contact_parent) base_id,
+	  atlas_user.opr_atlas_user,
+	  base_contact.email
+	from
+	  crm_integration_anlt.t_lkp_atlas_user atlas_user,
+	  crm_integration_anlt.t_lkp_contact base_contact,
+	  crm_integration_anlt.t_lkp_base_user base_user
+	where
+	  1=1
+	  and atlas_user.cod_source_system = 6
+	  and base_contact.cod_source_system = 14
+	  and atlas_user.valid_to = 20991231
+	  and base_contact.valid_to = 20991231
+	  and atlas_user.type = 'suspended'
+	  and atlas_user.suspend_reason = 'unpaid_invoice'
+	  and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+	  and base_contact.cod_base_user_owner = base_user.cod_base_user
+	  and base_user.valid_to = 20991231
+	  and base_contact.cod_contact_parent is not null
+  ) task
   left outer join task_insert_rules on task.base_id = task_insert_rules.resource_id and task_insert_rules.resource_type = 'contact'
 where 1=1
   and task_insert_rules.cod_auto_task is null;

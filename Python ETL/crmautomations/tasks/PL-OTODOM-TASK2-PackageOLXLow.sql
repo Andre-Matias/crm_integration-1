@@ -27,7 +27,7 @@ select  (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integr
 	2 cod_rule, --change this to this task rule
 	'Twojemu klientowi kończą się OLXy. Skontaktuj się z nim! (Auto_task_' || (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integration_anlt.t_fac_auto_task) + row_number() over () || ')' content,
 	'contact' resource_type,
-	to_char (sysdate + 365, 'YYYY-MM-DD HH24:MI:SS') due_date,
+	to_char (sysdate + 1, 'YYYY-MM-DD HH24:MI:SS') due_date,
 	sales_rep_id owner_id,
 	task.base_id resource_id,
 	False completed,
@@ -37,7 +37,7 @@ select
   base_user.dsc_base_user sales_rep,
   base_user.email sales_rep_email,
   base_user.opr_base_user sales_rep_id,
-  a.opr_contact base_id,
+  (select company.opr_contact from crm_integration_anlt.t_lkp_contact company where company.valid_to = 20991231 and company.cod_source_system = 14 and company.cod_contact = a.cod_contact_parent) base_id,
   opr_atlas_user atlas_id,
   a.email,
   total_bought,
@@ -47,6 +47,7 @@ from
   (
     select
       base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
       base_contact.cod_base_user_owner,
       atlas_user.opr_atlas_user,
       base_contact.email,
@@ -67,8 +68,10 @@ from
       and atlas_user.cod_source_system = 6
       and packets.user_id = atlas_user.opr_atlas_user
       and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+	  and base_contact.cod_contact_parent is not null
     group by
       base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
       base_contact.cod_base_user_owner,
       atlas_user.opr_atlas_user,
       base_contact.email,
