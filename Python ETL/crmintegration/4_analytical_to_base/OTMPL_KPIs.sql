@@ -1959,10 +1959,15 @@ from
 						min(datediff(days, trunc(fac.updated_at), trunc(sysdate))) custom_field_value
 					from
 						crm_integration_anlt.t_fac_call fac,
+						crm_integration_anlt.t_lkp_call_outcome call_outcome,
 						crm_integration_anlt.t_lkp_contact lkp_contact,
 						crm_integration_anlt.t_rel_scai_country_integration scai
 					where
 						lkp_contact.cod_source_system = 12
+						and fac.cod_source_system = 12
+						and call_outcome.cod_source_system = 12
+						and call_outcome.cod_call_outcome = fac.cod_call_outcome
+						and call_outcome.cod_call_outcome not in (73) --no answer
 						and lkp_contact.cod_contact = fac.cod_contact
 						and lkp_contact.valid_to = 20991231
 						and scai.cod_integration = 50000
