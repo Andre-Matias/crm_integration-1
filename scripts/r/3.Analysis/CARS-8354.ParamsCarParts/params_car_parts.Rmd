@@ -3,20 +3,16 @@ title: "Car Parts Parameters Usage"
 output: html_notebook
 ---
 
-# ######################################################################################################################
-#' Analysis: Car Parts Parameters Usage
-#' 
-#' verticals: otomoto, autovit, standvirtual
-#' 
-#' ticket: https://naspersclassifieds.atlassian.net/browse/CARS-8354
-#' 
-#' car parts categories id:
-#' pl: 163 -> Car Parts
-#' pt: 661 -> Parts
-#' ro: 69 -> Car Parts
-#' 
-#'
-#'#####################################################################################################################
+verticals: otomoto, autovit, standvirtual
+
+ticket: https://naspersclassifieds.atlassian.net/browse/CARS-8354
+
+car parts categories id:
+pl: 163 -> Car Parts
+pt: 661 -> Parts
+ro: 69 -> Car Parts
+---
+
 
 
 ## Set up environment
@@ -24,9 +20,6 @@ output: html_notebook
 setwd("~/Verticals-bi/scripts/r/3.Analysis/CARS-8354.ParamsCarParts/")
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
 
 ```{r}
 # Load libraries
@@ -45,7 +38,7 @@ load("~/Documents/r_scripts_miei/personal_credentials.Rdata")
 ```
 
 
-# Extract data from Yamato ====================================================
+## Extract data from Yamato ===================================================
 
 ```{r, eval=FALSE}
 
@@ -98,7 +91,7 @@ head(ads, 3)
 
 
 
-## Split ads dataset by country ---------------------------------------------
+## Split ads dataset by country -----------------------------------------------
 ### We do the analysis separately for each country since parameter names are different
 
 ```{r}
@@ -115,7 +108,7 @@ dim(ads_ro)
 length(unique(ads_ro$id)) #there are dupplcated ads
 ```
 
-## Remove duplicated ads -----------------------------------------------------
+## Remove duplicated ads ------------------------------------------------------
 ```{r}
 ads_pl<- ads_pl[!duplicated(ads_pl), ]
 ads_pt<- ads_pt[!duplicated(ads_pt), ]
@@ -123,7 +116,7 @@ ads_ro<- ads_ro[!duplicated(ads_ro), ]
 ```
 
 
-## Parse parameters field ----------------------------------------------------
+## Parse parameters field -----------------------------------------------------
 
 ```{r}
 # Define some functions
