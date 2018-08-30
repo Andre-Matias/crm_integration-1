@@ -168,3 +168,6 @@ dim(price_distr_all_pt)
 write.csv(price_distr_all_pt, file= "datasets/price_distr_all_pt.csv")
 
 
+#price_distr_all_pt <- read_csv("datasets/price_distr_all_pt.csv")
+
+
