@@ -2925,7 +2925,7 @@ from
 where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_custom_field = fac_snap.cod_custom_field (+)
   and source.cod_contact = fac_snap.cod_contact (+)
-  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
 
 
