@@ -19,7 +19,7 @@
 #' ################################################################################################
 
 
-setwd("~/Documents/clusters")
+setwd("~/Verticals-bi/scripts/r/3.Analysis/clusters pt")
 
 # Load RPostgreSQL library
 library("RPostgreSQL")
@@ -40,7 +40,7 @@ conDB <-
     dbname = config$DbName
   )
 
-# Extract data for clustering --------
+# Extract data for clustering -------------------------------------------------
 
 requestDB <-
   dbSendQuery(
