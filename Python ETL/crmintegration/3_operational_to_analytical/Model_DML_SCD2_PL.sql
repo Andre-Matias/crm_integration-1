@@ -3073,7 +3073,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 --Need this two following tables because for a lot of records times a lot of customs fields, the query takes too long, so we divide it
 --Example for OLXPL: 250k records with some records having 71custom fiels = A LOT OF RECORDS and the process takes forever to run (if it ever ends...)
-create temp table tmp_pl_gen_numbers_1 
+create temp table tmp_pl_gen_numbers_1  as
 select	*
 from
 (
@@ -3085,11 +3085,11 @@ from
 	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
 )
 where
-gen_num between 1 and trunc(max(regexp_count(custom_fields, '\\","') )/2) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+gen_num between 1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
 ;	
 
 
-create temp table tmp_pl_gen_numbers_2 
+create temp table tmp_pl_gen_numbers_2  as
 select	*
 from
 (
@@ -3101,7 +3101,7 @@ from
 	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
 )
 where
-gen_num > trunc(max(regexp_count(custom_fields, '\\","') )/2) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+gen_num > trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
 ;			
 
 create temp table tmp_pl_contact_custom_field_1
@@ -3163,6 +3163,7 @@ as
 create temp table tmp_pl_contact_custom_field 
 distkey(cod_source_system)
 sortkey(custom_field_name, cod_source_system)
+as
 select * from tmp_pl_contact_custom_field_1
 union
 select * from tmp_pl_contact_custom_field_2;
