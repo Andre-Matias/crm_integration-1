@@ -1469,7 +1469,7 @@ from
 		cod_custom_field,
 		dat_snap,
 		cod_source_system,
-		coalesce(to_char(#_of_packets_in_last_3_months, '0')) as custom_field_value
+		coalesce(#_of_packets_in_last_3_months, 0) as custom_field_value
 	from  
     tmp_pl_olx_calc_number_packages_user_0,
     crm_integration_anlt.t_rel_scai_country_integration scai,
