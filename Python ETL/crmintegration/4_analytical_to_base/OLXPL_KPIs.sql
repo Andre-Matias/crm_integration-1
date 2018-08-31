@@ -971,6 +971,7 @@ from
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
 	and kpi_custom_field.flg_active = 1 )  source 
+	;
 
 
 		
@@ -1089,6 +1090,7 @@ from
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
 	and kpi_custom_field.flg_active = 1 )  source 
+	;
 
 
 		
@@ -1207,7 +1209,7 @@ from
     where 1=1
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
-	and kpi_custom_field.flg_active = 1 )  source 
+	and kpi_custom_field.flg_active = 1 )  source ;
 
 
 		
@@ -1326,7 +1328,7 @@ from
     where 1=1
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
-	and kpi_custom_field.flg_active = 1 )  source 
+	and kpi_custom_field.flg_active = 1 )  source ;
 
 
 		
@@ -1448,7 +1450,7 @@ select
 				and scai.cod_country = 2
 		)
 		where 1=1
-		and rn = 1
+		and rn = 1;
 
 
 create temp table tmp_pl_olx_calc_number_packages_user_1 as
@@ -1486,7 +1488,7 @@ from
     where 1=1
 	and scai.cod_integration = 50000
     and scai.cod_country = 2
-	and kpi_custom_field.flg_active = 1 )  source 
+	and kpi_custom_field.flg_active = 1 )  source ;
 
 
 		

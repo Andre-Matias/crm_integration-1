@@ -37,7 +37,7 @@ select
   base_user.dsc_base_user sales_rep,
   base_user.email sales_rep_email,
   base_user.opr_base_user sales_rep_id,
-  (select company.opr_contact from crm_integration_anlt.t_lkp_contact company where company.valid_to = 20991231 and company.cod_source_system = 14 and company.cod_contact = a.cod_contact_parent) base_id,,
+  (select company.opr_contact from crm_integration_anlt.t_lkp_contact company where company.valid_to = 20991231 and company.cod_source_system = 14 and company.cod_contact = a.cod_contact_parent) base_id,
   opr_atlas_user atlas_id,
   a.email,
   total_bought,
