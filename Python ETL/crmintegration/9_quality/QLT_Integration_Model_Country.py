@@ -30,78 +30,31 @@ except Exception as e:
 	sys.exit("The process aborted with error.")
 
 slack_token = cur.fetchone()
-	
-#Get status and dates of last integrations per country
-cur.execute("select "\
-			" country_integration.cod_country, "\
-			" country.dsc_country, "\
-			" country_integration.dat_processing, "\
-			" max(country_integration.cod_status) as cod_status, "\
-			" case when status.dsc_status = 'Ok' then ':tada:' || status.dsc_status || ':tada:'   "\
-			"      when status.dsc_status = 'Running' then ':runner:' || status.dsc_status || ':runner:'  "\
-			"      when status.dsc_status = 'Error' then ':disappointed:' || status.dsc_status || ':disappointed:' end dsc_status, "\
-			" min(execution_date) as min, "\
-			" max(execution_date) as max, "\
-			" max(execution_date)-min(execution_date)total_execution_time "\
-			" from crm_integration_anlt.t_rel_scai_country_integration country_integration "\
-			" 	left outer join crm_integration_anlt.t_fac_scai_execution fac on fac.dat_processing = country_integration.dat_processing and fac.cod_integration = country_integration.cod_integration and fac.cod_country = country_integration.cod_country, "\
-			" crm_integration_anlt.t_lkp_country country, "\
-			" crm_integration_anlt.t_lkp_scai_status status "\
-			" where 1=1 "\
-			" and country.cod_country = country_integration.cod_country "\
-			" and country.valid_to = 20991231 "\
-			" and country_integration.cod_status = status.cod_status "\
-			" and country_integration.cod_integration in (10000,11000,30000) "\
-			" group by "\
-			" 	country_integration.cod_country, "\
-			" 	country.dsc_country, "\
-			" 	country_integration.dat_processing, "\
-			"	status.dsc_status " 
-		)
-			
-conn.commit()
-
-#results = cur.fetchone()
-result_list = cur.fetchall()
-
-for results in result_list: 
-
-	slack_text = "The integration for " + results[1] + " executed on the " + str(results[2]) + " having finished with " + results[4] + ". It started it's execution at " +  str(results[5])[0:19] + " and ended at " + str(results[6])[0:19] + ", and it took a total of " + str(results[7])[0:8]  
-
-	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
-	
-	if response["ok"]:
-		print("Message posted successfully: " + response["message"]["ts"])
-	elif response["ok"] is False:
-		print("Message not posted due to error: " + response["message"]["ts"]) 
-		
-		
+	 
 		
 #Check if there are different cods for the same opr
 cur.execute("select  count(*) from ( "\
 			" select opr_atlas_user, cod_source_system,  count(distinct cod_atlas_user) "\
 			" from crm_integration_anlt.t_lkp_atlas_user "\
 			" where 1=1 "\
-			"  --and opr_deal = 53313170 "\
 			" group by opr_atlas_user, cod_source_system "\
-			" having count(distinct cod_atlas_user) >1  )" 
+			" having count(distinct cod_atlas_user) >1  )"
 		)
 			
 conn.commit()
 
 results = cur.fetchone()
 #result_list = cur.fetchall()
+ 
 
-for results in result_list: 
+slack_text = "There are " + str(results[0]) + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
 
-	slack_text = "There are " + results[0] + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
+response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 
-	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
-	
-	if response["ok"]:
-		print("Message posted successfully: " + response["message"]["ts"])
-	elif response["ok"] is False:
-		print("Message not posted due to error: " + response["message"]["ts"]) 		
+if response["ok"]:
+	print("Message posted successfully: " + response["message"]["ts"])
+elif response["ok"] is False:
+	print("Message not posted due to error: " + response["message"]["ts"]) 		
 		
 		
 #Check if there are duplicates in t_lkp_deal
@@ -110,7 +63,7 @@ cur.execute("select  count(*) from ( "\
 			" from crm_integration_anlt.t_lkp_deal "\
 			" where valid_to = 20991231 "\
 			" group by opr_deal, cod_source_system, valid_from "\
-			" having count(*) > 1  )" 
+			" having count(*) > 1  )"
 		)
 			
 conn.commit()
@@ -118,16 +71,15 @@ conn.commit()
 results = cur.fetchone()
 #result_list = cur.fetchall()
 
-for results in result_list: 
 
-	slack_text = "There are " + results[0] + " duplicates on the table t_lkp_deal. Please verify this problem!"  
+slack_text = "There are " + str(results[0]) + " duplicates on the table t_lkp_deal. Please verify this problem!"  
 
-	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
-	
-	if response["ok"]:
-		print("Message posted successfully: " + response["message"]["ts"])
-	elif response["ok"] is False:
-		print("Message not posted due to error: " + response["message"]["ts"]) 				
+response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
+
+if response["ok"]:
+	print("Message posted successfully: " + response["message"]["ts"])
+elif response["ok"] is False:
+	print("Message not posted due to error: " + response["message"]["ts"]) 				
 
 
 	
