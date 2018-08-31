@@ -936,14 +936,14 @@ from
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,22) cod_source_system,
-      isnull(a.custom_field_value, '-') custom_field_value
+      isnull(a.custom_field_value, '0') custom_field_value
     from
       (
         select
           source.cod_contact,
           source.dat_processing dat_snap,
           source.cod_source_system,
-          cast((sum(nr_replies) / count(distinct source.id)) as varchar) custom_field_value
+          cast(round((sum(nr_replies) / count(distinct source.id)),0) as varchar) custom_field_value
         from
           (
             select
@@ -1517,11 +1517,11 @@ select
 	core.dat_snap,
 	core.cod_source_system,
   (case
-    when core.dsc_kpi = 'revenue (0) - total' then coalesce(total_revenue_0,0)
-    when core.dsc_kpi = 'revenue (0) - vas' then coalesce(vas_revenue_0,0)
-    when core.dsc_kpi = 'revenue (0) - listings' then coalesce(listings_revenue_0,0)
-    when core.dsc_kpi = 'revenue (0) - vas single' then coalesce(single_vas_revenue_0,0)
-    when core.dsc_kpi = 'revenue (0) - vas bundle' then coalesce(bundle_vas_revenue_0,0)
+    when core.dsc_kpi = 'revenue (0) - total' then round(coalesce(total_revenue_0,0),0)
+    when core.dsc_kpi = 'revenue (0) - vas' then round(coalesce(vas_revenue_0,0),0)
+    when core.dsc_kpi = 'revenue (0) - listings' then round(coalesce(listings_revenue_0,0),0)
+    when core.dsc_kpi = 'revenue (0) - vas single' then round(coalesce(single_vas_revenue_0,0),0)
+    when core.dsc_kpi = 'revenue (0) - vas bundle' then round(coalesce(bundle_vas_revenue_0,0),0)
    end) as custom_field_value
 from
   tmp_bg_olx_calc_revenue_0 core,
@@ -1648,11 +1648,11 @@ select
 	core.dat_snap,
 	core.cod_source_system,
   (case
-    when core.dsc_kpi = 'revenue (-1) - total' then coalesce(total_revenue_1,0)
-    when core.dsc_kpi = 'revenue (-1) - vas' then coalesce(vas_revenue_1,0)
-    when core.dsc_kpi = 'revenue (-1) - listings' then coalesce(listings_revenue_1,0)
-    when core.dsc_kpi = 'revenue (-1) - vas single' then coalesce(single_vas_revenue_1,0)
-    when core.dsc_kpi = 'revenue (-1) - vas bundle' then coalesce(bundle_vas_revenue_1,0)
+    when core.dsc_kpi = 'revenue (-1) - total' then round(coalesce(total_revenue_1,0),0)
+    when core.dsc_kpi = 'revenue (-1) - vas' then round(coalesce(vas_revenue_1,0),0)
+    when core.dsc_kpi = 'revenue (-1) - listings' then round(coalesce(listings_revenue_1,0),0)
+    when core.dsc_kpi = 'revenue (-1) - vas single' then round(coalesce(single_vas_revenue_1,0),0)
+    when core.dsc_kpi = 'revenue (-1) - vas bundle' then round(coalesce(bundle_vas_revenue_1,0),0)
    end) as custom_field_value
 from
   tmp_bg_olx_calc_revenue_1 core,
@@ -1764,11 +1764,11 @@ select
 	core.dat_snap,
 	core.cod_source_system,
   (case
-    when core.dsc_kpi = 'revenue (-2) - total' then coalesce(total_revenue_2,0)
-    when core.dsc_kpi = 'revenue (-2) - vas' then coalesce(vas_revenue_2,0)
-    when core.dsc_kpi = 'revenue (-2) - listings' then coalesce(listings_revenue_2,0)
-    when core.dsc_kpi = 'revenue (-2) - vas single' then coalesce(single_vas_revenue_2,0)
-    when core.dsc_kpi = 'revenue (-2) - vas bundle' then coalesce(bundle_vas_revenue_2,0)
+    when core.dsc_kpi = 'revenue (-2) - total' then round(coalesce(total_revenue_2,0),0)
+    when core.dsc_kpi = 'revenue (-2) - vas' then round(coalesce(vas_revenue_2,0),0)
+    when core.dsc_kpi = 'revenue (-2) - listings' then round(coalesce(listings_revenue_2,0),0)
+    when core.dsc_kpi = 'revenue (-2) - vas single' then round(coalesce(single_vas_revenue_2,0),0)
+    when core.dsc_kpi = 'revenue (-2) - vas bundle' then round(coalesce(bundle_vas_revenue_2,0),0)
    end) as custom_field_value
 from
   tmp_bg_olx_calc_revenue_2 core,
@@ -1882,11 +1882,11 @@ select
 	core.dat_snap,
 	core.cod_source_system,
   (case
-    when core.dsc_kpi = 'revenue (-3) - total' then coalesce(total_revenue_3,0)
-    when core.dsc_kpi = 'revenue (-3) - vas' then coalesce(vas_revenue_3,0)
-    when core.dsc_kpi = 'revenue (-3) - listings' then coalesce(listings_revenue_3,0)
-    when core.dsc_kpi = 'revenue (-3) - vas single' then coalesce(single_vas_revenue_3,0)
-    when core.dsc_kpi = 'revenue (-3) - vas bundle' then coalesce(bundle_vas_revenue_3,0)
+    when core.dsc_kpi = 'revenue (-3) - total' then round(coalesce(total_revenue_3,0),0)
+    when core.dsc_kpi = 'revenue (-3) - vas' then round(coalesce(vas_revenue_3,0),0)
+    when core.dsc_kpi = 'revenue (-3) - listings' then round(coalesce(listings_revenue_3,0),0)
+    when core.dsc_kpi = 'revenue (-3) - vas single' then round(coalesce(single_vas_revenue_3,0),0)
+    when core.dsc_kpi = 'revenue (-3) - vas bundle' then round(coalesce(bundle_vas_revenue_3,0),0)
    end) as custom_field_value
 from
   tmp_bg_olx_calc_revenue_3 core,
