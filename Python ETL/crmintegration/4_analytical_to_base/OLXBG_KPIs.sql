@@ -464,7 +464,7 @@ select
 		where
 		  kpi.cod_kpi = rel.cod_kpi
 		  and lower(kpi.dsc_kpi) = 'created date'
-		  and rel.cod_source_system = ~22
+		  and rel.cod_source_system = 22
 	) kpi_custom_field
 where
   base_contact.cod_contact = a.cod_contact (+)
