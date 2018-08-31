@@ -1190,7 +1190,7 @@ from
 		cod_custom_field,
 		dat_snap,
 		cod_source_system,
-		coalesce(to_char(units_left), '0') as custom_field_value
+		coalesce(to_char(units_left_in_packet), '0') as custom_field_value
 	from  
     tmp_pl_olx_calc_package,
     crm_integration_anlt.t_rel_scai_country_integration scai,
