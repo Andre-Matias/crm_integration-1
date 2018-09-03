@@ -1,5 +1,5 @@
 #' ############################################################################
-#' Buil price distributions for relevant combinations of cars
+#' Build price distributions for relevant combinations of cars
 #' 
 #' important parameters according to var. imp in XGBoost:
 #' make, model, year, mileage, engine_power
@@ -9,15 +9,14 @@
 
 setwd("~/Verticals-bi/scripts/r/3.Analysis/CarsValuation_PT")
 
-library(dplyr)
-library(stringr)
 library(tidyverse)
 
 
 
 # Load dataset ready for modelling (a compressed file) ------------------------
- df <- read.table(gzfile("datasets/preprocessing_data_wo_encoding.gz"), 
+df <- read.table(gzfile("datasets/preprocessing_data_wo_encoding.gz"), 
                  sep=",", header=TRUE) 
+
 
 # Recalculate year as it's missing
 df$year <- 2018 - df$age
@@ -30,7 +29,7 @@ breaks <- seq(min(df$mileage, na.rm=T), max(df$mileage, na.rm=T), 50000)
 df$mileage_cut <- cut(df$mileage, breaks, dig.lab=10)
 df$mileage_cut <- str_replace(df$mileage_cut, "]", ")")   # replacing ] with )
 
-## check how many ads fall into outliers buckets
+## check how many ads fall into outliers buckets or NAs
 df %>%
   group_by(mileage_cut) %>%
   summarize( count= n()) %>%
@@ -69,8 +68,8 @@ price_distr <- df %>%
   arrange(desc(count))
 
 dim(price_distr)
-summary(price_distr$good_price_range_min)  # on avg. 3.2% below average price
-summary(price_distr$good_price_range_max)  # on avg. 2.4% above average price
+summary(price_distr$good_price_range_min)  # on avg. 3.3% below average price
+summary(price_distr$good_price_range_max)  # on avg. 2.7% above average price
 
 
 # How many ads we will cover if we took only a "significant" (min number of observations) distribution?
@@ -84,9 +83,9 @@ find_ads_coverage <- function(df, min_count=50){
 }
 
 find_ads_coverage(price_distr) # use default value of 50 obs.
-# make + model + year + mileage: 48%
+# make + model + year + mileage: 52%
 
-find_ads_coverage(price_distr, 30) # reducing to 30, the coverage would raise to 60%
+find_ads_coverage(price_distr, 30) # reducing to 30, the coverage would raise to 65%
 
 
 
@@ -114,13 +113,13 @@ price_distr_back1 <- df %>%
   arrange(desc(count))
 
 dim(price_distr_back1)
-summary(price_distr_back1$good_price_range_min)  # on avg. 5% below average price
-summary(price_distr_back1$good_price_range_max)  # on avg. 3.5% above average price
+summary(price_distr_back1$good_price_range_min)  # on avg. 4.4% below average price
+summary(price_distr_back1$good_price_range_max)  # on avg. 3.6% above average price
 
 
 # How many ads we will cover if we took only a "significant" (min number of observations) distribution?
 find_ads_coverage(price_distr_back1)
-# make + model + year : 75%
+# make + model + year : 79%
 
 
 
@@ -148,12 +147,12 @@ price_distr_back2 <- df %>%
   arrange(desc(count))
 
 dim(price_distr_back2)
-summary(price_distr_back2$good_price_range_min)  # on avg. 13.3% below average price
-summary(price_distr_back2$good_price_range_max)  # on avg. 6.9% above average price
+summary(price_distr_back2$good_price_range_min)  # on avg. 10.3% below average price
+summary(price_distr_back2$good_price_range_max)  # on avg. 7% above average price
 
 # How many ads we will cover if we took only a "significant" (min number of observations) distribution?
 find_ads_coverage(price_distr_back2)
-# make + model: 96%
+# make + model: 97%
 
 
 # Split mileage into min and max in first dataset -----------------------------
