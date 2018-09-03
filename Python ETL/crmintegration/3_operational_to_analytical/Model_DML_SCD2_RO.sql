@@ -6554,6 +6554,1869 @@ and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
 
+
+--$$$
+
+-- #######################
+-- ####    PASSO 3    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set dat_processing = source.dat_processing, execution_nbr = source.execution_nbr, cod_status = 2 -- Running
+from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_invoice'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+  ) source
+where crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration;
+
+--$$$
+
+-- #######################
+-- ####    PASSO 4    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    rel_integr_proc.cod_status,
+    1 cod_execution_type, -- Begin
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_invoice';	
+
+--$$$
+	
+-- #############################################
+-- # 		     ATLAS - ROMANIA               #
+-- #		LOADING t_lkp_invoice		  	   #
+-- #############################################
+
+
+create temp table tmp_ro_lkp_invoice_storiaro
+distkey(cod_invoice)
+sortkey(cod_invoice, opr_invoice_id)
+as
+  select
+    source_table.cod_atlas_user,
+    source_table.opr_atlas_id,
+    source_table.opr_invoice_id,
+    source_table.is_paid,
+	  source_table.cod_month,
+	  source_table.invoice_date,
+    source_table.total_revenue,
+    source_table.insertions,
+    source_table.promo_units,
+    source_table.promo_revenue,
+    source_table.listing_revenue,
+    source_table.paid_invoices_revenue,
+    source_table.hash_invoice,
+    source_table.cod_source_system,
+    max_cod_invoice.max_cod,
+    row_number() over (order by source_table.opr_atlas_id desc) new_cod,
+    target.cod_invoice,
+	  target.valid_from,
+    source_table.cod_execution,
+    case
+	  when target.cod_invoice is null or (source_table.hash_invoice != target.hash_invoice and target.valid_from = source_table.dat_processing) then 'I'
+      when source_table.hash_invoice != target.hash_invoice then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		source.*,
+		lkp_source_system.cod_source_system,
+		md5
+		(
+        coalesce(cod_atlas_user   ,0) +
+        coalesce(opr_atlas_id   ,0) +
+        coalesce(opr_invoice_id   ,0) +
+        coalesce(is_paid   , -1) +
+        coalesce(total_revenue   ,0) +
+        coalesce(insertions   ,0) +
+        coalesce(promo_units   ,0) +
+        coalesce(promo_revenue   ,0) +
+        coalesce(listing_revenue   ,0) +
+        coalesce(paid_invoices_revenue   ,0)
+    ) hash_invoice
+	from
+	(
+      SELECT
+        cod_atlas_user,
+        opr_atlas_id,
+        opr_invoice_id,
+        is_paid,
+        cod_month,
+        invoice_date,
+        total_revenue,
+        insertions,
+        promo_units,
+        promo_revenue,
+        listing_revenue,
+        paid_invoices_revenue,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      FROM
+        (SELECT
+            cod_atlas_user,
+            opr_atlas_id,
+            opr_invoice_id,
+            is_paid,
+            cod_month,
+            invoice_date,
+            total_revenue,
+            insertions,
+            promo_units,
+            promo_revenue,
+            case
+              when (total_revenue - promo_revenue) >= 0 then (total_revenue - promo_revenue)
+              else round(total_revenue - (promo_revenue/2),2)
+            end listing_revenue,
+            case
+              when is_paid = 1 then total_revenue
+              else 0
+            end paid_invoices_revenue
+          FROM
+            (
+          SELECT
+              atlas_user.cod_atlas_user,
+              pup.id_user opr_atlas_id,
+              fi.id opr_invoice_id,
+              case
+                when fi.paid_value = 0 then 0
+                else 1
+              end is_paid,
+              to_char(fi.created_at,'YYYYMM') cod_month,
+              fi.created_at  invoice_date,
+              round(fi.total_gross_amount/(100*4.6), 2) total_revenue,
+              count(case
+                  when pi.type in ('paid_for_post')
+                      and (c.id in (1, 2, 11)
+                          or c.parent_id in (1, 2, 11))
+                  then pup.id_ad
+              end) insertions,
+              count(case
+                  when pi.type not in ('paid_for_post', 'export_olx')
+                      then pup.price
+              end) promo_units,
+              round(sum(case
+                  when pi.type not in ('paid_for_post', 'export_olx')
+                then abs(pup.price)
+                  else 0
+              end), 2) promo_revenue
+          from
+              db_atlas_verticals.paidads_user_payments pup
+                  join db_atlas_verticals.paidads_indexes pi
+                      on pi.id = pup.id_index
+                  join db_atlas_verticals.users_business ub
+                      on ub.id = pup.id_user
+              join db_atlas_verticals.users u
+                on u.id = ub.id
+                  join db_atlas_verticals.sap_invoices fi
+                      on fi.id = pup.sap_id_invoice
+                  join db_atlas_verticals.ads a
+                      on pup.id_ad = a.id
+                  join db_atlas_verticals.categories c
+                      on c.id = a.category_id
+                  left outer join crm_integration_anlt.t_lkp_atlas_user atlas_user
+                      on atlas_user.opr_atlas_user = u.id and atlas_user.cod_source_system = 1 and atlas_user.valid_to = 20991231
+          where
+              pi.type in ('topads',
+          'paid_for_post',
+          'ad_homepage',
+          'pushup',
+          'export_olx',
+          'promo_packet_topads',
+          'promo_packet_pushup',
+          'promo_packet_topads_7',
+          'promo_packet_topads_30',
+          'exclusive_offer',
+          'promo_packet_export_olx',
+          'header'
+          )
+                  and pup.payment_provider not in ('admin')
+                  and to_char(fi.created_at,'YYYYMMDD') between 20180101 and 20180630
+                  and pi.livesync_dbname = 'storiaro'
+                  and pi.livesync_dbname = ub.livesync_dbname
+                  and pi.livesync_dbname = u.livesync_dbname
+                  and pi.livesync_dbname = a.livesync_dbname
+                  and pi.livesync_dbname = c.livesync_dbname
+                  and pi.livesync_dbname = fi.livesync_dbname
+          group by
+              1, 2, 3, 4, fi.created_at, fi.total_gross_amount
+          order by
+              1, 2 desc) a
+            where 1=1),
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_invoice'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+	) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where lkp_source_system.cod_source_system = 1
+	and lkp_source_system.cod_country = 4 -- Romania
+	) source_table,
+    (select coalesce(max(cod_invoice),0) max_cod from crm_integration_anlt.t_lkp_invoice) max_cod_invoice,
+    (SELECT a.*
+        FROM
+          crm_integration_anlt.t_lkp_invoice a
+        where 1=1
+        and cod_source_system = 1
+        and valid_to = 20991231
+	) target
+  where
+    coalesce(source_table.opr_invoice_id,-1) = target.opr_invoice_id(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+;
+
+
+analyze tmp_ro_lkp_invoice_storiaro;
+
+ 
+delete from crm_integration_anlt.t_lkp_invoice
+using tmp_ro_lkp_invoice_storiaro
+where
+	tmp_ro_lkp_invoice_storiaro.dml_type = 'I'
+	and t_lkp_invoice.opr_atlas_id = tmp_ro_lkp_invoice_storiaro.opr_atlas_id
+	and t_lkp_invoice.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice');
+
+
+
+update crm_integration_anlt.t_lkp_invoice
+	set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice')
+from tmp_ro_lkp_invoice_storiaro source
+where 
+	source.opr_atlas_id = crm_integration_anlt.t_lkp_invoice.opr_atlas_id
+	and crm_integration_anlt.t_lkp_invoice.valid_to = 20991231
+	and source.dml_type in('U','D');
+
+
+
+insert into crm_integration_anlt.t_lkp_invoice
+	 select
+      case
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice')
+									then cod_invoice else max_cod + new_cod end
+        when dml_type = 'U' then cod_invoice
+      end cod_invoice,
+      cod_source_system,
+	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice') valid_from,
+	  20991231 valid_to,
+	  cod_atlas_user,
+	  opr_atlas_id,
+	  opr_invoice_id,
+	  is_paid,
+	  cod_month,
+	  invoice_date,
+	  total_revenue,
+	  insertions,
+	  promo_units,
+	  promo_revenue,
+	  listing_revenue,
+	  paid_invoices_revenue,
+	  hash_invoice,
+	  cod_execution
+    from
+      tmp_ro_lkp_invoice_storiaro
+    where
+      dml_type in ('U','I');
+
+
+analyze crm_integration_anlt.t_lkp_invoice;
+
+
+
+
+
+
+create temp table tmp_ro_lkp_invoice_autovitro
+distkey(cod_invoice)
+sortkey(cod_invoice, opr_invoice_id)
+as
+  select
+    source_table.cod_atlas_user,
+    source_table.opr_atlas_id,
+    source_table.opr_invoice_id,
+    source_table.is_paid,
+	  source_table.cod_month,
+	  source_table.invoice_date,
+    source_table.total_revenue,
+    source_table.insertions,
+    source_table.promo_units,
+    source_table.promo_revenue,
+    source_table.listing_revenue,
+    source_table.paid_invoices_revenue,
+    source_table.hash_invoice,
+    source_table.cod_source_system,
+    max_cod_invoice.max_cod,
+    row_number() over (order by source_table.opr_atlas_id desc) new_cod,
+    target.cod_invoice,
+	  target.valid_from,
+    source_table.cod_execution,
+    case
+	  when target.cod_invoice is null or (source_table.hash_invoice != target.hash_invoice and target.valid_from = source_table.dat_processing) then 'I'
+      when source_table.hash_invoice != target.hash_invoice then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		source.*,
+		lkp_source_system.cod_source_system,
+		md5
+		(
+        coalesce(cod_atlas_user   ,0) +
+        coalesce(opr_atlas_id   ,0) +
+        coalesce(opr_invoice_id   ,0) +
+        coalesce(is_paid   , -1) +
+        coalesce(total_revenue   ,0) +
+        coalesce(insertions   ,0) +
+        coalesce(promo_units   ,0) +
+        coalesce(promo_revenue   ,0) +
+        coalesce(listing_revenue   ,0) +
+        coalesce(paid_invoices_revenue   ,0)
+    ) hash_invoice
+	from
+	(
+      SELECT
+        cod_atlas_user,
+        opr_atlas_id,
+        opr_invoice_id,
+        is_paid,
+        cod_month,
+        invoice_date,
+        total_revenue,
+        insertions,
+        promo_units,
+        promo_revenue,
+        listing_revenue,
+        paid_invoices_revenue,
+        scai_execution.cod_execution,
+        scai_execution.dat_processing
+      FROM
+        (SELECT
+            cod_atlas_user,
+            opr_atlas_id,
+            opr_invoice_id,
+            is_paid,
+            cod_month,
+            invoice_date,
+            total_revenue,
+            insertions,
+            promo_units,
+            promo_revenue,
+            case
+                when (total_revenue - promo_revenue) >= 0 then (total_revenue - promo_revenue)
+                else round(total_revenue - (promo_revenue/2),2)
+              end listing_revenue,
+              case
+                when is_paid = 1 then total_revenue
+                else 0
+              end paid_invoices_revenue
+            FROM
+              (
+            SELECT
+                atlas_user.cod_atlas_user,
+                pup.id_user opr_atlas_id,
+                pup.id_user user_id,
+                fi.id opr_invoice_id,
+                case
+                  when fi.paid_value = 0 then 0
+                  else 1
+                end is_paid,
+                to_char(fi.created_at,'YYYYMM') cod_month,
+                date(fi.created_at) invoice_date,
+                case
+                  when base_user.dsc_base_user is null or base_user.dsc_base_user = 'N/A' then 'Unassigned'
+                  else base_user.dsc_base_user
+                end region,
+                coalesce(round(fi.total_gross_amount/(100*4.6), 2),0) total_revenue,
+                count(case
+                    when pi.type in ('paid_for_post')
+                        and (c.id in (1, 9, 29, 31, 57, 65, 67, 81)
+                            or c.parent_id in (1, 9, 29, 31, 57, 65, 67, 81))
+                    then pup.id_ad
+                end) insertions,
+                count(case
+                    when pi.type not in ('paid_for_post', 'export_olx')
+                        then pup.price
+                end) promo_units,
+                round(sum(case
+                    when pi.type not in ('paid_for_post', 'export_olx')
+                  and ub.country_id = 1
+                  then abs(pup.price)
+                when pi.type not in ('paid_for_post', 'export_olx')
+                  and ub.country_id != 1
+                  then abs(pup.price)/1.19
+                    else 0
+                end), 2) promo_revenue
+            from
+                db_atlas_verticals.paidads_user_payments pup
+                    join db_atlas_verticals.paidads_indexes pi
+                        on pi.id = pup.id_index
+                    join db_atlas_verticals.users_business ub
+                        on ub.id = pup.id_user
+                    join db_atlas_verticals.users u
+                        on u.id = ub.id
+                    join db_atlas_verticals.sap_invoices fi
+                        on fi.id = pup.id_invoice_sap
+                    join db_atlas_verticals.ads a
+                        on pup.id_ad = a.id
+                    join db_atlas_verticals.categories c
+                        on c.id = a.category_id
+                  left outer join crm_integration_anlt.t_lkp_atlas_user atlas_user
+                      on atlas_user.opr_atlas_user = u.id and atlas_user.cod_source_system = 5 and atlas_user.valid_to = 20991231
+                    left join (
+                        select
+                          *
+                        from
+                          (
+                            select
+                              base_contact.cod_contact,
+                              base_contact.email,
+                              base_contact.cod_contact_parent,
+                              base_contact.cod_base_user_owner,
+                              base_contact.cod_source_system,
+                              atlas_user.opr_atlas_user,
+                              row_number() over (partition by atlas_user.opr_atlas_user order by cod_contact_parent desc) rn
+                            from
+                              crm_integration_anlt.t_lkp_contact base_contact,
+                              crm_integration_anlt.t_lkp_atlas_user atlas_user
+                            where
+                              base_contact.valid_to = 20991231
+                              and atlas_user.valid_to = 20991231
+                              and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+                              and coalesce(base_contact.email,'') != ''
+                              and atlas_user.cod_source_system = 5
+                              and base_contact.cod_source_system = 18
+                          )
+                        where rn = 1
+                        ) contact on contact.opr_atlas_user = ub.id
+                    left join crm_integration_anlt.t_lkp_base_user base_user
+                        on base_user.cod_base_user = contact.cod_base_user_owner
+                        and base_user.cod_source_system = contact.cod_source_system
+                        and base_user.valid_to = 20991231
+                        and base_user.cod_source_system = 18
+            where
+                pi.type in ('ad_bighomepage', 'ad_homepage', 'bump_up',
+                    'highlight', 'topads', 'paid_for_post', 'export_olx')
+                    and pup.payment_provider not in ('admin')
+                    and date(fi.created_at) between '2018-01-01' and '2018-06-30'
+                    and ub.id not in (521225, 521223, 521213, 521215, 522479,
+                        522495, 24280, 419691, 522665, 18964, 1030125, 522513,
+                        1057085, 1058565, 1066171, 1285659, 1285679, 829479,
+                        17628)
+                    and pup.livesync_dbname = 'autovitro'
+                    and pup.livesync_dbname = pi.livesync_dbname
+                    and pup.livesync_dbname = ub.livesync_dbname
+                    and pup.livesync_dbname = u.livesync_dbname
+                    and pup.livesync_dbname = c.livesync_dbname
+                    and pup.livesync_dbname = fi.livesync_dbname
+                    and pup.livesync_dbname = a.livesync_dbname
+            group by
+                1,2,3,4, fi.paid_value, fi.created_at, base_user.dsc_base_user, fi.total_gross_amount
+            order by
+                1, 2 desc) a
+            where 1=1),
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 4
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_invoice'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by
+            rel_integr_proc.dat_processing
+        ) scai_execution
+	) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where lkp_source_system.cod_source_system = 5
+	and lkp_source_system.cod_country = 4 -- Romania
+	) source_table,
+    (select coalesce(max(cod_invoice),0) max_cod from crm_integration_anlt.t_lkp_invoice) max_cod_invoice,
+    (SELECT a.*
+        FROM
+          crm_integration_anlt.t_lkp_invoice a
+        where 1=1
+        and cod_source_system = 5
+        and valid_to = 20991231
+	) target
+  where
+    coalesce(source_table.opr_invoice_id,-1) = target.opr_invoice_id(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+;
+
+
+analyze tmp_ro_lkp_invoice_autovitro;
+
+ 
+
+delete from crm_integration_anlt.t_lkp_invoice
+using tmp_ro_lkp_invoice_autovitro
+where
+	tmp_ro_lkp_invoice_autovitro.dml_type = 'I'
+	and t_lkp_invoice.opr_atlas_id = tmp_ro_lkp_invoice_autovitro.opr_atlas_id
+	and t_lkp_invoice.valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice');
+
+
+
+update crm_integration_anlt.t_lkp_invoice
+set valid_to = (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice')
+from tmp_ro_lkp_invoice_autovitro source
+where source.opr_atlas_id = crm_integration_anlt.t_lkp_invoice.opr_atlas_id
+and crm_integration_anlt.t_lkp_invoice.valid_to = 20991231
+and source.dml_type in('U','D');
+
+
+
+insert into crm_integration_anlt.t_lkp_invoice
+	 select
+      case
+        when dml_type = 'I' then case when valid_from = (select dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
+														where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice')
+									then cod_invoice else max_cod + new_cod end
+        when dml_type = 'U' then cod_invoice
+      end cod_invoice,
+     cod_source_system,
+	  (select rel_integr_proc.dat_processing from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc where rel_integr_proc.cod_process = proc.cod_process and rel_integr_proc.cod_country = 4 and rel_integr_proc.cod_integration = 30000 and rel_integr_proc.ind_active = 1 and proc.dsc_process_short = 't_lkp_invoice') valid_from,
+    20991231 valid_to,
+	  cod_atlas_user,
+	  opr_atlas_id,
+	  opr_invoice_id,
+	  is_paid,
+	  cod_month,
+	  invoice_date,
+	  total_revenue,
+	  insertions,
+	  promo_units,
+	  promo_revenue,
+	  listing_revenue,
+	  paid_invoices_revenue,
+	  hash_invoice,
+	  cod_execution
+    from
+      tmp_ro_lkp_invoice_autovitro
+    where
+      dml_type in ('U','I');
+
+
+analyze crm_integration_anlt.t_lkp_invoice;
+
+
+-- ROMANIA - REVENUE (Storia, Autovit)
+
+delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_system_adapted in(1,2);
+
+--insert into crm_integration_anlt.t_fac_crm_revenue_month_agg (cod_month, cod_source_system_adapted, cod_index_type, cod_base_user, val_revenue, val_revenue_mtd, num_users, num_users_mtd)
+  select
+    core.cod_month cod_month,
+    core.cod_source_system_adapted,
+    1 cod_index_type, -- VAS
+    core.cod_base_user,
+    round(sum(core.promo_revenue) / 1.19,2) val_revenue,
+    round(sum(revenue_mtd.promo_revenue) / 1.19,2) val_revenue_mtd,
+    count(distinct core.atlas_cod_atlas_user) num_users,
+    count(distinct revenue_mtd.atlas_cod_atlas_user) num_users_mtd
+  from
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 19
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 1
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        crm_integration_anlt.t_lkp_invoice b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d
+      where
+        b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 1
+				and b.valid_to = 20991231
+        and a.cod_source_system = c.cod_source_system
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.promo_revenue != 0
+      ) core,
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 19
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 1
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        (select invoice.*, case when invoice.cod_month < 201804 then substring(invoice.cod_month,1,4)+'-'+substring(invoice.cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d,
+        (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when invoice.cod_month < 201804 then substring(invoice.cod_month,1,4)+'-'+substring(invoice.cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+          where b.cod_source_system = 1
+		  and b.valid_to = 20991231
+            and is_paid = 1
+            ) date
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 1
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.promo_revenue != 0
+        and b.invoice_date_final between substring(b.invoice_date_final,1,8)+'01' and substring(b.invoice_date_final,1,8)+substring(date.invoice_date_final_day,9,2)
+      ) revenue_mtd
+  where
+    core.rn = 1
+    and revenue_mtd.rn (+) = 1
+    and core.cod_base_user = revenue_mtd.cod_base_user (+)
+    and core.cod_month = revenue_mtd.cod_month (+)
+    and core.opr_invoice_id = revenue_mtd.opr_invoice_id (+)
+    and core.cod_source_system_adapted = revenue_mtd.cod_source_system_adapted (+)
+  group by
+    core.cod_month,
+    core.cod_source_system_adapted,
+    1,
+    core.cod_base_user
+
+  union all
+
+  select
+    core.cod_month,
+    core.cod_source_system_adapted,
+    2 cod_index_type, -- Packages
+    core.cod_base_user,
+    round(sum(core.listing_revenue) / 1.19,2) val_revenue,
+    round(sum(revenue_mtd.listing_revenue) / 1.19,2) val_revenue_mtd,
+    count(distinct core.atlas_cod_atlas_user) num_users,
+    count(distinct revenue_mtd.atlas_cod_atlas_user) num_users_mtd
+  from
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 19
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 1
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        crm_integration_anlt.t_lkp_invoice b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 1
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.listing_revenue != 0
+      ) core,
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 19
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 1
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d,
+        (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+          where b.cod_source_system = 1
+		  and b.valid_to = 20991231
+            and is_paid = 1
+            ) date
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 1
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.listing_revenue != 0
+        and b.invoice_date_final between substring(b.invoice_date_final,1,8)+'01' and substring(b.invoice_date_final,1,8)+substring(date.invoice_date_final_day,9,2)
+      ) revenue_mtd
+  where
+    core.rn = 1
+    and revenue_mtd.rn (+) = 1
+    and core.cod_base_user = revenue_mtd.cod_base_user (+)
+    and core.cod_month = revenue_mtd.cod_month (+)
+    and core.opr_invoice_id = revenue_mtd.opr_invoice_id (+)
+    and core.cod_source_system_adapted = revenue_mtd.cod_source_system_adapted (+)
+  group by
+    core.cod_month,
+    core.cod_source_system_adapted,
+    2,
+    core.cod_base_user
+
+  union all
+
+  select
+    core.cod_month cod_month,
+    core.cod_source_system_adapted,
+    1 cod_index_type, -- VAS
+    core.cod_base_user,
+    round(sum(core.promo_revenue) / 1.19,2) val_revenue,
+    round(sum(revenue_mtd.promo_revenue) / 1.19,2) val_revenue_mtd,
+    count(distinct core.atlas_cod_atlas_user) num_users,
+    count(distinct revenue_mtd.atlas_cod_atlas_user) num_users_mtd
+  from
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 18
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 5
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        crm_integration_anlt.t_lkp_invoice b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 1
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.promo_revenue != 0
+      ) core,
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 18
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 5
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d,
+        (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+          where b.cod_source_system = 5
+		  and b.valid_to = 20991231
+            and is_paid = 1
+            ) date
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 5
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.promo_revenue != 0
+        and b.invoice_date_final between substring(b.invoice_date_final,1,8)+'01' and substring(b.invoice_date_final,1,8)+substring(date.invoice_date_final_day,9,2)
+      ) revenue_mtd
+  where
+    core.rn = 1
+    and revenue_mtd.rn (+) = 1
+    and core.cod_base_user = revenue_mtd.cod_base_user (+)
+    and core.cod_month = revenue_mtd.cod_month (+)
+    and core.opr_invoice_id = revenue_mtd.opr_invoice_id (+)
+    and core.cod_source_system_adapted = revenue_mtd.cod_source_system_adapted (+)
+  group by
+    core.cod_month,
+    core.cod_source_system_adapted,
+    1,
+    core.cod_base_user
+
+   union all
+
+  select
+    core.cod_month cod_month,
+    core.cod_source_system_adapted,
+    2 cod_index_type, -- Packages
+    core.cod_base_user,
+    round(sum(core.listing_revenue) / 1.19,2) val_revenue,
+    round(sum(revenue_mtd.listing_revenue) / 1.19,2) val_revenue_mtd,
+    count(distinct core.atlas_cod_atlas_user) num_users,
+    count(distinct revenue_mtd.atlas_cod_atlas_user) num_users_mtd
+  from
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 18
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 5
+                and a.flg_business = 1
+                and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        crm_integration_anlt.t_lkp_invoice b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 5
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.listing_revenue != 0
+      ) core,
+    (
+      select
+        *,
+        row_number() over (partition by a.cod_atlas_user,b.cod_month,b.opr_invoice_id order by cod_base_user) rn
+      from
+        (
+          select
+            distinct coalesce(base.cod_base_user_owner,-2) cod_base_user,
+            atlas.cod_atlas_user,
+            atlas.cod_atlas_user atlas_cod_atlas_user,
+            atlas.cod_source_system,
+            atlas.opr_atlas_user
+          from
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 18
+                --and cod_atlas_user = 141029676
+            ) base,
+            (
+              select
+                a.*
+              from
+                crm_integration_anlt.t_lkp_atlas_user a,
+                crm_integration_anlt.t_lkp_source_system b
+              where
+                a.cod_source_system = b.cod_source_system
+                and a.valid_to = 20991231
+                and b.cod_source_system = 5
+                and a.flg_business = 1
+                --and a.opr_atlas_user in (206)
+            ) atlas
+          where
+            atlas.cod_atlas_user = base.cod_atlas_user(+)
+        ) a,
+        (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b,
+        crm_integration_anlt.t_lkp_source_system c,
+        crm_integration_anlt.v_lkp_source_system_adapted d,
+        (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+          where b.cod_source_system = 5
+		  and b.valid_to = 20991231
+            and is_paid = 1
+            ) date
+      where
+        a.opr_atlas_user = b.opr_atlas_id
+        and b.cod_source_system = c.cod_source_system
+				and b.cod_source_system = 5
+				and b.valid_to = 20991231
+        and b.is_paid = 1
+        and c.opr_source_system = d.dsc_source_system
+        and b.listing_revenue != 0
+        and b.invoice_date_final between substring(b.invoice_date_final,1,8)+'01' and substring(b.invoice_date_final,1,8)+substring(date.invoice_date_final_day,9,2)
+      ) revenue_mtd
+  where
+    core.rn = 1
+    and revenue_mtd.rn (+) = 1
+    and core.cod_base_user = revenue_mtd.cod_base_user (+)
+    and core.cod_month = revenue_mtd.cod_month (+)
+    and core.opr_invoice_id = revenue_mtd.opr_invoice_id (+)
+    and core.cod_source_system_adapted = revenue_mtd.cod_source_system_adapted (+)
+  group by
+    core.cod_month,
+    core.cod_source_system_adapted,
+    2,
+    core.cod_base_user
+;
+
+
+update crm_integration_anlt.t_fac_crm_revenue_month_agg
+set
+  val_revenue_prev = source.val_revenue_prev,
+  val_revenue_hom = source.val_revenue_hom
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_index_type,
+      cod_base_user,
+      val_revenue,
+      lag(val_revenue) over (partition by cod_base_user,cod_source_system_adapted,cod_index_type order by cod_month) val_revenue_prev,
+      lag(val_revenue,12) over (partition by cod_base_user,cod_source_system_adapted,cod_index_type order by cod_month) val_revenue_hom
+    from
+      crm_integration_anlt.t_fac_crm_revenue_month_agg
+  ) source
+where
+  crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_month = source.cod_month
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_base_user = source.cod_base_user
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_source_system_adapted = source.cod_source_system_adapted
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_index_type = source.cod_index_type;
+  
+  
+  
+
+delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_system_adapted = 3;
+
+insert into crm_integration_anlt.t_fac_crm_revenue_month_agg (cod_month,cod_source_system_adapted,cod_index_type,cod_base_user,val_revenue, val_revenue_mtd, num_users, num_users_mtd)
+select
+    cast(core.cod_month as int) cod_month,
+    3 cod_source_system_adapted,
+    core.cod_index_type,
+    coalesce(base.cod_base_user_owner,-2) cod_base_user,
+    sum(core.revenue) val_revenue,
+    sum(revenue_mtd.revenue_mtd) revenue_mtd,
+  count(distinct core.cod_atlas_user) num_users,
+  count(distinct revenue_mtd.cod_atlas_user) num_users_mtd
+
+    --val_revenue_prev,
+    --val_revenue_hom
+from
+    (
+    select cod_month,opr_atlas_user,dsc_atlas_user,cod_atlas_user,cod_index_type,sum(revenue) revenue
+    from
+        (
+        select
+            to_char(pup.date, 'yyyymm') as cod_month,
+            users.opr_atlas_user,
+            users.dsc_atlas_user,
+            users.cod_atlas_user,
+            --case when pup.payment_provider = 'account' then pup.price * (-1) end revenue_wallet,
+            case when pup.payment_provider not in ('account') then pup.price * (-1) else 0 end revenue,
+            case
+                when pit.opr_paidad_index_type = 'nnl' then 2
+                when pit.opr_paidad_index_type in ('topads', 'ad_homepage', 'bundle', 'pushup', 'logo') then 1
+                    else -1
+            end cod_index_type
+        from
+            db_atlas.olxro_paidads_user_payments pup,
+            crm_integration_anlt.t_lkp_atlas_user users,
+            crm_integration_anlt.t_lkp_paidad_index pi,
+            crm_integration_anlt.t_lkp_paidad_index_type pit,
+            db_atlas.olxro_ads ad,
+            crm_integration_anlt.v_lkp_category c
+        where
+            trunc(pup.date) >= '2017-01-01'
+            and id_user = users.opr_atlas_user
+            and users.cod_source_system = 10
+            and users.valid_to = 20991231
+            and pup.id_index = pi.opr_paidad_index
+            and pi.valid_to = 20991231
+            and pi.cod_source_system = 10
+            and pi.cod_paidad_index_type = pit.cod_paidad_index_type
+            and pit.cod_source_system = 10
+            and pit.valid_to = 20991231
+            and pup.payment_provider not in ('admin')
+            and pup.id_ad = ad.id
+            and ad.category_id = c.id1
+            and c.livesync_dbname = 'olxro'
+            and c.id0 = 4
+            --and users.cod_atlas_user = 126065831
+        ) x
+    group by cod_month,opr_atlas_user,dsc_atlas_user,cod_atlas_user,cod_index_type
+    ) core,
+    (
+        select
+          a.*
+        from
+          crm_integration_anlt.t_lkp_contact a,
+          crm_integration_anlt.t_lkp_source_system b
+        where
+          a.cod_source_system = b.cod_source_system
+          and a.valid_to = 20991231
+          and b.cod_source_system = 20
+          --and cod_atlas_user = 141029676
+    ) base,
+    (
+    select cod_month,opr_atlas_user,dsc_atlas_user,cod_atlas_user,cod_index_type,sum(revenue_mtd) revenue_mtd
+    from
+        (
+        select
+            to_char(pup.date, 'yyyymm') as cod_month,
+            users.opr_atlas_user,
+            users.dsc_atlas_user,
+            users.cod_atlas_user,
+            --case when pup.payment_provider = 'account' then pup.price * (-1) end revenue_wallet,
+            case when pup.payment_provider not in ('account') then pup.price * (-1) else 0 end revenue_mtd,
+            case
+                when pit.opr_paidad_index_type = 'nnl' then 2
+                when pit.opr_paidad_index_type in ('topads', 'ad_homepage', 'bundle', 'pushup', 'logo') then 1
+                    else -1
+            end cod_index_type
+        from
+            db_atlas.olxro_paidads_user_payments pup,
+            crm_integration_anlt.t_lkp_atlas_user users,
+            crm_integration_anlt.t_lkp_paidad_index pi,
+            crm_integration_anlt.t_lkp_paidad_index_type pit,
+            db_atlas.olxro_ads ad,
+            crm_integration_anlt.v_lkp_category c,
+            (select max(trunc(date)) invoice_date_final_day from db_atlas.olxro_paidads_user_payments) date
+        where
+            trunc(pup.date) between substring(trunc(pup.date),1,8)+'01' and substring(trunc(pup.date),1,8)+substring(date.invoice_date_final_day,9,2)
+            and trunc(pup.date) >= '2017-01-01'
+            and id_user = users.opr_atlas_user
+            and users.cod_source_system = 10
+            and users.valid_to = 20991231
+            and pup.id_index = pi.opr_paidad_index
+            and pi.valid_to = 20991231
+            and pi.cod_source_system = 10
+            and pi.cod_paidad_index_type = pit.cod_paidad_index_type
+            and pit.cod_source_system = 10
+            and pit.valid_to = 20991231
+            and pup.payment_provider not in ('admin')
+            and pup.id_ad = ad.id
+            and ad.category_id = c.id1
+            and c.livesync_dbname = 'olxro'
+            and c.id0 = 4
+            --and users.cod_atlas_user = 126065831
+        ) x
+    group by cod_month,opr_atlas_user,dsc_atlas_user,cod_atlas_user,cod_index_type
+    ) revenue_mtd
+where
+    core.cod_atlas_user = base.cod_atlas_user(+)
+    and core.cod_atlas_user = revenue_mtd.cod_atlas_user (+)
+    and core.cod_month = revenue_mtd.cod_month (+)
+    and core.cod_index_type = revenue_mtd.cod_index_type (+)
+group by
+    cast(core.cod_month as int),
+    3,
+    core.cod_index_type,
+    coalesce(base.cod_base_user_owner,-2);
+	
+update crm_integration_anlt.t_fac_crm_revenue_month_agg
+set
+  val_revenue_prev = source.val_revenue_prev, val_revenue_hom = source.val_revenue_hom
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_index_type,
+      cod_base_user,
+      val_revenue,
+      lag(val_revenue) over (partition by cod_base_user,cod_source_system_adapted,cod_index_type order by cod_month) val_revenue_prev,
+      lag(val_revenue,12) over (partition by cod_base_user,cod_source_system_adapted,cod_index_type order by cod_month) val_revenue_hom
+    from
+      crm_integration_anlt.t_fac_crm_revenue_month_agg
+    where
+      cod_source_system_adapted = 3
+  ) source
+where
+  crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_month = source.cod_month
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_base_user = source.cod_base_user
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_source_system_adapted = source.cod_source_system_adapted
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_index_type = source.cod_index_type
+  and crm_integration_anlt.t_fac_crm_revenue_month_agg.cod_source_system_adapted = 3;  
+  
+  
+  
+delete from crm_integration_anlt.t_fac_crm_users_month_agg;
+
+-- ROMANIA - PPU, APPU and NRPPU (Storia, Autovit)
+insert into crm_integration_anlt.t_fac_crm_users_month_agg (cod_month,cod_source_system_adapted,cod_base_user,val_ppu,val_ppu_mtd, val_appu,val_nrppu, val_nrppu_mtd)
+select
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user,
+  sum(val_ppu) val_ppu,
+  sum(val_ppu_mtd) val_ppu_mtd,
+  null val_appu,--sum(val_appu) val_appu,
+  sum(val_nrppu) val_nrppu,
+  sum(val_nrppu_mtd) val_nrppu_mtd
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_base_user,
+      cod_atlas_user,
+      val_ppu,
+      val_ppu_mtd,
+      /*case
+        when max_duration > datediff(days,min_dat_payment,dat_last_day) then 1
+          else 0
+      end val_appu,*/
+      case
+        when prev_max_payment is null then 0
+        when datediff(days,prev_max_payment,min_dat_payment) >= 30 then 1
+          else 0
+      end val_nrppu,
+       case
+        when prev_max_payment_mtd is null then 0
+        when datediff(days,prev_max_payment_mtd,min_dat_payment_mtd) >= 30 then 1
+          else 0
+      end val_nrppu_mtd
+    from
+      (
+        select
+          cod_base_user,
+          cod_atlas_user,
+          cod_month,
+          cod_source_system_adapted,
+          dat_last_day,
+          --max_duration,
+          val_ppu,
+          val_ppu_mtd,
+          min_dat_payment,
+          max_dat_payment,
+          min_dat_payment_mtd,
+          max_dat_payment_mtd,
+          lag(max_dat_payment) over (partition by cod_atlas_user order by cod_month) prev_max_payment,
+          lead(min_dat_payment) over (partition by cod_atlas_user order by cod_month) next_min_payment,
+          lag(max_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) prev_max_payment_mtd,
+          lead(min_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) next_min_payment_mtd
+        from
+          (
+            select
+              a.cod_base_user,
+              a.cod_atlas_user,
+              f.cod_month,
+              2 cod_source_system_adapted,
+              f.dat_last_day,
+              b.opr_invoice_id invoice,
+              row_number() over (partition by a.cod_atlas_user,f.cod_month order by b.opr_invoice_id desc, a.cod_contact desc) rn,
+              --max(g.duration) max_duration,
+              coalesce(min(b.invoice_date),'1900-01-01') min_dat_payment,
+              coalesce(max(b.invoice_date),'1900-01-01') max_dat_payment,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(min(b.invoice_date),'1900-01-01') else null end min_dat_payment_mtd,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(max(b.invoice_date),'1900-01-01') else null end max_dat_payment_mtd,
+              count(distinct b.user_id) val_ppu,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then count(distinct b.user_id) else null end val_ppu_mtd
+            from
+              (
+                select
+                  coalesce(base.cod_base_user_owner,-2) cod_base_user,
+				  base.cod_contact,
+                  atlas.cod_atlas_user,
+                  atlas.opr_atlas_user,
+                  atlas.cod_source_system
+                from
+                  (
+                    select
+                      a.*
+                    from
+                      crm_integration_anlt.t_lkp_contact a,
+                      crm_integration_anlt.t_lkp_source_system b
+                    where
+                      a.cod_source_system = b.cod_source_system
+                      and a.valid_to = 20991231
+                      and b.cod_source_system = 19
+                  ) base,
+                  (
+                    select
+                      a.*
+                    from
+                      (
+                        select
+                          *
+                        from
+                          (
+                            SELECT
+                              a.*,
+                              row_number()
+                              OVER (
+                                PARTITION BY opr_atlas_user, cod_source_system
+                                ORDER BY valid_to DESC ) rn
+                            FROM
+                              crm_integration_anlt.t_lkp_atlas_user a
+                          )
+                        where rn = 1
+                      ) a,
+                      crm_integration_anlt.t_lkp_source_system b
+                    where
+                      a.cod_source_system = b.cod_source_system
+                      and b.cod_source_system = 1
+                      and a.flg_business = 1
+                      --and a.opr_atlas_user in (6478,258828)
+                  ) atlas
+                where
+                  atlas.cod_atlas_user = base.cod_atlas_user(+)
+              ) a,
+              (select opr_atlas_id user_id, opr_invoice_id, is_paid, cod_month, to_date(case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end,'yyyy-mm-dd') invoice_date from crm_integration_anlt.t_lkp_invoice where cod_source_system = 1 and valid_to = 20991231) b,
+              crm_integration_anlt.t_lkp_month f,
+            (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+        where cod_source_system = 1
+		and b.valid_to = 20991231
+          and is_paid = 1
+            ) date
+            where
+              b.user_id = a.opr_atlas_user
+              and b.cod_month >= 201701
+              and f.cod_month = b.cod_month
+			  and b.is_paid = 1
+            group by
+              a.cod_base_user,
+              a.cod_atlas_user,
+              f.cod_month,
+              f.dat_last_day,
+              b.opr_invoice_id,
+			  a.cod_contact
+          ) inner_core
+        where
+          rn = 1
+      ) inner_core
+  ) core
+group by
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user--)
+--where cod_month = 201803
+--group by cod_source_system_adapted
+;  
+
+
+
+insert into crm_integration_anlt.t_fac_crm_users_month_agg (cod_month,cod_source_system_adapted,cod_base_user,val_ppu,val_ppu_mtd, val_appu,val_nrppu, val_nrppu_mtd)
+select
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user,
+  sum(val_ppu) val_ppu,
+  sum(val_ppu_mtd) val_ppu_mtd,
+  null val_appu,--sum(val_appu) val_appu,
+  sum(val_nrppu) val_nrppu,
+  sum(val_nrppu_mtd) val_nrppu_mtd
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_base_user,
+      cod_atlas_user,
+      val_ppu,
+      val_ppu_mtd,
+      /*case
+        when max_duration > datediff(days,min_dat_payment,dat_last_day) then 1
+          else 0
+      end val_appu,*/
+      case
+        when prev_max_payment is null then 0
+        when datediff(days,prev_max_payment,min_dat_payment) >= 30 then 1
+          else 0
+      end val_nrppu,
+       case
+        when prev_max_payment_mtd is null then 0
+        when datediff(days,prev_max_payment_mtd,min_dat_payment_mtd) >= 30 then 1
+          else 0
+      end val_nrppu_mtd
+    from
+      (
+        select
+          cod_base_user,
+          cod_atlas_user,
+          cod_month,
+          cod_source_system_adapted,
+          dat_last_day,
+          --max_duration,
+          val_ppu,
+          val_ppu_mtd,
+          min_dat_payment,
+          max_dat_payment,
+          min_dat_payment_mtd,
+          max_dat_payment_mtd,
+          lag(max_dat_payment) over (partition by cod_atlas_user order by cod_month) prev_max_payment,
+          lead(min_dat_payment) over (partition by cod_atlas_user order by cod_month) next_min_payment,
+          lag(max_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) prev_max_payment_mtd,
+          lead(min_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) next_min_payment_mtd
+        from
+          (
+            select
+              a.cod_base_user,
+              a.cod_atlas_user,
+              f.cod_month,
+              1 cod_source_system_adapted,
+              f.dat_last_day,
+              b.opr_invoice_id invoice,
+              row_number() over (partition by a.cod_atlas_user,f.cod_month order by b.opr_invoice_id desc, a.cod_contact desc) rn,
+              --max(g.duration) max_duration,
+              coalesce(min(b.invoice_date),'1900-01-01') min_dat_payment,
+              coalesce(max(b.invoice_date),'1900-01-01') max_dat_payment,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(min(b.invoice_date),'1900-01-01') else null end min_dat_payment_mtd,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(max(b.invoice_date),'1900-01-01') else null end max_dat_payment_mtd,
+              count(distinct b.user_id) val_ppu,
+              case when max(b.invoice_date) between substring(max(b.invoice_date),1,8)+'01' and substring(max(b.invoice_date),1,8)+substring(max(date.invoice_date_final_day),9,2) then count(distinct b.user_id) else null end val_ppu_mtd
+            from
+              (
+                select
+                  coalesce(base.cod_base_user_owner,-2) cod_base_user,
+				  base.cod_contact,
+                  atlas.cod_atlas_user,
+                  atlas.opr_atlas_user,
+                  atlas.cod_source_system
+                from
+                  (
+                    select
+                      a.*
+                    from
+                      crm_integration_anlt.t_lkp_contact a,
+                      crm_integration_anlt.t_lkp_source_system b
+                    where
+                      a.cod_source_system = b.cod_source_system
+                      and a.valid_to = 20991231
+                      and b.cod_source_system = 18
+                  ) base,
+                  (
+                    select
+                      a.*
+                    from
+                      (
+                        select
+                          *
+                        from
+                          (
+                            SELECT
+                              a.*,
+                              row_number()
+                              OVER (
+                                PARTITION BY opr_atlas_user, cod_source_system
+                                ORDER BY valid_to DESC ) rn
+                            FROM
+                              crm_integration_anlt.t_lkp_atlas_user a
+                            where
+                              a.opr_atlas_user not in (521225, 521223, 521213, 521215, 522479, 522495, 24280, 419691, 522665, 18964, 1030125, 522513,
+                              1057085, 1058565, 1066171, 1285659, 1285679, 829479, 17628)
+                              and not (a.dsc_atlas_user like '%@autovit%' or a.dsc_atlas_user like '%@sunfra.%' or a.dsc_atlas_user like '%@olx.%' or a.dsc_atlas_user like '%@tablica.%'
+                              or a.dsc_atlas_user like '%@fixeads.%' or a.dsc_atlas_user like'%@otomoto.%' or a.dsc_atlas_user like '%@otodom.%' or a.dsc_atlas_user like '%@slando.%')
+                          )
+                        where rn = 1
+                      ) a,
+                      crm_integration_anlt.t_lkp_source_system b
+                    where
+                      a.cod_source_system = b.cod_source_system
+                      and b.cod_source_system = 5
+                      and a.flg_business = 1
+                      --and a.opr_atlas_user in (6478,258828)
+                  ) atlas
+                where
+                  atlas.cod_atlas_user = base.cod_atlas_user(+)
+              ) a,
+              (select opr_atlas_id user_id , opr_invoice_id, is_paid, cod_month, to_date(case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end,'yyyy-mm-dd') invoice_date from crm_integration_anlt.t_lkp_invoice where cod_source_system = 5 and valid_to = 20991231) b,
+              crm_integration_anlt.t_lkp_month f,
+            (select max(cod_month), max(b.invoice_date_final) invoice_date_final_day from (select invoice.*, case when cod_month < 201804 then substring(cod_month,1,4)+'-'+substring(cod_month,5,2)+'-'+substring(to_char(invoice_date,'yyyy-mm-dd'),3,2) else to_char(invoice_date,'yyyy-mm-dd') end invoice_date_final from crm_integration_anlt.t_lkp_invoice invoice) b
+        where cod_source_system = 5
+		and b.valid_to = 20991231
+          and is_paid = 1
+            ) date
+            where
+              b.user_id = a.opr_atlas_user
+              and b.cod_month >= 201701
+              and f.cod_month = b.cod_month
+			  and b.is_paid = 1
+            group by
+              a.cod_base_user,
+              a.cod_atlas_user,
+              f.cod_month,
+              f.dat_last_day,
+              b.opr_invoice_id,
+			  a.cod_contact
+          ) inner_core
+        where
+          rn = 1
+      ) inner_core
+  ) core
+group by
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user--)
+--where cod_month = 201803
+--group by cod_source_system_adapted
+;
+
+
+-- OLX
+insert into crm_integration_anlt.t_fac_crm_users_month_agg (cod_month,cod_source_system_adapted,cod_base_user,val_ppu,val_ppu_mtd, val_appu,val_nrppu, val_nrppu_mtd)
+select
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user,
+  sum(val_ppu) val_ppu,
+  sum(val_ppu_mtd) val_ppu_mtd,
+  null val_appu,--sum(val_appu) val_appu,
+  sum(val_nrppu) val_nrppu,
+  sum(val_nrppu_mtd) val_nrppu_mtd
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_base_user,
+      cod_atlas_user,
+      val_ppu,
+      val_ppu_mtd,
+      /*case
+        when max_duration > datediff(days,min_dat_payment,dat_last_day) then 1
+          else 0
+      end val_appu,*/
+      case
+        when prev_max_payment is null then 0
+        when datediff(days,prev_max_payment,min_dat_payment) >= 30 then 1
+          else 0
+      end val_nrppu,
+       case
+        when prev_max_payment_mtd is null then 0
+        when datediff(days,prev_max_payment_mtd,min_dat_payment_mtd) >= 30 then 1
+          else 0
+      end val_nrppu_mtd
+    from
+      (
+        select
+          cod_base_user,
+          cod_atlas_user,
+          cod_month,
+          cod_source_system_adapted,
+          val_ppu,
+          val_ppu_mtd,
+          min_dat_payment,
+          max_dat_payment,
+          min_dat_payment_mtd,
+          max_dat_payment_mtd,
+          lag(max_dat_payment) over (partition by cod_atlas_user order by cod_month) prev_max_payment,
+          lead(min_dat_payment) over (partition by cod_atlas_user order by cod_month) next_min_payment,
+          lag(max_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) prev_max_payment_mtd,
+          lead(min_dat_payment_mtd) over (partition by cod_atlas_user order by cod_month) next_min_payment_mtd
+        from
+          (
+          SELECT
+            cast(core.cod_month AS INT)            cod_month,
+            3                                      cod_source_system_adapted,
+            core.cod_atlas_user,
+            coalesce(base.cod_base_user_owner, -2) cod_base_user,
+            count(distinct core.cod_atlas_user)         val_ppu,
+            case when trunc(max(core.date)) between substring(trunc(max(core.date)),1,8)+'01' and substring(trunc(max(core.date)),1,8)+substring(max(date.invoice_date_final_day),9,2) then count(distinct core.cod_atlas_user) else null end val_ppu_mtd,
+            coalesce(trunc(min(core.date)),'1900-01-01') min_dat_payment,
+            coalesce(trunc(max(core.date)),'1900-01-01') max_dat_payment,
+            case when trunc(max(core.date)) between substring(trunc(max(core.date)),1,8)+'01' and substring(trunc(max(core.date)),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(trunc(min(core.date)),'1900-01-01') else null end min_dat_payment_mtd,
+            case when trunc(max(core.date)) between substring(trunc(max(core.date)),1,8)+'01' and substring(trunc(max(core.date)),1,8)+substring(max(date.invoice_date_final_day),9,2) then coalesce(trunc(max(core.date)),'1900-01-01') else null end max_dat_payment_mtd
+          FROM
+            (
+              SELECT
+                to_char(core.date, 'yyyymm') AS cod_month,
+                core.date,
+                users.cod_atlas_user
+              FROM
+                db_atlas.olxro_paidads_user_payments core,
+                crm_integration_anlt.t_lkp_atlas_user users,
+                db_atlas.olxro_ads ad,
+                crm_integration_anlt.v_lkp_category c
+              WHERE
+                trunc(core.date) >= '2017-01-01'
+                AND id_user = users.opr_atlas_user
+                AND users.cod_source_system = 10
+                AND users.valid_to = 20991231
+                AND core.payment_provider NOT IN ('admin')
+                AND core.id_ad = ad.id
+                AND ad.category_id = c.id1
+                AND c.livesync_dbname = 'olxro'
+                AND c.id0 = 4
+            ) core,
+            (
+              SELECT a.*
+              FROM
+                crm_integration_anlt.t_lkp_contact a,
+                crm_integration_anlt.t_lkp_source_system b
+              WHERE
+                a.cod_source_system = b.cod_source_system
+                AND a.valid_to = 20991231
+                AND b.cod_source_system = 20
+              --and cod_atlas_user = 141029676
+            ) base,
+      (select max(trunc(date)) invoice_date_final_day from db_atlas.olxro_paidads_user_payments) date
+          WHERE
+            core.cod_atlas_user = base.cod_atlas_user (+)
+          GROUP BY
+            cast(core.cod_month AS INT),
+            3,
+            coalesce(base.cod_base_user_owner, -2)
+            )
+        ) inner_core
+  ) core
+group by
+  cod_month,
+  cod_source_system_adapted,
+  cod_base_user;
+  
+  
+  
+  
+
+update crm_integration_anlt.t_fac_crm_users_month_agg
+set
+  val_ppu_prev = source.val_ppu_prev, val_ppu_hom = source.val_ppu_hom,
+  val_nrppu_prev = source.val_nrppu_prev, val_nrppu_hom = source.val_nrppu_hom,
+  val_appu_prev = source.val_appu_prev, val_appu_hom = source.val_appu_hom
+from
+  (
+    select
+      cod_month,
+      cod_source_system_adapted,
+      cod_base_user,
+      val_ppu,
+      lag(val_ppu) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_ppu_prev,
+      lag(val_ppu,12) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_ppu_hom,
+      val_appu,
+      lag(val_appu) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_appu_prev,
+      lag(val_appu,12) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_appu_hom,
+      val_nrppu,
+      lag(val_nrppu) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_nrppu_prev,
+      lag(val_nrppu,12) over (partition by cod_base_user,cod_source_system_adapted order by cod_month) val_nrppu_hom
+    from
+      crm_integration_anlt.t_fac_crm_users_month_agg
+  ) source
+where
+  crm_integration_anlt.t_fac_crm_users_month_agg.cod_month = source.cod_month
+  and crm_integration_anlt.t_fac_crm_users_month_agg.cod_base_user = source.cod_base_user
+  and crm_integration_anlt.t_fac_crm_users_month_agg.cod_source_system_adapted = source.cod_source_system_adapted;  
+  
+  
+  
+
+
+
+--$$$
+	
+-- #######################
+-- ####    PASSO 5    ####
+-- #######################
+insert into crm_integration_anlt.t_fac_scai_execution
+  select
+    max_cod_exec + 1 cod_execution,
+    rel_integr_proc.cod_country,
+    rel_integr_proc.cod_integration,
+    rel_integr_proc.cod_process,
+    1 cod_status,
+    2 cod_execution_type, -- End
+    rel_integr_proc.dat_processing,
+    rel_integr_proc.execution_nbr,
+    sysdate
+  from
+    crm_integration_anlt.t_rel_scai_country_integration rel_country_integr,
+    (select coalesce(max(cod_execution),0) max_cod_exec from crm_integration_anlt.t_fac_scai_execution),
+    crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+    crm_integration_anlt.t_lkp_scai_process proc
+  where
+    rel_country_integr.cod_integration = 30000 -- Chandra (Operational) to Chandra (Analytical)
+    and rel_country_integr.cod_country = 4 -- Romania
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_process = proc.cod_process
+    and rel_integr_proc.cod_status = 2
+	and rel_country_integr.ind_active = 1
+	and rel_integr_proc.ind_active = 1
+	and proc.dsc_process_short = 't_lkp_invoice';
+
+--$$$
+
+-- #######################
+-- ####    PASSO 6    ####
+-- #######################
+update crm_integration_anlt.t_rel_scai_integration_process
+set cod_status = 1, -- Ok
+last_processing_datetime = coalesce((select max(operation_timestamp) from tmp_ro_load_paidad_index),last_processing_datetime)
+/*from
+  (
+    select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
+    from crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc, crm_integration_anlt.t_rel_scai_country_integration rel_country_integr
+    where proc.dsc_process_short = 't_lkp_paidad_index'
+    and proc.cod_process = rel_integr_proc.cod_process
+    and rel_country_integr.cod_integration = rel_integr_proc.cod_integration
+    and rel_country_integr.cod_country = rel_integr_proc.cod_country
+    and rel_integr_proc.cod_country = 4
+  ) source*/
+from crm_integration_anlt.t_lkp_scai_process proc 
+where t_rel_scai_integration_process.cod_process = proc.cod_process
+and t_rel_scai_integration_process.cod_status = 2
+and t_rel_scai_integration_process.cod_country = 4
+and proc.dsc_process_short = 't_lkp_invoice'
+and t_rel_scai_integration_process.ind_active = 1
+/*crm_integration_anlt.t_rel_scai_integration_process.cod_process = source.cod_process
+and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
+and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
+
+
 --$$$
 	
 -- #######################

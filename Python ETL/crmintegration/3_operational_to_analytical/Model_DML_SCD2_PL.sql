@@ -3101,7 +3101,7 @@ from
 	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
 )
 where
-gen_num > trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","')) from tmp_pl_load_contact)) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
 ;			
 
 create temp table tmp_pl_contact_custom_field_1
