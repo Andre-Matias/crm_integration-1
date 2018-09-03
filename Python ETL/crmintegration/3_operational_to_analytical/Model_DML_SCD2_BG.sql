@@ -6956,95 +6956,21 @@ from
           and proc.dsc_process_short = 't_lkp_contact'
       ) scai_valid_from,
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
-      crm_integration_anlt.t_lkp_contact base_contact
+      crm_integration_anlt.t_lkp_contact base_contact,
+      crm_integration_anlt.t_lkp_custom_field custom_field,
+      crm_integration_anlt.t_rel_contact_custom_field rel
     where
       atlas_user.cod_source_system = 21
       and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
       and base_contact.cod_source_system = 22
-      and base_contact.valid_from = scai_valid_from.dat_processing
-  ) source
-where
-  t_lkp_contact.cod_contact = source.cod_contact
-  and t_lkp_contact.valid_from = source.valid_from
-  and t_lkp_contact.cod_source_system = source.cod_source_system;
-
---$$$
-
--- Updating BASE CONTACT - Autovit (vertical does not exist yet for Bulgaria)
-update crm_integration_anlt.t_lkp_contact
-set cod_atlas_user = source.cod_atlas_user
-from
-  (
-    select
-      scai_valid_from.dat_processing valid_from,
-      base_contact.cod_contact,
-      base_contact.cod_source_system,
-      atlas_user.cod_atlas_user
-    from
-      (
-        select
-          rel_integr_proc.dat_processing
-        from
-          crm_integration_anlt.t_lkp_scai_process proc,
-          crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
-        where
-          rel_integr_proc.cod_process = proc.cod_process
-          and rel_integr_proc.cod_country = 5
-          and rel_integr_proc.cod_integration = 30000
-          and rel_integr_proc.ind_active = 1
-          and proc.dsc_process_short = 't_lkp_contact'
-      ) scai_valid_from,
-      crm_integration_anlt.t_lkp_atlas_user atlas_user,
-      crm_integration_anlt.t_lkp_contact base_contact
-    where
-      atlas_user.cod_source_system = -1
-      and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = -1
-      and base_contact.valid_from = scai_valid_from.dat_processing
-  ) source
-where
-  t_lkp_contact.cod_contact = source.cod_contact
-  and t_lkp_contact.valid_from = source.valid_from
-  and t_lkp_contact.cod_source_system = source.cod_source_system;
-
---$$$
-
--- Updating BASE CONTACT - Storia (vertical does not exist yet for Bulgaria)
-update crm_integration_anlt.t_lkp_contact
-set cod_atlas_user = source.cod_atlas_user
-from
-  (
-    select
-      scai_valid_from.dat_processing valid_from,
-      base_contact.cod_contact,
-      base_contact.cod_source_system,
-      atlas_user.cod_atlas_user
-    from
-      (
-        select
-          rel_integr_proc.dat_processing
-        from
-          crm_integration_anlt.t_lkp_scai_process proc,
-          crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
-        where
-          rel_integr_proc.cod_process = proc.cod_process
-          and rel_integr_proc.cod_country = 5
-          and rel_integr_proc.cod_integration = 30000
-          and rel_integr_proc.ind_active = 1
-          and proc.dsc_process_short = 't_lkp_contact'
-      ) scai_valid_from,
-      crm_integration_anlt.t_lkp_atlas_user atlas_user,
-      crm_integration_anlt.t_lkp_contact base_contact
-    where
-      atlas_user.cod_source_system = -1
-      and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = -1
+      AND base_contact.cod_contact = rel.cod_contact
+      AND rel.cod_custom_field = custom_field.cod_custom_field
+      AND rel.custom_field_value = atlas_user.opr_atlas_user
+      AND base_contact.cod_source_system = custom_field.cod_source_system
+      AND base_contact.cod_source_system = rel.cod_source_system
+      AND custom_field.dsc_custom_field = 'User ID'
+      AND custom_field.valid_to = 20991231
+      AND rel.valid_to = 20991231
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where

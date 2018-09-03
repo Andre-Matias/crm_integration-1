@@ -419,7 +419,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.031 (Created date)
 create temp table tmp_bg_olx_calc_created_date as
 select
-	  a.cod_contact,
+	  base_contact.cod_contact,
 	  kpi_custom_field.cod_custom_field,
 	  scai.dat_processing dat_snap,
 	  isnull(a.cod_source_system,22) cod_source_system,
