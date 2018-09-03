@@ -2196,7 +2196,7 @@ SELECT
 	pup.id_ad, 
 	pup.name, 
 	pup.payment_provider,
-	-1 * case when pup.payment_provider='postpay' then round(pup.price/1.23, 2) else round(wm.amount/1.23, 2) end as sales_vas_value,
+	cast( -1 * case when pup.payment_provider='postpay' then round(pup.price/1.23, 2) else round(wm.amount/1.23, 2) end as numeric(15,2)) as sales_vas_value,
 	1 as cod_index_type,
 	-ceil(months_between(ub.next_invoice_date, pup.date)) as period
 FROM db_atlas_verticals.paidads_user_payments as pup
