@@ -351,7 +351,7 @@ FROM
 				  WHERE
 				  atlas_user.cod_source_system = 21
 				  AND base_contact.cod_source_system = 22
-				  AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+				  AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 				  AND atlas_user.valid_to = 20991231
 				  AND base_contact.valid_to = 20991231
 				  AND scai.cod_integration = 50000
@@ -443,7 +443,7 @@ select
 					where
 						atlas_user.cod_source_system = 21
 						and base_contact.cod_source_system = 22
-						and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+						and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 						and atlas_user.valid_to = 20991231
 						and base_contact.valid_to = 20991231
 						and scai.cod_integration = 50000
@@ -711,19 +711,19 @@ from
     from
       (
         select
-          dsc_atlas_user,
+          cod_atlas_user,
           custom_field_value
         from
           (
             select
-              dsc_atlas_user,
+              cod_atlas_user,
               custom_field_value,
               date,
-              row_number() over (partition by dsc_atlas_user order by date desc) rn
+              row_number() over (partition by cod_atlas_user order by date desc) rn
             from
               (
                 select
-                  atlas_user.dsc_atlas_user,
+                  atlas_user.cod_atlas_user,
                   packets.name ||' '|| variants.name custom_field_value,
                   max(bought) date
                 from
@@ -738,7 +738,7 @@ from
                   and atlas_user.valid_to = 20991231
                   and atlas_user.cod_source_system = 21
                 group by
-                  atlas_user.dsc_atlas_user,
+                  atlas_user.cod_atlas_user,
                   packets.name ||' '|| variants.name
               ) a
             ) inner_core
@@ -763,7 +763,7 @@ from
       scai.cod_integration = 50000
       and scai.cod_country = 5
       and kpi_custom_field.flg_active = 1
-      and lower(base_contact.email) = lower(dsc_atlas_user (+))
+      and base_contact.cod_atlas_user = core.cod_atlas_user (+)
       and base_contact.valid_to = 20991231
       and base_contact.cod_source_system = 22
   ) source,
@@ -846,7 +846,7 @@ from
               and fac.listing_nk = ads.id
               and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
               and trunc(fac.date_sent_nk) between trunc(sysdate) - 30 and trunc(sysdate)
@@ -966,7 +966,7 @@ from
               and ads.status = 'active'
               and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-              and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+              and lkp_contact.cod_atlas_user = lkp_user.dcod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
       		  and scai.cod_country = 5
@@ -1269,20 +1269,20 @@ from
 		  coalesce(core.custom_field_value, '1900-01-01 00:00:00') custom_field_value
 		from
 		  (
-        select
-          coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
-          cast(max(fac.expire) as varchar) custom_field_value
-        from
-          crm_integration_anlt.t_lkp_atlas_user atlas_user,
-          db_atlas.olxbg_nnl_userpackets fac
-        where
-          atlas_user.cod_source_system = 21
-          and atlas_user.valid_to = 20991231
-          and atlas_user.opr_atlas_user = fac.user_id
-        group by
-          atlas_user.dsc_atlas_user
+			select
+			  cod_atlas_user,
+			  cast(max(fac.expire) as varchar) custom_field_value
+			from
+			  crm_integration_anlt.t_lkp_atlas_user atlas_user,
+			  db_atlas.olxbg_nnl_userpackets fac
+			where
+			  atlas_user.cod_source_system = 21
+			  and atlas_user.valid_to = 20991231
+			  and atlas_user.opr_atlas_user = fac.user_id
+			group by
+			  atlas_user.cod_atlas_user
 		  ) core,
-      crm_integration_anlt.t_lkp_contact base_contact,
+			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -1297,12 +1297,12 @@ from
 				  and rel.cod_source_system = 22
 			) kpi_custom_field
 	where
-	  scai.cod_integration = 50000
+		scai.cod_integration = 50000
 		and scai.cod_country = 5
-	  and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and kpi_custom_field.flg_active = 1
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
-    and cod_source_system = 22
+		and cod_source_system = 22
 	) source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where source.cod_source_system = fac_snap.cod_source_system (+)
@@ -1465,7 +1465,7 @@ select
 from
   (
     select
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo','nnl') then price else 0 end) total_revenue_0,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo') then price else 0 end) vas_revenue_0,
@@ -1483,7 +1483,7 @@ from
       and user_payments.id_index = paidads_indexes.id
       and date >= date_trunc('month', current_date)
     group by
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user
   ) a,
   crm_integration_anlt.t_lkp_contact base_contact,
@@ -1502,7 +1502,7 @@ from
       and rel.cod_source_system = 22
   ) kpi_custom_field
 where
-  lower(base_contact.email) = lower(dsc_atlas_user (+))
+  base_contact.cod_atlas_user = a.cod_atlas_user (+)
   and base_contact.valid_to = 20991231
   and base_contact.cod_source_system = 22
   and scai.cod_integration = 50000
@@ -1596,7 +1596,7 @@ select
 from
   (
     select
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo','nnl') then price else 0 end) total_revenue_1,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo') then price else 0 end) vas_revenue_1,
@@ -1614,7 +1614,7 @@ from
       and user_payments.id_index = paidads_indexes.id
       and date >= date_trunc('month', current_date) - interval '1 month' and date < date_trunc('month', current_date)
     group by
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user
   ) a,
   crm_integration_anlt.t_lkp_contact base_contact,
@@ -1633,7 +1633,7 @@ from
       and rel.cod_source_system = 22
   ) kpi_custom_field
 where
-  lower(base_contact.email) = lower(dsc_atlas_user (+))
+  base_contact.cod_atlas_user = a.cod_atlas_user (+)
   and base_contact.valid_to = 20991231
   and base_contact.cod_source_system = 22
   and scai.cod_integration = 50000
@@ -1712,7 +1712,7 @@ select
 from
   (
     select
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo','nnl') then price else 0 end) total_revenue_2,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo') then price else 0 end) vas_revenue_2,
@@ -1730,7 +1730,7 @@ from
       and user_payments.id_index = paidads_indexes.id
       and date >= date_trunc('month', current_date) - interval '2 month' and date < date_trunc('month', current_date) - interval '1 month'
     group by
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user
   ) a,
   crm_integration_anlt.t_lkp_contact base_contact,
@@ -1749,7 +1749,7 @@ from
       and rel.cod_source_system = 22
   ) kpi_custom_field
 where
-  lower(base_contact.email) = lower(dsc_atlas_user (+))
+  base_contact.cod_atlas_user = a.cod_atlas_user (+)
   and base_contact.valid_to = 20991231
   and base_contact.cod_source_system = 22
   and scai.cod_integration = 50000
@@ -1830,7 +1830,7 @@ select
 from
   (
     select
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo','nnl') then price else 0 end) total_revenue_3,
       -sum(case when paidads_indexes.type in ('topads','pushup','ad_homepage','bundle','logo') then price else 0 end) vas_revenue_3,
@@ -1848,7 +1848,7 @@ from
       and user_payments.id_index = paidads_indexes.id
       and date >= date_trunc('month', current_date) - interval '3 month' and date<date_trunc('month', current_date) - interval '2 month'
     group by
-      atlas_user.dsc_atlas_user,
+      atlas_user.cod_atlas_user,
       user_payments.id_user
   ) a,
   crm_integration_anlt.t_lkp_contact base_contact,
@@ -1867,7 +1867,7 @@ from
       and rel.cod_source_system = 22
   ) kpi_custom_field
 where
-  lower(base_contact.email) = lower(dsc_atlas_user (+))
+  base_contact.cod_atlas_user = a.cod_atlas_user (+)
   and base_contact.valid_to = 20991231
   and base_contact.cod_source_system = 22
   and scai.cod_integration = 50000
@@ -1960,7 +1960,7 @@ from
 	  WHERE
 		atlas_user.cod_source_system = 21
 		AND base_contact.cod_source_system = 22
-		AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+		AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 		AND atlas_user.valid_to = 20991231
 		AND base_contact.valid_to = 20991231
 		AND scai.cod_integration = 50000
@@ -2050,10 +2050,10 @@ from
 	  WHERE
 		atlas_user.cod_source_system = 21
 		AND base_contact.cod_source_system = 22
-    AND userpackets.user_id = atlas_user.opr_atlas_user
-    AND userpackets.expire >= sysdate
-    AND userpackets.left > 0
-		AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+		AND userpackets.user_id = atlas_user.opr_atlas_user
+		AND userpackets.expire >= sysdate
+		AND userpackets.left > 0
+		AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 		AND atlas_user.valid_to = 20991231
 		AND base_contact.valid_to = 20991231
     group by
@@ -2147,7 +2147,7 @@ from
 		AND ads.user_id = atlas_user.opr_atlas_user
 		AND ads.status='active'
 		AND ads.valid_to <= dateadd(day,5,sysdate)
-		AND lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+		AND base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 		AND atlas_user.valid_to = 20991231
 		AND base_contact.valid_to = 20991231
 	  GROUP BY
@@ -2243,7 +2243,7 @@ from
 						where
 							atlas_user.cod_source_system = 21
 							and base_contact.cod_source_system = 22
-							and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
+							and base_contact.cod_atlas_user = atlas_user.cod_atlas_user
 							and atlas_user.valid_to = 20991231
 							and base_contact.valid_to = 20991231
 							and scai.cod_integration = 50000
@@ -2327,20 +2327,20 @@ from
 		  coalesce(core.custom_field_value, '0') custom_field_value
 		from
 		  (
-          select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
-            cast(count(id) as varchar) custom_field_value
-          from
-            crm_integration_anlt.t_lkp_atlas_user atlas_user,
-            db_atlas.olxbg_ads ads
-          where
-            atlas_user.cod_source_system = 21
-            and atlas_user.valid_to = 20991231
-            and atlas_user.opr_atlas_user = ads.user_id
-            and status = 'moderated'
-            and rmoderation_removed_at >= current_date - interval '30 days'
-          group by
-            atlas_user.dsc_atlas_user
+			  select
+				atlas_user.cod_atlas_user,
+				cast(count(id) as varchar) custom_field_value
+			  from
+				crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				db_atlas.olxbg_ads ads
+			  where
+				atlas_user.cod_source_system = 21
+				and atlas_user.valid_to = 20991231
+				and atlas_user.opr_atlas_user = ads.user_id
+				and status = 'moderated'
+				and rmoderation_removed_at >= current_date - interval '30 days'
+			  group by
+				atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2357,10 +2357,10 @@ from
 				  and rel.cod_source_system = 22
 			) kpi_custom_field
 	where
-	  scai.cod_integration = 50000
+		scai.cod_integration = 50000
 		and scai.cod_country = 5
-	  and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and kpi_custom_field.flg_active = 1
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2416,20 +2416,20 @@ from
 		  coalesce(core.custom_field_value, '0') custom_field_value
 		from
 		  (
-          select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
-            cast(count(id) as varchar) custom_field_value
-          from
-            crm_integration_anlt.t_lkp_atlas_user atlas_user,
-            db_atlas.olxbg_ads ads
-          where
-            atlas_user.cod_source_system = 21
-            and atlas_user.valid_to = 20991231
-            and atlas_user.opr_atlas_user = ads.user_id
-            and status = 'outdated'
-			      and ads.valid_to >= current_date - interval '30 days'
-          group by
-            atlas_user.dsc_atlas_user
+			  select
+				atlas_user.cod_atlas_user,
+				cast(count(id) as varchar) custom_field_value
+			  from
+				crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				db_atlas.olxbg_ads ads
+			  where
+				atlas_user.cod_source_system = 21
+				and atlas_user.valid_to = 20991231
+				and atlas_user.opr_atlas_user = ads.user_id
+				and status = 'outdated'
+				and ads.valid_to >= current_date - interval '30 days'
+			  group by
+				atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2446,10 +2446,10 @@ from
 				  and rel.cod_source_system = 22
 			) kpi_custom_field
 	where
-	  scai.cod_integration = 50000
+		scai.cod_integration = 50000
 		and scai.cod_country = 5
-	  and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and kpi_custom_field.flg_active = 1
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2505,20 +2505,20 @@ from
 		  coalesce(core.custom_field_value, '0') custom_field_value
 		from
 		  (
-          select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
-            cast(count(id) as varchar) custom_field_value
-          from
-            crm_integration_anlt.t_lkp_atlas_user atlas_user,
-            db_atlas.olxbg_econt_shipping_bills shipping_bills
-          where
-            atlas_user.cod_source_system = 21
-            and atlas_user.valid_to = 20991231
-            and atlas_user.opr_atlas_user = shipping_bills.user_id
-            and shipment_status = 'delivered'
-            and delivery_date >= date_trunc('month', current_date)
-          group by
-            atlas_user.dsc_atlas_user
+			  select
+				atlas_user.cod_atlas_user,
+				cast(count(id) as varchar) custom_field_value
+			  from
+				crm_integration_anlt.t_lkp_atlas_user atlas_user,
+				db_atlas.olxbg_econt_shipping_bills shipping_bills
+			  where
+				atlas_user.cod_source_system = 21
+				and atlas_user.valid_to = 20991231
+				and atlas_user.opr_atlas_user = shipping_bills.user_id
+				and shipment_status = 'delivered'
+				and delivery_date >= date_trunc('month', current_date)
+			  group by
+				atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2538,7 +2538,7 @@ from
 	  scai.cod_integration = 50000
 		and scai.cod_country = 5
 		and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2596,7 +2596,7 @@ from
 		from
 		  (
           select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
+            atlas_user.cod_atlas_user,
             cast(count(id) as varchar) custom_field_value
           from
             crm_integration_anlt.t_lkp_atlas_user atlas_user,
@@ -2608,7 +2608,7 @@ from
             and shipment_status = 'delivered'
 			and delivery_date >= date_trunc('month', current_date) - interval '1 month' and delivery_date < date_trunc('month', current_date)
           group by
-            atlas_user.dsc_atlas_user
+            atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2628,7 +2628,7 @@ from
 	  scai.cod_integration = 50000
 		and scai.cod_country = 5
 		and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2686,7 +2686,7 @@ from
 		from
 		  (
           select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
+            atlas_user.cod_atlas_user,
             cast(count(id) as varchar) custom_field_value
           from
             crm_integration_anlt.t_lkp_atlas_user atlas_user,
@@ -2698,7 +2698,7 @@ from
             and shipment_status = 'delivered'
 			and delivery_date >= date_trunc('month', current_date) - interval '2 month' and delivery_date < date_trunc('month', current_date) - interval '1 month'
           group by
-            atlas_user.dsc_atlas_user
+            atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2718,7 +2718,7 @@ from
 	  scai.cod_integration = 50000
 		and scai.cod_country = 5
 		and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2776,7 +2776,7 @@ from
 		from
 		  (
           select
-            coalesce(dsc_atlas_user,'unknown') dsc_atlas_user,
+            atlas_user.cod_atlas_user,
             cast(count(id) as varchar) custom_field_value
           from
             crm_integration_anlt.t_lkp_atlas_user atlas_user,
@@ -2788,7 +2788,7 @@ from
             and shipment_status = 'delivered'
 			and delivery_date >= date_trunc('month', current_date) - interval '3 month' and delivery_date < date_trunc('month', current_date) - interval '2 month'
           group by
-            atlas_user.dsc_atlas_user
+            atlas_user.cod_atlas_user
 			) core,
 			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -2808,7 +2808,7 @@ from
 	  scai.cod_integration = 50000
 		and scai.cod_country = 5
 		and kpi_custom_field.flg_active = 1
-		and lower(base_contact.email) = lower(dsc_atlas_user (+))
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
 		and valid_to = 20991231
     and cod_source_system = 22
 	) source,
@@ -2891,7 +2891,7 @@ from
 			  and ads.status = 'active'
 			  and ads.user_id = lkp_user.opr_atlas_user
 			  and lkp_user.valid_to = 20991231
-			  and lower(lkp_contact.email) = lower(lkp_user.dsc_atlas_user)
+			  and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
 			  and lkp_contact.valid_to = 20991231
 		  ) inner_core
 		group by
