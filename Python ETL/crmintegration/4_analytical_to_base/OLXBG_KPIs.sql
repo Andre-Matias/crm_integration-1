@@ -1177,11 +1177,11 @@ where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field f
 -- OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
-	source.cod_contact,
-	source.cod_custom_field,
-	source.dat_snap,
-	source.cod_source_system,
-	source.custom_field_value
+	cod_contact,
+	cod_custom_field,
+	dat_snap,
+	cod_source_system,
+	custom_field_value
   from
     tmp_bg_olx_calc_replies_per_ad;
 
