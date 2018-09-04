@@ -1116,12 +1116,33 @@ from
               ) inner_core,
               db_atlas.olxbg_categories categories
             where
+<<<<<<< HEAD
               categories.id = inner_core.category_id
             order by
               categories.name_bg asc
           ) core
         where
           rn in (1,2,3)
+=======
+              lkp_user.cod_source_system = 21
+              and lkp_contact.cod_source_system = 22
+              and fac.listing_nk = ads.id
+              and ads.status = 'active'
+              and ads.user_id = lkp_user.opr_atlas_user
+              and lkp_user.valid_to = 20991231
+              and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+              and lkp_contact.valid_to = 20991231
+              and scai.cod_integration = 50000
+      		  and scai.cod_country = 5
+              --and fac.action_sk != 'reply|sms'
+            group by
+              lkp_contact.cod_source_system,
+              lkp_contact.cod_contact,
+              scai.dat_processing,
+              lkp_user.cod_atlas_user,
+              ads.id
+          ) source
+>>>>>>> b139361b0bea4976bd91ce92b0b456540c1f3907
         group by
           cod_contact,
           dat_snap,

@@ -2112,7 +2112,7 @@ group by 1,2,3,4,5,6;
 
 
 
-create temp table tmp_pl_otomoto_calc_revenue as
+create temp table tmp_pl_otomoto_calc_revenue_listings as
 select c.id, c.id_index, pi.cod_index_type, c.date, c.category, c.category_no, c.user_id, c.invoice, c.package, c.period, c.rank,
  (case
   when category = 'P' and package = 1 and rank >2500 then 0.13
@@ -2186,10 +2186,38 @@ left join crm_integration_anlt.otomotopl_pricing p on  c.id_index = p.index_id
                             and c.rank = p.dense_rank
 left join crm_integration_anlt.v_lkp_paidad_index pi on pi.opr_paidad_index = c.id_index and pi.cod_source_system = 7;
 
+	
+
+create temp table tmp_pl_otomoto_calc_revenue_vas as
+SELECT 
+	pup.id_user as user_id, 
+	pup.id_transaction, 
+	pup.date, 
+	pup.id_ad, 
+	pup.name, 
+	pup.payment_provider,
+	cast( -1 * case when pup.payment_provider='postpay' then round(pup.price/1.23, 2) else round(wm.amount/1.23, 2) end as numeric(15,2)) as sales_vas_value,
+	1 as cod_index_type,
+	-ceil(months_between(ub.next_invoice_date, pup.date)) as period
+FROM db_atlas_verticals.paidads_user_payments as pup
+	join db_atlas_verticals.users_business ub on pup.id_user=ub.id and pup.livesync_dbname = ub.livesync_dbname
+	LEFT OUTER JOIN db_atlas_verticals.wallet_movements as wm
+		on pup.id_user=wm.user_id and pup.id_ad=wm.ad_id and pup.id_transaction=wm.session_id and pup.id_index = wm.index_id
+WHERE 1=1
+AND pup.payment_provider in ('postpay', 'account')
+AND (pup.is_removed_from_invoice=0 or pup.is_removed_from_invoice is null)
+AND (pup.is_invalid_item=0 or pup.is_invalid_item is null)
+and (pup.livesync_dbname = 'otomotopl'
+	or wm.livesync_dbname = 'otomotopl')
+AND pup.DATE>= '2018-01-01' 
+and  (pup.id_index not in (0,51,49,55,61,105,113,115,117,119) 
+	or (pup.id_index=49 and pup.price<0))
+;
+
 
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (0) - Total)
-create temp table tmp_pl_otomoto_calc_revenue_0_total_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_total_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -2222,9 +2250,11 @@ from
 						  lkp_contact.cod_contact_parent,
 						  lkp_contact.cod_source_system,
 						  scai.dat_processing dat_snap,
-						  sum(tmp_revenue.subs_value) revenue_value
+						  sum(tmp_revenue.value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type in (1,2) and period = -1) tmp_revenue, -- VAS and Listings, Month 0
+						  (select user_id, subs_value as value  from tmp_pl_otomoto_calc_revenue_listings where cod_index_type in (2) and period = -1
+							union
+							select user_id, sales_vas_value as value from tmp_pl_otomoto_calc_revenue_vas where cod_index_type in (1) and period = -1) tmp_revenue, 
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -2269,13 +2299,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_0_total_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_total_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_total_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -2287,13 +2317,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_0_total_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_total_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_total_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2325,7 +2355,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_0_total_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_0_total_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          --a.cod_contact in (320977,322379,327830,289792,327855)
@@ -2356,18 +2386,18 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_total_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_total_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_total_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_total_3);
 
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_total_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_total_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_total_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_total_3);
 
 
 
@@ -2376,15 +2406,15 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_0_total_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_0_total_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_0_total_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_0_total_3);
 
 
 
 
 -- CREATE TMP - KPI OLX.BASE.099 (Revenue (-1) - Total)
-create temp table tmp_pl_otomoto_calc_revenue_1_total_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_total_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -2417,9 +2447,11 @@ from
 						  lkp_contact.cod_contact_parent,
 						  lkp_contact.cod_source_system,
 						  scai.dat_processing dat_snap,
-						  sum(tmp_revenue.subs_value) revenue_value
+						  sum(tmp_revenue.value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type in (1,2) and period = -2) tmp_revenue, -- VAS and Listings, Month -1
+						  (select user_id, subs_value as value  from tmp_pl_otomoto_calc_revenue_listings where cod_index_type in (2) and period = -2
+							union
+							select user_id, sales_vas_value as value from tmp_pl_otomoto_calc_revenue_vas where cod_index_type in (1) and period = -2) tmp_revenue, 
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -2464,13 +2496,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_1_total_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_total_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_total_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -2481,13 +2513,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_1_total_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_total_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_total_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_total_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2519,7 +2551,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_1_total_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_1_total_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          and a.cod_contact = b.cod_contact
@@ -2549,17 +2581,17 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_total_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_total_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_total_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_total_3);
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (-1) - Total)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_total_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_total_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_total_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_total_3);
 
 
 
@@ -2568,16 +2600,16 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_1_total_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_1_total_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_1_total_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_1_total_3);
 
 
 
 
 
 -- CREATE TMP - KPI OLX.BASE.101 (Revenue (0) - VAS)
-create temp table tmp_pl_otomoto_calc_revenue_0_vas_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_vas_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -2610,9 +2642,9 @@ from
 						  lkp_contact.cod_contact_parent,
 						  lkp_contact.cod_source_system,
 						  scai.dat_processing dat_snap,
-						  sum(tmp_revenue.subs_value) revenue_value
+						  sum(tmp_revenue.sales_vas_value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type = 1 and period = -1) tmp_revenue, -- VAS, Month 0
+						  (select * from tmp_pl_otomoto_calc_revenue_vas where cod_index_type = 1 and period = -1) tmp_revenue, -- VAS, Month 0
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -2657,13 +2689,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_0_vas_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_vas_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_vas_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -2675,13 +2707,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_0_vas_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_vas_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_vas_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2713,7 +2745,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_0_vas_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_0_vas_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          and a.cod_contact = b.cod_contact
@@ -2743,18 +2775,18 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_vas_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_vas_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_vas_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_vas_3);
 
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_vas_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_vas_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_vas_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_vas_3);
 
 
 
@@ -2763,15 +2795,15 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_0_vas_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_0_vas_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_0_vas_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_0_vas_3);
 
 
 
 
 -- CREATE TMP - KPI OLX.BASE.104 (Revenue (-1) - VAS)
-create temp table tmp_pl_otomoto_calc_revenue_1_vas_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_vas_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -2804,9 +2836,9 @@ from
 						  lkp_contact.cod_contact_parent,
 						  lkp_contact.cod_source_system,
 						  scai.dat_processing dat_snap,
-						  sum(tmp_revenue.subs_value) revenue_value
+						  sum(tmp_revenue.sales_vas_value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type = 1 and period = -2) tmp_revenue, -- VAS, Month -1
+						  (select * from tmp_pl_otomoto_calc_revenue_vas where cod_index_type = 1 and period = -2) tmp_revenue, -- VAS, Month -1
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -2851,13 +2883,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_1_vas_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_vas_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_vas_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -2869,13 +2901,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_1_vas_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_vas_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_vas_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_vas_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -2907,7 +2939,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_1_vas_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_1_vas_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          and a.cod_contact = b.cod_contact
@@ -2937,18 +2969,18 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_vas_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_vas_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_vas_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_vas_3);
 
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (-1) - VAS)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_vas_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_vas_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_vas_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_vas_3);
 
 
 
@@ -2957,16 +2989,16 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_1_vas_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_1_vas_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_1_vas_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_1_vas_3);
 
 
 
 
 
 -- CREATE TMP - KPI OLX.BASE.100 (Revenue (0) - Listings)
-create temp table tmp_pl_otomoto_calc_revenue_0_listings_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_listings_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -3001,7 +3033,7 @@ from
 						  scai.dat_processing dat_snap,
 						  sum(tmp_revenue.subs_value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type = 2 and period = -1) tmp_revenue, -- Listings, Month 0
+						  (select * from tmp_pl_otomoto_calc_revenue_listings where cod_index_type = 2 and period = -1) tmp_revenue,  
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -3046,13 +3078,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_0_listings_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_listings_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_listings_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -3064,13 +3096,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_0_listings_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_0_listings_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_0_listings_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_0_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -3102,7 +3134,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_0_listings_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_0_listings_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          and a.cod_contact = b.cod_contact
@@ -3132,17 +3164,17 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_listings_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_listings_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_listings_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_listings_3);
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (0) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_listings_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_listings_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_0_listings_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_0_listings_3);
 
 
 --KPI OLX.BASE.099 (Revenue (0) - Listings)
@@ -3150,16 +3182,16 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_0_listings_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_0_listings_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_0_listings_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_0_listings_3);
 
 
 
 
 
 -- CREATE TMP - KPI OLX.BASE.103 (Revenue (-1) - Listings)
-create temp table tmp_pl_otomoto_calc_revenue_1_listings_1 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_listings_1 as
 select
 	core.cod_contact,
 	core.cod_contact_parent,
@@ -3194,7 +3226,7 @@ from
 						  scai.dat_processing dat_snap,
 						  sum(tmp_revenue.subs_value) revenue_value
 						from
-						  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type = 2 and period = -2) tmp_revenue, -- Listings, Month -1
+						  (select * from tmp_pl_otomoto_calc_revenue_listings where cod_index_type = 2 and period = -2) tmp_revenue, -- Listings, Month -1
 						  crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
 						  crm_integration_anlt.t_lkp_contact lkp_contact,
 						  crm_integration_anlt.t_rel_scai_country_integration scai
@@ -3239,13 +3271,13 @@ where
 
 
 --Calculate for employees
-create temp table tmp_pl_otomoto_calc_revenue_1_listings_2 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_listings_2 as
 select source.cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
 	source.custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_listings_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_contact_parent is not null
@@ -3257,13 +3289,13 @@ where 1 = 1
 
 
 --Calculate for companies and contacts not associated with companies
-create temp table tmp_pl_otomoto_calc_revenue_1_listings_3 as
+create temp table tmp_pl_otomoto_calc_revenue_listings_1_listings_3 as
 /*select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system
 	,cast(sum(CAST(source.custom_field_value AS NUMERIC(15,2))) as varchar) custom_field_value
-from tmp_pl_otomoto_calc_revenue_1_listings_1 source,
+from tmp_pl_otomoto_calc_revenue_listings_1_listings_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
   and source.cod_source_system = fac_snap.cod_source_system (+)
@@ -3295,7 +3327,7 @@ from
          b.cod_atlas_user,
          count(*) over (partition by cod_atlas_user) nbr_atlas_users
        from
-         tmp_pl_otomoto_calc_revenue_1_listings_1 a,
+         tmp_pl_otomoto_calc_revenue_listings_1_listings_1 a,
          crm_integration_anlt.t_lkp_contact b
        where 1
          and a.cod_contact = b.cod_contact
@@ -3325,18 +3357,18 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
     from
       crm_integration_anlt.t_fac_base_integration_snap target
     where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_listings_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_listings_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_listings_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_listings_3);
 
 
 
 -- SNAP DELETE - KPI OLX.BASE.099 (Revenue (-1) - Listings)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
-			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_listings_2
+			(select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_listings_2
 			union
-			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_1_listings_3);
+			select cod_contact, cod_custom_field from tmp_pl_otomoto_calc_revenue_listings_1_listings_3);
 
 
 
@@ -3345,10 +3377,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	select
 		*
 	from
-		(select * from tmp_pl_otomoto_calc_revenue_1_listings_2
+		(select * from tmp_pl_otomoto_calc_revenue_listings_1_listings_2
 		union
-		select * from tmp_pl_otomoto_calc_revenue_1_listings_3);
+		select * from tmp_pl_otomoto_calc_revenue_listings_1_listings_3);
 
+ 
+ 
+ 
+ 
  
 
 -- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
@@ -3396,7 +3432,7 @@ from
                   tmp_revenue.period,
                   sum(tmp_revenue.subs_value) invoice_value
                 from
-                  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
+                  (select * from tmp_pl_otomoto_calc_revenue_listings where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
                   crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
                   crm_integration_anlt.t_lkp_contact lkp_contact,
                   crm_integration_anlt.t_rel_scai_country_integration scai
@@ -3564,7 +3600,7 @@ from
                   idx.name_pl as package_name,
                   max(tmp_revenue.subs_value) package_value
                 from
-                  (select * from tmp_pl_otomoto_calc_revenue where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
+                  (select * from tmp_pl_otomoto_calc_revenue_listings where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
                   crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
                   crm_integration_anlt.t_lkp_contact lkp_contact,
                   crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -4103,83 +4139,104 @@ and t_rel_scai_integration_process.ind_active = 1;
 
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where cod_source_system = 12
-and cod_contact not in (310039,
-317701,
-271614,
-249342,
-307758,
-303599,
-235221,
-182196,
-288033,
-317289,
-231843,
-304674,
-322250,
-214602,
-308615,
-967784,
-310823,
-285250,
-872429,
-310305,
-287197,
-1002499,
-314844,
-232516,
-912325,
-838863,
-851153,
-263169,
-318377,
-286187,
-934039,
-998643,
-115045,
-305086,
-966663,
-307546,
-240455,
-274381,
-307533,
-232231,
-306317,
-247988,
-250614,
-286079,
-308690,
-327478,
-263415,
-313994,
-246699,
-276095,
-960379,
-968671,
-261435,
-322395,
-205948,
-304792,
-305436,
-157061,
-310595,
-110784,
-289305,
-313865,
-327461,
-310475,
-315426,
-274044,
-251627,
-288095,
-934047,
-308717,
-247176,
-231863,
-321864,
-998251,
-311723,
-289959,
-318219,
-312292,
-198080,
-319699);
+and cod_contact not in (127199,
+143475,
+197881,
+252603,
+262396,
+263153,
+273867,
+288971,
+291421,
+304078,
+304401,
+304750,
+305106,
+305580,
+313990,
+314986,
+316241,
+317901,
+320142,
+322154,
+326059,
+922418,
+1057558,
+1159836,
+1170573,
+1187167,
+1187250,
+1196461,
+1196795,
+1425157,
+114581,
+127199,
+131795,
+137309,
+138340,
+141769,
+142882,
+143475,
+158830,
+197881,
+199108,
+199778,
+216662,
+231301,
+231570,
+232460,
+235122,
+246484,
+248750,
+250399,
+250802,
+251381,
+252603,
+254977,
+259007,
+262203,
+262331,
+262396,
+263153,
+264462,
+264526,
+268443,
+269884,
+271537,
+272571,
+273867,
+282152,
+282377,
+282576,
+286367,
+288323,
+288971,
+290048,
+290173,
+290183,
+291421,
+292746,
+292804,
+293246,
+293645,
+303955,
+304078,
+304401,
+304501,
+304562,
+304614,
+304750,
+304931,
+304933,
+304970,
+305250,
+305580,
+306302,
+306489,
+307069,
+307736,
+308745,
+309379,
+309537,
+309838
+);
