@@ -2741,6 +2741,7 @@ from (
 where
   lkp_contact.cod_contact = core.cod_contact (+)
   and lkp_contact.cod_source_system = core.cod_source_system (+)
+  and lkp_contact.cod_source_system = 13
   and lkp_contact.valid_to = 20991231
   and scai.cod_integration = 50000
   and scai.cod_country = 2;
