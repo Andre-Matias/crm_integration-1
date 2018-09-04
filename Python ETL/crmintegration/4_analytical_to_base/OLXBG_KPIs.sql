@@ -966,7 +966,7 @@ from
               and ads.status = 'active'
               and ads.user_id = lkp_user.opr_atlas_user
               and lkp_user.valid_to = 20991231
-              and lkp_contact.cod_atlas_user = lkp_user.dcod_atlas_user
+              and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
               and lkp_contact.valid_to = 20991231
               and scai.cod_integration = 50000
       		  and scai.cod_country = 5

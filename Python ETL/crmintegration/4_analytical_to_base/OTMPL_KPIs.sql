@@ -2186,7 +2186,7 @@ left join crm_integration_anlt.otomotopl_pricing p on  c.id_index = p.index_id
                             and c.rank = p.dense_rank
 left join crm_integration_anlt.v_lkp_paidad_index pi on pi.opr_paidad_index = c.id_index and pi.cod_source_system = 7;
 
-
+	
 
 create temp table tmp_pl_otomoto_calc_revenue_vas as
 SELECT 
