@@ -2000,7 +2000,7 @@ from
 		  and lower(kpi.dsc_kpi) = 'max days since last call'
 		  and rel.cod_source_system = 12
 	) kpi_custom_field
-where
+where 1=1
   and scai.cod_integration = 50000
   and scai.cod_country = 2
   and kpi_custom_field.flg_active = 1;
