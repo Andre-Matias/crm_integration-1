@@ -219,7 +219,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   select
     base_contact.cod_contact,
-    8401 cod_custom_field,
+    9202 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -244,7 +244,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   select
     base_contact.cod_contact,
-    8402 cod_custom_field,
+    9203 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -269,7 +269,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   select
     base_contact.cod_contact,
-    8403 cod_custom_field,
+    9204 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -294,7 +294,7 @@ insert into crm_integration_anlt.t_fac_base_integration_snap (
 select source.* from (
   select
     base_contact.cod_contact,
-    8404 cod_custom_field,
+    9205 cod_custom_field,
     scai.dat_processing dat_snap,
     base_contact.cod_source_system,
     ' ' as custom_field_value
@@ -313,6 +313,57 @@ where source.cod_source_system = fac_snap.cod_source_system (+)
   and source.cod_contact = fac_snap.cod_contact (+)
   and fac_snap.cod_contact is null
 );
+
+--(--------DELIMITER5--------)
+insert into crm_integration_anlt.t_fac_base_integration_snap (
+select source.* from (
+  select
+    base_contact.cod_contact,
+    9304 cod_custom_field,
+    scai.dat_processing dat_snap,
+    base_contact.cod_source_system,
+    ' ' as custom_field_value
+  from
+    crm_integration_anlt.t_lkp_contact base_contact,
+    crm_integration_anlt.t_rel_scai_country_integration scai
+  where
+    base_contact.cod_source_system = 22
+    and base_contact.valid_to = 20991231
+    and scai.cod_integration = 50000
+    and scai.cod_country = 5
+) source,
+    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and fac_snap.cod_contact is null
+);
+
+--(--------DELIMITER6--------)
+insert into crm_integration_anlt.t_fac_base_integration_snap (
+select source.* from (
+  select
+    base_contact.cod_contact,
+    9207 cod_custom_field,
+    scai.dat_processing dat_snap,
+    base_contact.cod_source_system,
+    ' ' as custom_field_value
+  from
+    crm_integration_anlt.t_lkp_contact base_contact,
+    crm_integration_anlt.t_rel_scai_country_integration scai
+  where
+    base_contact.cod_source_system = 22
+    and base_contact.valid_to = 20991231
+    and scai.cod_integration = 50000
+    and scai.cod_country = 5
+) source,
+    crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and fac_snap.cod_contact is null
+);
+
 
 --$$$
 
@@ -921,14 +972,65 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 --$$$
 
--- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
+-- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad / Benchmark # Replies per Ad)
+create temp table tmp_bg_olx_calc_global_replies_per_ad as
+select
+  cod_source_system,
+  category_id,
+  (categories.name_bg || ': ' || cast(custom_field_value as varchar)) average_replies_per_ad
+from
+  (
+    select
+      source.cod_source_system,
+      source.category_id,
+      round((sum(nr_replies) / count(distinct source.id)),0) custom_field_value
+    from
+      (
+        select
+          lkp_contact.cod_source_system,
+          ads.id,
+          coalesce(categories.parent_level1,categories.id) category_id,
+          count(*) nr_replies
+        from
+          eu_bi.fact_replies_unique fac,
+          db_atlas.olxbg_ads ads,
+          db_atlas.olxbg_categories categories,
+          crm_integration_anlt.t_lkp_atlas_user lkp_user,
+          crm_integration_anlt.t_lkp_contact lkp_contact
+        where
+          lkp_user.cod_source_system = 21
+          and lkp_contact.cod_source_system = 22
+          and categories.id = ads.category_id
+          and fac.listing_nk = ads.id
+          and ads.status = 'active'
+          and ads.user_id = lkp_user.opr_atlas_user
+          and lkp_user.valid_to = 20991231
+          and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+          and lkp_contact.valid_to = 20991231
+        group by
+          lkp_contact.cod_source_system,
+          ads.id,
+          coalesce(categories.parent_level1,categories.id)
+      ) source
+    group by
+      source.cod_source_system,
+      source.category_id
+  ) inner_core,
+  db_atlas.olxbg_categories categories
+where
+  categories.id = inner_core.category_id
+order by
+  categories.name_bg asc;
+
+
 create temp table tmp_bg_olx_calc_replies_per_ad as
 select
   source.cod_contact,
   source.cod_custom_field,
   source.dat_snap,
   source.cod_source_system,
-  source.custom_field_value
+  source.custom_field_value,
+  source.custom_field_value_benchmark
 from
   (
     select
@@ -936,30 +1038,92 @@ from
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
       isnull(a.cod_source_system,22) cod_source_system,
-      isnull(a.custom_field_value, '0') custom_field_value
+      isnull(a.custom_field_value, ' ') custom_field_value,
+      isnull(a.custom_field_value_benchmark, ' ') custom_field_value_benchmark
     from
       (
         select
-          source.cod_contact,
-          source.dat_processing dat_snap,
-          source.cod_source_system,
-          cast(round((sum(nr_replies) / count(distinct source.id)),0) as varchar) custom_field_value
+          cod_contact,
+          dat_snap,
+          cod_source_system,
+          listagg(custom_field_value, ' | ') custom_field_value,
+          listagg(custom_field_value_benchmark, ' | ') custom_field_value_benchmark
         from
           (
             select
-              lkp_contact.cod_source_system,
-              lkp_contact.cod_contact,
-              scai.dat_processing,
-              lkp_user.cod_atlas_user,
-              ads.id,
-              count(*) nr_replies
+              cod_contact,
+              dat_snap,
+              cod_source_system,
+              (categories.name_bg || ': ' || cast(custom_field_value as varchar)) custom_field_value,
+              custom_field_value_benchmark,
+              row_number() over (partition by cod_contact order by custom_field_value desc) rn
             from
-              eu_bi.fact_replies_unique fac,
-              db_atlas.olxbg_ads ads,
-              crm_integration_anlt.t_lkp_atlas_user lkp_user,
-              crm_integration_anlt.t_lkp_contact lkp_contact,
-              crm_integration_anlt.t_rel_scai_country_integration scai
+              (
+                select
+                  source.cod_contact,
+                  source.dat_processing dat_snap,
+                  source.cod_source_system,
+                  source.category_id,
+                  tmp_bg_olx_calc_global_replies_per_ad.average_replies_per_ad custom_field_value_benchmark,
+                  round((sum(nr_replies) / count(distinct source.id)),0) custom_field_value
+                from
+                  (
+                    select
+                      lkp_contact.cod_source_system,
+                      lkp_contact.cod_contact,
+                      scai.dat_processing,
+                      lkp_user.cod_atlas_user,
+                      ads.id,
+                      coalesce(categories.parent_level1,categories.id) category_id,
+                      sum(case when fac.listing_nk is null then 0 else 1 end) nr_replies
+                    from
+                      eu_bi.fact_replies_unique fac,
+                      db_atlas.olxbg_ads ads,
+                      db_atlas.olxbg_categories categories,
+                      crm_integration_anlt.t_lkp_atlas_user lkp_user,
+                      crm_integration_anlt.t_lkp_contact lkp_contact,
+                      crm_integration_anlt.t_rel_scai_country_integration scai
+                    where
+                      lkp_user.cod_source_system = 21
+                      and lkp_contact.cod_source_system = 22
+                      and categories.id = ads.category_id
+                      and fac.listing_nk (+) = ads.id
+                      and ads.status = 'active'
+                      and ads.user_id = lkp_user.opr_atlas_user
+                      and lkp_user.valid_to = 20991231
+                      and lkp_contact.cod_atlas_user = lkp_user.cod_atlas_user
+                      and lkp_contact.valid_to = 20991231
+                      and scai.cod_integration = 50000
+                      and scai.cod_country = 5
+                      --and fac.action_sk != 'reply|sms'
+                    group by
+                      lkp_contact.cod_source_system,
+                      lkp_contact.cod_contact,
+                      scai.dat_processing,
+                      lkp_user.cod_atlas_user,
+                      ads.id,
+                      coalesce(categories.parent_level1,categories.id)
+                  ) source,
+                  tmp_bg_olx_calc_global_replies_per_ad
+                where
+                  source.category_id = tmp_bg_olx_calc_global_replies_per_ad.category_id
+                group by
+                  source.cod_source_system,
+                  source.cod_contact,
+                  source.dat_processing,
+                  source.category_id,
+                  tmp_bg_olx_calc_global_replies_per_ad.average_replies_per_ad
+              ) inner_core,
+              db_atlas.olxbg_categories categories
             where
+<<<<<<< HEAD
+              categories.id = inner_core.category_id
+            order by
+              categories.name_bg asc
+          ) core
+        where
+          rn in (1,2,3)
+=======
               lkp_user.cod_source_system = 21
               and lkp_contact.cod_source_system = 22
               and fac.listing_nk = ads.id
@@ -978,10 +1142,11 @@ from
               lkp_user.cod_atlas_user,
               ads.id
           ) source
+>>>>>>> b139361b0bea4976bd91ce92b0b456540c1f3907
         group by
-          source.cod_source_system,
-          source.cod_contact,
-          source.dat_processing
+          cod_contact,
+          dat_snap,
+          cod_source_system
       ) a,
       crm_integration_anlt.t_lkp_contact b,
       crm_integration_anlt.t_rel_scai_country_integration scai,
@@ -1033,9 +1198,63 @@ where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field f
 -- OLX.BASE.081 (# Replies per Ad)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
-    *
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
   from
     tmp_bg_olx_calc_replies_per_ad;
+
+	
+
+create temp table tmp_bg_olx_calc_benchmark_replies_per_ad as
+select
+  source.cod_contact,
+  kpi_custom_field.cod_custom_field,
+  source.dat_snap,
+  source.cod_source_system,
+  source.custom_field_value_benchmark custom_field_value
+from
+  tmp_bg_olx_calc_replies_per_ad source,
+  (
+  select
+    rel.cod_custom_field,
+    rel.flg_active
+  from
+    crm_integration_anlt.t_lkp_kpi kpi,
+    crm_integration_anlt.t_rel_kpi_custom_field rel
+  where
+    kpi.cod_kpi = rel.cod_kpi
+    and lower(kpi.dsc_kpi) = 'benchmark # replies per ad'
+    and rel.cod_source_system = 22
+  ) kpi_custom_field
+where
+  kpi_custom_field.flg_active = 1;
+
+
+-- HST INSERT - KPI OLX.BASE.138 (Benchmark # Replies per Ad)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_bg_olx_calc_benchmark_replies_per_ad);
+
+
+
+-- SNAP DELETE - KPI OLX.BASE.138 (Benchmark # Replies per Ad)
+DELETE FROM crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_bg_olx_calc_benchmark_replies_per_ad);
+
+
+
+-- KPI OLX.BASE.138 (Benchmark # Replies per Ad)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+	*
+  from
+    tmp_bg_olx_calc_benchmark_replies_per_ad;
 
 
 --$$$
