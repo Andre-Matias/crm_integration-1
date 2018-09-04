@@ -3138,7 +3138,7 @@ gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from 
 	
 
 create temp table tmp_pl_contact_custom_field_1
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3166,7 +3166,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field_2 
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3195,7 +3195,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field_3
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3225,7 +3225,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field_4
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3253,7 +3253,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field 
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
 select * from tmp_pl_contact_custom_field_1
