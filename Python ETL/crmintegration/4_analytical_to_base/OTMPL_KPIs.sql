@@ -3672,7 +3672,7 @@ select nvl(source.cod_contact_parent, source.cod_contact) as cod_contact,
 	source.cod_custom_field,
 	source.dat_snap,
 	source.cod_source_system,
-	coalesce(cast(max(cast(source.custom_field_value as numeric(15,2) )) as varchar), '0') custom_field_value
+	coalesce( max( source.custom_field_value ), '0') custom_field_value
 from tmp_pl_otomoto_calc_max_package_1 source,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where 1 = 1
