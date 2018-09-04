@@ -3253,7 +3253,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field 
-distkey(opr_contact,cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
 select * from tmp_pl_contact_custom_field_1
