@@ -3085,8 +3085,8 @@ from
 	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
 )
 where
-gen_num between 1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
-;	
+gen_num between 1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+;
 
 
 create temp table tmp_pl_gen_numbers_2  as
@@ -3101,11 +3101,44 @@ from
 	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
 )
 where
-gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","')) from tmp_pl_load_contact)) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
-;			
+gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from tmp_pl_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+;
+
+create temp table tmp_pl_gen_numbers_3  as
+select	*
+from
+(
+  select (1000 * t1.num) + (100 * t2.num) + (10 * t3.num) + t4.num AS gen_num
+  from
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t1,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t2,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t3,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
+)
+where
+gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact)) + trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+;
+
+
+create temp table tmp_pl_gen_numbers_4  as
+select	*
+from
+(
+  select (1000 * t1.num) + (100 * t2.num) + (10 * t3.num) + t4.num AS gen_num
+  from
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t1,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t2,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t3,
+	(select 1 as num union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9 union select 0) t4
+)
+where
+gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from tmp_pl_load_contact))+trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from tmp_pl_load_contact))+1 and trunc((select max(regexp_count(custom_fields, '\\","')) from tmp_pl_load_contact)) + 1 --(select max(regexp_count(custom_fields, '\\","') + 1) from tmp_pl_load_contact)
+;
+
+	
 
 create temp table tmp_pl_contact_custom_field_1
-distkey(cod_source_system)
+distkey(opr_contact,cod_source_system)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3133,7 +3166,7 @@ as
 
 
 create temp table tmp_pl_contact_custom_field_2 
-distkey(cod_source_system)
+distkey(opr_contact,cod_source_system)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3160,13 +3193,76 @@ as
 ;
 
 
+
+create temp table tmp_pl_contact_custom_field_3
+distkey(opr_contact,cod_source_system)
+sortkey(custom_field_name, cod_source_system)
+as
+  select
+    opr_contact,
+    custom_fields,
+    cod_source_system,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',1),'{"',''),'"}','') end custom_field_name,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',2),'{"',''),'"}','') end custom_field_value
+  from
+    (
+      select
+        ts.opr_contact,
+        ts.custom_fields,
+        s.gen_num,
+        ts.cod_source_system,
+        split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
+      from
+        tmp_pl_load_contact ts,
+        tmp_pl_gen_numbers_3 s
+      where
+        split_part(custom_fields, '","', s.gen_num) != ''
+        and custom_fields != '{}'
+    )
+;
+
+
+
+
+create temp table tmp_pl_contact_custom_field_4
+distkey(opr_contact,cod_source_system)
+sortkey(custom_field_name, cod_source_system)
+as
+  select
+    opr_contact,
+    custom_fields,
+    cod_source_system,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',1),'{"',''),'"}','') end custom_field_name,
+    case when segment = '{}' then null else replace(replace(split_part(segment,'":"',2),'{"',''),'"}','') end custom_field_value
+  from
+    (
+      select
+        ts.opr_contact,
+        ts.custom_fields,
+        s.gen_num,
+        ts.cod_source_system,
+        split_part(replace(replace(replace(replace(custom_fields,':false,',':"false",'),':true,',':"true",'),':false}',':"false"}'),':true}',':"true"}'),'","', s.gen_num) AS segment
+      from
+        tmp_pl_load_contact ts,
+        tmp_pl_gen_numbers_4 s
+      where
+        split_part(custom_fields, '","', s.gen_num) != ''
+        and custom_fields != '{}'
+    )
+;
+
+
 create temp table tmp_pl_contact_custom_field 
-distkey(cod_source_system)
+distkey(opr_contact,cod_source_system)
 sortkey(custom_field_name, cod_source_system)
 as
 select * from tmp_pl_contact_custom_field_1
 union
-select * from tmp_pl_contact_custom_field_2;
+select * from tmp_pl_contact_custom_field_2
+union
+select * from tmp_pl_contact_custom_field_3
+union
+select * from tmp_pl_contact_custom_field_4;
 
 analyze tmp_pl_contact_custom_field;
 
