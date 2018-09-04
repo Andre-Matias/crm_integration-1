@@ -1190,26 +1190,41 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 create temp table tmp_bg_olx_calc_benchmark_replies_per_ad as
 select
   source.cod_contact,
-  kpi_custom_field.cod_custom_field,
+  source.cod_custom_field,
   source.dat_snap,
   source.cod_source_system,
-  source.custom_field_value_benchmark custom_field_value
+  source.custom_field_value
 from
-  tmp_bg_olx_calc_replies_per_ad source,
   (
-  select
-    rel.cod_custom_field,
-    rel.flg_active
-  from
-    crm_integration_anlt.t_lkp_kpi kpi,
-    crm_integration_anlt.t_rel_kpi_custom_field rel
-  where
-    kpi.cod_kpi = rel.cod_kpi
-    and lower(kpi.dsc_kpi) = 'benchmark # replies per ad'
-    and rel.cod_source_system = 22
-  ) kpi_custom_field
+	select
+	  tmp_replies_per_ad.cod_contact,
+	  kpi_custom_field.cod_custom_field,
+	  tmp_replies_per_ad.dat_snap,
+	  tmp_replies_per_ad.cod_source_system,
+	  tmp_replies_per_ad.custom_field_value_benchmark custom_field_value
+	from
+	  tmp_bg_olx_calc_replies_per_ad tmp_replies_per_ad,
+	  (
+		  select
+			rel.cod_custom_field,
+			rel.flg_active
+		  from
+			crm_integration_anlt.t_lkp_kpi kpi,
+			crm_integration_anlt.t_rel_kpi_custom_field rel
+		  where
+			kpi.cod_kpi = rel.cod_kpi
+			and lower(kpi.dsc_kpi) = 'benchmark # replies per ad'
+			and rel.cod_source_system = 22
+		  ) kpi_custom_field
+		  where
+			kpi_custom_field.flg_active = 1
+  ) source,
+  crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
-  kpi_custom_field.flg_active = 1;
+  source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
 
 
 -- HST INSERT - KPI OLX.BASE.138 (Benchmark # Replies per Ad)
