@@ -3215,7 +3215,7 @@ and t_rel_scai_integration_process.ind_active = 1;
 
 
 
-
+/*
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where cod_source_system = 22
 and cod_contact not in (
@@ -3259,4 +3259,4 @@ and cod_contact not in (
 ,1322313
 ,1389480
 ,1394902
-);
+);*/
