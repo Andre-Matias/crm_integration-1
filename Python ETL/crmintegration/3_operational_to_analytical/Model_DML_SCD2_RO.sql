@@ -7164,9 +7164,9 @@ analyze crm_integration_anlt.t_lkp_invoice;
 
 delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_system_adapted in(1,2);
 
---insert into crm_integration_anlt.t_fac_crm_revenue_month_agg (cod_month, cod_source_system_adapted, cod_index_type, cod_base_user, val_revenue, val_revenue_mtd, num_users, num_users_mtd)
-  select
-    core.cod_month cod_month,
+insert into crm_integration_anlt.t_fac_crm_revenue_month_agg (cod_month, cod_source_system_adapted, cod_index_type, cod_base_user, val_revenue, val_revenue_mtd, num_users, num_users_mtd)
+select
+    cast(core.cod_month as numeric) cod_month,
     core.cod_source_system_adapted,
     1 cod_index_type, -- VAS
     core.cod_base_user,
@@ -7304,7 +7304,7 @@ delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_sy
   union all
 
   select
-    core.cod_month,
+    cast(core.cod_month as numeric) cod_month,
     core.cod_source_system_adapted,
     2 cod_index_type, -- Packages
     core.cod_base_user,
@@ -7441,7 +7441,7 @@ delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_sy
   union all
 
   select
-    core.cod_month cod_month,
+    cast(core.cod_month as numeric) cod_month,
     core.cod_source_system_adapted,
     1 cod_index_type, -- VAS
     core.cod_base_user,
@@ -7578,7 +7578,7 @@ delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_sy
    union all
 
   select
-    core.cod_month cod_month,
+    cast(core.cod_month as numeric) cod_month,
     core.cod_source_system_adapted,
     2 cod_index_type, -- Packages
     core.cod_base_user,
@@ -7623,7 +7623,7 @@ delete from crm_integration_anlt.t_fac_crm_revenue_month_agg where cod_source_sy
                 and a.valid_to = 20991231
                 and b.cod_source_system = 5
                 and a.flg_business = 1
-                and a.opr_atlas_user in (206)
+                --and a.opr_atlas_user in (206)
             ) atlas
           where
             atlas.cod_atlas_user = base.cod_atlas_user(+)
