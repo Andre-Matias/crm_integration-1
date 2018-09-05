@@ -385,7 +385,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #############################################
 
 
-
+--Create temporary table with non-Company Contacts first
 create temp table tmp_ua_load_contact 
 distkey(cod_source_system)
 sortkey(cod_contact, opr_contact)
@@ -478,7 +478,7 @@ select
 		null meta_event_type,
 		null meta_event_time,
 		null creator_id opr_base_user_creator,
-		null id_company contact_id,
+		id_company contact_id,
 		null created_at,
 		null updated_at,
 		null title,
@@ -566,9 +566,185 @@ select
 	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
 	and lkp_industry.valid_to (+) = 20991231;
 
-analyze tmp_ua_load_contact;
-	
 
+--Insert Companies into temporary table
+select
+    source_table.opr_contact,
+    source_table.dsc_contact,
+    source_table.cod_source_system,
+	source_table.meta_event_type,
+	source_table.meta_event_time,
+	coalesce(lkp_base_user_creator.cod_base_user,-2) cod_base_user_creator,
+	source_table.contact_id,
+	source_table.created_at,
+	source_table.updated_at,
+	source_table.title,
+	source_table.first_name,
+	source_table.last_name,
+	source_table.description,
+	coalesce(lkp_industry.cod_industry,-2) cod_industry,
+	source_table.website,
+	source_table.email,
+	source_table.phone,
+	source_table.mobile,
+	source_table.fax,
+	source_table.twitter,
+	source_table.facebook,
+	source_table.linkedin,
+	source_table.skype,
+	coalesce(lkp_base_user_owner.cod_base_user,-2) cod_base_user_owner,
+	source_table.flg_organization,
+	source_table.address,
+	source_table.custom_fields,
+	source_table.customer_status,
+	source_table.prospect_status,
+	source_table.tags,
+    source_table.hash_contact,
+    source_table.cod_execution,
+    max_cod_contacts.max_cod,
+    row_number() over (order by source_table.opr_contact desc) new_cod,
+    target.cod_contact,
+	target.valid_from,
+    case
+      --when target.cod_contact is null then 'I'
+	  when target.cod_contact is null or (source_table.hash_contact != target.hash_contact and target.valid_from = source_table.dat_processing) then 'I'
+	  when source_table.meta_event_type = 'deleted' then 'D'
+      when source_table.hash_contact != target.hash_contact then 'U'
+        else 'X'
+    end dml_type
+  from
+    (
+	select
+		source.*,
+		lkp_source_system.cod_source_system,
+		        md5(
+		coalesce(dsc_contact                                                       ,'') +
+		coalesce(meta_event_type                                                   ,'') +
+		--coalesce(meta_event_time                                                   ,'2099-12-31 00:00:00.000000') +
+		coalesce(opr_base_user_creator                                             ,-1) +
+		coalesce(contact_id                                                        ,0) +
+		--coalesce(created_at                                                        ,'2099-12-31') +
+		--coalesce(updated_at                                                        ,'2099-12-31') +
+		coalesce(title                                                             ,'') +
+		coalesce(first_name                                                        ,'') +
+		coalesce(last_name                                                         ,'') +
+		coalesce(description                                                       ,'') +
+		coalesce(opr_industry                                                      ,'') +
+		coalesce(website                                                           ,'') +
+		coalesce(email                                                             ,'') +
+		coalesce(phone                                                             ,'') +
+		coalesce(mobile                                                            ,'') +
+		coalesce(fax                                                               ,'') +
+		coalesce(twitter                                                           ,'') +
+		coalesce(facebook                                                          ,'') +
+		coalesce(linkedin                                                          ,'') +
+		coalesce(skype                                                             ,'') +
+		coalesce(opr_base_user_owner                                               ,'-1') +
+		decode(flg_organization,1,1,0)                                           +
+		coalesce(address                                                           ,'') +
+		coalesce(custom_fields                                                     ,'') +
+		coalesce(customer_status                                                   ,'') +
+		coalesce(prospect_status                                                   ,'') +
+		coalesce(tags                                                              ,'')
+		) hash_contact
+	from
+	(
+      SELECT DISTINCT
+		id_company opr_contact,
+		null dsc_contact,
+		'uahorizontal' opr_source_system,
+		null meta_event_type,
+		null meta_event_time,
+		null creator_id opr_base_user_creator,
+		null contact_id,
+		null created_at,
+		null updated_at,
+		null title,
+		null first_name,
+		null last_name,
+		null description,
+		null opr_industry,
+		null website,
+		null email,
+		null phone,
+		null mobile,
+		null fax,
+		null twitter,
+		null facebook,
+		null linkedin,
+		null skype,
+		-1 opr_base_user_owner,
+		1 flg_organization,
+		null address,
+		null custom_fields,
+		null customer_status,
+		null prospect_status,
+		null tags,
+		scai_execution.cod_execution,
+		scai_execution.dat_processing
+      FROM
+        crm_integration_stg.stg_ua_users_companies,
+        (
+          select
+            rel_integr_proc.dat_processing,
+            max(fac.cod_execution) cod_execution
+          from
+            crm_integration_anlt.t_lkp_scai_process proc,
+            crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
+            crm_integration_anlt.t_fac_scai_execution fac
+          where
+            rel_integr_proc.cod_process = proc.cod_process
+            and rel_integr_proc.cod_country = 3
+            and rel_integr_proc.cod_country = fac.cod_country
+            and rel_integr_proc.cod_integration = 30000
+            and rel_integr_proc.ind_active = 1
+            and proc.dsc_process_short = 't_lkp_contact'
+            and fac.cod_process = rel_integr_proc.cod_process
+            and fac.cod_integration = rel_integr_proc.cod_integration
+            and rel_integr_proc.dat_processing = fac.dat_processing
+            and fac.cod_status = 2
+          group by 
+            rel_integr_proc.dat_processing
+        ) scai_execution
+	) source,
+    crm_integration_anlt.t_lkp_source_system lkp_source_system
+	where source.opr_source_system = lkp_source_system.opr_source_system
+	and lkp_source_system.cod_country = 3 -- Ukraine
+	) source_table,
+    (select coalesce(max(cod_contact),0) max_cod from crm_integration_anlt.t_lkp_contact) max_cod_contacts,
+	crm_integration_anlt.t_lkp_base_user lkp_base_user_creator,
+	crm_integration_anlt.t_lkp_base_user lkp_base_user_owner,
+	crm_integration_anlt.t_lkp_industry lkp_industry,
+    (
+			select
+				*
+			from
+				(
+					SELECT
+						a.*,
+						row_number()
+						OVER (
+							PARTITION BY opr_contact, cod_source_system
+							ORDER BY valid_to DESC ) rn
+					FROM
+						crm_integration_anlt.t_lkp_contact a
+				)
+			where rn = 1
+	) target
+  where
+	source_table.opr_contact = target.opr_contact(+)
+	and source_table.cod_source_system = target.cod_source_system (+)
+	and coalesce(source_table.opr_base_user_owner,'-1') = lkp_base_user_owner.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_owner.cod_source_system (+) -- new
+	and lkp_base_user_owner.valid_to (+) = 20991231
+    and coalesce(source_table.opr_base_user_creator,-1) = lkp_base_user_creator.opr_base_user (+)
+	and source_table.cod_source_system = lkp_base_user_creator.cod_source_system (+) -- new
+	and lkp_base_user_creator.valid_to (+) = 20991231
+    and coalesce(source_table.opr_industry,'Unknown') = lkp_industry.opr_industry (+)
+	and source_table.cod_source_system = lkp_industry.cod_source_system (+) -- new
+	and lkp_industry.valid_to (+) = 20991231;
+
+analyze tmp_ua_load_contact;
 	
 delete from crm_integration_anlt.t_lkp_contact
 using tmp_ua_load_contact
@@ -841,27 +1017,35 @@ from
       from
         (
           select
-            base_account_country + base_account_category opr_source_system,
-            id opr_call,
-            resource_id opr_resource,
-            user_id opr_base_user,
-            phone_number,
-            missed flg_missed,
-            associated_deal_ids opr_associated_deal,
-            made_at created_at,
-            updated_at,
-            summary,
-            outcome_id opr_call_outcome,
-            duration call_duration,
-            incoming flg_incoming,
-            recording_url,
-            resource_type opr_resource_type,
+            'uahorizontal' opr_source_system,
+            md5(id_user || record_link) opr_call,
+            null opr_resource,
+            id_manager opr_base_user,
+            null phone_number,
+            case
+				when is_answered = 0 then 1
+				when is_answered = 1 then 0
+				else -1
+			end flg_missed,
+            null opr_associated_deal,
+            null created_at,
+            null updated_at,
+            null summary,
+            null opr_call_outcome,
+            talk_time call_duration,
+            case
+				when direction = 'Outgoing' then 0
+				when direction = 'Incoming' then 1
+				else -1
+			end flg_incoming,
+            record_link recording_url,
+            'contact' opr_resource_type,
             b.cod_source_system,
             row_number() over (partition by id order by meta_event_type desc) rn,
             scai_execution.cod_execution,
             scai_execution.dat_processing
           from
-            crm_integration_stg.stg_ua_d_base_calls a,
+            crm_integration_stg.stg_ua_users_calls a,
             crm_integration_anlt.t_lkp_source_system b,
             (
               select
@@ -885,7 +1069,7 @@ from
                 rel_integr_proc.dat_processing
             ) scai_execution
           where
-            (base_account_country + base_account_category) = opr_source_system
+            'uahorizontal' = opr_source_system
             and cod_country = 3
         )
       ) source_table,
@@ -973,139 +1157,6 @@ insert into crm_integration_anlt.t_fac_call
 
 analyze crm_integration_anlt.t_fac_call;
 	  
-
-	
-insert into crm_integration_anlt.t_fac_call_deal
-select
-	call_deal.*,
-	scai_execution.cod_execution
-from
-	(
-	select
-	  cod_call,
-	  case when cod_deal is null then -1 else cod_deal end cod_deal,
-	  all_deals.cod_source_system
-	from
-	  (
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(opr_associated_deal,'[',''),']','') cases -- 0
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') = 0
-			union
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(split_part(opr_associated_deal, ',', 1),'[',''),']','') cases -- 1
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') > 0
-			union
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(split_part(opr_associated_deal, ',', 2),']',''),'[','') cases -- 2
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') > 0
-			union
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(split_part(opr_associated_deal, ',', 3),']',''),'[','') cases -- 3
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') > 0
-			union
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(split_part(opr_associated_deal, ',', 4),']',''),'[','') cases -- 4
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') > 0
-			union
-			SELECT
-			  b.cod_source_system,
-			  case when cod_call is null then new_cod else cod_call end cod_call,
-			  opr_associated_deal,
-			  replace(replace(split_part(opr_associated_deal, ',', 5),']',''),'[','') cases -- 5
-			FROM
-			  tmp_ua_load_calls a,
-			  crm_integration_anlt.t_lkp_source_system b
-			WHERE
-			  a.cod_source_system = b.cod_source_system
-			  and cod_country = 3
-			  and REGEXP_COUNT (opr_associated_deal,'[,]{1}') > 0
-	) all_deals, crm_integration_anlt.t_lkp_deal lkp_deals
-	where all_deals.cases = lkp_deals.opr_deal (+)
-	and all_deals.cod_source_system = lkp_deals.cod_source_system (+)
-	and cases != ''
-	union all
-	SELECT
-		b.cod_source_system,
-		case when cod_call is null then new_cod else cod_call end cod_call,
-		-2 cod_deal
-	FROM
-		tmp_ua_load_calls a,
-		crm_integration_anlt.t_lkp_source_system b
-	WHERE
-		a.cod_source_system = b.cod_source_system
-		and cod_country = 3
-		and opr_associated_deal = '[]'
-	) call_deal,
-	(
-	  select
-        rel_integr_proc.dat_processing,
-		max(fac.cod_execution) cod_execution
-	  from
-		crm_integration_anlt.t_lkp_scai_process proc,
-		crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc,
-		crm_integration_anlt.t_fac_scai_execution fac
-	  where
-		rel_integr_proc.cod_process = proc.cod_process
-		and rel_integr_proc.cod_country = 3
-		and rel_integr_proc.cod_integration = 30000
-		and rel_integr_proc.ind_active = 1
-		and proc.dsc_process_short = 't_fac_call'
-		and fac.cod_process = rel_integr_proc.cod_process
-		and fac.cod_integration = rel_integr_proc.cod_integration
-		and rel_integr_proc.dat_processing = fac.dat_processing
-		and fac.cod_status = 2
-      group by 
-        rel_integr_proc.dat_processing
-	) scai_execution;
-
-
-
-analyze crm_integration_anlt.t_fac_call_deal;
 	
 --$$$
 	
@@ -2139,87 +2190,6 @@ where
 
 --$$$
 
--- Updating BASE CONTACT - Autovit (vertical does not exist yet for Ukraine)
-update crm_integration_anlt.t_lkp_contact
-set cod_atlas_user = source.cod_atlas_user
-from
-  (
-    select
-      scai_valid_from.dat_processing valid_from,
-      base_contact.cod_contact,
-      base_contact.cod_source_system,
-      atlas_user.cod_atlas_user
-    from
-      (
-        select
-          rel_integr_proc.dat_processing
-        from
-          crm_integration_anlt.t_lkp_scai_process proc,
-          crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
-        where
-          rel_integr_proc.cod_process = proc.cod_process
-          and rel_integr_proc.cod_country = 3
-          and rel_integr_proc.cod_integration = 30000
-          and rel_integr_proc.ind_active = 1
-          and proc.dsc_process_short = 't_lkp_contact'
-      ) scai_valid_from,
-      crm_integration_anlt.t_lkp_atlas_user atlas_user,
-      crm_integration_anlt.t_lkp_contact base_contact
-    where
-      atlas_user.cod_source_system = -1
-      and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = -1
-      and base_contact.valid_from = scai_valid_from.dat_processing
-  ) source
-where
-  t_lkp_contact.cod_contact = source.cod_contact
-  and t_lkp_contact.valid_from = source.valid_from
-  and t_lkp_contact.cod_source_system = source.cod_source_system;
-
---$$$
-
--- Updating BASE CONTACT - Storia (vertical does not exist yet for Ukraine)
-update crm_integration_anlt.t_lkp_contact
-set cod_atlas_user = source.cod_atlas_user
-from
-  (
-    select
-      scai_valid_from.dat_processing valid_from,
-      base_contact.cod_contact,
-      base_contact.cod_source_system,
-      atlas_user.cod_atlas_user
-    from
-      (
-        select
-          rel_integr_proc.dat_processing
-        from
-          crm_integration_anlt.t_lkp_scai_process proc,
-          crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc
-        where
-          rel_integr_proc.cod_process = proc.cod_process
-          and rel_integr_proc.cod_country = 3
-          and rel_integr_proc.cod_integration = 30000
-          and rel_integr_proc.ind_active = 1
-          and proc.dsc_process_short = 't_lkp_contact'
-      ) scai_valid_from,
-      crm_integration_anlt.t_lkp_atlas_user atlas_user,
-      crm_integration_anlt.t_lkp_contact base_contact
-    where
-      atlas_user.cod_source_system = -1
-      and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = -1
-      and base_contact.valid_from = scai_valid_from.dat_processing
-  ) source
-where
-  t_lkp_contact.cod_contact = source.cod_contact
-  and t_lkp_contact.valid_from = source.valid_from
-  and t_lkp_contact.cod_source_system = source.cod_source_system;
-
---$$$
 
 -- Updating BASE CONTACT - Not found
 update crm_integration_anlt.t_lkp_contact
