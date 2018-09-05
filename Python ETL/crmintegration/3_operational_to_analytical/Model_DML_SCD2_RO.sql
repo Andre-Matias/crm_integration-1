@@ -6761,7 +6761,7 @@ as
           'header'
           )
                   and pup.payment_provider not in ('admin')
-                  and to_char(fi.created_at,'YYYYMMDD') between 20180101 and 20180630
+                  and to_char(fi.created_at,'YYYYMMDD') >= 20180101  
                   and pi.livesync_dbname = 'storiaro'
                   and pi.livesync_dbname = ub.livesync_dbname
                   and pi.livesync_dbname = u.livesync_dbname
@@ -7046,7 +7046,7 @@ as
                 pi.type in ('ad_bighomepage', 'ad_homepage', 'bump_up',
                     'highlight', 'topads', 'paid_for_post', 'export_olx')
                     and pup.payment_provider not in ('admin')
-                    and date(fi.created_at) between '2018-01-01' and '2018-06-30'
+                    and date(fi.created_at) >= '2018-01-01'
                     and ub.id not in (521225, 521223, 521213, 521215, 522479,
                         522495, 24280, 419691, 522665, 18964, 1030125, 522513,
                         1057085, 1058565, 1066171, 1285659, 1285679, 829479,
