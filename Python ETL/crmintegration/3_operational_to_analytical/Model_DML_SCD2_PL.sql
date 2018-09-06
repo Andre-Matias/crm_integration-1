@@ -2656,11 +2656,11 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
-
+drop table if exists crm_integration_anlt.tmp_pl_load_contact;
 
 --Not TEMP table because it is also used to load other tables other than t_lkp_contact
 create table crm_integration_anlt.tmp_pl_load_contact 
-distkey(cod_source_system)
+distkey(opr_contact)
 sortkey(cod_contact, opr_contact)
 as
 select
@@ -3074,7 +3074,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 --Need this two following tables because for a lot of records times a lot of customs fields, the query takes too long, so we divide it
 --Example for OLXPL: 250k records with some records having 71custom fiels = A LOT OF RECORDS and the process takes forever to run (if it ever ends...)
-create temp table tmp_pl_gen_numbers_1  as
+create temp table tmp_pl_gen_numbers_1
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3090,7 +3092,9 @@ gen_num between 1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2/
 ;
 
 
-create temp table tmp_pl_gen_numbers_2  as
+create temp table tmp_pl_gen_numbers_2
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3105,7 +3109,9 @@ where
 gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from crm_integration_anlt.tmp_pl_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from crm_integration_anlt.tmp_pl_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_pl_load_contact)
 ;
 
-create temp table tmp_pl_gen_numbers_3  as
+create temp table tmp_pl_gen_numbers_3
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3121,7 +3127,9 @@ gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from 
 ;
 
 
-create temp table tmp_pl_gen_numbers_4  as
+create temp table tmp_pl_gen_numbers_4
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3269,7 +3277,9 @@ analyze tmp_pl_contact_custom_field;
 
 
 	
-create temp table tmp_pl_load_custom_field as
+create temp table tmp_pl_load_custom_field
+DISTSTYLE ALL
+as
    select
     source_table.opr_custom_field,
     source_table.opr_custom_field dsc_custom_field,

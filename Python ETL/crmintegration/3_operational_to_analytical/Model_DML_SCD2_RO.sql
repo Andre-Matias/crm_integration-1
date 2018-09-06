@@ -2666,7 +2666,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 drop table if exists crm_integration_anlt.tmp_ro_load_contact;
 
 create table crm_integration_anlt.tmp_ro_load_contact 
-distkey(cod_source_system)
+distkey(opr_contact)
 sortkey(cod_contact, opr_contact)
 as
 select
@@ -3084,7 +3084,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 
 
-create temp table tmp_ro_contact_custom_field_1 as
+create temp table tmp_ro_contact_custom_field_1
+DISTSTYLE ALL
+as
 select
             *
           from
@@ -3102,7 +3104,9 @@ select
 
 
 			
-create temp table tmp_ro_contact_custom_field_2 as
+create temp table tmp_ro_contact_custom_field_2
+DISTSTYLE ALL
+as
 select
         ts.opr_contact,
         ts.custom_fields,
@@ -3120,7 +3124,7 @@ select
 
 		
 create temp table tmp_ro_contact_custom_field
-distkey(cod_source_system)
+distkey(opr_contact)
 sortkey(custom_field_name, cod_source_system)
 as
   select
@@ -3183,7 +3187,9 @@ analyze tmp_ro_contact_custom_field;
 
 
 	
-create temp table tmp_ro_load_custom_field as
+create temp table tmp_ro_load_custom_field
+DISTSTYLE ALL
+as
    select
     source_table.opr_custom_field,
     source_table.opr_custom_field dsc_custom_field,

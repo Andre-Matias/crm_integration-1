@@ -3280,7 +3280,9 @@ analyze tmp_bg_contact_custom_field;
 
 
 
-create temp table tmp_bg_load_custom_field as
+create temp table tmp_bg_load_custom_field
+DISTSTYLE ALL
+as
    select
     source_table.opr_custom_field,
     source_table.opr_custom_field dsc_custom_field,
