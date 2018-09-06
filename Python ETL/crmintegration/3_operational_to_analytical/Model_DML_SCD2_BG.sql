@@ -3431,7 +3431,6 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
-drop table if exists crm_integration_anlt.tmp_bg_load_contact;
 
 --$$$
 	
@@ -3650,6 +3649,7 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
+drop table if exists crm_integration_anlt.tmp_bg_load_contact;
 
 --$$$
 	
