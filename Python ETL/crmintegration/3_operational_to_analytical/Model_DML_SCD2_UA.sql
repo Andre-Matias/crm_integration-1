@@ -79,7 +79,7 @@ as
 		else cast(substring(split_part(source_table."group",'"',3),2,len(split_part(source_table."group",'"',3))-2) as bigint)
 	end opr_group,
 	split_part(source_table."group",'"',6) dsc_group,
-	target_base_user_responsible.cod_base_user cod_base_user_responsible,
+	source_table.reports_to cod_base_user_responsible,
 	source_table.timezone,
 	source_table.meta_event_type,
 	source_table.meta_event_time,
@@ -122,12 +122,12 @@ as
 		null phone_number,
 		null roles,
 		null team_name,
-		null "group",
+		'' "group",
 		id_boss reports_to,
 		null timezone,
-        null created_at,
-        null updated_at,
-        null deleted_at,
+        cast(null as timestamp) created_at,
+        cast(null as timestamp) updated_at,
+        cast(null as timestamp) deleted_at,
         scai_execution.cod_execution,
         scai_execution.dat_processing
       FROM
@@ -175,28 +175,10 @@ as
 						crm_integration_anlt.t_lkp_base_user a
 				)
 			where rn = 1
-	) target,
-	(
-		select
-			*
-		from
-			(
-				SELECT
-					a.*,
-					row_number()
-					OVER (
-						PARTITION BY opr_base_user, cod_source_system
-						ORDER BY valid_to DESC ) rn
-				FROM
-					crm_integration_anlt.t_lkp_base_user a
-			)
-		where rn = 1
-	) target_base_user_responsible
+	) target
   where
     coalesce(source_table.opr_base_user,-1) = target.opr_base_user(+)
-	and source_table.cod_source_system = target.cod_source_system (+)
-	and coalesce(source_table.reports_to,-1) = target_base_user_responsible.opr_base_user(+)
-	and source_table.cod_source_system = target_base_user_responsible.cod_source_system (+); -- Ukraine
+	and source_table.cod_source_system = target.cod_source_system (+); -- Ukraine
 
 analyze tmp_ua_load_base_user;
 
@@ -268,8 +250,8 @@ from
 		select * from crm_integration_anlt.t_lkp_base_user
 		where cod_source_system = 23
 	) base_user_responsible
-where t_lkp_base_user.cod_base_user_responsible = base_user_responsible.opr_base_user
-and t_lkp_base_user.cod_source_system = contact_parent.cod_source_system;
+where t_lkp_base_user.cod_base_user_responsible = base_user_responsible.opr_base_user (+)
+and t_lkp_base_user.cod_source_system = contact_parent.cod_source_system (+);
 
 
 --$$$
