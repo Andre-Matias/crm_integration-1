@@ -259,6 +259,19 @@ insert into crm_integration_anlt.t_lkp_base_user
 
 analyze crm_integration_anlt.t_lkp_base_user;
 	  
+
+-- update do contact_id/cod_contact_parent - OLX UA
+update crm_integration_anlt.t_lkp_base_user
+set cod_base_user_responsible = base_user_responsible.cod_base_user
+from
+	(
+		select * from crm_integration_anlt.t_lkp_base_user
+		where cod_source_system = 23
+	) base_user_responsible
+where t_lkp_base_user.cod_base_user_responsible = base_user_responsible.opr_base_user
+and t_lkp_base_user.cod_source_system = contact_parent.cod_source_system;
+
+
 --$$$
 
 -- #######################
@@ -814,19 +827,6 @@ insert into crm_integration_anlt.t_lkp_contact
 
 
 analyze crm_integration_anlt.t_lkp_contact;
-	   
-
--- update do contact_id/cod_contact_parent - OLX UA
-update crm_integration_anlt.t_lkp_contact
-set cod_contact_parent = contact_parent.cod_contact
-from
-(
-select * from crm_integration_anlt.t_lkp_contact
-where cod_source_system = 23
-and cod_contact_parent is null
-) contact_parent
-where t_lkp_contact.cod_contact_parent = contact_parent.opr_contact
-and t_lkp_contact.cod_source_system = contact_parent.cod_source_system;
 	   
 	
 -- #######################
