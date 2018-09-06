@@ -439,7 +439,7 @@ select
 		coalesce(meta_event_type                                                   ,'') +
 		--coalesce(meta_event_time                                                   ,'2099-12-31 00:00:00.000000') +
 		coalesce(opr_base_user_creator                                             ,-1) +
-		coalesce(contact_id                                                        ,0) +
+		coalesce(contact_id                                                        ,'0') +
 		--coalesce(created_at                                                        ,'2099-12-31') +
 		--coalesce(updated_at                                                        ,'2099-12-31') +
 		coalesce(title                                                             ,'') +
@@ -469,10 +469,10 @@ select
       SELECT DISTINCT
 		id_user opr_contact,
 		null dsc_contact,
-		'uahorizontal' opr_source_system, opr_source_system,
+		'uahorizontal' opr_source_system,
 		null meta_event_type,
 		null meta_event_time,
-		null creator_id opr_base_user_creator,
+		cast(null as bigint) opr_base_user_creator,
 		id_company contact_id,
 		null created_at,
 		null updated_at,
@@ -617,7 +617,7 @@ select
 		coalesce(meta_event_type                                                   ,'') +
 		--coalesce(meta_event_time                                                   ,'2099-12-31 00:00:00.000000') +
 		coalesce(opr_base_user_creator                                             ,-1) +
-		coalesce(contact_id                                                        ,0) +
+		coalesce(contact_id                                                        ,'0') +
 		--coalesce(created_at                                                        ,'2099-12-31') +
 		--coalesce(updated_at                                                        ,'2099-12-31') +
 		coalesce(title                                                             ,'') +
@@ -650,7 +650,7 @@ select
 		'uahorizontal' opr_source_system,
 		null meta_event_type,
 		null meta_event_time,
-		null creator_id opr_base_user_creator,
+		cast(null as bigint) opr_base_user_creator,
 		null contact_id,
 		null created_at,
 		null updated_at,
