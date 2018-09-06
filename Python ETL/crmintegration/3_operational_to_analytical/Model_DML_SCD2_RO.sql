@@ -2665,6 +2665,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 drop table if exists crm_integration_anlt.tmp_ro_load_contact;
 
+--Not TEMP table because it is also used to load other tables other than t_lkp_contact
 create table crm_integration_anlt.tmp_ro_load_contact 
 distkey(opr_contact)
 sortkey(cod_contact, opr_contact)
