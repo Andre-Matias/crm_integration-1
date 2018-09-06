@@ -79,7 +79,7 @@ as
 		else cast(substring(split_part(source_table."group",'"',3),2,len(split_part(source_table."group",'"',3))-2) as bigint)
 	end opr_group,
 	split_part(source_table."group",'"',6) dsc_group,
-	null cod_base_user_responsible,
+	target_base_user_responsible.cod_base_user cod_base_user_responsible,
 	source_table.timezone,
 	source_table.meta_event_type,
 	source_table.meta_event_time,
