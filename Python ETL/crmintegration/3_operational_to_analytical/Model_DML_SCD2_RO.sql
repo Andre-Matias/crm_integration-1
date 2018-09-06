@@ -8361,7 +8361,10 @@ where
   
   
   
+delete from crm_integration_anlt.t_lkp_crm_revenue_last_invoice_date;
 
+insert into crm_integration_anlt.t_lkp_crm_revenue_last_invoice_date
+select to_char(max(invoice_date),'YYYY-MM-DD') from crm_integration_anlt.t_lkp_invoice;
 
 
 --$$$
