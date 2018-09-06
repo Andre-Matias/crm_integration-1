@@ -2663,10 +2663,11 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #           LOADING t_lkp_contact           #
 -- #############################################
 
+drop table if exists crm_integration_anlt.tmp_bg_load_contact;
 
 --Not TEMP table because it is also used to load other tables other than t_lkp_contact
 create table crm_integration_anlt.tmp_bg_load_contact 
-distkey(cod_source_system)
+distkey(opr_contact)
 sortkey(cod_contact, opr_contact)
 as
 select
@@ -3076,7 +3077,9 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #############################################
 
 
-create temp table tmp_bg_gen_numbers_1  as
+create temp table tmp_bg_gen_numbers_1
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3092,7 +3095,9 @@ gen_num between 1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2/
 ;
 
 
-create temp table tmp_bg_gen_numbers_2  as
+create temp table tmp_bg_gen_numbers_2
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3107,7 +3112,9 @@ where
 gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2/2 from crm_integration_anlt.tmp_bg_load_contact)) +1 and trunc((select max(regexp_count(custom_fields, '\\","'))/2 from crm_integration_anlt.tmp_bg_load_contact)) --(select max(regexp_count(custom_fields, '\\","') + 1) from crm_integration_anlt.tmp_bg_load_contact)
 ;
 
-create temp table tmp_bg_gen_numbers_3  as
+create temp table tmp_bg_gen_numbers_3
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3123,7 +3130,9 @@ gen_num between  trunc((select max(regexp_count(custom_fields, '\\","'))/2 from 
 ;
 
 
-create temp table tmp_bg_gen_numbers_4  as
+create temp table tmp_bg_gen_numbers_4
+DISTSTYLE ALL
+as
 select	*
 from
 (
@@ -3422,7 +3431,7 @@ and t_rel_scai_integration_process.ind_active = 1
 and crm_integration_anlt.t_rel_scai_integration_process.cod_country = source.cod_country
 and crm_integration_anlt.t_rel_scai_integration_process.cod_integration = source.cod_integration*/;
 
-drop table if exists crm_integration_anlt.tmp_pl_load_contact;
+drop table if exists crm_integration_anlt.tmp_bg_load_contact;
 
 --$$$
 	
