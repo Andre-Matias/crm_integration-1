@@ -1090,25 +1090,25 @@ from
           select
             'uahorizontal' opr_source_system,
             md5(id_user || record_link) opr_call,
-            null opr_resource,
+            id_user opr_resource,
             id_manager opr_base_user,
             null phone_number,
             case
-				when is_answered = 0 then 1
-				when is_answered = 1 then 0
-				else -1
-			end flg_missed,
+              when is_answered = 0 then 1
+              when is_answered = 1 then 0
+              else -1
+            end flg_missed,
             null opr_associated_deal,
-            null created_at,
-            null updated_at,
+            cast(null as timestamp) created_at,
+            cast(null as timestamp) updated_at,
             null summary,
-            null opr_call_outcome,
+            cast(null as bigint) opr_call_outcome,
             talk_time call_duration,
             case
-				when direction = 'Outgoing' then 0
-				when direction = 'Incoming' then 1
-				else -1
-			end flg_incoming,
+              when direction = 'Outgoing' then 0
+              when direction = 'Incoming' then 1
+              else -1
+            end flg_incoming,
             record_link recording_url,
             'contact' opr_resource_type,
             b.cod_source_system,
@@ -1141,7 +1141,7 @@ from
           where
             'uahorizontal' = opr_source_system
             and cod_country = 3
-        )
+        ) core
       ) source_table,
       crm_integration_anlt.t_lkp_base_user lkp_base_user,
       crm_integration_anlt.t_lkp_contact lkp_contact,
