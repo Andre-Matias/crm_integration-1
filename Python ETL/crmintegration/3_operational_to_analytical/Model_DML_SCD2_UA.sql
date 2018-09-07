@@ -242,7 +242,7 @@ insert into crm_integration_anlt.t_lkp_base_user
 analyze crm_integration_anlt.t_lkp_base_user;
 	  
 
--- update do contact_id/cod_contact_parent - OLX UA
+-- update cod_base_user_responsible - OLX UA
 update crm_integration_anlt.t_lkp_base_user
 set cod_base_user_responsible = base_user_responsible.cod_base_user
 from
