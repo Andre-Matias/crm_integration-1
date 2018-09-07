@@ -2196,6 +2196,7 @@ SELECT
 	pup.id_ad, 
 	pup.name, 
 	pup.payment_provider,
+	pup.id_index,
 	cast( -1 * case when pup.payment_provider='postpay' then round(pup.price/1.23, 2) else round(wm.amount/1.23, 2) end as numeric(15,2)) as sales_vas_value,
 	1 as cod_index_type,
 	-ceil(months_between(ub.next_invoice_date, pup.date)) as period
@@ -3598,9 +3599,9 @@ from
                   lkp_contact.cod_source_system,
                   scai.dat_processing dat_snap,
                   idx.name_pl as package_name,
-                  max(tmp_revenue.subs_value) package_value
+                  max(tmp_revenue.sales_vas_value) package_value
                 from
-                  (select * from tmp_pl_otomoto_calc_revenue_listings where cod_index_type in (1,2) and period in (-2,-3,-4)) tmp_revenue, -- VAS and Listings, last 3 invoices
+                  (select user_id, id_index, sales_vas_value as value from tmp_pl_otomoto_calc_revenue_vas where cod_index_type in (1) ) ) tmp_revenue, -- VAS and Listings, last 3 invoices
                   crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
                   crm_integration_anlt.t_lkp_contact lkp_contact,
                   crm_integration_anlt.t_rel_scai_country_integration scai,
