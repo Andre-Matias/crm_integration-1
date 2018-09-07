@@ -1112,7 +1112,6 @@ from
             record_link recording_url,
             'contact' opr_resource_type,
             b.cod_source_system,
-            row_number() over (partition by id order by meta_event_type desc) rn,
             scai_execution.cod_execution,
             scai_execution.dat_processing
           from
@@ -1164,7 +1163,6 @@ from
       and lkp_lead.valid_to(+) = 20991231
       and coalesce(source_table.opr_resource_type,'') = lkp_resource_type.opr_resource_type (+)
       and lkp_resource_type.valid_to (+) = 20991231
-      and source_table.rn = 1
   ) source,
   crm_integration_anlt.t_lkp_call_outcome lkp_call_outcome
 where
