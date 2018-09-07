@@ -936,7 +936,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 -- #######################
 update crm_integration_anlt.t_rel_scai_integration_process
 set cod_status = 1, -- Ok
-last_processing_datetime = coalesce((select max(updated_at) from tmp_ua_load_contact),last_processing_datetime)
+last_processing_datetime = coalesce((select max(updated_at) from tmp_ua_load_contact_2),last_processing_datetime)
 /*from
   (
     select proc.cod_process, rel_country_integr.dat_processing, rel_country_integr.cod_country, rel_country_integr.execution_nbr, rel_country_integr.cod_status, rel_country_integr.cod_integration
