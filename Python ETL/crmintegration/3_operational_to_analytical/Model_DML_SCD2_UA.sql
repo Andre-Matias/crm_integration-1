@@ -1843,7 +1843,7 @@ insert into crm_integration_anlt.t_fac_scai_execution
 
 
 create temp table tmp_ua_load_atlas_user 
-distkey(cod_source_system)
+distkey(opr_atlas_user)
 sortkey(cod_atlas_user, opr_atlas_user)
 as
 select a.*  from (
@@ -2245,11 +2245,10 @@ from
       crm_integration_anlt.t_lkp_atlas_user atlas_user,
       crm_integration_anlt.t_lkp_contact base_contact
     where
-      atlas_user.cod_source_system = 21
+      atlas_user.cod_source_system = 11
       and atlas_user.valid_to = 20991231
-      and lower(base_contact.email) = lower(atlas_user.dsc_atlas_user)
-	  and trim(base_contact.email) != ''
-      and base_contact.cod_source_system = 22
+      and base_contact.opr_contact = cast(atlas_user.opr_atlas_user as varchar) --ID in Upsell is same ID as in Atlas
+      and base_contact.cod_source_system = 23
       and base_contact.valid_from = scai_valid_from.dat_processing
   ) source
 where
