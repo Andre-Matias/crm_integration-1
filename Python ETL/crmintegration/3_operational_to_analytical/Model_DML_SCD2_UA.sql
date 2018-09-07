@@ -251,7 +251,8 @@ from
 		where cod_source_system = 23
 	) base_user_responsible
 where t_lkp_base_user.cod_base_user_responsible = base_user_responsible.opr_base_user (+)
-and t_lkp_base_user.cod_source_system = base_user_responsible.cod_source_system (+);
+and t_lkp_base_user.cod_source_system = base_user_responsible.cod_source_system (+)
+and t_lkp_base_user.cod_source_system = 23;
 
 
 --$$$
@@ -1087,7 +1088,7 @@ from
         ) hash_call
       from
         (
-          select
+          select distinct
             'uahorizontal' opr_source_system,
             md5(id_user || record_link) opr_call,
             id_user opr_resource,
