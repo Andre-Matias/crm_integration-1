@@ -90,7 +90,7 @@ try:
 		"	task.resource_type, "\
 		"	task.due_date, "\
 		"	task.owner_id, "\
-		"	task.resource_id, "\
+		"	cast(task.resource_id as integer), "\
 		"	task.completed, "\
 		"	task.remind_at "\
 		"	from crm_integration_anlt.t_fac_auto_task task "\
