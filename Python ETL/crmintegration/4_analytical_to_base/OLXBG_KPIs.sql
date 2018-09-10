@@ -2700,6 +2700,99 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 	
 --$$$
 
+
+-- CREATE TMP - KPI OLX.BASE.091 (Wallet)
+create temp table tmp_bg_olx_calc_wallet as
+select
+	source.cod_contact,
+	source.cod_custom_field,
+	source.dat_snap,
+	source.cod_source_system,
+	source.custom_field_value
+from
+	(
+		select
+		  base_contact.cod_contact,
+		  kpi_custom_field.cod_custom_field,
+		  scai.dat_processing dat_snap,
+		  base_contact.cod_source_system cod_source_system,
+		  coalesce(core.custom_field_value, '0') custom_field_value
+		from
+		  (
+        select
+          atlas_user.cod_atlas_user,
+          case
+            when s.payment_provider='incentivation' then (s.price+s.current_credits)
+            when id_index=32 then  (s.price+s.current_credits)
+            when id_index=17 then (s.current_credits+20+s.price)
+            when id_index=21 then (s.current_credits+40+s.price)
+            when id_index=25 then (s.current_credits+90+s.price)
+            when id_index=31 then (s.current_credits+200+s.price)
+            else current_credits
+          end custom_field_value
+        from db_atlas.olxbg_paidads_user_payments s,
+          crm_integration_anlt.t_lkp_atlas_user atlas_user,
+          (select id_user, max(date) as latest from db_atlas.olxbg_paidads_user_payments group by id_user) max_payment
+        where
+          s.date = max_payment.latest
+          and max_payment.id_user = s.id_user
+        	and	atlas_user.cod_source_system = 21
+	  			and atlas_user.valid_to = 20991231
+  				and atlas_user.opr_atlas_user = s.id_user
+			) core,
+			crm_integration_anlt.t_lkp_contact base_contact,
+			crm_integration_anlt.t_rel_scai_country_integration scai,
+			(
+				select
+				  rel.cod_custom_field,
+				  rel.flg_active
+				from
+				  crm_integration_anlt.t_lkp_kpi kpi,
+				  crm_integration_anlt.t_rel_kpi_custom_field rel
+				where
+				  kpi.cod_kpi = rel.cod_kpi
+				  and lower(kpi.dsc_kpi) = 'wallet'
+				  and rel.cod_source_system = 22
+			) kpi_custom_field
+	where
+		scai.cod_integration = 50000
+		and scai.cod_country = 5
+		and kpi_custom_field.flg_active = 1
+		and base_contact.cod_atlas_user = core.cod_atlas_user (+)
+		and valid_to = 20991231
+    and cod_source_system = 22
+	) source,
+	crm_integration_anlt.t_fac_base_integration_snap fac_snap
+where source.cod_source_system = fac_snap.cod_source_system (+)
+  and source.cod_custom_field = fac_snap.cod_custom_field (+)
+  and source.cod_contact = fac_snap.cod_contact (+)
+  and (source.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+  
+-- HST INSERT - OLX.BASE.091 (Wallet)
+insert into crm_integration_anlt.t_hst_base_integration_snap
+    select
+      target.*
+    from
+      crm_integration_anlt.t_fac_base_integration_snap target
+    where (cod_contact, cod_custom_field) in (select cod_contact, cod_custom_field from tmp_bg_olx_calc_wallet);
+
+
+
+-- SNAP DELETE - OLX.BASE.091 (Wallet)
+delete from crm_integration_anlt.t_fac_base_integration_snap
+where (cod_contact, cod_custom_field) in
+  (select cod_contact, cod_custom_field from tmp_bg_olx_calc_wallet);
+
+
+--OLX.BASE.091 (Wallet)
+insert into crm_integration_anlt.t_fac_base_integration_snap
+  select
+    *
+  from
+    tmp_bg_olx_calc_wallet;
+  
+--$$$
+
 -- CREATE TEMPORARY TABLE - KPI OLX.BASE.132 (Delivery (0))
 create temp table tmp_bg_olx_calc_delivery_0 as
 select
