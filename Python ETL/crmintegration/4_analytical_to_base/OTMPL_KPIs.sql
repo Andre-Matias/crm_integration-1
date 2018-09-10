@@ -3601,7 +3601,7 @@ from
                   idx.name_pl as package_name,
                   max(tmp_revenue.sales_vas_value) package_value
                 from
-                  (select user_id, id_index, sales_vas_value as value from tmp_pl_otomoto_calc_revenue_vas where cod_index_type in (1) ) ) tmp_revenue, -- VAS and Listings, last 3 invoices
+                  (select user_id, id_index, sales_vas_value as value from tmp_pl_otomoto_calc_revenue_vas where cod_index_type in (1) ) tmp_revenue, -- VAS and Listings, last 3 invoices
                   crm_integration_anlt.t_lkp_atlas_user lkp_atlas_user,
                   crm_integration_anlt.t_lkp_contact lkp_contact,
                   crm_integration_anlt.t_rel_scai_country_integration scai,
