@@ -46,15 +46,15 @@ conn.commit()
 results = cur.fetchone()
 #result_list = cur.fetchall()
  
+ 
+if (str(results[0]) != 0 ):
+	slack_text = "There are " + str(results[0]) + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
+	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 
-slack_text = "There are " + str(results[0]) + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
-
-response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
-
-if response["ok"]:
-	print("Message posted successfully: " + response["message"]["ts"])
-elif response["ok"] is False:
-	print("Message not posted due to error: " + response["message"]["ts"]) 		
+	if response["ok"]:
+		print("Message posted successfully: " + response["message"]["ts"])
+	elif response["ok"] is False:
+		print("Message not posted due to error: " + response["message"]["ts"]) 		
 		
 		
 #Check if there are duplicates in t_lkp_deal
@@ -71,15 +71,14 @@ conn.commit()
 results = cur.fetchone()
 #result_list = cur.fetchall()
 
+if (str(results[0]) != 0 ):
+	slack_text = "There are " + str(results[0]) + " duplicates on the table t_lkp_deal. Please verify this problem!"  
+	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 
-slack_text = "There are " + str(results[0]) + " duplicates on the table t_lkp_deal. Please verify this problem!"  
-
-response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
-
-if response["ok"]:
-	print("Message posted successfully: " + response["message"]["ts"])
-elif response["ok"] is False:
-	print("Message not posted due to error: " + response["message"]["ts"]) 				
+	if response["ok"]:
+		print("Message posted successfully: " + response["message"]["ts"])
+	elif response["ok"] is False:
+		print("Message not posted due to error: " + response["message"]["ts"]) 				
 
 
 	
