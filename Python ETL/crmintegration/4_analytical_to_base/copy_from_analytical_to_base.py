@@ -101,7 +101,7 @@ def main(db_conf_file, conf_file):
 	# TODO: Confirm dsc_process_short name
 	try:
 		cur.execute(
-			"SELECT contact.opr_contact, "\
+			"SELECT cast(contact.opr_contact as integer), "\
 			"  custom_field.dsc_custom_field, "\
 			"  fac.custom_field_value "\
 			"FROM crm_integration_anlt.t_fac_base_integration_snap fac, "\
