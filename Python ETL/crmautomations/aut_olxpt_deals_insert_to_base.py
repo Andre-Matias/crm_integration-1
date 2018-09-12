@@ -55,7 +55,7 @@ def createDealsInBase(client, result_list, conf_file):
 			except requests.exceptions.ConnectionError as err:
 				scai.logError(conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, "requests.exceptions.ConnectionError", str(err));
 				print("Error: requests.exceptions.ConnectionError. Reconnecting and trying again...")
-				number_of_errors = number_of_errors + 1; client = getBaseConnection()
+				number_of_errors = number_of_errors + 1;
 			except Exception as err:
 				scai.logError(conf_file, DSC_PROCESS, COD_INTEGRATION, COD_COUNTRY, "Exception with general handling", str(err))
 				print("Error\nDescription: " + str(err) + "\nTrying again in 1 second...")
@@ -92,7 +92,7 @@ def main(conf_file, COD_COUNTRY):
 	cur.execute(
 				"select "\
 					"fac.name, "\
-					"lkp_contact.opr_contact, "\
+					"cast(lkp_contact.opr_contact as integer), "\
 					"lkp_base_user.opr_base_user, "\
 					"4616871 as opr_base_source, "\
 					"case "\
