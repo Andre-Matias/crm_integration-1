@@ -47,7 +47,7 @@ results = cur.fetchone()
 #result_list = cur.fetchall()
  
  
-if (str(results[0]) != 0 ):
+if (str(results[0]) != '0' ):
 	slack_text = "There are " + str(results[0]) + " opr with different cods on the table t_lkp_atlas_user. Please verify this problem!"  
 	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 
@@ -71,7 +71,7 @@ conn.commit()
 results = cur.fetchone()
 #result_list = cur.fetchall()
 
-if (str(results[0]) != 0 ):
+if (str(results[0]) != '0' ):
 	slack_text = "There are " + str(results[0]) + " duplicates on the table t_lkp_deal. Please verify this problem!"  
 	response = slack.sendToSlack(slack_token, slack_text, "crm_integration_team")
 
