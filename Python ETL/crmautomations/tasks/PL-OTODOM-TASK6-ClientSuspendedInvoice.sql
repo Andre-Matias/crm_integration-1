@@ -27,7 +27,7 @@ select  (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integr
 	6 cod_rule, --change this to this task rule
 	'Konto Twojego klienta zostało zablokowano. Przypomnij o zapłaceniu faktury! (Auto_task_' || (select coalesce(max(cod_auto_task),0) max_cod_auto_task from crm_integration_anlt.t_fac_auto_task) + row_number() over () || ')' content,
 	'contact' resource_type,
-	to_char (sysdate + 1, 'YYYY-MM-DD HH24:MI:SS') due_date,
+	to_char(next_day(sysdate, 'sat'),'YYYY-MM-DD') || ' 09:00:00' due_date,
 	sales_rep_id owner_id,
 	task.base_id resource_id,
 	False completed,
