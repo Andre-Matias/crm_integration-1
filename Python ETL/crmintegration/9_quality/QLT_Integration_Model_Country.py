@@ -14,6 +14,7 @@ def getDatabaseConnection(conf_file):
 db_conf_file = sys.argv[1]	
 
 
+
 conn = getDatabaseConnection(db_conf_file)
 cur = conn.cursor()
 
