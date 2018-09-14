@@ -29,7 +29,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for deal_data in data:
@@ -37,7 +37,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 			deal_data['meta_event_time'] = datetime.now().isoformat()
 			deal_data['country'] = country
 			deal_data['category'] = category
-			output.write(json.dumps(deal_data,use_decimal=True)+"\n")
+			output.write((json.dumps(deal_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -84,7 +84,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for contact_data in data:
@@ -92,7 +92,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 			contact_data['meta_event_time'] = datetime.now().isoformat()
 			contact_data['country'] = country
 			contact_data['category'] = category
-			output.write(json.dumps(contact_data,use_decimal=True)+"\n")
+			output.write((json.dumps(contact_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -132,7 +132,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for lead_data in data:
@@ -140,7 +140,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 			lead_data['meta_event_time'] = datetime.now().isoformat()
 			lead_data['country'] = country
 			lead_data['category'] = category
-			output.write(json.dumps(lead_data,use_decimal=True)+"\n")
+			output.write((json.dumps(lead_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -180,7 +180,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for user_data in data:
@@ -188,7 +188,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 			user_data['meta_event_time'] = datetime.now().isoformat()
 			user_data['country'] = country
 			user_data['category'] = category
-			output.write(json.dumps(user_data,use_decimal=True)+"\n")
+			output.write((json.dumps(user_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -228,7 +228,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for stage_data in data:
@@ -236,7 +236,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 			stage_data['meta_event_time'] = datetime.now().isoformat()
 			stage_data['country'] = country
 			stage_data['category'] = category
-			output.write(json.dumps(stage_data,use_decimal=True)+"\n")
+			output.write((json.dumps(stage_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -276,7 +276,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for loss_reason_data in data:
@@ -284,7 +284,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 			loss_reason_data['meta_event_time'] = datetime.now().isoformat()
 			loss_reason_data['country'] = country
 			loss_reason_data['category'] = category
-			output.write(json.dumps(loss_reason_data,use_decimal=True)+"\n")
+			output.write((json.dumps(loss_reason_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -335,7 +335,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for tasks_data in data:
 			tasks_data['meta_event_type'] = 'created'
@@ -343,7 +343,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 			tasks_data['country'] = country
 			tasks_data['category'] = category
 			tasks_data['reminder_offset'] = 0
-			output.write(json.dumps(tasks_data,use_decimal=True) + "\n")
+			output.write((json.dumps(tasks_data,use_decimal=True) + "\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -385,7 +385,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for note_data in data:
@@ -393,7 +393,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 			note_data['meta_event_time'] = datetime.now().isoformat()
 			note_data['country'] = country
 			note_data['category'] = category
-			output.write(json.dumps(note_data,use_decimal=True)+"\n")
+			output.write((json.dumps(note_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -433,7 +433,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for pipeline_data in data:
@@ -441,7 +441,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 			pipeline_data['meta_event_time'] = datetime.now().isoformat()
 			pipeline_data['country'] = country
 			pipeline_data['category'] = category
-			output.write(json.dumps(pipeline_data,use_decimal=True)+"\n")
+			output.write((json.dumps(pipeline_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -481,7 +481,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for source_data in data:
@@ -489,7 +489,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 			source_data['meta_event_time'] = datetime.now().isoformat()
 			source_data['country'] = country
 			source_data['category'] = category
-			output.write(json.dumps(source_data,use_decimal=True)+"\n")
+			output.write((json.dumps(source_data,use_decimal=True)+"\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -529,7 +529,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		#Iterate the list of deals
 		for tag_data in data:
@@ -537,7 +537,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 			tag_data['meta_event_time'] = datetime.now().isoformat()
 			tag_data['country'] = country
 			tag_data['category'] = category
-			output.write(json.dumps(tag_data,use_decimal=True) + "\n")
+			output.write((json.dumps(tag_data,use_decimal=True) + "\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -586,15 +586,15 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
-		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for orders_data in data:
 			orders_data['meta_event_type'] = 'created'
 			orders_data['meta_event_time'] = datetime.now().isoformat()
 			orders_data['country'] = country
 			orders_data['category'] = category
-			output.write(json.dumps(orders_data,use_decimal=True) + "\n")
+			output.write((json.dumps(orders_data,use_decimal=True) + "\n").encode('utf-8'))
 			# Request the line items for this order_id
 			get_order_line_items(orders_data['data']['id'],orders_data['data']['deal_id'],token,output_line_items,country,category)
 		
@@ -704,14 +704,14 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for calls_data in data:
 			calls_data['meta_event_type'] = 'created'
 			calls_data['meta_event_time'] = datetime.now().isoformat()
 			calls_data['country'] = country
 			calls_data['category'] = category
-			output.write(json.dumps(calls_data,use_decimal=True) + "\n")
+			output.write((json.dumps(calls_data,use_decimal=True) + "\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
@@ -760,14 +760,14 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
 
 		for call_outcomes_data in data:
 			call_outcomes_data['meta_event_type'] = 'created'
 			call_outcomes_data['meta_event_time'] = datetime.now().isoformat()
 			call_outcomes_data['country'] = country
 			call_outcomes_data['category'] = category
-			output.write(json.dumps(call_outcomes_data,use_decimal=True) + "\n")
+			output.write((json.dumps(call_outcomes_data,use_decimal=True) + "\n").encode('utf-8'))
 
 		#Close gz file		
 		output.close()
