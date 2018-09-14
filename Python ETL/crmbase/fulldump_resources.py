@@ -29,7 +29,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for deal_data in data:
@@ -84,7 +84,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for contact_data in data:
@@ -132,7 +132,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for lead_data in data:
@@ -180,7 +180,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for user_data in data:
@@ -228,7 +228,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for stage_data in data:
@@ -276,7 +276,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for loss_reason_data in data:
@@ -335,7 +335,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		for tasks_data in data:
 			tasks_data['meta_event_type'] = 'created'
@@ -385,7 +385,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for note_data in data:
@@ -433,7 +433,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for pipeline_data in data:
@@ -481,7 +481,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for source_data in data:
@@ -529,7 +529,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 			return 1
 
 		#Write on local gz file
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		#Iterate the list of deals
 		for tag_data in data:
@@ -586,8 +586,8 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
-		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
+		output_line_items = gzip.open(name_line_items + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		for orders_data in data:
 			orders_data['meta_event_type'] = 'created'
@@ -704,7 +704,7 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		for calls_data in data:
 			calls_data['meta_event_type'] = 'created'
@@ -760,7 +760,7 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 			print("Uploaded #" + str(aux) + " files to S3") 
 			return 1
 
-		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
+		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'w')
 
 		for call_outcomes_data in data:
 			call_outcomes_data['meta_event_type'] = 'created'
