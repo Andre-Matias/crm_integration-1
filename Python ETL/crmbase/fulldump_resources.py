@@ -566,7 +566,7 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 	
 	aux = 1
 	name = "./" + country + category + "_orders_"
-	name_line_items = "home/andre_matias/base_temp_data/" + country + category + "_line_items_"
+	name_line_items = "./" + country + category + "_line_items_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/orders"
@@ -682,7 +682,7 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 	print("Getting calls data")
 	
 	aux = 1
-	name = "home/andre_matias/base_temp_data/" + country + category + "_calls_"
+	name = "./" + country + category + "_calls_"
 
 	# Calls API has a maximum pages of 1000 - https://developers.getbase.com/docs/rest/reference/private/calls
 	while aux <= 1000:
@@ -740,7 +740,7 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 	print("Getting call_outcomes data")
 	
 	aux = 1
-	name = "home/andre_matias/base_temp_data/" + country + category + "_call_outcomes_"
+	name = "./" + country + category + "_call_outcomes_"
 	while 1:
 
 		url = "https://api.getbase.com/v2_beta/call_outcomes"
