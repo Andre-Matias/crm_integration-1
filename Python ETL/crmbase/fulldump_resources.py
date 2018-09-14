@@ -217,7 +217,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/uandre_matias/base_temp_data/" + country + category + "_stages_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_stages_"
 	while 1:
 		
 		data = client.stages.list(page = aux, per_page = 100)
