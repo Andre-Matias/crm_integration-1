@@ -6,7 +6,7 @@ from fulldump_resources import *
 conf_file = sys.argv[1]
 
 ##################################################
-#Get access token and keys
+#Get access token and other data
 ##################################################
 data = json.load(open(conf_file))
 
@@ -26,4 +26,4 @@ client = basecrm.Client(access_token=access_token_base)
 # Full dumps
 ##################################################
 for resource in resources:
-	mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client,country,category)
+	mapping_fulldump_methods(resource,access_token_base,bucketName,path,client,country,category)

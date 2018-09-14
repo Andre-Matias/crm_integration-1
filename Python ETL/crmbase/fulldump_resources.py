@@ -17,7 +17,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/deals_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_deals_"
 
 	while 1:
 		
@@ -66,7 +66,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/contacts_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_contacts_"
 	while 1:
 		
 		#If there is an error obtaining a page, try again
@@ -121,7 +121,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 	print("Getting leads data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/leads_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_leads_"
 	while 1:
 		
 		data = client.leads.list(page = aux, per_page = 100)
@@ -169,7 +169,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 	print("Getting users data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/users_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_users_"
 	while 1:
 		
 		data = client.users.list(page = aux, per_page = 100)
@@ -217,7 +217,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/uandre_matias/base_temp_data/stages_"
+	name = "/home/uandre_matias/base_temp_data/" + country + category + "_stages_"
 	while 1:
 		
 		data = client.stages.list(page = aux, per_page = 100)
@@ -265,7 +265,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 	print("Getting loss_reasons data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/loss_reasons_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_loss_reasons_"
 	while 1:
 		
 		data = client.loss_reasons.list(page = aux, per_page = 100)
@@ -315,7 +315,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 	print("Getting tasks data")
 	
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/tasks_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_tasks_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/tasks"
@@ -374,7 +374,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 	print("Getting notes data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/notes_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_notes_"
 	while 1:
 		
 		data = client.notes.list(page = aux, per_page = 100)
@@ -422,7 +422,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 	print("Getting pipelines data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/pipelines_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_pipelines_"
 	while 1:
 		
 		data = client.pipelines.list(page = aux, per_page = 100)
@@ -470,7 +470,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 	print("Getting sources data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/sources_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_sources_"
 	while 1:
 		
 		data = client.sources.list(page = aux, per_page = 100)
@@ -518,7 +518,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 	print("Getting tags data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/tags_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_tags_"
 	while 1:
 		
 		data = client.tags.list(page = aux, per_page = 100)
@@ -565,8 +565,8 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 	print("Getting orders data")
 	
 	aux = 1
-	name = "/home/andre_matias/base_temp_data/orders_"
-	name_line_items = "home/andre_matias/base_temp_data/line_items_"
+	name = "/home/andre_matias/base_temp_data/" + country + category + "_orders_"
+	name_line_items = "home/andre_matias/base_temp_data/" + country + category + "_line_items_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/orders"
@@ -682,7 +682,7 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 	print("Getting calls data")
 	
 	aux = 1
-	name = "home/andre_matias/base_temp_data/calls_"
+	name = "home/andre_matias/base_temp_data/" + country + category + "_calls_"
 
 	# Calls API has a maximum pages of 1000 - https://developers.getbase.com/docs/rest/reference/private/calls
 	while aux <= 1000:
@@ -740,7 +740,7 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 	print("Getting call_outcomes data")
 	
 	aux = 1
-	name = "home/andre_matias/base_temp_data/call_outcomes_"
+	name = "home/andre_matias/base_temp_data/" + country + category + "_call_outcomes_"
 	while 1:
 
 		url = "https://api.getbase.com/v2_beta/call_outcomes"
