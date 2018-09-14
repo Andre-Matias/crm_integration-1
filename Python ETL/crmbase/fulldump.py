@@ -10,9 +10,7 @@ conf_file = sys.argv[1]
 ##################################################
 data = json.load(open(conf_file))
 
-access_token_base = data['base_token']
-keyId = data['s3_key']
-sKeyId = data['s3_skey']
+access_token_base = data['base_api_token']
 bucketName = data['bucket_name']
 path = data['s3_data_path']
 category = data['category']

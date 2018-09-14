@@ -1,6 +1,5 @@
 import basecrm
 import boto
-from boto.s3.key import Key
 from munch import *
 import simplejson as json
 from decimal import *
@@ -13,12 +12,12 @@ import requests
 import time
 
 
-def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_deals(client,bucketName,path,country,category):
 	
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/deals_"
+	name = "/home/andre_matias/base_temp_data/deals_"
 
 	while 1:
 		
@@ -49,7 +48,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="deals_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"deals/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -62,12 +61,12 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_contacts(client,bucketName,path,country,category):
 	
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/contacts_"
+	name = "/home/andre_matias/base_temp_data/contacts_"
 	while 1:
 		
 		#If there is an error obtaining a page, try again
@@ -104,7 +103,7 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="contacts_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"contacts/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -117,12 +116,12 @@ def s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_leads(client,bucketName,path,country,category):
 	
 	print("Getting leads data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/leads_"
+	name = "/home/andre_matias/base_temp_data/leads_"
 	while 1:
 		
 		data = client.leads.list(page = aux, per_page = 100)
@@ -152,7 +151,7 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="leads_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"leads/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -165,12 +164,12 @@ def s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_users(client,bucketName,path,country,category):
 	
 	print("Getting users data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/users_"
+	name = "/home/andre_matias/base_temp_data/users_"
 	while 1:
 		
 		data = client.users.list(page = aux, per_page = 100)
@@ -200,7 +199,7 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="users_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"users/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -213,12 +212,12 @@ def s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_stages(client,bucketName,path,country,category):
 	
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/stages_"
+	name = "/home/uandre_matias/base_temp_data/stages_"
 	while 1:
 		
 		data = client.stages.list(page = aux, per_page = 100)
@@ -248,7 +247,7 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="stages_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"stages/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -261,12 +260,12 @@ def s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1
 
-def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 	
 	print("Getting loss_reasons data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/loss_reasons_"
+	name = "/home/andre_matias/base_temp_data/loss_reasons_"
 	while 1:
 		
 		data = client.loss_reasons.list(page = aux, per_page = 100)
@@ -296,7 +295,7 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 		fileName="loss_reasons_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"loss_reasons/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -311,12 +310,12 @@ def s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,categor
 
 
 
-def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_tasks(token,bucketName,path,country,category):
 	
 	print("Getting tasks data")
 	
 	aux = 1
-	name = "/home/ubuntu/Reports/tasks_"
+	name = "/home/andre_matias/base_temp_data/tasks_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/tasks"
@@ -355,7 +354,7 @@ def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 		fileName="tasks_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"tasks/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -370,12 +369,12 @@ def s3_fulldump_tasks(token,keyId,sKeyId,bucketName,path,country,category):
 
 
 
-def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_notes(client,bucketName,path,country,category):
 	
 	print("Getting notes data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/notes_"
+	name = "/home/andre_matias/base_temp_data/notes_"
 	while 1:
 		
 		data = client.notes.list(page = aux, per_page = 100)
@@ -405,7 +404,7 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="notes_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"notes/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -418,12 +417,12 @@ def s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1			
 
-def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_pipelines(client,bucketName,path,country,category):
 	
 	print("Getting pipelines data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/pipelines_"
+	name = "/home/andre_matias/base_temp_data/pipelines_"
 	while 1:
 		
 		data = client.pipelines.list(page = aux, per_page = 100)
@@ -453,7 +452,7 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="pipelines_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"pipelines/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -466,12 +465,12 @@ def s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1			
 
-def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_sources(client,bucketName,path,country,category):
 	
 	print("Getting sources data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/sources_"
+	name = "/home/andre_matias/base_temp_data/sources_"
 	while 1:
 		
 		data = client.sources.list(page = aux, per_page = 100)
@@ -501,7 +500,7 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="sources_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"sources/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -514,12 +513,12 @@ def s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1	
 
-def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_tags(client,bucketName,path,country,category):
 	
 	print("Getting tags data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "/home/ubuntu/Reports/tags_"
+	name = "/home/andre_matias/base_temp_data/tags_"
 	while 1:
 		
 		data = client.tags.list(page = aux, per_page = 100)
@@ -549,7 +548,7 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category):
 		fileName="tags_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"tags/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -562,12 +561,12 @@ def s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1							
 
-def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_orders(token,bucketName,path,country,category):
 	print("Getting orders data")
 	
 	aux = 1
-	name = "orders_"
-	name_line_items = "line_items_"
+	name = "/home/andre_matias/base_temp_data/orders_"
+	name_line_items = "home/andre_matias/base_temp_data/line_items_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/orders"
@@ -612,7 +611,7 @@ def s3_fulldump_orders(token,keyId,sKeyId,bucketName,path,country,category):
 		fileName_line_items="line_items_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"orders/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -679,11 +678,11 @@ def get_order_line_items(order_id,deal_id,token,file,country,category):
 		#Next page iterate
 		aux += 1		
 
-def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_calls(token,bucketName,path,country,category):
 	print("Getting calls data")
 	
 	aux = 1
-	name = "calls_"
+	name = "home/andre_matias/base_temp_data/calls_"
 
 	# Calls API has a maximum pages of 1000 - https://developers.getbase.com/docs/rest/reference/private/calls
 	while aux <= 1000:
@@ -724,7 +723,7 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path,country,category):
 		fileName="calls_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"calls/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -737,11 +736,11 @@ def s3_fulldump_calls(token,keyId,sKeyId,bucketName,path,country,category):
 		#Next page iterate
 		aux += 1		
 
-def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path,country,category):
+def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 	print("Getting call_outcomes data")
 	
 	aux = 1
-	name = "/home/ubuntu/Reports/call_outcomes_"
+	name = "home/andre_matias/base_temp_data/call_outcomes_"
 	while 1:
 
 		url = "https://api.getbase.com/v2_beta/call_outcomes"
@@ -794,39 +793,39 @@ def s3_fulldump_call_outcomes(token,keyId,sKeyId,bucketName,path,country,categor
 		aux += 1		
 
  
-def mapping_fulldump_methods(resource,access_token_base,keyId,sKeyId,bucketName,path,client,country,category):
-	if 'deals' == resource: s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'contacts' == resource: s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'leads' == resource: s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'users' == resource: s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'tags' == resource: s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'orders' == resource: s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path,country,category)
-	if 'calls' == resource: s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path,country,category)
-	if 'stages' == resource: s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'notes' == resource: s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'pipelines' == resource: s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'sources' == resource: s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category)
-	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path,country,category)
-	if 'tasks' == resource: s3_fulldump_tasks(access_token_base,keyId,sKeyId,bucketName,path,country,category)
+def mapping_fulldump_methods(resource,access_token_base,bucketName,path,client,country,category):
+	if 'deals' == resource: s3_fulldump_deals(client,bucketName,path,country,category)
+	if 'contacts' == resource: s3_fulldump_contacts(client,bucketName,path,country,category)
+	if 'leads' == resource: s3_fulldump_leads(client,bucketName,path,country,category)
+	if 'users' == resource: s3_fulldump_users(client,bucketName,path,country,category)
+	if 'tags' == resource: s3_fulldump_tags(client,bucketName,path,country,category)
+	if 'orders' == resource: s3_fulldump_orders(access_token_base,bucketName,path,country,category)
+	if 'calls' == resource: s3_fulldump_calls(access_token_base,bucketName,path,country,category)
+	if 'stages' == resource: s3_fulldump_stages(client,bucketName,path,country,category)
+	if 'loss_reasons' == resource: s3_fulldump_loss_reasons(client,bucketName,path,country,category)
+	if 'notes' == resource: s3_fulldump_notes(client,bucketName,path,country,category)
+	if 'pipelines' == resource: s3_fulldump_pipelines(client,bucketName,path,country,category)
+	if 'sources' == resource: s3_fulldump_sources(client,bucketName,path,country,category)
+	if 'call_outcomes' == resource: s3_fulldump_call_outcomes(access_token_base,bucketName,path,country,category)
+	if 'tasks' == resource: s3_fulldump_tasks(access_token_base,bucketName,path,country,category)
 
 
 def mapping_fulldump_method_table(resource,access_token_base,keyId,sKeyId,bucketName,path,client,country,category):
 	return {
-	"deals":s3_fulldump_deals(client,keyId,sKeyId,bucketName,path,country,category),
-	"contacts":s3_fulldump_contacts(client,keyId,sKeyId,bucketName,path,country,category),
-	"leads":s3_fulldump_leads(client,keyId,sKeyId,bucketName,path,country,category),
-	"users":s3_fulldump_users(client,keyId,sKeyId,bucketName,path,country,category),
-	"tags":s3_fulldump_tags(client,keyId,sKeyId,bucketName,path,country,category),
-	"orders":s3_fulldump_orders(access_token_base,keyId,sKeyId,bucketName,path,country,category),
-	"calls":s3_fulldump_calls(access_token_base,keyId,sKeyId,bucketName,path,country,category),
-	"stages":s3_fulldump_stages(client,keyId,sKeyId,bucketName,path,country,category),
-	"loss_reasons":s3_fulldump_loss_reasons(client,keyId,sKeyId,bucketName,path,country,category),
-	"notes":s3_fulldump_notes(client,keyId,sKeyId,bucketName,path,country,category),
-	"pipelines":s3_fulldump_pipelines(client,keyId,sKeyId,bucketName,path,country,category),
-	"sources":s3_fulldump_sources(client,keyId,sKeyId,bucketName,path,country,category),
-	"call_outcomes":s3_fulldump_call_outcomes(access_token_base,keyId,sKeyId,bucketName,path,country,category),
-	"tasks":s3_fulldump_tasks(access_token_base,keyId,sKeyId,bucketName,path,country,category)
+	"deals":s3_fulldump_deals(client,bucketName,path,country,category),
+	"contacts":s3_fulldump_contacts(client,bucketName,path,country,category),
+	"leads":s3_fulldump_leads(client,bucketName,path,country,category),
+	"users":s3_fulldump_users(client,bucketName,path,country,category),
+	"tags":s3_fulldump_tags(client,bucketName,path,country,category),
+	"orders":s3_fulldump_orders(access_token_base,bucketName,path,country,category),
+	"calls":s3_fulldump_calls(access_token_base,bucketName,path,country,category),
+	"stages":s3_fulldump_stages(client,bucketName,path,country,category),
+	"loss_reasons":s3_fulldump_loss_reasons(client,bucketName,path,country,category),
+	"notes":s3_fulldump_notes(client,bucketName,path,country,category),
+	"pipelines":s3_fulldump_pipelines(client,bucketName,path,country,category),
+	"sources":s3_fulldump_sources(client,bucketName,path,country,category),
+	"call_outcomes":s3_fulldump_call_outcomes(access_token_base,bucketName,path,country,category),
+	"tasks":s3_fulldump_tasks(access_token_base,bucketName,path,country,category)
 	}[resource]	
 
 
