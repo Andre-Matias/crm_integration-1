@@ -30,10 +30,14 @@ def getS3Keys(conf_file):
 	data = json.load(open(conf_file))
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
 	% {'key': data['s3_key'],'skey': data['s3_skey']}
-
+	
+def getIAMRole(conf_file):
+	data = json.load(open(conf_file))
+	return "aws_iam_role=" + data['iam_role']
+	
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
 	conn = getChandraConnection(conf_file)
-	credentials = getS3Keys(conf_file)
+	credentials = getIAMRole(conf_file)
 
 	cur = conn.cursor()
 
@@ -110,13 +114,14 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 
 	### CREATE VIEW WITH NEW DATA
 	cur.execute(
-		"DELETE FROM rdl_basecrm_v2.stg_d_base_deals_history "\
+		"DELETE FROM %(schema)s.stg_d_base_deals_history "\
 		" WHERE base_account_country = '%(country)s' " \
 		" AND base_account_category = '%(category)s'; " \
-		"INSERT INTO rdl_basecrm_v2.stg_d_base_deals_history (select * from rdl_basecrm_v2.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s');"
+		"INSERT INTO %(schema)s.stg_d_base_deals_history (select * from %(schema)s.stg_d_base_deals WHERE base_account_country = '%(country)s' AND base_account_category = '%(category)s');"
 		% {
 			'country':country,
-			'category':category
+			'category':category,
+			'schema':schema
 		} 
 	)
 
@@ -792,19 +797,17 @@ def syncTasksTable(conf_file,schema,category,country):
 	
 def deletePreviousS3Files(conf_file):
 	conf = json.load(open(conf_file))
-	key = conf['s3_key']
-	skey = conf['s3_skey']
+	bucket_name = conf['bucket_name']
 
-	conn = S3Connection(key, skey)
-	b = Bucket(conn, 'verticals-raw-data')
-	for x in b.list(prefix = 'BaseCRM_v3/Aux/'):
+	conn = S3Connection()
+	b = Bucket(conn, bucket_name)
+	for x in b.list(prefix = 'Aux/'):
 		x.delete()
 
 def checkS3FileExists(conf_file,bucket,path):
 	conf = json.load(open(conf_file))
-	key = conf['s3_key']
-	skey = conf['s3_skey']
-	conn = S3Connection(key, skey)
+
+	conn = S3Connection()
 	b = Bucket(conn, bucket)
 	found_file = 'false'
 
@@ -819,7 +822,7 @@ def checkS3FileExists(conf_file,bucket,path):
 def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn = getChandraConnection(source_conf)
 	cur = conn.cursor()
-	credentials = getS3Keys(source_conf)
+	credentials = getIAMRole(source_conf)
 	sc_conf = json.load(open(source_conf))
 
 	aux_path = sc_conf['aux_s3_path']
