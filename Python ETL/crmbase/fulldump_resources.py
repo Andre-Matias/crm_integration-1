@@ -620,7 +620,7 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 
 
 		full_key_name = os.path.join(path+"line_items/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName_line_items)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -779,7 +779,7 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 		fileName="call_outcomes_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(path+"call_outcomes/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -810,7 +810,7 @@ def mapping_fulldump_methods(resource,access_token_base,bucketName,path,client,c
 	if 'tasks' == resource: s3_fulldump_tasks(access_token_base,bucketName,path,country,category)
 
 
-def mapping_fulldump_method_table(resource,access_token_base,keyId,sKeyId,bucketName,path,client,country,category):
+def mapping_fulldump_method_table(resource,access_token_base,bucketName,path,client,country,category):
 	return {
 	"deals":s3_fulldump_deals(client,bucketName,path,country,category),
 	"contacts":s3_fulldump_contacts(client,bucketName,path,country,category),
