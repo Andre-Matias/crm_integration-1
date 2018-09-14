@@ -17,7 +17,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_deals_"
+	name = "./" + country + category + "_deals_"
 
 	while 1:
 		
@@ -66,7 +66,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_contacts_"
+	name = "./" + country + category + "_contacts_"
 	while 1:
 		
 		#If there is an error obtaining a page, try again
@@ -121,7 +121,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 	print("Getting leads data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_leads_"
+	name = "./" + country + category + "_leads_"
 	while 1:
 		
 		data = client.leads.list(page = aux, per_page = 100)
@@ -169,7 +169,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 	print("Getting users data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_users_"
+	name = "./" + country + category + "_users_"
 	while 1:
 		
 		data = client.users.list(page = aux, per_page = 100)
@@ -217,7 +217,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_stages_"
+	name = "./" + country + category + "_stages_"
 	while 1:
 		
 		data = client.stages.list(page = aux, per_page = 100)
@@ -265,7 +265,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 	print("Getting loss_reasons data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_loss_reasons_"
+	name = "./" + country + category + "_loss_reasons_"
 	while 1:
 		
 		data = client.loss_reasons.list(page = aux, per_page = 100)
@@ -315,7 +315,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 	print("Getting tasks data")
 	
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_tasks_"
+	name = "./" + country + category + "_tasks_"
 	while 1:
 
 		url = "https://api.getbase.com/v2/tasks"
@@ -374,7 +374,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 	print("Getting notes data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_notes_"
+	name = "./" + country + category + "_notes_"
 	while 1:
 		
 		data = client.notes.list(page = aux, per_page = 100)
@@ -422,7 +422,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 	print("Getting pipelines data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_pipelines_"
+	name = "./" + country + category + "_pipelines_"
 	while 1:
 		
 		data = client.pipelines.list(page = aux, per_page = 100)
@@ -470,7 +470,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 	print("Getting sources data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_sources_"
+	name = "./" + country + category + "_sources_"
 	while 1:
 		
 		data = client.sources.list(page = aux, per_page = 100)
@@ -518,7 +518,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 	print("Getting tags data")
 	#Iterate for everypage returned by the API
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_tags_"
+	name = "./" + country + category + "_tags_"
 	while 1:
 		
 		data = client.tags.list(page = aux, per_page = 100)
@@ -565,7 +565,7 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 	print("Getting orders data")
 	
 	aux = 1
-	name = "./base_temp_data/" + country + category + "_orders_"
+	name = "./" + country + category + "_orders_"
 	name_line_items = "home/andre_matias/base_temp_data/" + country + category + "_line_items_"
 	while 1:
 
