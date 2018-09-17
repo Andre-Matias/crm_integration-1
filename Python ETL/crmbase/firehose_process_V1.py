@@ -90,12 +90,11 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 			startingPosition = response.json()['meta']['position']
 			if onTop == True:
 				f=0
+	print(str(var_subject) + ": done sub_getDataApi")
 	return[qty_pages,var_subject,rows]
-	print("done sub_getDataApi")
-	print(var_subject)
 	
 def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, var_s3_data_path_sync, bucketName):
-	while qty_pages>=0 and rows>0 and i<9:
+	while qty_pages>=0 and rows>0: # and i<9:
 		diayhora=('{:%Y%m%d}'.format(datetime.datetime.now()))
 		fileName="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+"_"+str(qty_pages)+"_"+diayhora+".txt.gz"
 		anio=('{:%Y}'.format(datetime.datetime.now()))
@@ -111,8 +110,8 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, va
 		k.set_contents_from_filename(thefile2)
 		os.remove(thefile2)
 		qty_pages=qty_pages-1
-		print("done delete_local_files")
-	print("done sub_moveToS3")
+		print(str(var_subject) + ": done delete_local_files")
+	print(str(var_subject) + ": done sub_moveToS3")
 	
 #main process
 def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
@@ -123,11 +122,9 @@ def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
 		var_subject=str(lista[i])
 		list_return_sub_getDataApi = sub_getDataApi(listatoken, lista, i, var_token, var_category, var_country, var_subject)	
 		sub_moveToS3(list_return_sub_getDataApi[0], list_return_sub_getDataApi[2], var_category, var_country, list_return_sub_getDataApi[1] , i, var_s3_data_path_sync, bucketName)
-		print("done subject_sourceToS3")
-		print(var_subject)
+		print(str(var_subject) + ": done subject_sourceToS3")
 		i=i+1
 	print("done main_sourceToS3")
-	print(var_subject)
 	
 #execute this	
 main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync)
