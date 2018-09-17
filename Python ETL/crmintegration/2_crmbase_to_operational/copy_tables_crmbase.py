@@ -1,4 +1,3 @@
-import sys
 import simplejson as json
 from datetime import date, datetime
 import psycopg2
