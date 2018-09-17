@@ -1,13 +1,13 @@
 import sys
 import simplejson as json
-import copy_tables_basecrm
+import copy_tables_crmbase
 from datetime import date, datetime
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
 
-COD_INTEGRATION = 11000					# Chandra to Operational
+COD_INTEGRATION = 11000					# CRM_BASE to Operational
 COD_COUNTRY = -1						# Replaced by code in conf_file
 
 
@@ -20,11 +20,8 @@ data = json.load(open(conf_file))
 
 COD_COUNTRY = int(data['cod_country'])	# Global variable
 
-
 country_execution_status = scai.getCountryIntegrationStatus(target_conf_file, COD_COUNTRY)					# SCAI
-
 scai_last_execution_status = scai.getLastExecutionStatus(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
-
 
 if (country_execution_status != 1 and scai_last_execution_status == 1):
 	print ('The integration executed successfuly on last execution. The problem is further ahead.')
@@ -36,7 +33,7 @@ if (scai_last_execution_status == 2):
 scai.integrationStart(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 # Copy tables from crm_base schema to Operational Model
-copy_tables_basecrm.main(conf_file, source_conf_file, target_conf_file, scai_last_execution_status)
+copy_tables_crmbase.main(conf_file, source_conf_file, target_conf_file, scai_last_execution_status)
 
 scai.integrationEnd(target_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)	# SCAI
 
