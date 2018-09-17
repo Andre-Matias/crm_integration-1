@@ -10,18 +10,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Ch
 import scai
 
 
-COD_INTEGRATION = 11000		# Chandra to Operational
+COD_INTEGRATION = 11000		# CRM_BASE to Operational
 COD_COUNTRY = -1			# Replaced by code in conf_file
 COUNTRY = ''				# Replaced by name in conf_file
 BASE_ACCOUNT_COUNTRY = -1	# Replaced by name in conf_file
 
 
-def deletePreviousS3Files(conf_file, bucket_name, s3_path_prefix, scai_last_execution_status=1):
-
+def deletePreviousS3Files(bucket_name, s3_path_prefix, scai_last_execution_status=1):
 	if (scai_last_execution_status!=3):
-		conf = json.load(open(conf_file))
-		key = conf['s3_key']
-		skey = conf['s3_skey']
 
 		conn = S3Connection(key, skey)
 
@@ -75,14 +71,14 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	
 	
 def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updates_dict, aux_path, scai_last_execution_status=1):
-	print('Connecting to Chandra...')
+	print('Connecting to Yamato...')
 	conn = getDatabaseConnection(source_conf)
 	cur = conn.cursor()
 	credentials = getS3Keys(source_conf)
 	sc_conf = json.load(open(source_conf))
 	
 	#UNLOAD resources data	
-	print('Unloading from Chandra...')
+	print('Unloading from Yamato...')
 	for resource in resources:
 		print('\t' + resource + ": " + last_updates_dict[resource])
 		tg_table = 'stg_' + COUNTRY + '_' + resource[4:]	# Target table name has the country in the middle of the source table name (for example, stg_d_base_contacts -> stg_pt_d_base_contacts)
@@ -124,7 +120,6 @@ def copyFromDatabaseToS3(source_conf, target_conf, resources, schema, last_updat
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
-
 
 	#Close connection
 	cur.close()
@@ -182,7 +177,8 @@ def copyFromS3ToDatabase(target_conf, resources, sc_schema, tg_schema, aux_path,
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
-
+				
+	#Close connection
 	cur_target.close()
 	conn_target.close()
 	

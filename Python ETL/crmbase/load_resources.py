@@ -22,7 +22,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		'credentials': credentials
 	}
 
-def getChandraConnection(conf_file):
+def getRedshiftConnection(conf_file):
 	data = json.load(open(conf_file))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 	
@@ -36,7 +36,7 @@ def getIAMRole(conf_file):
 	return "aws_iam_role=" + data['iam_role']
 	
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	credentials = getIAMRole(conf_file)
 
 	cur = conn.cursor()
@@ -109,7 +109,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 	conn.close()
 
 def copyDumpToHistoryTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -132,7 +132,7 @@ def copyDumpToHistoryTable(conf_file,schema,category,country):
 	conn.close()
 
 def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	for resource in resources:
@@ -152,7 +152,7 @@ def truncateResourceTables(conf_file,schema,resources,category,country,prefix):
 	conn.close()
 
 def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,country,prefix):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	for resource in resources:
@@ -184,7 +184,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	conn.close()	
 
 def syncDealsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -259,7 +259,7 @@ def syncDealsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncContactsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -340,7 +340,7 @@ def syncContactsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncLeadsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -416,7 +416,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncUsersTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -480,7 +480,7 @@ def syncUsersTable(conf_file,schema,category,country):
 	conn.close()
 	
 def syncCallsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -546,7 +546,7 @@ def syncCallsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncTagsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -604,7 +604,7 @@ def syncTagsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncOrdersTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -663,7 +663,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncLineItemsTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -730,7 +730,7 @@ def syncLineItemsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncTasksTable(conf_file,schema,category,country):
-	conn = getChandraConnection(conf_file)
+	conn = getRedshiftConnection(conf_file)
 	cur = conn.cursor()
 
 	### CREATE VIEW WITH NEW DATA
@@ -820,7 +820,7 @@ def checkS3FileExists(conf_file,bucket,path):
 	return found_file
 
 def copyToAnotherRedshift(source_conf,target_conf,resources):
-	conn = getChandraConnection(source_conf)
+	conn = getRedshiftConnection(source_conf)
 	cur = conn.cursor()
 	credentials = getIAMRole(source_conf)
 	sc_conf = json.load(open(source_conf))
@@ -853,7 +853,7 @@ def copyToAnotherRedshift(source_conf,target_conf,resources):
 	conn.close()
 
 	#LOAD to target redshift
-	conn_target = getChandraConnection(target_conf)
+	conn_target = getRedshiftConnection(target_conf)
 	cur_target = conn_target.cursor()
 
 	tg_conf = json.load(open(target_conf))

@@ -25,7 +25,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -80,7 +80,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -128,7 +128,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -176,7 +176,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -224,7 +224,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -272,7 +272,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -332,7 +332,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
@@ -381,7 +381,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -429,7 +429,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -477,7 +477,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -525,7 +525,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		#Write on local gz file
@@ -583,7 +583,7 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
@@ -701,7 +701,7 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
@@ -757,7 +757,7 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 
 		if len(data) > 0: empty = False
 		else:
-			print("Uploaded #" + str(aux-1) + " files to S3") 
+			print("Uploaded " + str(aux-1) + " file(s) to S3") 
 			return 1
 
 		output = gzip.open(name + str(aux).zfill(10) + ".txt.gz", 'wb')
