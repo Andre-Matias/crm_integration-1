@@ -1,10 +1,11 @@
+import sys
 import simplejson as json
 from datetime import date, datetime
 import psycopg2
 import numpy as np
 import time
 from boto.s3.connection import S3Connection, Bucket, Key
-import sys, os
+import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
 import scai
 
