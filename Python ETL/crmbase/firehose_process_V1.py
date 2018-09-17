@@ -65,31 +65,31 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 	startingPosition = 'tail'
 	print(var_subject)
 	while f==1:
-			onTop = False
-			while not onTop:
-				#print(var_subject)
-				url = "https://api.getbase.com/v3/"+str(var_subject)+"/stream"
-				response = requests.get(url,
-						params={'position': startingPosition},
-						headers={'Authorization':'Bearer {}'.format(var_token)}, timeout=2000)
-				if response.status_code != 200:
-					raise Exception('Request failed with {}'
-					.format(response.status_code))
-				for item in response.json()['items']:		
-				  qty_pages = math.ceil( float(rows)  /  float(rows_per_page))
-				  rows=rows+1 	  
-				  thefile="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
-				  if 'custom_field_values' in item['data']:
+		onTop = False
+		while not onTop:
+			#print(var_subject)
+			url = "https://api.getbase.com/v3/"+str(var_subject)+"/stream"
+			response = requests.get(url,
+				params={'position': startingPosition},
+				headers={'Authorization':'Bearer {}'.format(var_token)}, timeout=2000)
+			if response.status_code != 200:
+				raise Exception('Request failed with {}'
+				.format(response.status_code))
+			for item in response.json()['items']:		
+				qty_pages = math.ceil( float(rows)  /  float(rows_per_page))
+				rows=rows+1 	  
+				thefile="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
+				if 'custom_field_values' in item['data']:
 					item['data']['custom_field'] = method_convert_custom_fields(item['data']['custom_field_values'])
-				  if 'tags' in item['data']:
+				if 'tags' in item['data']:
 					item['data']['tags'] = method_convert_tags(item['data']['tags'])
-				  file = (gzip.open(thefile, mode="a"))
-				  file.write(json.dumps(item, indent=4).encode('utf-8'))
-				  file.close()
-				onTop = response.json()['meta']['top']
-				startingPosition = response.json()['meta']['position']
-				if onTop == True:
-					f=0
+				file = (gzip.open(thefile, mode="a"))
+				file.write(json.dumps(item, indent=4).encode('utf-8'))
+				file.close()
+			onTop = response.json()['meta']['top']
+			startingPosition = response.json()['meta']['position']
+			if onTop == True:
+				f=0
 	return[qty_pages,var_subject,rows]
 	print("done sub_getDataApi")
 	print(var_subject)
