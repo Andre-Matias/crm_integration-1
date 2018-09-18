@@ -6,7 +6,6 @@ import simplejson as json
 from boto.s3.connection import S3Connection, Bucket, Key
 
 def getCopySql(schema, table, bucket, manifest, credentials):
-	print(credentials)
 	query = "COPY %(schema)s.%(table)s\n "\
 		"FROM '%(bucket)s'\n "\
 		"JSON AS '%(manifest)s'\n "\
@@ -22,7 +21,6 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		'manifest': manifest,
 		'credentials': credentials
 		}
-	print(query)
 	return query
 	
 def getDatabaseConnection(conf_file):
