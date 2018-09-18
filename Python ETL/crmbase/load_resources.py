@@ -7,7 +7,8 @@ from boto.s3.connection import S3Connection, Bucket, Key
 
 def getCopySql(schema, table, bucket, manifest, credentials):
 	print(credentials)
-	print("COPY %(schema)s.%(table)s\n" \
+	print(
+		"COPY %(schema)s.%(table)s\n" \
 		"FROM '%(bucket)s'\n" \
 		"JSON AS '%(manifest)s'\n" \
 		"dateformat 'auto'\n" \
