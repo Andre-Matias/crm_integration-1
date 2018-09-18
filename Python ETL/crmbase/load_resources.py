@@ -13,7 +13,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
 		"gzip\n" \
 		"TRUNCATECOLUMNS\n" \
-		"CREDENTIALS '%(credentials)s';" \
+		"IAM_ROLE '%(credentials)s';" \
 		% {
 		'schema': schema,
 		'table': table,
@@ -33,7 +33,8 @@ def getS3Keys(conf_file):
 	
 def getIAMRole(conf_file):
 	data = json.load(open(conf_file))
-	return "aws_iam_role=" + data['iam_role']
+	return data['iam_role']
+	#return "aws_iam_role=" + data['iam_role']
 	
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
 	conn = getDatabaseConnection(conf_file)
