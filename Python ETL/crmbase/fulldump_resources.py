@@ -50,10 +50,10 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"deals/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -105,10 +105,10 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"contacts/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -153,10 +153,10 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"leads/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -201,10 +201,10 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"users/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -249,10 +249,10 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"stages/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -297,10 +297,10 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"loss_reasons/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -356,10 +356,10 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"tasks/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -406,10 +406,10 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"notes/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -454,10 +454,10 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"pipelines/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -502,10 +502,10 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"sources/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -550,10 +550,10 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"tags/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -613,19 +613,19 @@ def s3_fulldump_orders(token,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"orders/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 
 
 		full_key_name = os.path.join(path+"line_items/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName_line_items)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName_line_items)
+		k.set_contents_from_filename(localName_line_items, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -725,10 +725,10 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"calls/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
@@ -781,10 +781,10 @@ def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
 		full_key_name = os.path.join(path+"call_outcomes/"+str(datetime.now().strftime('%Y/%m/%d/')), fileName)
 		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
-		k = bucket.new_key(full_key_name, policy='bucket-owner-full-control')
+		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)
