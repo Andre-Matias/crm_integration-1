@@ -30,12 +30,12 @@ if (country_execution_status != 1 and scai_last_execution_status == 1):
 if (scai_last_execution_status == 2):
 	sys.exit("The integration is already running...")
 
-scai.integrationStart(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+#scai.integrationStart(target_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 
 # Copy tables from crm_base schema to Operational Model
 copy_tables_crmbase.main(conf_file, source_conf_file, target_conf_file, scai_last_execution_status)
 
-scai.integrationEnd(target_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)	# SCAI
+#scai.integrationEnd(target_conf_file, COD_INTEGRATION, COD_COUNTRY, 1)	# SCAI
 
 print(datetime.now().time())
 print('All done!')

@@ -67,7 +67,7 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 
 		# Is normal execution or re-execution starting from the step that was in error	
 		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
-			scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+			#scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 			print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
 			try:
 				cur_target.execute(
@@ -86,14 +86,14 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 				) 
 			except Exception as e:
 				conn_target.rollback()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
-				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				#scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+				#scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 				print (e)
 				print (e.pgerror)
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
+				#scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
