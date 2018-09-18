@@ -15,15 +15,15 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"gzip\n "\
 		"TRUNCATECOLUMNS\n "\
 		"IAM_ROLE '%(credentials)s' "\
-	% {
+		% {
 		'schema': schema,
 		'table': table,
 		'bucket': bucket,
 		'manifest': manifest,
 		'credentials': credentials
-	}
+		}
 	print(query)
-    return query
+	return query
 	
 def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
