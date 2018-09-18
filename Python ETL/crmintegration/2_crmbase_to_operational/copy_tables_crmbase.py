@@ -29,7 +29,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 	
 	last_updates_dict = dict()
 	for resource in resources:
-		target_table_name = 'stg_' + COUNTRY + '_' + sc_schema + '_' + resource
+		target_table_name = 'stg_' + COUNTRY + '_' + resource[4:]	# Target table name has the country in the middle of the source table name (for example, stg_d_base_contacts -> stg_pt_d_base_contacts)
 		scai_process_name = scai.getProcessShortDescription(db_conf_file, target_table_name)
 		cur.execute(
 			"SELECT isnull(rel_integr_proc.last_processing_datetime,'1900-01-01 00:00:00.000000') "\
