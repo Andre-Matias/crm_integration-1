@@ -1,7 +1,7 @@
 import psycopg2
 import numpy as np
 import time
-import datetime
+from datetime import date, datetime
 import simplejson as json
 from boto.s3.connection import S3Connection, Bucket, Key
 
@@ -38,6 +38,7 @@ def getIAMRole(conf_file):
 	#return "aws_iam_role=" + data['iam_role']
 	
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	credentials = getIAMRole(conf_file)
 
@@ -186,6 +187,7 @@ def deleteCategoryCountryDataFromTables(conf_file,schema,resources,category,coun
 	conn.close()	
 
 def syncDealsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -261,6 +263,7 @@ def syncDealsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncContactsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -342,6 +345,7 @@ def syncContactsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncLeadsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -418,6 +422,7 @@ def syncLeadsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncUsersTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -482,6 +487,7 @@ def syncUsersTable(conf_file,schema,category,country):
 	conn.close()
 	
 def syncCallsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -548,6 +554,7 @@ def syncCallsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncTagsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -606,6 +613,7 @@ def syncTagsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncOrdersTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -665,6 +673,7 @@ def syncOrdersTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncLineItemsTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 
@@ -732,6 +741,7 @@ def syncLineItemsTable(conf_file,schema,category,country):
 	conn.close()
 
 def syncTasksTable(conf_file,schema,category,country):
+	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	cur = conn.cursor()
 

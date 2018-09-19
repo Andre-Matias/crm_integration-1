@@ -1,7 +1,9 @@
 from load_resources import *
 import sys
 import simplejson as json
-from datetime import date
+from datetime import date, datetime
+
+print(datetime.now().time())
 
 conf_file = sys.argv[1]
 target_conf_file = sys.argv[2]
@@ -67,8 +69,4 @@ syncLineItemsTable(target_conf_file,schema,category,country)
 if 'tasks' in resources:
 	syncTasksTable(target_conf_file,schema,category,country)
 
-
-
-
-
-
+print(datetime.now().time())

@@ -7,13 +7,13 @@ import os
 import sys
 import gzip
 import dateutil.parser
-from datetime import datetime
+from datetime import date, datetime
 import requests
 import time
 
 
 def s3_fulldump_deals(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -62,7 +62,7 @@ def s3_fulldump_deals(client,bucketName,path,country,category):
 		aux += 1
 
 def s3_fulldump_contacts(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting contacts data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -117,7 +117,7 @@ def s3_fulldump_contacts(client,bucketName,path,country,category):
 		aux += 1
 
 def s3_fulldump_leads(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting leads data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -165,7 +165,7 @@ def s3_fulldump_leads(client,bucketName,path,country,category):
 		aux += 1
 
 def s3_fulldump_users(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting users data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -213,7 +213,7 @@ def s3_fulldump_users(client,bucketName,path,country,category):
 		aux += 1
 
 def s3_fulldump_stages(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting stages data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -261,7 +261,7 @@ def s3_fulldump_stages(client,bucketName,path,country,category):
 		aux += 1
 
 def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting loss_reasons data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -311,7 +311,7 @@ def s3_fulldump_loss_reasons(client,bucketName,path,country,category):
 
 
 def s3_fulldump_tasks(token,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting tasks data")
 	
 	aux = 1
@@ -370,7 +370,7 @@ def s3_fulldump_tasks(token,bucketName,path,country,category):
 
 
 def s3_fulldump_notes(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting notes data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -418,7 +418,7 @@ def s3_fulldump_notes(client,bucketName,path,country,category):
 		aux += 1			
 
 def s3_fulldump_pipelines(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting pipelines data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -466,7 +466,7 @@ def s3_fulldump_pipelines(client,bucketName,path,country,category):
 		aux += 1			
 
 def s3_fulldump_sources(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting sources data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -514,7 +514,7 @@ def s3_fulldump_sources(client,bucketName,path,country,category):
 		aux += 1	
 
 def s3_fulldump_tags(client,bucketName,path,country,category):
-	
+	print(datetime.now().time())
 	print("Getting tags data")
 	#Iterate for everypage returned by the API
 	aux = 1
@@ -562,6 +562,7 @@ def s3_fulldump_tags(client,bucketName,path,country,category):
 		aux += 1							
 
 def s3_fulldump_orders(token,bucketName,path,country,category):
+	print(datetime.now().time())
 	print("Getting orders data")
 	
 	aux = 1
@@ -679,6 +680,7 @@ def get_order_line_items(order_id,deal_id,token,file,country,category):
 		aux += 1		
 
 def s3_fulldump_calls(token,bucketName,path,country,category):
+	print(datetime.now().time())
 	print("Getting calls data")
 	
 	aux = 1
@@ -737,6 +739,7 @@ def s3_fulldump_calls(token,bucketName,path,country,category):
 		aux += 1		
 
 def s3_fulldump_call_outcomes(token,bucketName,path,country,category):
+	print(datetime.now().time())
 	print("Getting call_outcomes data")
 	
 	aux = 1

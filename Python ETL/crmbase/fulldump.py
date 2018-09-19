@@ -1,8 +1,10 @@
 import basecrm
 import os
 import sys
+from datetime import date, datetime
 from fulldump_resources import *
 
+print(datetime.now().time())
 conf_file = sys.argv[1]
 
 ##################################################
@@ -27,3 +29,5 @@ client = basecrm.Client(access_token=access_token_base)
 ##################################################
 for resource in resources:
 	mapping_fulldump_methods(resource,access_token_base,bucketName,path,client,country,category)
+
+print(datetime.now().time())

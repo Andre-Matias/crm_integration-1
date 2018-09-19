@@ -1,8 +1,9 @@
 from load_resources import *
 import sys
 import simplejson as json
-from datetime import date
+from datetime import date, datetime
 
+print(datetime.now().time())
 conf_file = sys.argv[1]
 target_conf_file = sys.argv[2]
 
@@ -55,3 +56,5 @@ loadFromS3toRedshift(target_conf_file,
 
 if 'deals' in resources:
 	copyDumpToHistoryTable(target_conf_file,schema,category,country)
+	
+print(datetime.now().time())

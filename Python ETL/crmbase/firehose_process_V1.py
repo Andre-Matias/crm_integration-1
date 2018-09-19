@@ -1,7 +1,7 @@
 import requests
 import simplejson as json
 import time
-import datetime
+from datetime import date, datetime
 import boto
 from boto.s3.key import Key
 import os
@@ -12,6 +12,8 @@ import glob
 import sys
 import gzip
 import base64
+
+print(datetime.now().time())
 
 #get gzip files
 conf_file=sys.argv[1] 
@@ -57,6 +59,7 @@ def method_convert_tags(tags):
 
 # get api data
 def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, var_subject):
+	print(datetime.now().time())
 	rows=0
 	qty_pages=0
 	qty_files=0
@@ -95,11 +98,11 @@ def sub_getDataApi (listatoken, lista, i, var_token, var_category, var_country, 
 	
 def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, var_s3_data_path_sync, bucketName):
 	while qty_pages>=0 and rows>0: # and i<9:
-		diayhora=('{:%Y%m%d}'.format(datetime.datetime.now()))
+		diayhora=('{:%Y%m%d}'.format(datetime.now()))
 		fileName="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+"_"+str(qty_pages)+"_"+diayhora+".txt.gz"
-		anio=('{:%Y}'.format(datetime.datetime.now()))
-		mes=('{:%m}'.format(datetime.datetime.now()))
-		dia=('{:%d}'.format(datetime.datetime.now()))
+		anio=('{:%Y}'.format(datetime.now()))
+		mes=('{:%m}'.format(datetime.now()))
+		dia=('{:%d}'.format(datetime.now()))
 		path = str(var_s3_data_path_sync)+str(var_subject)+"/"+anio+"/"+mes+"/"+dia+"/"
 		full_key_name = os.path.join(path, fileName)
 		conn = boto.connect_s3()
@@ -128,3 +131,4 @@ def main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync):
 	
 #execute this	
 main_sourceToS3 (listatoken, lista, i, var_s3_data_path_sync)
+print(datetime.now().time())
