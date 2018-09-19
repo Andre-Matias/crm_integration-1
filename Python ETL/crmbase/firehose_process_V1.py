@@ -107,7 +107,7 @@ def sub_moveToS3 (qty_pages, rows, var_category, var_country, var_subject, i, va
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 		thefile2="firehose_"+str(var_country)+"_"+str(var_category)+"_"+str(var_subject)+str(qty_pages)+".txt.gz"
-		k.set_contents_from_filename(thefile2)
+		k.set_contents_from_filename(thefile2, policy='bucket-owner-full-control')
 		os.remove(thefile2)
 		qty_pages=qty_pages-1
 		print(str(var_subject) + ": done delete_local_files")
