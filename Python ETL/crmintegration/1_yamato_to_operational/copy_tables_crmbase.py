@@ -119,7 +119,7 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 		
 	# Copy tables from CRM_BASE to CRM_INTEGRATION_STG
 	last_updates_dict = getLastUpdateDates(db_conf_file, sc_schema, resources)								# Get the date of last update for each of this schema's resources
-	scai_last_execution_status = copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, verticals_names, scai_last_execution_status)	# Copy Yamato tables to Operational Model, from dates of last update
+	scai_last_execution_status = copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, scai_last_execution_status=scai_last_execution_status)	# Copy Yamato tables to Operational Model, from dates of last update
 
 	print('Done copying all CRM_Base tables!')
 	print(datetime.now().time())
