@@ -75,7 +75,7 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 					"INSERT INTO %(tg_schema)s.%(tg_table)s_2 "\
 					"SELECT * FROM %(sc_schema)s.%(resource)s "\
 					"WHERE meta_event_time >= '%(last_update_date)s' "\
-					"AND base_account_counry = '%(BASE_ACCOUNT_COUNTRY)s; "\
+					"AND base_account_counry = '%(BASE_ACCOUNT_COUNTRY)'; "\
 					"ANALYZE %(tg_schema)s.%(tg_table)s_2;"
 				% {
 				'tg_table':tg_table,
