@@ -74,14 +74,16 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s_2; "\
 					"INSERT INTO %(tg_schema)s.%(tg_table)s_2 "\
 					"SELECT * FROM %(sc_schema)s.%(resource)s "\
-					"WHERE operation_timestamp >= '%(last_update_date)s'; "\
+					"WHERE meta_event_time >= '%(last_update_date)s' "\
+					"AND base_account_counry = '%(BASE_ACCOUNT_COUNTRY)s; "\
 					"ANALYZE %(tg_schema)s.%(tg_table)s_2;"
 				% {
 				'tg_table':tg_table,
 				'tg_schema':tg_schema,
 				'sc_schema':sc_schema,
 				'resource':resource,
-				'last_update_date':last_updates_dict[resource]
+				'last_update_date':last_updates_dict[resource],
+				'BASE_ACCOUNT_COUNTRY':BASE_ACCOUNT_COUNTRY
 				}	
 				) 
 			except Exception as e:
