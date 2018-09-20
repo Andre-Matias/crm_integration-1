@@ -2,6 +2,7 @@ import sys
 import simplejson as json
 import copy_tables_atlas
 import copy_tables_hydra
+import copy_tables_crmbase
 from datetime import date, datetime
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
@@ -35,6 +36,9 @@ if (scai_last_execution_status == 2):
 	
 #Begin scai execution
 scai.integrationStart(db_conf_file, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+
+# Copy CRM_Base tables from Yamato to Operational Model
+scai_last_execution_status = copy_tables_crmbase.main(conf_file, db_conf_file, scai_last_execution_status)
 
 # Copy Atlas tables from Yamato to Operational Model
 scai_last_execution_status = copy_tables_atlas.main(conf_file, db_conf_file, scai_last_execution_status)
