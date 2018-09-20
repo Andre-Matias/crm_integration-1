@@ -38,7 +38,6 @@ def getIAMRole(conf_file):
 	#return "aws_iam_role=" + data['iam_role']
 	
 def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date,manifest_path,resources,prefix):
-	print(datetime.now().time())
 	conn = getDatabaseConnection(conf_file)
 	credentials = getIAMRole(conf_file)
 
@@ -46,6 +45,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 
 	if prefix == '':
 		for resource in resources:
+			print(datetime.now().time())
 			print(resource)
 			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
 				print('Loading...')
@@ -77,6 +77,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucket,data_path,date
 				
 	if prefix == 'sync_':
 		for resource in resources:
+			print(datetime.now().time())
 			print(resource)
 			if(checkS3FileExists(conf_file,bucket,str(data_path) + str(resource) + '/' + str(date) + '/') == 'true'):
 				print('Loading...')
