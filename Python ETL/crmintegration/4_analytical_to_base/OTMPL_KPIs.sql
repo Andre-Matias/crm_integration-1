@@ -462,11 +462,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.086 (# Logins last 30 days)
 create temp table tmp_pl_otomoto_calc_logins_last_30_days_1 as
 select
-			a.cod_contact,
-			a.cod_contact_parent,
+			base_contact.cod_contact,
+			base_contact.cod_contact_parent,
 			kpi_custom_field.cod_custom_field,
 			scai.dat_processing dat_snap,
-			isnull(a.cod_source_system,12) cod_source_system,
+			isnull(base_contact.cod_source_system,12) cod_source_system,
 			isnull(a.custom_field_value, '0') custom_field_value
 		from
 			(
@@ -629,6 +629,7 @@ select
 					dat_snap,
 					cod_source_system
 			) a,
+			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -642,8 +643,11 @@ select
 					and lower(kpi.dsc_kpi) = '# logins last 30 days'
 					and rel.cod_source_system = 12
 			) kpi_custom_field
-		where
+		where 
 			1 = 1
+			and base_contact.cod_contact = a.cod_contact (+)
+			and base_contact.valid_to = 20991231
+			and base_contact.cod_source_system = 12
 			and scai.cod_integration = 50000
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2;
@@ -1180,11 +1184,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
 create temp table tmp_pl_otomoto_calc_replies_per_ad_1 as
 select
-  a.cod_contact,
-  a.cod_contact_parent,
+  b.cod_contact,
+  b.cod_contact_parent,
   kpi_custom_field.cod_custom_field,
   scai.dat_processing dat_snap,
-  coalesce(a.cod_source_system,12) cod_source_system,
+  coalesce(b.cod_source_system,12) cod_source_system,
   coalesce(a.custom_field_value, '0') custom_field_value
 from
 	(
@@ -1252,6 +1256,7 @@ from
 				and base_contact.cod_source_system = 12
 				and base_contact.valid_to = 20991231
 			) a,
+    crm_integration_anlt.t_lkp_contact b,
 		crm_integration_anlt.t_rel_scai_country_integration scai,
 		(
 			select
@@ -1266,9 +1271,14 @@ from
 				and rel.cod_source_system = 12
 		) kpi_custom_field
 		where
-			scai.cod_integration = 50000
-			and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 2;
+      1=1
+      and b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 12
+	  and scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
+;
 
 
 
@@ -1350,11 +1360,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.082 (# Ads with replies)
 create temp table tmp_pl_otomoto_calc_ads_with_replies_1 as
 select
-  a.cod_contact,
-  a.cod_contact_parent,
+  b.cod_contact,
+  b.cod_contact_parent,
   kpi_custom_field.cod_custom_field,
   scai.dat_processing dat_snap,
-  coalesce(a.cod_source_system,12) cod_source_system,
+  coalesce(b.cod_source_system,12) cod_source_system,
   coalesce(a.custom_field_value, '0') custom_field_value
 from
   (
@@ -1423,6 +1433,7 @@ from
 	  source.dat_processing,
 	  source.cod_source_system
 	) a,
+  crm_integration_anlt.t_lkp_contact b,
 	crm_integration_anlt.t_rel_scai_country_integration scai,
 	(
 		select
@@ -1436,10 +1447,13 @@ from
 			and lower(kpi.dsc_kpi) = '# ads with replies'
 			and rel.cod_source_system = 12
 	) kpi_custom_field
-	where
-		scai.cod_integration = 50000
-		and kpi_custom_field.flg_active = 1
-		and scai.cod_country = 2;
+	where 1=1
+    and b.cod_contact = a.cod_contact (+)
+    and b.valid_to = 20991231
+    and b.cod_source_system = 12
+	and scai.cod_integration = 50000
+	and kpi_custom_field.flg_active = 1
+	and scai.cod_country = 2;
 
 
 
@@ -1935,13 +1949,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.014 (Max days since last call)
 create temp table tmp_pl_otomoto_calc_max_days_since_last_call_1 as
 select
-  a.cod_contact,
-  a.cod_contact_parent,
+  base_contact.cod_contact,
+  base_contact.cod_contact_parent,
   kpi_custom_field.cod_custom_field,
   scai.dat_processing dat_snap,
-  isnull(a.cod_source_system,12) cod_source_system,
-  isnull(a.custom_field_value, '0') custom_field_value
-from
+  isnull(base_contact.cod_source_system,12) cod_source_system,
+  isnull(a.custom_field_value, '-1') custom_field_value
+from crm_integration_anlt.t_lkp_contact base_contact
+		left outer join
   (
 			select
 				cod_contact,
@@ -1986,7 +2001,7 @@ from
 				cod_contact_parent,
 				dat_snap,
 				cod_source_system
-  ) a,
+  ) a on a.cod_contact = base_contact.cod_contact and a.cod_source_system = base_contact.cod_source_system,
   crm_integration_anlt.t_rel_scai_country_integration scai,
 	(
 		select
@@ -2003,7 +2018,9 @@ from
 where 1=1
   and scai.cod_integration = 50000
   and scai.cod_country = 2
-  and kpi_custom_field.flg_active = 1;
+  and kpi_custom_field.flg_active = 1
+  and base_contact.cod_source_system = 12
+  and base_contact.valid_to = 20991231;
 
 
 
@@ -3391,13 +3408,21 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
 create temp table tmp_pl_otomoto_calc_max_value_package_1 as
 select
-	core.cod_contact,
-	core.cod_contact_parent,
-	core.cod_custom_field,
-	core.dat_snap,
-	core.cod_source_system,
-	core.custom_field_value
-from
+	  core.cod_contact,
+	  core.cod_contact_parent,
+	  core.cod_custom_field,
+	  core.dat_snap,
+	  core.cod_source_system,
+	  core.custom_field_value
+		from
+	( select base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
+	  core.cod_custom_field,
+	  core.dat_snap,
+	  coalesce(base_contact.cod_source_system,12) cod_source_system,
+	  coalesce(core.custom_field_value,'0') custom_field_value
+	FROM crm_integration_anlt.t_lkp_contact base_contact
+		left outer join
 	(
 		select
 			cod_contact,
@@ -3474,13 +3499,17 @@ from
 				where
 					kpi_custom_field.flg_active = 1
 			) core
-	) core,
+	) core on core.cod_contact = base_contact.cod_contact and core.cod_source_system = base_contact.cod_source_system
+where 	1=1
+	and base_contact.cod_source_system = 12
+	and base_contact.valid_to = 20991231) core,
 	crm_integration_anlt.t_fac_base_integration_snap fac_snap
 where
 	core.cod_source_system = fac_snap.cod_source_system (+)
 	and core.cod_custom_field = fac_snap.cod_custom_field (+)
 	and core.cod_contact = fac_snap.cod_contact (+)
-	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null);
+	and (core.custom_field_value != fac_snap.custom_field_value or fac_snap.cod_contact is null)
+;
 
 
 		  

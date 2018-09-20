@@ -1286,22 +1286,22 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.117 KPI OLX.BASE.118 KPI OLX.BASE.119 (# of calls 0 / -1 / -2)
 create temp table tmp_pt_imovirtual_calc_number_calls_1 as
 select
-  base_contact.cod_contact, 
-  to_char(call.created_at,'YYYYMM') as custom_field_value,
-  scai.dat_processing dat_snap,
-  coalesce(base_contact.cod_source_system,17) cod_source_system
-from
-  crm_integration_anlt.t_fac_call call,
-  crm_integration_anlt.t_lkp_contact base_contact,
-  crm_integration_anlt.t_rel_scai_country_integration scai
-where 1=1
-  and call.cod_source_system = 17
-  and call.cod_source_system = base_contact.cod_source_system
-  and base_contact.valid_to = 20991231
-  and scai.cod_integration = 50000
-  and scai.cod_country = 1
-  and call.cod_contact = base_contact.cod_contact
-  and call.created_at > sysdate - 90
+	  base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
+	  to_char(call.created_at,'YYYYMM') as custom_field_value,
+	  scai.dat_processing dat_snap,
+	  coalesce(base_contact.cod_source_system,17) cod_source_system
+	from
+	  crm_integration_anlt.t_lkp_contact base_contact
+    left outer join crm_integration_anlt.t_fac_call call on call.cod_source_system = base_contact.cod_source_system
+                                                            and call.cod_contact = base_contact.cod_contact
+                                                            and call.created_at > sysdate - 90,
+	  crm_integration_anlt.t_rel_scai_country_integration scai
+	where 1=1
+	and base_contact.valid_to = 20991231
+    and base_contact.cod_source_system = 17
+	and scai.cod_integration = 50000
+	and scai.cod_country = 1
  ;
 	 
 

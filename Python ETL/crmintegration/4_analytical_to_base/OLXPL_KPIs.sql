@@ -617,11 +617,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.086 (# Logins last 30 days)
 create temp table tmp_pl_olx_calc_logins_last_30_days_1 as
 	select
-			a.cod_contact,
-			a.cod_contact_parent,
+			base_contact.cod_contact,
+			base_contact.cod_contact_parent,
 			kpi_custom_field.cod_custom_field,
 			scai.dat_processing dat_snap,
-			isnull(a.cod_source_system,13) cod_source_system,
+			isnull(base_contact.cod_source_system,13) cod_source_system,
 			isnull(a.custom_field_value, '0') custom_field_value
 		from
 			(
@@ -770,6 +770,7 @@ create temp table tmp_pl_olx_calc_logins_last_30_days_1 as
 					dat_snap,
 					cod_source_system
 			) a,
+			crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -785,6 +786,9 @@ create temp table tmp_pl_olx_calc_logins_last_30_days_1 as
 			) kpi_custom_field
 		where
 			1 = 1
+			and base_contact.cod_contact = a.cod_contact (+)
+			and base_contact.valid_to = 20991231
+			and base_contact.cod_source_system = 13
 			and scai.cod_integration = 50000
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
@@ -1574,11 +1578,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.023 (# Replies)
 create temp table tmp_pl_olx_calc_replies_1 as
     select
-      a.cod_contact,
-	  a.cod_contact_parent,
+      b.cod_contact,
+	  b.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      coalesce(a.cod_source_system,13) cod_source_system,
+      coalesce(b.cod_source_system,13) cod_source_system,
       a.custom_field_value 
     from
       (
@@ -1630,6 +1634,7 @@ create temp table tmp_pl_olx_calc_replies_1 as
           source.dat_processing
       ) a,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
+      crm_integration_anlt.t_lkp_contact b,
 			(
 				select
 					rel.cod_custom_field,
@@ -1644,9 +1649,12 @@ create temp table tmp_pl_olx_calc_replies_1 as
 			) kpi_custom_field
 			where
 			1=1
-			and scai.cod_integration = 50000
-			and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 2
+      and b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 13
+	  and scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
   ;
 
 
@@ -1726,12 +1734,12 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.081 (# Replies per Ad)
 create temp table tmp_pl_olx_calc_replies_per_ad_1 as
     select
-      a.cod_contact,
-	  a.cod_contact_parent,
+      b.cod_contact,
+	  b.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      coalesce(a.cod_source_system,13) cod_source_system,
-       a.custom_field_value 
+      coalesce(b.cod_source_system,13) cod_source_system,
+       a.custom_field_value
     from
       (
         select
@@ -1782,6 +1790,7 @@ create temp table tmp_pl_olx_calc_replies_per_ad_1 as
           source.cod_contact_parent,
           source.dat_processing
       ) a,
+      crm_integration_anlt.t_lkp_contact b,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -1797,9 +1806,12 @@ create temp table tmp_pl_olx_calc_replies_per_ad_1 as
 			) kpi_custom_field
 			where
 			1=1
-			and scai.cod_integration = 50000
-			and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 2
+      and b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 13
+	  and scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+	  and scai.cod_country = 2
  ;
 
 
@@ -1881,11 +1893,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.082 (# Ads with replies)
 create temp table tmp_pl_olx_calc_ads_with_replies_1 as
     select
-      a.cod_contact,
-	  a.cod_contact_parent,
+      b.cod_contact,
+	    b.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      coalesce(a.cod_source_system,13) cod_source_system,
+      coalesce(b.cod_source_system,13) cod_source_system,
       a.custom_field_value  custom_field_value
     from
       (
@@ -1932,11 +1944,12 @@ create temp table tmp_pl_olx_calc_ads_with_replies_1 as
               ads.id
           ) source
         group by
-		  source.cod_contact,	
+		  source.cod_contact,
           source.cod_source_system,
           source.cod_contact_parent,
           source.dat_processing
       ) a,
+      crm_integration_anlt.t_lkp_contact b,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -1950,11 +1963,13 @@ create temp table tmp_pl_olx_calc_ads_with_replies_1 as
 					and lower(kpi.dsc_kpi) = '# ads with replies'
 					and rel.cod_source_system = 13
 			) kpi_custom_field
-			where
-			1=1
-			and scai.cod_integration = 50000
-			and kpi_custom_field.flg_active = 1
-			and scai.cod_country = 2
+			where 1=1
+      and b.cod_contact = a.cod_contact (+)
+      and b.valid_to = 20991231
+      and b.cod_source_system = 13
+	  and scai.cod_integration = 50000
+	  and kpi_custom_field.flg_active = 1
+      and scai.cod_country = 2
    ;
 
 
@@ -2296,13 +2311,14 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.014 (Max days since last call)
 create temp table tmp_pl_olx_calc_max_days_since_last_call_1 as
     select
-      a.cod_contact,
-	  a.cod_contact_parent,
+      base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      isnull(a.cod_source_system,13) cod_source_system,
-      a.custom_field_value custom_field_value
-    from
+      isnull(base_contact.cod_source_system,13) cod_source_system,
+      coalesce(a.custom_field_value,'-1') custom_field_value
+    from crm_integration_anlt.t_lkp_contact base_contact
+		left outer join
       (
 				select
 				    cod_contact,
@@ -2342,7 +2358,7 @@ create temp table tmp_pl_olx_calc_max_days_since_last_call_1 as
 					cod_contact_parent,
 					dat_snap,
 					cod_source_system
-      ) a,
+      ) a on a.cod_contact = base_contact.cod_contact and a.cod_source_system = base_contact.cod_source_system,
       crm_integration_anlt.t_rel_scai_country_integration scai,
 		(
 			select
@@ -2360,6 +2376,8 @@ create temp table tmp_pl_olx_calc_max_days_since_last_call_1 as
 	  and scai.cod_integration = 50000
       and scai.cod_country = 2
 	  and kpi_custom_field.flg_active = 1
+	  and base_contact.cod_source_system = 13
+	  and base_contact.valid_to = 20991231
 	  ;
 	  
 
@@ -2442,19 +2460,20 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.XYZ (Max Value Package)
 create temp table tmp_pl_olx_calc_max_value_package_1 as
 	SELECT
-	  a.cod_contact,
-	  a.cod_contact_parent,
+	  base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
 	  kpi_custom_field.cod_custom_field,
 	  scai.dat_processing dat_snap,
-	  coalesce(a.cod_source_system,13) cod_source_system,
-	  a.custom_field_value custom_field_value
-	FROM
+	  coalesce(base_contact.cod_source_system,13) cod_source_system,
+	  coalesce(a.custom_field_value,0) custom_field_value
+	FROM crm_integration_anlt.t_lkp_contact base_contact
+		left outer join
 		(
 		select
 				cod_contact,
 				cod_contact_parent,
 				cod_source_system,
-				round((max(case when cod_index_type = 2 /* package */then price else 0 end)),2) custom_field_value
+			  round((max(case when cod_index_type = 2 /* package */then price else 0 end)),2) custom_field_value
 			from
 				(
 					select
@@ -2528,7 +2547,7 @@ create temp table tmp_pl_olx_calc_max_value_package_1 as
 				cod_contact,
 				cod_contact_parent,
 				cod_source_system
-		  ) A,
+		  ) A on a.cod_contact = base_contact.cod_contact and a.cod_source_system = base_contact.cod_source_system,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -2547,6 +2566,8 @@ create temp table tmp_pl_olx_calc_max_value_package_1 as
 		  and scai.cod_integration = 50000
 		  and scai.cod_country = 2
 		  and kpi_custom_field.flg_active = 1
+		  and base_contact.cod_source_system = 13
+		  and base_contact.valid_to = 20991231
 		  ;
 
 
@@ -2756,7 +2777,7 @@ create temp table tmp_pl_olx_calc_revenue_0_total_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -2764,9 +2785,10 @@ create temp table tmp_pl_olx_calc_revenue_0_total_1 as
 					rev_olx.cod_contact_parent,
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
-					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					rev_olx.cod_source_system, 
+					case when( nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -2782,9 +2804,7 @@ create temp table tmp_pl_olx_calc_revenue_0_total_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 ;
 
@@ -2872,7 +2892,7 @@ create temp table tmp_pl_olx_calc_revenue_0_listings_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -2881,8 +2901,9 @@ create temp table tmp_pl_olx_calc_revenue_0_listings_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0)  ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -2898,9 +2919,7 @@ create temp table tmp_pl_olx_calc_revenue_0_listings_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -2988,7 +3007,7 @@ create temp table tmp_pl_olx_calc_revenue_0_vas_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -2997,8 +3016,9 @@ create temp table tmp_pl_olx_calc_revenue_0_vas_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_vas_gross,0)  ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3014,9 +3034,7 @@ create temp table tmp_pl_olx_calc_revenue_0_vas_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3103,7 +3121,7 @@ create temp table tmp_pl_olx_calc_revenue_1_total_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3112,8 +3130,9 @@ create temp table tmp_pl_olx_calc_revenue_1_total_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0)  + nvl(val_revenue_vas_gross,0) ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3129,9 +3148,7 @@ create temp table tmp_pl_olx_calc_revenue_1_total_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3218,7 +3235,7 @@ create temp table tmp_pl_olx_calc_revenue_1_listings_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3227,8 +3244,9 @@ create temp table tmp_pl_olx_calc_revenue_1_listings_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0)  ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3244,9 +3262,7 @@ create temp table tmp_pl_olx_calc_revenue_1_listings_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3334,7 +3350,7 @@ create temp table tmp_pl_olx_calc_revenue_1_vas_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3343,8 +3359,9 @@ create temp table tmp_pl_olx_calc_revenue_1_vas_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_vas_gross,0)  ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3360,9 +3377,7 @@ create temp table tmp_pl_olx_calc_revenue_1_vas_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-1),'yyyymm')) = to_char(add_months(sysdate,-1),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3447,7 +3462,7 @@ create temp table tmp_pl_olx_calc_revenue_2_total_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3456,8 +3471,9 @@ create temp table tmp_pl_olx_calc_revenue_2_total_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0) ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3473,9 +3489,7 @@ create temp table tmp_pl_olx_calc_revenue_2_total_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3563,7 +3577,7 @@ create temp table tmp_pl_olx_calc_revenue_2_listings_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3572,8 +3586,9 @@ create temp table tmp_pl_olx_calc_revenue_2_listings_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0)   ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3589,9 +3604,7 @@ create temp table tmp_pl_olx_calc_revenue_2_listings_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3681,7 +3694,7 @@ create temp table tmp_pl_olx_calc_revenue_2_vas_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3690,8 +3703,9 @@ create temp table tmp_pl_olx_calc_revenue_2_vas_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_vas_gross,0)   ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3707,9 +3721,7 @@ create temp table tmp_pl_olx_calc_revenue_2_vas_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-2),'yyyymm')) = to_char(add_months(sysdate,-2),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -3799,7 +3811,7 @@ create temp table tmp_pl_olx_calc_revenue_3_total_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3808,8 +3820,9 @@ create temp table tmp_pl_olx_calc_revenue_3_total_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0)  ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3825,9 +3838,7 @@ create temp table tmp_pl_olx_calc_revenue_3_total_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 	
@@ -3915,7 +3926,7 @@ create temp table tmp_pl_olx_calc_revenue_3_listings_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -3924,8 +3935,9 @@ create temp table tmp_pl_olx_calc_revenue_3_listings_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_listings_gross,0)    ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -3941,9 +3953,7 @@ create temp table tmp_pl_olx_calc_revenue_3_listings_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -4031,7 +4041,7 @@ create temp table tmp_pl_olx_calc_revenue_3_vas_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -4040,8 +4050,9 @@ create temp table tmp_pl_olx_calc_revenue_3_vas_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
+								and nvl(rev_olx.wallet,'regular') = 'regular') then cast(round(nvl(val_revenue_vas_gross,0)    ,2) as varchar) 
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -4057,9 +4068,7 @@ create temp table tmp_pl_olx_calc_revenue_3_vas_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,-3),'yyyymm')) = to_char(add_months(sysdate,-3),'yyyymm')
-					and nvl(rev_olx.wallet,'regular') = 'regular'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -4142,12 +4151,12 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 
 -- CREATE TMP - KPI OLX.BASE.091 (Wallet)
 create temp table tmp_pl_olx_calc_wallet_1 as
-		select
-			cod_contact,
-			cod_contact_parent,
-			cod_custom_field,
-			dat_snap,
-			cod_source_system,
+	select
+			base_contact.cod_contact,
+			base_contact.cod_contact_parent,
+			kpi_custom_field.cod_custom_field,
+			scai.dat_processing dat_snap,
+			base_contact.cod_source_system,
 			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
 		from
 			(
@@ -4177,8 +4186,27 @@ create temp table tmp_pl_olx_calc_wallet_1 as
 					kpi_custom_field.flg_active = 1
 					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
 					and nvl(rev_olx.wallet,'wallet') = 'wallet'
-			) core
-			;
+			) core, crm_integration_anlt.t_lkp_contact base_contact, crm_integration_anlt.t_rel_scai_country_integration scai,
+      (
+      select
+        rel.cod_custom_field,
+        rel.flg_active
+      from
+        crm_integration_anlt.t_lkp_kpi kpi,
+        crm_integration_anlt.t_rel_kpi_custom_field rel
+      where
+        kpi.cod_kpi = rel.cod_kpi
+        and lower(kpi.dsc_kpi) = 'wallet'
+        and rel.cod_source_system = 13
+    ) kpi_custom_field
+  where 1=1
+  and base_contact.cod_contact = core.cod_contact (+)
+  and base_contact.valid_to = 20991231
+  and base_contact.cod_source_system = 13
+  and scai.cod_integration = 50000
+  and scai.cod_country = 2
+  and kpi_custom_field.flg_active = 1
+;
 	
 
 --Calculate for employees
@@ -4263,7 +4291,7 @@ create temp table tmp_pl_olx_calc_refund_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -4272,8 +4300,9 @@ create temp table tmp_pl_olx_calc_refund_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+								and nvl(rev_olx.wallet,'refund') = 'refund') then cast(round(nvl(val_revenue_listings_gross,0)  + nvl(val_revenue_vas_gross,0)  ,2) as varchar)
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -4289,9 +4318,7 @@ create temp table tmp_pl_olx_calc_refund_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
-					and nvl(rev_olx.wallet,'refund') = 'refund'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 
@@ -4338,7 +4365,7 @@ where 1 = 1
 
 
 
--- HST INSERT - KPI OLX.BASE.091 (Wallet)
+-- HST INSERT - KPI OLX.BASE.091 (refund)
 insert into crm_integration_anlt.t_hst_base_integration_snap
     select
       target.*
@@ -4351,7 +4378,7 @@ insert into crm_integration_anlt.t_hst_base_integration_snap
 
 
 
--- SNAP DELETE - KPI OLX.BASE.091 (Wallet)
+-- SNAP DELETE - KPI OLX.BASE.091 (refund)
 delete from crm_integration_anlt.t_fac_base_integration_snap
 where (cod_contact, cod_custom_field) in
 			(select cod_contact, cod_custom_field from tmp_pl_olx_calc_refund_2
@@ -4360,7 +4387,7 @@ where (cod_contact, cod_custom_field) in
 
 
 
--- KPI OLX.BASE.091 (Wallet)
+-- KPI OLX.BASE.091 (refund)
 insert into crm_integration_anlt.t_fac_base_integration_snap
   select
     *
@@ -4379,7 +4406,7 @@ create temp table tmp_pl_olx_calc_bonus_1 as
 			cod_custom_field,
 			dat_snap,
 			cod_source_system,
-			cast(round(nvl(val_revenue_listings_gross,0) + nvl(val_revenue_vas_gross,0),2) as varchar) custom_field_value
+			custom_field_value
 		from
 			(
 				select
@@ -4388,8 +4415,9 @@ create temp table tmp_pl_olx_calc_bonus_1 as
 					kpi_custom_field.cod_custom_field,
 					rev_olx.dat_snap,
 					rev_olx.cod_source_system,
-					rev_olx.val_revenue_listings_gross,
-					rev_olx.val_revenue_vas_gross
+					case when( nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
+								and nvl(rev_olx.wallet,'bonus points') = 'bonus points') then cast(round(nvl(val_revenue_listings_gross,0)  + nvl(val_revenue_vas_gross,0)  ,2) as varchar)
+								else '0' end custom_field_value
 				from
 					tmp_pl_olx_calc_revenue rev_olx,
 					(
@@ -4405,9 +4433,7 @@ create temp table tmp_pl_olx_calc_bonus_1 as
 							and rel.cod_source_system = 13
 					) kpi_custom_field
 				where
-					kpi_custom_field.flg_active = 1
-					and nvl(cod_month,to_char(add_months(sysdate,0),'yyyymm')) = to_char(add_months(sysdate,0),'yyyymm')
-					and nvl(rev_olx.wallet,'bonus points') = 'bonus points'
+					kpi_custom_field.flg_active = 1 
 			) core
 			;
 	
@@ -5002,11 +5028,11 @@ insert into crm_integration_anlt.t_fac_base_integration_snap
 -- CREATE TMP - KPI OLX.BASE.113 (# of ads expiring in next 5 DAYS)
 create temp table tmp_pl_olx_calc_ads_expiring_5d_1 as
     select
-      a.cod_contact,
-	  a.cod_contact_parent,
+      base_contact.cod_contact,
+	  base_contact.cod_contact_parent,
       kpi_custom_field.cod_custom_field,
       scai.dat_processing dat_snap,
-      coalesce(a.cod_source_system,13) cod_source_system,
+      coalesce(base_contact.cod_source_system,13) cod_source_system,
       a.custom_field_value custom_field_value
     from
       (
@@ -5019,7 +5045,7 @@ create temp table tmp_pl_olx_calc_ads_expiring_5d_1 as
         from
           (
             select
-							lkp_contact.cod_contact_parent,
+			  lkp_contact.cod_contact_parent,
               lkp_contact.cod_contact,
               scai.dat_processing,
               lkp_contact.cod_source_system,
@@ -5053,6 +5079,7 @@ create temp table tmp_pl_olx_calc_ads_expiring_5d_1 as
           source.cod_contact_parent,
           source.dat_processing
       ) a,
+      crm_integration_anlt.t_lkp_contact base_contact,
 			crm_integration_anlt.t_rel_scai_country_integration scai,
 			(
 				select
@@ -5067,7 +5094,10 @@ create temp table tmp_pl_olx_calc_ads_expiring_5d_1 as
 					and rel.cod_source_system = 13
 			) kpi_custom_field
 			where 1=1
-				and scai.cod_integration = 50000
+			and base_contact.cod_contact = a.cod_contact (+)
+			and base_contact.valid_to = 20991231
+			and base_contact.cod_source_system = 13
+			and scai.cod_integration = 50000
 			and kpi_custom_field.flg_active = 1
 			and scai.cod_country = 2
   ;
@@ -5404,18 +5434,17 @@ create temp table tmp_pl_olx_calc_number_calls_1 as
 	  scai.dat_processing dat_snap,
 	  coalesce(base_contact.cod_source_system,13) cod_source_system
 	from
-	  crm_integration_anlt.t_fac_call call,
-	  crm_integration_anlt.t_lkp_contact base_contact,
+	  crm_integration_anlt.t_lkp_contact base_contact
+    left outer join crm_integration_anlt.t_fac_call call on call.cod_source_system = base_contact.cod_source_system
+                                                            and call.cod_contact = base_contact.cod_contact
+                                                            and call.created_at > sysdate - 90,
 	  crm_integration_anlt.t_rel_scai_country_integration scai
 	where 1=1
-	  and call.cod_source_system = 13
-	  and call.cod_source_system = base_contact.cod_source_system
-	  and base_contact.valid_to = 20991231
-	  and scai.cod_integration = 50000
-		and scai.cod_country = 2
-	  and call.cod_contact = base_contact.cod_contact
-	  and call.created_at > sysdate - 90
-	  ;
+	and base_contact.valid_to = 20991231
+    and base_contact.cod_source_system = 13
+	and scai.cod_integration = 50000
+	and scai.cod_country = 2
+;
 
 
 	  
