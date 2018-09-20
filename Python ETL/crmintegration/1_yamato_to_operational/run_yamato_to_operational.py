@@ -2,6 +2,7 @@ import sys
 import simplejson as json
 import copy_tables_atlas
 import copy_tables_hydra
+import copy_tables_crmbase
 from datetime import date, datetime
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '0_common'))  # Change this later to a package import
