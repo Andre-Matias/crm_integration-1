@@ -36,7 +36,7 @@ def getLastUpdateDates(db_conf_file, sc_schema, resources):
 			"FROM crm_integration_anlt.t_lkp_scai_process proc, crm_integration_anlt.t_rel_scai_integration_process rel_integr_proc "\
 			"WHERE rel_integr_proc.cod_process = proc.cod_process "\
 			"AND rel_integr_proc.cod_country = %(COD_COUNTRY)d "\
-			"AND rel_integr_proc.cod_integration = %(COD_INTEGRATION)d "\
+			"AND rel_integr_proc.cod_integration = 11000 "\
 			"AND rel_integr_proc.ind_active = 1 "\
 			"AND proc.dsc_process_short = '%(scai_process_name)s' "\
 			% {
