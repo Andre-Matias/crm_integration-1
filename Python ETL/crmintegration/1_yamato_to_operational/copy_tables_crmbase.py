@@ -116,7 +116,7 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	resources = data['resources_crm_base'].split(',')
 	
 	# Check if there are any valid resources to retrieve; exit if not
-	if len(resources) = 0 or resources[0] = '':
+	if len(resources) == 0 or resources[0] == '':
 		return scai_last_execution_status
 	
 	global COD_COUNTRY; COD_COUNTRY = int(data['cod_country'])												# Global variable
