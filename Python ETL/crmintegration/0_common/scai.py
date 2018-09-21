@@ -309,7 +309,7 @@ def processEnd(conf_file, dsc_process, cod_integration, cod_country, table_name=
 # Return the 'dsc_process_short' corresponding to the table name argument (TODO: Incorporate this 
 def getProcessShortDescription(conf_file, table_name):
 	sql_script = \
-		"select "\
+		"select distinct "\
 		"	dsc_process_short "\
 		"from "\
 		"	crm_integration_anlt.t_lkp_scai_process_tables a, "\
