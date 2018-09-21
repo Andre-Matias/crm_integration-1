@@ -115,6 +115,9 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 	tg_schema = data['target_schema_operational']
 	resources = data['resources_crm_base'].split(',')
 	
+	if len(resources) = 0 or resources[0] = '':
+		return scai_last_execution_status
+	
 	global COD_COUNTRY; COD_COUNTRY = int(data['cod_country'])												# Global variable
 	global COUNTRY; COUNTRY = data['country']																# Global variable
 	global BASE_ACCOUNT_COUNTRY; BASE_ACCOUNT_COUNTRY = data['base_account_country']						# Global variable
