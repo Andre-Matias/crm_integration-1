@@ -69,7 +69,7 @@ def main(conf_file, dml_file, country):
 			continue
 		print('Running block #' + str(i))
 		try:
-			cur.execute("lock crm_integration_anlt.t_rel_scai_country_integration, crm_integration_anlt.t_rel_scai_integration_process  in exclusive mode")
+			#cur.execute("lock crm_integration_anlt.t_rel_scai_country_integration, crm_integration_anlt.t_rel_scai_integration_process  in exclusive mode")
 			cur.execute(dml)
 		except Exception as e:
 			conn.rollback() 
