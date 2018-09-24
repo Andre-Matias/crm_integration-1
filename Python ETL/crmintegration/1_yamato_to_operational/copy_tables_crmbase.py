@@ -61,22 +61,22 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 	
 	for resource in resources:	
 		tg_table = 'stg_' + COUNTRY + '_' + resource[4:]	# Target table name has the country in the middle of the source table name (for example, stg_d_base_contacts -> stg_pt_d_base_contacts)
-		#scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
-		#if(scai_last_execution_status==3):
-			#scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
+		scai_process_name = scai.getProcessShortDescription(db_conf_file, tg_table)			# SCAI
+		if(scai_last_execution_status==3):
+			scai_process_status = scai.processCheck(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY,scai_last_execution_status)	# SCAI
 
 		# Is normal execution or re-execution starting from the step that was in error	
 		if (scai_last_execution_status == 1 or (scai_last_execution_status == 3 and scai_process_status == 3)):
-			#scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
+			scai.processStart(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY)	# SCAI
 			print('Loading %(tg_schema)s.%(tg_table)s from %(last_update)s...' % {'tg_schema':tg_schema, 'tg_table':tg_table, 'last_update':last_updates_dict[resource]})
 			try:
 				cur_target.execute(
-					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s_2; "\
-					"INSERT INTO %(tg_schema)s.%(tg_table)s_2 "\
+					"TRUNCATE TABLE %(tg_schema)s.%(tg_table)s; "\
+					"INSERT INTO %(tg_schema)s.%(tg_table)s "\
 					"SELECT * FROM %(sc_schema)s.%(resource)s "\
 					"WHERE meta_event_time >= '%(last_update_date)s' "\
 					"AND base_account_country = '%(BASE_ACCOUNT_COUNTRY)s'; "\
-					"ANALYZE %(tg_schema)s.%(tg_table)s_2;"
+					"ANALYZE %(tg_schema)s.%(tg_table)s;"
 				% {
 				'tg_table':tg_table,
 				'tg_schema':tg_schema,
@@ -88,14 +88,14 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 				) 
 			except Exception as e:
 				conn_target.rollback()
-				#scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
-				#scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 				print (e)
 				print (e.pgerror)
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				#scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
