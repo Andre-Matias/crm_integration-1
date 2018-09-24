@@ -69,6 +69,7 @@ def main(conf_file, dml_file, country):
 			continue
 		print('Running block #' + str(i))
 		try:
+			cur.execute("lock crm_integration_anlt.t_rel_scai_country_integration, crm_integration_anlt.t_rel_scai_integration_process, crm_integration_anlt.t_lkp_scai_process, crm_integration_anlt.t_fac_scai_execution")
 			cur.execute(dml)
 		except Exception as e:
 			conn.rollback() 
