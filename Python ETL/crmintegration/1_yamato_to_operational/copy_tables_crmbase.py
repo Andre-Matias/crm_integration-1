@@ -88,14 +88,14 @@ def copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_d
 				) 
 			except Exception as e:
 				conn_target.rollback()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',3)	# SCAI
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',3)	# SCAI
 				scai.integrationEnd(db_conf_file, COD_INTEGRATION, COD_COUNTRY, 3)		# SCAI
 				print (e)
 				print (e.pgerror)
 				sys.exit("The process aborted with error.")
 			else:
 				conn_target.commit()
-				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'operation_timestamp',1)	# SCAI
+				scai.processEnd(db_conf_file, scai_process_name, COD_INTEGRATION, COD_COUNTRY, tg_table, 'meta_event_time',1)	# SCAI
 				
 				#Enable execution of following processes
 				scai_last_execution_status = 1
@@ -125,7 +125,7 @@ def main(conf_file, db_conf_file, scai_last_execution_status):
 		
 	# Copy tables from CRM_BASE to CRM_INTEGRATION_STG
 	last_updates_dict = getLastUpdateDates(db_conf_file, sc_schema, resources)								# Get the date of last update for each of this schema's resources
-	scai_last_execution_status = copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, scai_last_execution_status=scai_last_execution_status)	# Copy Yamato tables to Operational Model, from dates of last update
+	scai_last_execution_status = copyBaseTables(db_conf_file, sc_schema, tg_schema, resources, last_updates_dict, scai_last_execution_status=scai_last_execution_status)	# Copy CRM_Base tables to Operational Model, from dates of last update
 
 	print('Done copying all CRM_Base tables!')
 	print(datetime.now().time())
