@@ -55,6 +55,7 @@ def main(db_conf_file, kpi_file, country):
 			continue
 		print('Running block #' + str(i)) 
 		try:
+			cur.execute("lock crm_integration_anlt.t_rel_scai_integration_process  in exclusive mode")
 			cur.execute(kpi)
 		except Exception as e:
 			conn.rollback()  
