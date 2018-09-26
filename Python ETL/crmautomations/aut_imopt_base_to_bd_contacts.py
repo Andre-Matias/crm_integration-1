@@ -144,7 +144,7 @@ def s3_fulldump_contacts(client,bucketName,data_path,category,country):
 			
 def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path):
 	conn = getDatabaseConnection(conf_file)
-	credentials = getAIMRole(conf_file)
+	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
 	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'contacts/imopt/') == 'true'):
