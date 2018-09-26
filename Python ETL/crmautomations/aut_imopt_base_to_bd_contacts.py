@@ -70,7 +70,7 @@ def deletePreviousS3Files(bucketName, data_path):
 	print("Deleting S3 Imopt Contacts Files")
 
 	conn = S3Connection()
-	b = Bucket(conn, bucket_name)
+	b = Bucket(conn, bucketName)
 	for x in b.list(prefix = data_path + 'contacts/imopt/'):
 		x.delete()
 
