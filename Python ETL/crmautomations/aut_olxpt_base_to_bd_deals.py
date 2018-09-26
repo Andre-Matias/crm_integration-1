@@ -155,7 +155,7 @@ def s3_fulldump_deals(client,bucketName,data_path,category,country):
 			
 def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path):
 	conn = getDatabaseConnection(conf_file)
-	credentials = getS3Keys(conf_file)
+	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
 	if(checkS3FileExists(bucketName,str(data_path) + 'deals/olxpt/') == 'true'):
