@@ -44,7 +44,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"dateformat 'auto'\n" \
 		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
 		"gzip\n" \
-		"CREDENTIALS '%(credentials)s';" \
+		"IAM_ROLE '%(credentials)s';" \
 		% {
 		'schema': schema,
 		'table': table,
