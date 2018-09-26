@@ -141,7 +141,7 @@ def s3_fulldump_deals(client,bucketName,data_path,category,country):
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
 
-		k.set_contents_from_filename(localName)
+		k.set_contents_from_filename(localName, policy='bucket-owner-full-control')
 		
 		#Remove local gz file
 		os.remove(localName)

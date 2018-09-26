@@ -24,9 +24,7 @@ logger = logging.getLogger('logger')
 
 def checkS3FileExists(conf_file,bucket,path):
 	conf = json.load(open(conf_file))
-	key = conf['s3_key']
-	skey = conf['s3_skey']
-	conn = S3Connection(key, skey)
+	conn = S3Connection()
 	b = Bucket(conn, bucket)
 	found_file = 'false'
 
@@ -45,7 +43,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"dateformat 'auto'\n" \
 		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
 		"gzip\n" \
-		"CREDENTIALS '%(credentials)s';" \
+		"IAM_ROLE '%(credentials)s';" \
 		% {
 		'schema': schema,
 		'table': table,
