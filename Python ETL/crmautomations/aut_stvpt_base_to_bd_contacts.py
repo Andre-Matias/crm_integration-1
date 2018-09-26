@@ -51,7 +51,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		'credentials': credentials
 	}
 
-def getChandraConnection(conf_file):
+def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 	
@@ -132,7 +132,7 @@ def s3_fulldump_contacts(client,bucketName,data_path,category,country):
 		aux += 1
 			
 def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path):
-	conn = getChandraConnection(conf_file)
+	conn = getDatabaseConnection(conf_file)
 	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
