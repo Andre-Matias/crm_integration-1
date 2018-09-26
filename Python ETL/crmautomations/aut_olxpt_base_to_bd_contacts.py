@@ -24,8 +24,7 @@ logger = logging.getLogger('logger')
 
 # COLOCAR FILTRO DIA 
 
-def checkS3FileExists(conf_file,bucket,path):
-	conf = json.load(open(conf_file))
+def checkS3FileExists(bucket,path):
 	conn = S3Connection()
 	b = Bucket(conn, bucket)
 	found_file = 'false'
@@ -70,7 +69,6 @@ def getIAMRole(conf_file):
 
 def deletePreviousS3Files(bucketName, data_path):
 	print("Deleting S3 Olxpt Contacts Files")
-	conf = json.load(open(conf_file))
 
 	conn = S3Connection()
 	b = Bucket(conn, bucketName)
@@ -147,7 +145,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
-	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'contacts/olxpt/') == 'true'):
+	if(checkS3FileExists(bucketName,str(data_path) + 'contacts/olxpt/') == 'true'):
 		print('Loading...')
 		cur.execute(
 			getCopySql(

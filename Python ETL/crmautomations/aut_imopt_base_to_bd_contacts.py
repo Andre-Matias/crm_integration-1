@@ -22,8 +22,7 @@ import logging
 logging.basicConfig()
 logger = logging.getLogger('logger')
 
-def checkS3FileExists(conf_file,bucket,path):
-	conf = json.load(open(conf_file))
+def checkS3FileExists(bucket,path):
 	conn = S3Connection()
 	b = Bucket(conn, bucket)
 	found_file = 'false'
@@ -147,7 +146,7 @@ def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,
 	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
-	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'contacts/imopt/') == 'true'):
+	if(checkS3FileExists(bucketName,str(data_path) + 'contacts/imopt/') == 'true'):
 		print('Loading...')
 		cur.execute(
 			getCopySql(
