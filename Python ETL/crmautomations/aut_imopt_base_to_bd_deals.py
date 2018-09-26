@@ -24,9 +24,7 @@ logger = logging.getLogger('logger')
 
 def checkS3FileExists(conf_file,bucket,path):
 	conf = json.load(open(conf_file))
-	key = conf['s3_key']
-	skey = conf['s3_skey']
-	conn = S3Connection(key, skey)
+	conn = S3Connection()
 	b = Bucket(conn, bucket)
 	found_file = 'false'
 
@@ -45,7 +43,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		"dateformat 'auto'\n" \
 		"timeformat 'YYYY-MM-DDTHH:MI:SS'\n" \
 		"gzip\n" \
-		"CREDENTIALS '%(credentials)s';" \
+		"IAM_ROLE '%(credentials)s';" \
 		% {
 		'schema': schema,
 		'table': table,
@@ -54,7 +52,7 @@ def getCopySql(schema, table, bucket, manifest, credentials):
 		'credentials': credentials
 	}
 
-def getChandraConnection(conf_file):
+def getDatabaseConnection(conf_file):
 	data = json.load(open(conf_file))
 	return psycopg2.connect(dbname=data['dbname'], host=data['host'], port=data['port'], user=data['user'], password=data['pass'])
 	
@@ -63,17 +61,21 @@ def getS3Keys(conf_file):
 	return "aws_access_key_id=%(key)s;aws_secret_access_key=%(skey)s" \
 	% {'key': data['s3_key'],'skey': data['s3_skey']}
 
-def deletePreviousS3Files(conf_file, keyId, sKeyId):
+def getIAMRole(conf_file):
+	data = json.load(open(conf_file))
+	return data['iam_role']
+	#return "aws_iam_role=" + data['iam_role']
+	
+def deletePreviousS3Files(bucketName, data_path):
 	print("Deleting S3 Imopt Deals Files")
-	conf = json.load(open(conf_file))
 
-	conn = S3Connection(keyId, sKeyId)
-	b = Bucket(conn, 'pyrates-eu-data-ocean')
-	for x in b.list(prefix = 'crm-automations/deals/imopt/'):
+	conn = S3Connection()
+	b = Bucket(conn, bucket_name)
+	for x in b.list(prefix = data_path + 'deals/imopt/'):
 		x.delete()
 
 @retry(exceptions=Exception, delay=1, tries=10, logger=logger)	
-def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country):
+def s3_fulldump_deals(client,bucketName,data_path,category,country):
 	
 	print("Getting deals data")
 	#Iterate for everypage returned by the API
@@ -134,7 +136,7 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 		fileName="aut_imopt_base_to_bd_deal_" + str(aux).zfill(10) + ".txt.gz"
 
 		full_key_name = os.path.join(data_path+"deals/imopt/", fileName)
-		conn = boto.connect_s3(keyId,sKeyId)
+		conn = boto.connect_s3()
 		bucket = conn.get_bucket(bucketName)
 		k = bucket.new_key(full_key_name)
 		k.key=full_key_name
@@ -148,8 +150,8 @@ def s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
 		aux += 1
 			
 def loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path):
-	conn = getChandraConnection(conf_file)
-	credentials = getS3Keys(conf_file)
+	conn = getDatabaseConnection(conf_file)
+	credentials = getIAMRole(conf_file)
 	cur = conn.cursor()
 	
 	if(checkS3FileExists(conf_file,bucketName,str(data_path) + 'deals/imopt/') == 'true'):
@@ -183,8 +185,6 @@ def main(conf_file):
 	country = json.load(open(conf_file))['country_pt']
 	category = json.load(open(conf_file))['category_imopt']
 	data_path = json.load(open(conf_file))['data_path']
-	keyId = json.load(open(conf_file))['s3_key']
-	sKeyId = json.load(open(conf_file))['s3_skey']
 	bucketName = json.load(open(conf_file))['bucketName']
 	manifest_path = json.load(open(conf_file))['manifest_path']
 	
@@ -192,9 +192,9 @@ def main(conf_file):
 	date = str(datetime.now().strftime('%Y/%m/%d/'))
 	
 ### TODO - DELETE S3 PATH BEFORE UNLOADING!!!!
-	deletePreviousS3Files(conf_file, keyId, sKeyId)
+	deletePreviousS3Files(bucketName, data_path)
 	
-	s3_fulldump_deals(client,keyId,sKeyId,bucketName,data_path,category,country)
+	s3_fulldump_deals(client,bucketName,data_path,category,country)
 
 	loadFromS3toRedshift(conf_file,schema,category,country,bucketName,data_path,date,manifest_path)
 	
