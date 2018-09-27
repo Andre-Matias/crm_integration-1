@@ -62,6 +62,7 @@ def main(conf_file, dml_file, country):
 	
 	#print('Scripts: ' + dml_scripts)
 	print('Executing DML scripts...')
+	print('test')
 	i = 1
 	for dml in dml_scripts:
 		if i < block_nbr:  # Make this run starting from a certain block
